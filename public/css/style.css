@@ -63,9 +63,11 @@ body.theme-khmer-traditional.wedding-bg-pattern {
   background-color: #FAF6ED !important;
   background-image: 
     radial-gradient(#8C1D2F 0.8px, transparent 0.8px), 
-    radial-gradient(#D4AF37 0.8px, #FAF6ED 0.8px) !important;
-  background-size: 24px 24px !important;
-  background-position: 0 0, 12px 12px !important;
+    radial-gradient(#D4AF37 0.8px, #FAF6ED 0.8px),
+    url('/images/components/angkor-silhouette.svg') !important;
+  background-size: 24px 24px, 24px 24px, 320px auto !important;
+  background-position: 0 0, 12px 12px, center 120px !important;
+  background-repeat: repeat, repeat, no-repeat !important;
 }
 body.theme-khmer-traditional .text-\[\#4E3227\],
 body.theme-khmer-traditional .text-bronze {
@@ -144,21 +146,21 @@ body.theme-western-modern {
   --accent: #C5A059;
   --accent-light: #E8D5B5;
   --accent-dark: #9E7B35;
-  --bg-cream: #F8F9FA;
-  --border-gold: #DDE3DE;
-  background-color: #F8F9FA !important;
+  --bg-cream: #FAF8F5;
+  --border-gold: #E5DFD5;
+  background-color: #FAF8F5 !important;
 }
 body.theme-western-modern.wedding-bg-pattern {
-  background-color: #F8F9FA !important;
+  background-color: #FAF8F5 !important;
   background-image: 
-    radial-gradient(#1B4332 0.5px, transparent 0.5px), 
-    radial-gradient(#C5A059 0.5px, #F8F9FA 0.5px) !important;
+    radial-gradient(#C5A059 0.5px, transparent 0.5px), 
+    radial-gradient(#E5DFD5 0.5px, #FAF8F5 0.5px) !important;
   background-size: 32px 32px !important;
   background-position: 0 0, 16px 16px !important;
 }
 body.theme-western-modern .text-\[\#4E3227\],
 body.theme-western-modern .text-bronze {
-  color: #1B4332 !important;
+  color: #2D2D2D !important;
 }
 body.theme-western-modern .bg-\[\#4E3227\],
 body.theme-western-modern .bg-bronze {
@@ -168,10 +170,10 @@ body.theme-western-modern .hover\:bg-\[\#6E4939\]:hover {
   background-color: #2D6A4F !important;
 }
 body.theme-western-modern .border-\[\#E5D5BC\] {
-  border-color: #DDE3DE !important;
+  border-color: #E5DFD5 !important;
 }
 body.theme-western-modern .bg-\[\#FAF7F2\] {
-  background-color: #F2F6F3 !important;
+  background-color: #FFFFFF !important;
 }
 body.theme-western-modern .text-\[\#C5A059\],
 body.theme-western-modern .text-gold {

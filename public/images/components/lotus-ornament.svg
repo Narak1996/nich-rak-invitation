@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" fill="none">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5D77F"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A7510"/>
+    </linearGradient>
+  </defs>
+  <!-- Central Lotus Petal -->
+  <path d="M50 4 C44 20, 36 34, 50 52 C64 34, 56 20, 50 4 Z" fill="url(#goldGrad)" opacity="0.95"/>
+  <path d="M50 12 C47 22, 43 32, 50 45 C57 32, 53 22, 50 12 Z" fill="#FFF2CC" opacity="0.6"/>
+  <!-- Left Inner Petal -->
+  <path d="M50 52 C35 48, 22 32, 30 18 C38 28, 44 42, 50 52 Z" fill="url(#goldGrad)" opacity="0.85"/>
+  <!-- Right Inner Petal -->
+  <path d="M50 52 C65 48, 78 32, 70 18 C62 28, 56 42, 50 52 Z" fill="url(#goldGrad)" opacity="0.85"/>
+  <!-- Left Outer Petal -->
+  <path d="M50 52 C30 52, 12 40, 16 28 C26 34, 38 46, 50 52 Z" fill="url(#goldGrad)" opacity="0.7"/>
+  <!-- Right Outer Petal -->
+  <path d="M50 52 C70 52, 88 40, 84 28 C74 34, 62 46, 50 52 Z" fill="url(#goldGrad)" opacity="0.7"/>
+  <!-- Lotus Base Calyx & Stem -->
+  <path d="M42 52 Q50 56 58 52 Q50 58 42 52 Z" fill="#9A7510"/>
+  <circle cx="50" cy="50" r="3" fill="#FFF2CC"/>
+</svg>

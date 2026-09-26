@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <!-- Peony Petals Group -->
+  <g transform="translate(10, 10)">
+    <!-- Leaves -->
+    <path d="M10 50 C 0 55, -5 45, 2 38 C 12 40, 14 46, 10 50 Z" fill="#2E4A35" opacity="0.6"/>
+    <path d="M50 50 C 60 55, 65 45, 58 38 C 48 40, 46 46, 50 50 Z" fill="#2E4A35" opacity="0.6"/>
+    <!-- Outer Petals -->
+    <path d="M30 4 C 18 8, 12 24, 20 36 C 26 28, 30 20, 30 4 Z" fill="#D4AF37" opacity="0.7"/>
+    <path d="M30 4 C 42 8, 48 24, 40 36 C 34 28, 30 20, 30 4 Z" fill="#D4AF37" opacity="0.7"/>
+    <path d="M12 24 C 4 34, 12 48, 26 46 C 22 38, 18 30, 12 24 Z" fill="#D4AF37" opacity="0.8"/>
+    <path d="M48 24 C 56 34, 48 48, 34 46 C 38 38, 42 30, 48 24 Z" fill="#D4AF37" opacity="0.8"/>
+    <!-- Inner Blooming Core -->
+    <circle cx="30" cy="30" r="14" fill="#C72535" opacity="0.9"/>
+    <circle cx="30" cy="30" r="10" fill="#FFD700" opacity="0.8"/>
+    <circle cx="30" cy="30" r="6" fill="#FFF2A3"/>
+  </g>
+</svg>

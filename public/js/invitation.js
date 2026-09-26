@@ -82,17 +82,68 @@ function renderAll() {
   // Update top bar theme switcher display
   const themeIconEl = document.getElementById('active-theme-icon');
   if (themeIconEl) {
-    const emblemMap = { 'khmer-traditional': '🪷', 'western-modern': '💍', 'chinese-traditional': '囍', 'e-theap-luxury': '👑' };
+    const emblemMap = { 'khmer-traditional': '🪷', 'western-modern': '💍', 'chinese-traditional': '囍' };
     themeIconEl.textContent = emblemMap[themeId] || '🪷';
   }
   const themeLabelEl = document.getElementById('active-theme-label');
   if (themeLabelEl) {
-    const labelMap = { 'khmer-traditional': 'ខ្មែរ', 'western-modern': 'Modern', 'chinese-traditional': '囍 ចិន', 'e-theap-luxury': 'Luxury' };
+    const labelMap = { 'khmer-traditional': '១. ខ្មែរ', 'western-modern': '២. Modern', 'chinese-traditional': '៣. 囍 ចិន' };
     themeLabelEl.textContent = labelMap[themeId] || 'Theme';
   }
 
   // Language based text rendering
   const isKh = currentLang === 'kh';
+
+  // Groom and Bride initials for monogram
+  const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
+  const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
+
+  // Inject Theme Small Component Emblem (Lotus / Monogram / 囍)
+  const heroEmblemEl = document.getElementById('hero-theme-emblem');
+  if (heroEmblemEl) {
+    if (themeId === 'chinese-traditional') {
+      heroEmblemEl.innerHTML = `<img src="/images/components/chinese-double-happiness.svg" alt="囍" class="h-14 filter drop-shadow-md">`;
+    } else if (themeId === 'western-modern') {
+      heroEmblemEl.innerHTML = `
+        <div class="w-16 h-16 rounded-full border-2 border-[#C5A059] flex items-center justify-center font-serif text-lg tracking-widest text-[#1B4332] bg-white shadow-xs">
+          ${groomInitial} & ${brideInitial}
+        </div>
+      `;
+    } else {
+      // Default: Khmer Traditional
+      heroEmblemEl.innerHTML = `<img src="/images/components/lotus-ornament.svg" alt="Lotus" class="h-11 filter drop-shadow-xs">`;
+    }
+  }
+
+  // Inject Theme Small Component Divider (Angkor / Olive Branch / Auspicious Cloud)
+  const heroDividerEl = document.getElementById('hero-theme-divider');
+  if (heroDividerEl) {
+    if (themeId === 'chinese-traditional') {
+      heroDividerEl.innerHTML = `
+        <div class="flex items-center gap-3">
+          <img src="/images/components/auspicious-cloud.svg" alt="Cloud" class="h-6 opacity-75">
+          <span class="text-xs text-[#A31621] font-bold">🌸 百年好合 • 喜结良缘 🌸</span>
+          <img src="/images/components/auspicious-cloud.svg" alt="Cloud" class="h-6 opacity-75 transform scale-x-[-1]">
+        </div>
+      `;
+    } else if (themeId === 'western-modern') {
+      heroDividerEl.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="h-px w-10 bg-[#C5A059]/40"></span>
+          <img src="/images/components/botanical-olive.svg" alt="Olive Branch" class="h-7">
+          <span class="h-px w-10 bg-[#C5A059]/40"></span>
+        </div>
+      `;
+    } else {
+      // Khmer Traditional
+      heroDividerEl.innerHTML = `
+        <div class="flex flex-col items-center gap-1.5 opacity-80">
+          <img src="/images/components/angkor-silhouette.svg" alt="Angkor Wat" class="h-9 text-[#8C1D2F]">
+          <span class="text-[10px] text-[#D4AF37] font-bold tracking-widest uppercase">ប្រាសាទអង្គរវត្ត • សិរីសួស្តីជ័យមង្គល</span>
+        </div>
+      `;
+    }
+  }
 
   // 1. Transform Wax Seal based on Theme
   const sealContentEl = document.getElementById('wax-seal-content');
@@ -101,8 +152,6 @@ function renderAll() {
       sealContentEl.innerHTML = `<span class="text-3xl text-[#FFE866] font-bold block leading-none drop-shadow-md">囍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
     } else if (themeId === 'western-modern') {
       sealContentEl.innerHTML = `<span class="text-2xl block leading-none">💍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
-    } else if (themeId === 'e-theap-luxury') {
-      sealContentEl.innerHTML = `<svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold">OPEN</span>`;
     } else {
       // Default: khmer-traditional
       sealContentEl.innerHTML = `<span class="text-2xl block leading-none">🪷</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
@@ -116,8 +165,6 @@ function renderAll() {
       heroMotifEl.innerHTML = isKh ? '囍 សិរីមង្គលអាពាហ៍ពិពាហ៍ 喜结良缘 囍' : '囍 Double Happiness Celebration 囍';
     } else if (themeId === 'western-modern') {
       heroMotifEl.innerHTML = isKh ? '🌿 អាពាហ៍ពិពាហ៍សម័យទំនើប 🌿' : '🌿 Wedding Celebration 🌿';
-    } else if (themeId === 'e-theap-luxury') {
-      heroMotifEl.innerHTML = isKh ? '👑 សិរីសួស្តី អាពាហ៍ពិពាហ៍ 👑' : '👑 Wedding Celebration 👑';
     } else {
       heroMotifEl.innerHTML = isKh ? '🪷 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🪷' : '🪷 Traditional Khmer Wedding 🪷';
     }
@@ -130,8 +177,6 @@ function renderAll() {
       footerStampEl.innerHTML = `<span class="text-2xl font-bold text-[#A31621]">囍</span>`;
     } else if (themeId === 'western-modern') {
       footerStampEl.innerHTML = `<span class="text-xl">💍</span>`;
-    } else if (themeId === 'e-theap-luxury') {
-      footerStampEl.innerHTML = `<span class="font-en-title text-sm font-bold text-[#C5A059]">N&S</span>`;
     } else {
       footerStampEl.innerHTML = `<span class="text-xl">🪷</span>`;
     }
@@ -723,16 +768,6 @@ const THEME_DATA_MAP = {
     bgColor: '#FFF7F7',
     emblem: '囍',
     sealEmblem: 'shuangxi'
-  },
-  'e-theap-luxury': {
-    id: 'e-theap-luxury',
-    name: 'E-Theap Bronze Luxury (រចនាបថ Bronze E-Theap)',
-    primaryColor: '#4E3227',
-    accentColor: '#C5A059',
-    secondaryColor: '#6E4939',
-    bgColor: '#FAF7F2',
-    emblem: '👑',
-    sealEmblem: 'crown'
   }
 };
 

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" fill="none">
+  <!-- Delicate Olive / Eucalyptus branch -->
+  <!-- Stem -->
+  <path d="M10 28 Q 50 18, 90 24 T 150 22" stroke="#C5A059" stroke-width="1.2" stroke-linecap="round"/>
+  
+  <!-- Leaves Left -->
+  <path d="M28 24 C 22 14, 30 6, 40 16 C 36 22, 32 24, 28 24 Z" fill="#2D4A3E" opacity="0.85"/>
+  <path d="M38 22 C 40 10, 52 8, 50 20 C 46 22, 42 22, 38 22 Z" fill="#C5A059" opacity="0.9"/>
+  <path d="M46 23 C 44 34, 34 38, 36 26 C 40 24, 44 24, 46 23 Z" fill="#2D4A3E" opacity="0.8"/>
+
+  <!-- Leaves Center -->
+  <path d="M68 21 C 66 8, 80 8, 78 19 C 74 21, 70 21, 68 21 Z" fill="#C5A059" opacity="0.9"/>
+  <path d="M78 22 C 84 34, 70 38, 72 25 C 74 23, 76 23, 78 22 Z" fill="#2D4A3E" opacity="0.85"/>
+  <path d="M92 23 C 94 10, 108 12, 104 22 C 100 23, 96 23, 92 23 Z" fill="#2D4A3E" opacity="0.85"/>
+
+  <!-- Leaves Right -->
+  <path d="M108 24 C 114 36, 102 38, 104 26 C 106 25, 107 24, 108 24 Z" fill="#C5A059" opacity="0.9"/>
+  <path d="M122 23 C 124 12, 138 14, 134 23 C 130 24, 126 24, 122 23 Z" fill="#2D4A3E" opacity="0.85"/>
+  <path d="M136 22 C 146 16, 154 22, 142 26 C 139 25, 137 24, 136 22 Z" fill="#C5A059" opacity="0.9"/>
+
+  <!-- Tiny Olives / Berries -->
+  <circle cx="58" cy="27" r="2.5" fill="#4A3B32"/>
+  <circle cx="88" cy="28" r="2.5" fill="#4A3B32"/>
+  <circle cx="118" cy="27" r="2.5" fill="#4A3B32"/>
+</svg>

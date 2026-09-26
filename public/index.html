@@ -87,16 +87,13 @@
       </button>
       <div class="absolute left-0 mt-1 hidden group-hover:flex flex-col bg-white rounded-2xl shadow-xl border border-[#E5D5BC] p-1.5 w-48 z-50">
         <button onclick="window.switchThemeLive('khmer-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-base">🪷</span> <span>ប្រពៃណីខ្មែរ (Khmer)</span>
+          <span class="text-base">🪷</span> <span>១. ប្រពៃណីខ្មែរ (Khmer)</span>
         </button>
         <button onclick="window.switchThemeLive('western-modern')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-base">💍</span> <span>Western Modern</span>
+          <span class="text-base">💍</span> <span>២. Western Modern</span>
         </button>
         <button onclick="window.switchThemeLive('chinese-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-base">囍</span> <span>ប្រពៃណីចិន (Chinese)</span>
-        </button>
-        <button onclick="window.switchThemeLive('e-theap-luxury')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-base">👑</span> <span>Bronze Luxury</span>
+          <span class="text-base">囍</span> <span>៣. ប្រពៃណីចិន (Chinese)</span>
         </button>
       </div>
     </div>
@@ -141,7 +138,12 @@
   <main class="max-w-2xl mx-auto px-4 pt-20 pb-28">
 
     <!-- HERO SECTION -->
-    <section class="text-center mb-12">
+    <section class="text-center mb-10">
+      <!-- Theme Component Emblem (Lotus / Monogram / 囍) -->
+      <div id="hero-theme-emblem" class="flex justify-center mb-3 transition-all duration-300">
+        <!-- Injected dynamically per theme -->
+      </div>
+
       <!-- Traditional Floral Header Motif -->
       <div class="flex items-center justify-center gap-3 mb-3">
         <div class="h-px w-12 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
@@ -176,6 +178,11 @@
       <p id="couple-quote" class="text-sm italic text-[#7A6F68] max-w-md mx-auto leading-relaxed px-4 font-khmer-body">
         «សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»
       </p>
+
+      <!-- Theme Decorative Divider Component (Angkor Silhouette / Olive Branch / Auspicious Cloud) -->
+      <div id="hero-theme-divider" class="flex justify-center my-6 transition-all duration-300">
+        <!-- Injected dynamically per theme -->
+      </div>
     </section>
 
     <!-- PARENTS & COUPLE PRESENTATION -->

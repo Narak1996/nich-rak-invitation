@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" fill="none">
+  <path d="M20 40 C 10 40, 5 32, 10 24 C 15 16, 28 16, 32 24 C 36 12, 54 8, 64 20 C 72 10, 92 12, 95 24 C 105 20, 115 28, 112 38 C 110 45, 100 46, 92 42 C 84 50, 68 52, 60 44 C 52 50, 36 50, 28 44 C 24 46, 18 45, 20 40 Z" stroke="#D4AF37" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <!-- Swirling cloud head -->
+  <path d="M40 32 C 40 26, 48 24, 52 28 C 55 32, 50 38, 44 36" stroke="#D4AF37" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M75 30 C 75 24, 82 22, 86 26 C 90 30, 84 36, 78 34" stroke="#D4AF37" stroke-width="1.5" fill="none" opacity="0.6"/>
+</svg>

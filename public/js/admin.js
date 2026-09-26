@@ -57,33 +57,23 @@ const THEME_PRESETS = {
   },
   'western-modern': {
     id: 'western-modern',
-    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - ចិញ្ចៀន & ត្បូងមរកត)',
+    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - Cotton Paper & Olive)',
     primaryColor: '#1B4332',
     accentColor: '#C5A059',
     secondaryColor: '#2D6A4F',
-    bgColor: '#F8F9FA',
+    bgColor: '#FAF8F5',
     emblem: '💍',
     sealEmblem: 'rings'
   },
   'chinese-traditional': {
     id: 'chinese-traditional',
-    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ក្រហម)',
-    primaryColor: '#A31621',
-    accentColor: '#D4AF37',
+    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ផ្កាម៉ូនៀ)',
+    primaryColor: '#A81822',
+    accentColor: '#FFD700',
     secondaryColor: '#C72535',
     bgColor: '#FFF7F7',
     emblem: '囍',
     sealEmblem: 'shuangxi'
-  },
-  'e-theap-luxury': {
-    id: 'e-theap-luxury',
-    name: 'E-Theap Bronze Luxury (រចនាបថ Bronze E-Theap)',
-    primaryColor: '#4E3227',
-    accentColor: '#C5A059',
-    secondaryColor: '#6E4939',
-    bgColor: '#FAF7F2',
-    emblem: '👑',
-    sealEmblem: 'crown'
   }
 };
 

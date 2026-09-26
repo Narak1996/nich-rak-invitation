@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" fill="none">
+  <!-- Angkor Wat 5 Towers Silhouette -->
+  <!-- Base terrace -->
+  <rect x="15" y="102" width="270" height="6" rx="2" fill="currentColor"/>
+  <rect x="25" y="94" width="250" height="8" rx="1.5" fill="currentColor"/>
+  <rect x="40" y="86" width="220" height="8" fill="currentColor"/>
+  
+  <!-- Outer Towers -->
+  <!-- Tower 1 (Far Left) -->
+  <path d="M48 86 L48 68 L53 62 L53 50 L58 42 L63 50 L63 62 L68 68 L68 86 Z" fill="currentColor"/>
+  <!-- Tower 5 (Far Right) -->
+  <path d="M232 86 L232 68 L237 62 L237 50 L242 42 L247 50 L247 62 L252 68 L252 86 Z" fill="currentColor"/>
+  
+  <!-- Intermediate Towers -->
+  <!-- Tower 2 (Mid Left) -->
+  <path d="M88 86 L88 56 L94 48 L94 36 L100 26 L106 36 L106 48 L112 56 L112 86 Z" fill="currentColor"/>
+  <!-- Tower 4 (Mid Right) -->
+  <path d="M188 86 L188 56 L194 48 L194 36 L200 26 L206 36 L206 48 L212 56 L212 86 Z" fill="currentColor"/>
+  
+  <!-- Central Tower (Grand Center Tower) -->
+  <path d="M136 86 L136 48 L142 38 L142 22 L146 16 L150 6 L154 16 L158 22 L158 38 L164 48 L164 86 Z" fill="currentColor"/>
+  <path d="M149 2 L151 2 L150 6 Z" fill="currentColor"/>
+
+  <!-- Gallery roofs & pillars connecting towers -->
+  <rect x="68" y="74" width="20" height="12" fill="currentColor" opacity="0.8"/>
+  <rect x="112" y="70" width="24" height="16" fill="currentColor" opacity="0.8"/>
+  <rect x="164" y="70" width="24" height="16" fill="currentColor" opacity="0.8"/>
+  <rect x="212" y="74" width="20" height="12" fill="currentColor" opacity="0.8"/>
+</svg>
