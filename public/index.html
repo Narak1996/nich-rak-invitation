@@ -65,7 +65,7 @@
 
       <!-- Wax Seal Open Button -->
       <div class="wax-seal-btn" id="btn-open-envelope" title="ចុចដើម្បីបើកសំបុត្រ">
-        <div class="text-center text-white">
+        <div class="text-center text-white" id="wax-seal-content">
           <svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
@@ -78,6 +78,31 @@
 
   <!-- ================= TOP FLOATING NAVIGATION BAR ================= -->
   <header class="floating-top-bar">
+    <!-- Quick Theme Switcher Dropdown -->
+    <div class="relative group">
+      <button id="theme-menu-btn" class="flex items-center gap-1 px-2.5 py-1 bg-[#FAF7F2] hover:bg-white rounded-full text-xs font-bold text-[#4E3227] transition border border-[#E5D5BC]">
+        <span id="active-theme-icon">🪷</span>
+        <span id="active-theme-label" class="hidden sm:inline">Theme</span>
+        <svg class="w-3 h-3 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="absolute left-0 mt-1 hidden group-hover:flex flex-col bg-white rounded-2xl shadow-xl border border-[#E5D5BC] p-1.5 w-48 z-50">
+        <button onclick="window.switchThemeLive('khmer-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
+          <span class="text-base">🪷</span> <span>ប្រពៃណីខ្មែរ (Khmer)</span>
+        </button>
+        <button onclick="window.switchThemeLive('western-modern')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
+          <span class="text-base">💍</span> <span>Western Modern</span>
+        </button>
+        <button onclick="window.switchThemeLive('chinese-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
+          <span class="text-base">囍</span> <span>ប្រពៃណីចិន (Chinese)</span>
+        </button>
+        <button onclick="window.switchThemeLive('e-theap-luxury')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
+          <span class="text-base">👑</span> <span>Bronze Luxury</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="h-4 w-px bg-[#E5D5BC]"></div>
+
     <!-- Language Switcher -->
     <button id="lang-toggle-btn" class="flex items-center gap-1.5 px-3 py-1 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-full text-xs font-bold text-[#4E3227] transition border border-[#E5D5BC]">
       <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>

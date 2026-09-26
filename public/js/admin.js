@@ -384,12 +384,29 @@ function initFormListeners() {
   document.getElementById('guest-filter-status').addEventListener('change', renderGuestsTable);
   document.getElementById('guest-filter-side').addEventListener('change', renderGuestsTable);
 
-  // Theme cards click
+  // Theme cards click - Auto-save immediately
   document.querySelectorAll('.theme-select-card').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', async () => {
       const themeId = card.getAttribute('data-theme');
       document.getElementById('selected-theme-id').value = themeId;
       updateThemeSelectionUI(themeId);
+
+      const themeObj = THEME_PRESETS[themeId] || THEME_PRESETS['khmer-traditional'];
+      if (weddingData) {
+        weddingData.theme = { ...themeObj };
+        try {
+          const res = await fetch('/api/wedding', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(weddingData)
+          });
+          if (res.ok) {
+            showToast(`បានប្តូរ និងរក្សាទុកស្បែក៖ ${themeObj.name}`);
+          }
+        } catch (err) {
+          console.error('Failed to auto-save theme:', err);
+        }
+      }
     });
   });
 

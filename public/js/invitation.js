@@ -79,6 +79,18 @@ function renderAll() {
     document.documentElement.style.setProperty('--accent', weddingData.theme.accentColor || '#D4AF37');
   }
 
+  // Update top bar theme switcher display
+  const themeIconEl = document.getElementById('active-theme-icon');
+  if (themeIconEl) {
+    const emblemMap = { 'khmer-traditional': '🪷', 'western-modern': '💍', 'chinese-traditional': '囍', 'e-theap-luxury': '👑' };
+    themeIconEl.textContent = emblemMap[themeId] || '🪷';
+  }
+  const themeLabelEl = document.getElementById('active-theme-label');
+  if (themeLabelEl) {
+    const labelMap = { 'khmer-traditional': 'ខ្មែរ', 'western-modern': 'Modern', 'chinese-traditional': '囍 ចិន', 'e-theap-luxury': 'Luxury' };
+    themeLabelEl.textContent = labelMap[themeId] || 'Theme';
+  }
+
   // Language based text rendering
   const isKh = currentLang === 'kh';
 
@@ -679,3 +691,73 @@ function updateUITranslations() {
     el.textContent = isKh ? el.getAttribute('data-kh') : el.getAttribute('data-en');
   });
 }
+
+// Live Theme Switcher for Invitation
+const THEME_DATA_MAP = {
+  'khmer-traditional': {
+    id: 'khmer-traditional',
+    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាស)',
+    primaryColor: '#8C1D2F',
+    accentColor: '#D4AF37',
+    secondaryColor: '#B22B42',
+    bgColor: '#FAF6ED',
+    emblem: '🪷',
+    sealEmblem: 'lotus'
+  },
+  'western-modern': {
+    id: 'western-modern',
+    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - ចិញ្ចៀន & ត្បូងមរកត)',
+    primaryColor: '#1B4332',
+    accentColor: '#C5A059',
+    secondaryColor: '#2D6A4F',
+    bgColor: '#F8F9FA',
+    emblem: '💍',
+    sealEmblem: 'rings'
+  },
+  'chinese-traditional': {
+    id: 'chinese-traditional',
+    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ក្រហម)',
+    primaryColor: '#A31621',
+    accentColor: '#D4AF37',
+    secondaryColor: '#C72535',
+    bgColor: '#FFF7F7',
+    emblem: '囍',
+    sealEmblem: 'shuangxi'
+  },
+  'e-theap-luxury': {
+    id: 'e-theap-luxury',
+    name: 'E-Theap Bronze Luxury (រចនាបថ Bronze E-Theap)',
+    primaryColor: '#4E3227',
+    accentColor: '#C5A059',
+    secondaryColor: '#6E4939',
+    bgColor: '#FAF7F2',
+    emblem: '👑',
+    sealEmblem: 'crown'
+  }
+};
+
+window.switchThemeLive = async function(themeId) {
+  const themeObj = THEME_DATA_MAP[themeId];
+  if (!themeObj || !weddingData) return;
+  weddingData.theme = { ...themeObj };
+
+  // Set Theme Class on Body
+  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId}`;
+  document.documentElement.style.setProperty('--primary', themeObj.primaryColor);
+  document.documentElement.style.setProperty('--accent', themeObj.accentColor);
+
+  renderAll();
+
+  showToast(`បានប្តូររចនាបថ៖ ${themeObj.name}`);
+
+  // Persist to server
+  try {
+    await fetch('/api/wedding', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(weddingData)
+    });
+  } catch (err) {
+    console.error('Failed to auto-save theme:', err);
+  }
+};
