@@ -90,8 +90,15 @@ function renderAll() {
   // Update top bar theme switcher display
   const themeIconEl = document.getElementById('active-theme-icon');
   if (themeIconEl) {
-    const emblemMap = { 'khmer-traditional': '🌸', 'western-modern': '💍', 'chinese-traditional': '囍' };
-    themeIconEl.textContent = emblemMap[themeId] || '🌸';
+    if (themeId === 'khmer-traditional') {
+      themeIconEl.innerHTML = '<img src="/images/components/romduol-flower.svg" class="w-3.5 h-3.5 object-contain" alt="Romduol">';
+    } else if (themeId === 'western-modern') {
+      themeIconEl.textContent = '💍';
+    } else if (themeId === 'chinese-traditional') {
+      themeIconEl.textContent = '囍';
+    } else {
+      themeIconEl.innerHTML = '<img src="/images/components/romduol-flower.svg" class="w-3.5 h-3.5 object-contain" alt="Romduol">';
+    }
   }
   const themeLabelEl = document.getElementById('active-theme-label');
   if (themeLabelEl) {
@@ -130,7 +137,7 @@ function renderAll() {
       heroDividerEl.innerHTML = `
         <div class="flex items-center gap-3">
           <img src="/images/components/auspicious-cloud.svg" alt="Cloud" class="h-6 opacity-75">
-          <span class="text-xs text-[#A31621] font-bold">🌸 百年好合 • 喜结良缘 🌸</span>
+          <span class="text-xs text-[#A31621] font-bold">百年好合 • 喜结良缘</span>
           <img src="/images/components/auspicious-cloud.svg" alt="Cloud" class="h-6 opacity-75 transform scale-x-[-1]">
         </div>
       `;
@@ -147,7 +154,7 @@ function renderAll() {
       heroDividerEl.innerHTML = `
         <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
           <img src="/images/components/romduol-divider.svg" alt="ផ្ការំដួល" class="h-7 w-full">
-          <span class="text-[11px] text-[#D4AF37] font-bold tracking-widest font-khmer-body">🌸 សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ 🌸</span>
+          <span class="text-[11px] text-[#D4AF37] font-bold tracking-widest font-khmer-body">សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ</span>
         </div>
       `;
     }
@@ -177,7 +184,7 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       heroMotifEl.innerHTML = isKh ? 'TOGETHER WITH THEIR FAMILIES' : 'TOGETHER WITH THEIR FAMILIES';
     } else {
-      heroMotifEl.innerHTML = isKh ? '🌸 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🌸' : '🌸 Traditional Khmer Wedding Celebration 🌸';
+      heroMotifEl.innerHTML = isKh ? 'សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ' : 'Traditional Khmer Wedding Celebration';
     }
   }
 
@@ -223,7 +230,7 @@ function renderAll() {
     } else if (themeId === 'chinese-traditional') {
       connectorHtml = '<span class="font-bold text-[#FFD700] text-sm">囍</span>';
     } else if (themeId === 'khmer-traditional') {
-      connectorHtml = '<span class="text-xs text-[#D4AF37] font-bold">🌸 និង 🌸</span>';
+      connectorHtml = '<span class="text-sm text-[#D4AF37] font-bold font-khmer-body">និង</span>';
     }
 
     // In Khmer theme: strictly display Khmer name without English
@@ -272,7 +279,7 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       mainConnector = `<span class="inline-block mx-2 text-[#C5A059] font-serif italic text-lg">&</span>`;
     } else if (themeId === 'khmer-traditional') {
-      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-sm">🌸 និង 🌸</span>`;
+      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-base font-khmer-body">និង</span>`;
     }
 
     mainCoupleKhEl.innerHTML = `
@@ -853,7 +860,7 @@ const THEME_DATA_MAP = {
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
     bgColor: '#FAF5E8',
-    emblem: '🌸',
+    emblem: 'romduol',
     sealEmblem: 'romduol'
   },
   'western-modern': {

@@ -52,7 +52,7 @@ const THEME_PRESETS = {
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
     bgColor: '#FAF6ED',
-    emblem: '🌸',
+    emblem: 'romduol',
     sealEmblem: 'romduol'
   },
   'western-modern': {
