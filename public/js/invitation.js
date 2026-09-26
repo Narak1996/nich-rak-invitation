@@ -5,6 +5,13 @@ let currentGuest = null;
 let isAudioPlaying = false;
 const audioPlayer = new Audio();
 
+// Convert Arabic digits (0-9) to authentic Khmer numerals (០-៩)
+function toKhmerNumber(val) {
+  if (val === null || val === undefined) return '';
+  const khmerDigits = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+  return String(val).replace(/[0-9]/g, digit => khmerDigits[parseInt(digit, 10)]);
+}
+
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
   await fetchWeddingData();
@@ -80,14 +87,15 @@ function renderAll() {
   }
 
   // Update top bar theme switcher display
+  // Update top bar theme switcher display
   const themeIconEl = document.getElementById('active-theme-icon');
   if (themeIconEl) {
-    const emblemMap = { 'khmer-traditional': '🪷', 'western-modern': '💍', 'chinese-traditional': '囍' };
-    themeIconEl.textContent = emblemMap[themeId] || '🪷';
+    const emblemMap = { 'khmer-traditional': '🌸', 'western-modern': '💍', 'chinese-traditional': '囍' };
+    themeIconEl.textContent = emblemMap[themeId] || '🌸';
   }
   const themeLabelEl = document.getElementById('active-theme-label');
   if (themeLabelEl) {
-    const labelMap = { 'khmer-traditional': '១. ខ្មែរ', 'western-modern': '២. Modern', 'chinese-traditional': '៣. 囍 ចិន' };
+    const labelMap = { 'khmer-traditional': '១. ផ្ការំដួល', 'western-modern': '២. Modern', 'chinese-traditional': '៣. 囍 ចិន' };
     themeLabelEl.textContent = labelMap[themeId] || 'Theme';
   }
 
@@ -98,7 +106,7 @@ function renderAll() {
   const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
   const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
 
-  // Inject Theme Small Component Emblem (Lotus / Monogram / 囍)
+  // Inject Theme Small Component Emblem (Romduol / Monogram / 囍)
   const heroEmblemEl = document.getElementById('hero-theme-emblem');
   if (heroEmblemEl) {
     if (themeId === 'chinese-traditional') {
@@ -110,12 +118,12 @@ function renderAll() {
         </div>
       `;
     } else {
-      // Default: Khmer Traditional
-      heroEmblemEl.innerHTML = `<img src="/images/components/lotus-ornament.svg" alt="Lotus" class="h-11 filter drop-shadow-xs">`;
+      // Default: Khmer Traditional - Authentic ផ្ការំដួល (Romduol Flower)
+      heroEmblemEl.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="h-16 filter drop-shadow-md transition-transform hover:scale-105">`;
     }
   }
 
-  // Inject Theme Small Component Divider (Angkor / Olive Branch / Auspicious Cloud)
+  // Inject Theme Small Component Divider (Romduol Vine / Botanical Olive / Auspicious Cloud)
   const heroDividerEl = document.getElementById('hero-theme-divider');
   if (heroDividerEl) {
     if (themeId === 'chinese-traditional') {
@@ -135,11 +143,11 @@ function renderAll() {
         </div>
       `;
     } else {
-      // Khmer Traditional
+      // Khmer Traditional - ផ្ការំដួល Divider (No Angkor Wat image or text)
       heroDividerEl.innerHTML = `
-        <div class="flex flex-col items-center gap-1.5 opacity-80">
-          <img src="/images/components/angkor-silhouette.svg" alt="Angkor Wat" class="h-9 text-[#8C1D2F]">
-          <span class="text-[10px] text-[#D4AF37] font-bold tracking-widest uppercase">ប្រាសាទអង្គរវត្ត • សិរីសួស្តីជ័យមង្គល</span>
+        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
+          <img src="/images/components/romduol-divider.svg" alt="ផ្ការំដួល" class="h-7 w-full">
+          <span class="text-[11px] text-[#D4AF37] font-bold tracking-widest font-khmer-body">🌸 សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ 🌸</span>
         </div>
       `;
     }
@@ -153,8 +161,11 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       sealContentEl.innerHTML = `<span class="text-2xl block leading-none">💍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
     } else {
-      // Default: khmer-traditional
-      sealContentEl.innerHTML = `<span class="text-2xl block leading-none">🪷</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+      // Default: Khmer Traditional - ផ្ការំដួល Wax Seal
+      sealContentEl.innerHTML = `
+        <img src="/images/components/romduol-flower.svg" alt="រំដួល" class="w-8 h-8 mx-auto filter drop-shadow-xs">
+        <span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold text-[#FFF2BF]">បើកសំបុត្រ</span>
+      `;
     }
   }
 
@@ -166,7 +177,7 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       heroMotifEl.innerHTML = isKh ? 'TOGETHER WITH THEIR FAMILIES' : 'TOGETHER WITH THEIR FAMILIES';
     } else {
-      heroMotifEl.innerHTML = isKh ? '🪷 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🪷' : '🪷 Traditional Khmer Wedding Celebration 🪷';
+      heroMotifEl.innerHTML = isKh ? '🌸 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🌸' : '🌸 Traditional Khmer Wedding Celebration 🌸';
     }
   }
 
@@ -178,7 +189,7 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       footerStampEl.innerHTML = `<span class="text-xl">💍</span>`;
     } else {
-      footerStampEl.innerHTML = `<span class="text-xl">🪷</span>`;
+      footerStampEl.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="w-7 h-7 mx-auto inline-block">`;
     }
   }
 
@@ -199,7 +210,7 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       monogramEl.innerHTML = `<span class="font-serif text-2xl tracking-widest text-[#1B4332] font-bold">${groomInitial} & ${brideInitial}</span>`;
     } else {
-      monogramEl.textContent = `${groomInitial} & ${brideInitial}`;
+      monogramEl.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="រំដួល" class="w-8 h-8 mx-auto">`;
     }
   }
 
@@ -212,19 +223,20 @@ function renderAll() {
     } else if (themeId === 'chinese-traditional') {
       connectorHtml = '<span class="font-bold text-[#FFD700] text-sm">囍</span>';
     } else if (themeId === 'khmer-traditional') {
-      connectorHtml = '<span class="text-xs">🪷 និង 🪷</span>';
+      connectorHtml = '<span class="text-xs text-[#D4AF37] font-bold">🌸 និង 🌸</span>';
     }
 
-    if (isKh) {
+    // In Khmer theme: strictly display Khmer name without English
+    if (themeId === 'khmer-traditional' || isKh) {
       envelopeCoupleEl.innerHTML = `
         <div class="flex flex-col items-center justify-center">
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
+          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal text-[var(--primary)]">
             ${escapeHTML(w.groom.name_kh)}
           </div>
           <div class="couple-connector my-1">
             ${connectorHtml}
           </div>
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
+          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal text-[var(--primary)]">
             ${escapeHTML(w.bride.name_kh)}
           </div>
         </div>
@@ -260,7 +272,7 @@ function renderAll() {
     } else if (themeId === 'western-modern') {
       mainConnector = `<span class="inline-block mx-2 text-[#C5A059] font-serif italic text-lg">&</span>`;
     } else if (themeId === 'khmer-traditional') {
-      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-sm">🪷 និង 🪷</span>`;
+      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-sm">🌸 និង 🌸</span>`;
     }
 
     mainCoupleKhEl.innerHTML = `
@@ -274,13 +286,20 @@ function renderAll() {
     `;
   }
 
+  // Couple English Name - Completely removed / hidden in Khmer theme
   const mainCoupleEnEl = document.getElementById('main-couple-en');
   if (mainCoupleEnEl) {
-    if (themeId === 'western-modern') {
+    if (themeId === 'khmer-traditional') {
+      mainCoupleEnEl.style.display = 'none';
+      mainCoupleEnEl.textContent = '';
+    } else if (themeId === 'western-modern') {
+      mainCoupleEnEl.style.display = '';
       mainCoupleEnEl.textContent = `${w.groom.name_en.toUpperCase()} & ${w.bride.name_en.toUpperCase()}`;
     } else if (themeId === 'chinese-traditional') {
+      mainCoupleEnEl.style.display = '';
       mainCoupleEnEl.textContent = `${w.groom.name_en} 囍 ${w.bride.name_en}`;
     } else {
+      mainCoupleEnEl.style.display = '';
       mainCoupleEnEl.textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
     }
   }
@@ -320,11 +339,11 @@ function renderAll() {
   if (w.groom.photo) document.getElementById('groom-img').src = w.groom.photo;
   if (w.bride.photo) document.getElementById('bride-img').src = w.bride.photo;
 
-  // Date and Venue
-  document.getElementById('event-date-solar').textContent = isKh ? w.date_solar_kh : w.date_solar_en;
-  document.getElementById('event-date-lunar').textContent = isKh ? w.date_lunar_kh : w.date_lunar_en;
-  document.getElementById('venue-name').textContent = isKh ? w.venue_name_kh : w.venue_name_en;
-  document.getElementById('venue-address').textContent = isKh ? w.venue_address_kh : w.venue_address_en;
+  // Date and Venue with Khmer Numerals
+  document.getElementById('event-date-solar').textContent = isKh ? toKhmerNumber(w.date_solar_kh) : w.date_solar_en;
+  document.getElementById('event-date-lunar').textContent = isKh ? toKhmerNumber(w.date_lunar_kh) : w.date_lunar_en;
+  document.getElementById('venue-name').textContent = isKh ? toKhmerNumber(w.venue_name_kh) : w.venue_name_en;
+  document.getElementById('venue-address').textContent = isKh ? toKhmerNumber(w.venue_address_kh) : w.venue_address_en;
   document.getElementById('btn-google-maps').href = w.map_url;
   document.getElementById('map-iframe').src = w.map_embed;
 
@@ -350,7 +369,7 @@ function renderAll() {
     if (currentGuest.side) document.getElementById('rsvp-side').value = currentGuest.side;
     if (currentGuest.pax_allowed) {
       document.getElementById('rsvp-pax-hint').textContent = isKh 
-        ? `(ចំនួនភ្ញៀវអញ្ជើញចូលរួម: ${currentGuest.pax_allowed} នាក់)`
+        ? `(ចំនួនភ្ញៀវអញ្ជើញចូលរួម: ${toKhmerNumber(currentGuest.pax_allowed)} នាក់)`
         : `(Reserved for: ${currentGuest.pax_allowed} pax)`;
     }
   }
@@ -389,7 +408,7 @@ function renderAgenda() {
       </div>
       <div class="bg-white/80 backdrop-blur-xs p-5 rounded-2xl border border-[#E5D5BC] shadow-xs flex-1 transition hover:shadow-md hover:border-[#C5A059]">
         <div class="inline-block px-3 py-1 bg-[#FAF7F2] text-[#4E3227] text-xs font-bold rounded-full mb-2 border border-[#E5D5BC]">
-          ${item.time}
+          ${isKh ? toKhmerNumber(item.time) : item.time}
         </div>
         <h4 class="text-base font-bold text-[#4E3227] mb-1 font-khmer-title">
           ${isKh ? item.title_kh : item.title_en}
@@ -453,13 +472,13 @@ function renderDigitalGift() {
   // Groom account
   document.getElementById('groom-bank-name').textContent = dg.groom_account.bank_name;
   document.getElementById('groom-acc-name').textContent = dg.groom_account.account_name;
-  document.getElementById('groom-acc-num').textContent = dg.groom_account.account_number;
+  document.getElementById('groom-acc-num').textContent = isKh ? toKhmerNumber(dg.groom_account.account_number) : dg.groom_account.account_number;
   document.getElementById('groom-qr-img').src = dg.groom_account.qr_image;
 
   // Bride account
   document.getElementById('bride-bank-name').textContent = dg.bride_account.bank_name;
   document.getElementById('bride-acc-name').textContent = dg.bride_account.account_name;
-  document.getElementById('bride-acc-num').textContent = dg.bride_account.account_number;
+  document.getElementById('bride-acc-num').textContent = isKh ? toKhmerNumber(dg.bride_account.account_number) : dg.bride_account.account_number;
   document.getElementById('bride-qr-img').src = dg.bride_account.qr_image;
 }
 
@@ -618,11 +637,14 @@ function initCountdown() {
     const now = new Date().getTime();
     const diff = target - now;
 
+    const isKhNumerals = currentLang === 'kh' || (weddingData?.theme?.id === 'khmer-traditional');
+
     if (diff <= 0) {
-      document.getElementById('cd-days').textContent = '00';
-      document.getElementById('cd-hours').textContent = '00';
-      document.getElementById('cd-minutes').textContent = '00';
-      document.getElementById('cd-seconds').textContent = '00';
+      const zeroStr = isKhNumerals ? '០០' : '00';
+      document.getElementById('cd-days').textContent = zeroStr;
+      document.getElementById('cd-hours').textContent = zeroStr;
+      document.getElementById('cd-minutes').textContent = zeroStr;
+      document.getElementById('cd-seconds').textContent = zeroStr;
       return;
     }
 
@@ -631,10 +653,15 @@ function initCountdown() {
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
-    document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
-    document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
-    document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+    const dStr = String(days).padStart(2, '0');
+    const hStr = String(hours).padStart(2, '0');
+    const mStr = String(minutes).padStart(2, '0');
+    const sStr = String(seconds).padStart(2, '0');
+
+    document.getElementById('cd-days').textContent = isKhNumerals ? toKhmerNumber(dStr) : dStr;
+    document.getElementById('cd-hours').textContent = isKhNumerals ? toKhmerNumber(hStr) : hStr;
+    document.getElementById('cd-minutes').textContent = isKhNumerals ? toKhmerNumber(mStr) : mStr;
+    document.getElementById('cd-seconds').textContent = isKhNumerals ? toKhmerNumber(sStr) : sStr;
   }
   update();
   setInterval(update, 1000);
@@ -821,31 +848,31 @@ function updateUITranslations() {
 const THEME_DATA_MAP = {
   'khmer-traditional': {
     id: 'khmer-traditional',
-    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាស)',
+    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្ការំដួល & មាស)',
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
-    bgColor: '#FAF6ED',
-    emblem: '🪷',
-    sealEmblem: 'lotus'
+    bgColor: '#FAF5E8',
+    emblem: '🌸',
+    sealEmblem: 'romduol'
   },
   'western-modern': {
     id: 'western-modern',
-    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - ចិញ្ចៀន & ត្បូងមរកត)',
+    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - ចិញ្ចៀន & Cotton Paper)',
     primaryColor: '#1B4332',
     accentColor: '#C5A059',
     secondaryColor: '#2D6A4F',
-    bgColor: '#F8F9FA',
+    bgColor: '#FAF8F5',
     emblem: '💍',
     sealEmblem: 'rings'
   },
   'chinese-traditional': {
     id: 'chinese-traditional',
     name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ក្រហម)',
-    primaryColor: '#A31621',
-    accentColor: '#D4AF37',
+    primaryColor: '#A81822',
+    accentColor: '#FFD700',
     secondaryColor: '#C72535',
-    bgColor: '#FFF7F7',
+    bgColor: '#7D0A12',
     emblem: '囍',
     sealEmblem: 'shuangxi'
   }

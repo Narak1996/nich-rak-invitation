@@ -54,12 +54,11 @@ body.theme-khmer-traditional {
 body.theme-khmer-traditional.wedding-bg-pattern {
   background-color: #FAF5E8 !important;
   background-image: 
-    radial-gradient(#8C1D2F 0.8px, transparent 0.8px), 
-    radial-gradient(#D4AF37 0.8px, #FAF5E8 0.8px),
-    url('/images/components/angkor-silhouette.svg') !important;
-  background-size: 24px 24px, 24px 24px, 340px auto !important;
-  background-position: 0 0, 12px 12px, center 130px !important;
-  background-repeat: repeat, repeat, no-repeat !important;
+    radial-gradient(#8C1D2F 0.75px, transparent 0.75px), 
+    radial-gradient(#D4AF37 0.75px, #FAF5E8 0.75px) !important;
+  background-size: 24px 24px, 24px 24px !important;
+  background-position: 0 0, 12px 12px !important;
+  background-repeat: repeat, repeat !important;
 }
 
 /* Khmer Typography & Titles */
@@ -70,12 +69,14 @@ body.theme-khmer-traditional #main-wedding-title {
 }
 body.theme-khmer-traditional #main-couple-kh {
   font-family: 'Moul', cursive !important;
+  font-size: 1.6rem !important;
   color: #8C1D2F !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.25rem !important;
+  text-shadow: 0 1px 3px rgba(212, 175, 55, 0.35);
 }
 body.theme-khmer-traditional #main-couple-en {
-  font-family: 'Playfair Display', serif !important;
-  font-style: italic !important;
-  color: #D4AF37 !important;
+  display: none !important; /* Authentic Khmer theme removes English couple name */
 }
 
 /* Khmer Ornate Cards */

@@ -47,13 +47,13 @@ async function loadStats() {
 const THEME_PRESETS = {
   'khmer-traditional': {
     id: 'khmer-traditional',
-    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាស)',
+    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្ការំដួល & មាស)',
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
     bgColor: '#FAF6ED',
-    emblem: '🪷',
-    sealEmblem: 'lotus'
+    emblem: '🌸',
+    sealEmblem: 'romduol'
   },
   'western-modern': {
     id: 'western-modern',

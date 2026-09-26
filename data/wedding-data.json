@@ -1,13 +1,13 @@
 {
   "theme": {
-    "id": "western-modern",
-    "name": "Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - Cotton Paper & Olive)",
-    "primaryColor": "#1B4332",
-    "accentColor": "#C5A059",
-    "secondaryColor": "#2D6A4F",
-    "bgColor": "#FAF8F5",
-    "emblem": "💍",
-    "sealEmblem": "rings"
+    "id": "khmer-traditional",
+    "name": "Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្ការំដួល & មាស)",
+    "primaryColor": "#8C1D2F",
+    "accentColor": "#D4AF37",
+    "secondaryColor": "#B22B42",
+    "bgColor": "#FAF6ED",
+    "emblem": "🌸",
+    "sealEmblem": "romduol"
   },
   "wedding": {
     "title_kh": "សិរីសួស្តី អាពាហ៍ពិពាហ៍",
@@ -125,28 +125,28 @@
   ],
   "gallery": [
     {
-      "id": 1,
-      "url": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-      "caption_kh": "ស្នេហាដ៏ស្រស់បំព្រង",
-      "caption_en": "Forever Love"
+      "id": 1790408400217,
+      "url": "/uploads/upload-1790408399864-517093674.jpg",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
     },
     {
-      "id": 3,
-      "url": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
-      "caption_kh": "កូនកំលោះដ៏សង្ហា",
-      "caption_en": "The Handsome Groom"
+      "id": 1790408400612,
+      "url": "/uploads/upload-1790408400317-630676211.jpg",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
     },
     {
-      "id": 5,
-      "url": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80",
-      "caption_kh": "ដំណើរនៃសេចក្តីស្រឡាញ់",
-      "caption_en": "Journey of Togetherness"
+      "id": 1790408401878,
+      "url": "/uploads/upload-1790408400736-579379164.jpg",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
     },
     {
-      "id": 6,
-      "url": "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80",
-      "caption_kh": "ថ្ងៃដែលយើងជួបគ្នា",
-      "caption_en": "The Day We Said Yes"
+      "id": 1790408401869,
+      "url": "/uploads/upload-1790408401318-846378199.jpg",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
     }
   ],
   "digital_gift": {
