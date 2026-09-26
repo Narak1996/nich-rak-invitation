@@ -149,34 +149,76 @@
         <p class="text-xs text-[#7A6F68] mb-6">កែសម្រួលឈ្មោះកូនកំលោះ-កូនក្រមុំ មាតាបិតា កាលបរិច្ឆេទ ទីតាំង និងស្បែកពណ៌ Theme</p>
 
         <form id="wedding-settings-form" class="space-y-6">
-          <!-- Theme Colors -->
-          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
-            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">ស្បែកពណ៌ (Theme Color)</h3>
-            <div class="flex flex-wrap items-center gap-3">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="preset-color" value="#4E3227" checked class="accent-[#4E3227]">
-                <span class="w-5 h-5 rounded-full bg-[#4E3227] inline-block border border-gray-300"></span>
-                <span class="text-xs font-semibold">Bronze Luxury (#4E3227 - E-Theap)</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="preset-color" value="#C5A059" class="accent-[#C5A059]">
-                <span class="w-5 h-5 rounded-full bg-[#C5A059] inline-block border border-gray-300"></span>
-                <span class="text-xs font-semibold">Royal Gold (#C5A059)</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="preset-color" value="#722F37" class="accent-[#722F37]">
-                <span class="w-5 h-5 rounded-full bg-[#722F37] inline-block border border-gray-300"></span>
-                <span class="text-xs font-semibold">Wine Red (#722F37)</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="preset-color" value="#2D5A27" class="accent-[#2D5A27]">
-                <span class="w-5 h-5 rounded-full bg-[#2D5A27] inline-block border border-gray-300"></span>
-                <span class="text-xs font-semibold">Emerald (#2D5A27)</span>
-              </label>
+          <!-- Theme Selection Cards (Replaces simple color) -->
+          <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider">ជ្រើសរើសរចនាបថសំបុត្រ (Choose Wedding Theme)</h3>
+                <p class="text-[11px] text-[#7A6F68]">ផ្លាស់ប្តូរស្ទីលសំបុត្រទាំងមូល រួមទាំងក្បាច់ ពណ៌ ត្រា និងផ្ទៃខាងក្រោយ</p>
+              </div>
+              <span id="current-theme-badge" class="px-3 py-1 bg-white rounded-full text-xs font-bold text-[#8C1D2F] border border-[#E5D5BC]">
+                Khmer Traditional
+              </span>
             </div>
-            <div class="mt-3 flex items-center gap-3">
-              <span class="text-xs text-[#7A6F68]">Custom Color:</span>
-              <input type="color" id="setting-primary-color" value="#4E3227" class="w-8 h-8 rounded-lg cursor-pointer border border-[#E5D5BC]">
+
+            <input type="hidden" id="selected-theme-id" value="khmer-traditional">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+              <!-- Khmer Traditional -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-sm hover:shadow-md transition relative" data-theme="khmer-traditional">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#8C1D2F] to-[#5A0F1D] flex items-center justify-center text-white mb-2 shadow-inner">
+                  <span class="text-2xl">🪷</span>
+                </div>
+                <h4 class="font-khmer-title text-xs font-bold text-[#8C1D2F]">ប្រពៃណីខ្មែរ</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">Khmer Traditional</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#8C1D2F] inline-block border border-white shadow-2xs" title="Crimson"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#D4AF37] inline-block border border-white shadow-2xs" title="Angkor Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FAF6ED] inline-block border border-gray-300 shadow-2xs" title="Ivory Silk"></span>
+                </div>
+              </div>
+
+              <!-- Western Modern -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="western-modern">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#1B4332] to-[#081C15] flex items-center justify-center text-white mb-2 shadow-inner">
+                  <span class="text-2xl">🌿</span>
+                </div>
+                <h4 class="font-en-title text-xs font-bold text-[#1B4332]">សម័យទំនើប</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">Western Modern Luxury</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#1B4332] inline-block border border-white shadow-2xs" title="Emerald"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#C5A059] inline-block border border-white shadow-2xs" title="Champagne Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#F8F9FA] inline-block border border-gray-300 shadow-2xs" title="Alabaster"></span>
+                </div>
+              </div>
+
+              <!-- Chinese Traditional -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="chinese-traditional">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#A31621] to-[#60080F] flex items-center justify-center text-[#FFD700] mb-2 shadow-inner font-bold text-2xl">
+                  囍
+                </div>
+                <h4 class="font-khmer-title text-xs font-bold text-[#A31621]">ប្រពៃណីចិន (囍)</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">Chinese Traditional</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#A31621] inline-block border border-white shadow-2xs" title="Auspicious Red"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#D4AF37] inline-block border border-white shadow-2xs" title="Imperial Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FFF7F7] inline-block border border-gray-300 shadow-2xs" title="Red Silk"></span>
+                </div>
+              </div>
+
+              <!-- E-Theap Luxury Bronze -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="e-theap-luxury">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#4E3227] to-[#2B1B15] flex items-center justify-center text-white mb-2 shadow-inner">
+                  <span class="text-2xl">👑</span>
+                </div>
+                <h4 class="font-khmer-title text-xs font-bold text-[#4E3227]">Bronze Luxury</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">E-Theap Style</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#4E3227] inline-block border border-white shadow-2xs" title="Bronze"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#C5A059] inline-block border border-white shadow-2xs" title="Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FAF7F2] inline-block border border-gray-300 shadow-2xs" title="Cream"></span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -201,8 +243,14 @@
                 <input type="text" id="groom-mother-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនប្រុស (Photo URL)</label>
-                <input type="text" id="groom-photo" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនប្រុស (Groom Photo)</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" id="groom-photo" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="URL or Upload">
+                  <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
+                    📁 Upload Photo
+                    <input type="file" accept="image/*" onchange="uploadImage(this, 'groom-photo')" class="hidden">
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -228,8 +276,14 @@
                 <input type="text" id="bride-mother-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
               </div>
               <div class="md:col-span-2">
-                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនស្រី (Photo URL)</label>
-                <input type="text" id="bride-photo" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនស្រី (Bride Photo)</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" id="bride-photo" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="URL or Upload">
+                  <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
+                    📁 Upload Photo
+                    <input type="file" accept="image/*" onchange="uploadImage(this, 'bride-photo')" class="hidden">
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -239,8 +293,14 @@
             <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">រូបថតគូស្នេហ៍ & ពាក្យស្លោក</h3>
             <div class="space-y-3">
               <div>
-                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតគូស្នេហ៍ចម្បង (Couple Cover Photo URL)</label>
-                <input type="text" id="couple-photo-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតគូស្នេហ៍ចម្បង (Couple Cover Photo)</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" id="couple-photo-url" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="URL or Upload">
+                  <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
+                    📁 Upload Photo
+                    <input type="file" accept="image/*" onchange="uploadImage(this, 'couple-photo-url')" class="hidden">
+                  </label>
+                </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-[#4E3227] mb-1">ពាក្យស្លោក/សារស្នេហា (ខ្មែរ)</label>
@@ -293,8 +353,15 @@
             <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">តន្ត្រី និង វីដេអូ (Music & Video)</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-[#4E3227] mb-1">តន្ត្រីកំដរ Background Music (MP3 URL)</label>
-                <input type="text" id="music-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">តន្ត្រីកំដរ Background Music (MP3)</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" id="music-url" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="/audio/wedding-music.mp3">
+                  <label class="cursor-pointer px-3 py-2 bg-[#8C1D2F] hover:bg-[#63111E] text-white rounded-xl text-xs font-semibold shadow-2xs whitespace-nowrap flex items-center gap-1">
+                    🎵 Upload MP3
+                    <input type="file" accept="audio/*" onchange="uploadAudio(this, 'music-url')" class="hidden">
+                  </label>
+                </div>
+                <span class="text-[11px] text-[#7A6F68] mt-1 block">បទចម្រៀងបច្ចុប្បន្ន: /audio/wedding-music.mp3 ឬចុច Upload បទផ្ទាល់ខ្លួន</span>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-[#4E3227] mb-1">វីដេអូអនុស្សាវរីយ៍ (YouTube Embed URL)</label>
@@ -332,14 +399,20 @@
     <!-- ================= TAB 4: GALLERY ================= -->
     <section id="tab-gallery" class="tab-content hidden">
       <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <h2 class="font-khmer-title text-lg text-[#4E3227]">កម្រងរូបភាពអនុស្សាវរីយ៍ (Pre-Wedding Photos)</h2>
             <p class="text-xs text-[#7A6F68]">បន្ថែមរូបថត Pre-wedding ដើម្បីបង្ហាញលើទំព័រសំបុត្រ</p>
           </div>
-          <button id="btn-add-gallery-item" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition">
-            + បន្ថែមរូបថតថ្មី
-          </button>
+          <div class="flex items-center gap-2">
+            <label class="cursor-pointer px-4 py-2 bg-[#8C1D2F] hover:bg-[#63111E] text-white text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5 shadow-xs">
+              <span>📷 ជ្រើសរើសរូបថត Upload</span>
+              <input type="file" accept="image/*" multiple onchange="uploadGalleryFiles(this)" class="hidden">
+            </label>
+            <button id="btn-add-gallery-item" class="px-3 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition">
+              + URL
+            </button>
+          </div>
         </div>
 
         <div id="admin-gallery-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -373,8 +446,14 @@
                   <input type="text" id="dg-groom-acc" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Path)</label>
-                  <input type="text" id="dg-groom-qr" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Upload)</label>
+                  <div class="flex items-center gap-2">
+                    <input type="text" id="dg-groom-qr" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                    <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
+                      📷 Upload QR
+                      <input type="file" accept="image/*" onchange="uploadImage(this, 'dg-groom-qr')" class="hidden">
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -396,8 +475,14 @@
                   <input type="text" id="dg-bride-acc" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Path)</label>
-                  <input type="text" id="dg-bride-qr" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Upload)</label>
+                  <div class="flex items-center gap-2">
+                    <input type="text" id="dg-bride-qr" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                    <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
+                      📷 Upload QR
+                      <input type="file" accept="image/*" onchange="uploadImage(this, 'dg-bride-qr')" class="hidden">
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

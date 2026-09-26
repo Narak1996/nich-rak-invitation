@@ -20,10 +20,10 @@ async function fetchWeddingData() {
   try {
     const res = await fetch('/api/wedding');
     weddingData = await res.json();
-    if (weddingData.wedding && weddingData.wedding.music_url) {
-      audioPlayer.src = weddingData.wedding.music_url;
-      audioPlayer.loop = true;
-    }
+    const musicUrl = (weddingData.wedding && weddingData.wedding.music_url) || '/audio/wedding-music.mp3';
+    audioPlayer.src = musicUrl;
+    audioPlayer.loop = true;
+    audioPlayer.preload = 'auto';
   } catch (err) {
     console.error('Failed to load wedding data:', err);
   }
@@ -70,10 +70,27 @@ function renderAll() {
   if (!weddingData) return;
   const w = weddingData.wedding;
 
-  // Set Theme Colors
+  // Set Theme Class on Body
+  const themeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId}`;
+
   if (weddingData.theme) {
-    document.documentElement.style.setProperty('--primary', weddingData.theme.primaryColor || '#4E3227');
-    document.documentElement.style.setProperty('--accent', weddingData.theme.accentColor || '#C5A059');
+    document.documentElement.style.setProperty('--primary', weddingData.theme.primaryColor || '#8C1D2F');
+    document.documentElement.style.setProperty('--accent', weddingData.theme.accentColor || '#D4AF37');
+  }
+
+  // Update wax seal emblem icon based on theme
+  const sealContentEl = document.getElementById('wax-seal-content');
+  if (sealContentEl) {
+    if (themeId === 'chinese-traditional') {
+      sealContentEl.innerHTML = `<span class="text-3xl text-[#FFE866] font-bold block leading-none drop-shadow-md">囍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+    } else if (themeId === 'khmer-traditional') {
+      sealContentEl.innerHTML = `<span class="text-2xl block leading-none">🪷</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+    } else if (themeId === 'western-modern') {
+      sealContentEl.innerHTML = `<span class="text-2xl block leading-none">💍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+    } else {
+      sealContentEl.innerHTML = `<svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold">OPEN</span>`;
+    }
   }
 
   // Language based text rendering

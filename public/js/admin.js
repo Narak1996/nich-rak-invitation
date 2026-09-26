@@ -44,6 +44,57 @@ async function loadStats() {
   }
 }
 
+const THEME_PRESETS = {
+  'khmer-traditional': {
+    id: 'khmer-traditional',
+    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ)',
+    primaryColor: '#8C1D2F',
+    accentColor: '#D4AF37',
+    secondaryColor: '#B22B42',
+    bgColor: '#FAF6ED',
+    cardBg: '#FFFFFF',
+    sealEmblem: 'lotus',
+    fontHeading: "'Moul', 'Moulpali', cursive",
+    fontBody: "'Kantumruy Pro', 'Siemreap', sans-serif"
+  },
+  'western-modern': {
+    id: 'western-modern',
+    name: 'Western Modern (រចនាបថបស្ចិមប្រទេស)',
+    primaryColor: '#1B4332',
+    accentColor: '#C5A059',
+    secondaryColor: '#2D6A4F',
+    bgColor: '#F8F9FA',
+    cardBg: '#FFFFFF',
+    sealEmblem: 'initials',
+    fontHeading: "'Cinzel', 'Playfair Display', serif",
+    fontBody: "'Kantumruy Pro', 'Poppins', sans-serif"
+  },
+  'chinese-traditional': {
+    id: 'chinese-traditional',
+    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន)',
+    primaryColor: '#A31621',
+    accentColor: '#D4AF37',
+    secondaryColor: '#C72535',
+    bgColor: '#FFF7F7',
+    cardBg: '#FFFFFF',
+    sealEmblem: 'shuangxi',
+    fontHeading: "'Moul', 'Cinzel', serif",
+    fontBody: "'Kantumruy Pro', 'Siemreap', sans-serif"
+  },
+  'e-theap-luxury': {
+    id: 'e-theap-luxury',
+    name: 'E-Theap Bronze Luxury',
+    primaryColor: '#4E3227',
+    accentColor: '#C5A059',
+    secondaryColor: '#6E4939',
+    bgColor: '#FAF7F2',
+    cardBg: '#FFFFFF',
+    sealEmblem: 'mail',
+    fontHeading: "'Moul', 'Playfair Display', serif",
+    fontBody: "'Kantumruy Pro', 'Poppins', sans-serif"
+  }
+};
+
 // Load wedding details & populate form
 async function loadWeddingData() {
   try {
@@ -54,10 +105,10 @@ async function loadWeddingData() {
     // Header couple
     document.getElementById('header-couple-sub').textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
 
-    // Theme color
-    if (weddingData.theme && weddingData.theme.primaryColor) {
-      document.getElementById('setting-primary-color').value = weddingData.theme.primaryColor;
-    }
+    // Theme preset
+    const currentThemeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+    document.getElementById('selected-theme-id').value = currentThemeId;
+    updateThemeSelectionUI(currentThemeId);
 
     // Groom
     document.getElementById('groom-name-kh').value = w.groom.name_kh || '';
@@ -305,14 +356,24 @@ function initFormListeners() {
   document.getElementById('guest-filter-status').addEventListener('change', renderGuestsTable);
   document.getElementById('guest-filter-side').addEventListener('change', renderGuestsTable);
 
+  // Theme cards click
+  document.querySelectorAll('.theme-select-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const themeId = card.getAttribute('data-theme');
+      document.getElementById('selected-theme-id').value = themeId;
+      updateThemeSelectionUI(themeId);
+    });
+  });
+
   // Wedding settings save
   document.getElementById('wedding-settings-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const selThemeId = document.getElementById('selected-theme-id').value || 'khmer-traditional';
+    const themeObj = THEME_PRESETS[selThemeId] || THEME_PRESETS['khmer-traditional'];
     const updated = {
       ...weddingData,
       theme: {
-        ...weddingData.theme,
-        primaryColor: document.getElementById('setting-primary-color').value
+        ...themeObj
       },
       wedding: {
         ...weddingData.wedding,
@@ -730,4 +791,44 @@ window.uploadGalleryFiles = async function(fileInput) {
 
   showToast('បាន Upload រូបថតចូលកម្រងរូបភាពជោគជ័យ!');
   loadWeddingData();
+};
+
+function updateThemeSelectionUI(themeId) {
+  document.querySelectorAll('.theme-select-card').forEach(c => {
+    if (c.getAttribute('data-theme') === themeId) {
+      c.classList.add('border-[#D4AF37]', 'ring-2', 'ring-[#D4AF37]/50');
+      c.classList.remove('border-gray-200');
+    } else {
+      c.classList.remove('border-[#D4AF37]', 'ring-2', 'ring-[#D4AF37]/50');
+      c.classList.add('border-gray-200');
+    }
+  });
+  const themeObj = THEME_PRESETS[themeId] || THEME_PRESETS['khmer-traditional'];
+  const badge = document.getElementById('current-theme-badge');
+  if (badge) badge.textContent = themeObj.name;
+}
+
+window.uploadAudio = async function(fileInput, targetInputId) {
+  if (!fileInput.files || !fileInput.files[0]) return;
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+
+  showToast('កំពុង Upload បទចម្រៀង MP3... (Uploading audio...)');
+
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (res.ok && data.url) {
+      document.getElementById(targetInputId).value = data.url;
+      showToast('Upload បទចម្រៀង MP3 ជោគជ័យ! (Audio uploaded)');
+    } else {
+      showToast(data.error || 'Audio upload failed');
+    }
+  } catch (e) {
+    showToast('Failed to upload audio');
+  }
 };
