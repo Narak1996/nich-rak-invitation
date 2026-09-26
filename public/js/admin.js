@@ -47,51 +47,35 @@ async function loadStats() {
 const THEME_PRESETS = {
   'khmer-traditional': {
     id: 'khmer-traditional',
-    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ)',
+    name: 'Khmer Traditional Colors (ក្រហមប្រពៃណី & មាស)',
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
-    bgColor: '#FAF6ED',
-    cardBg: '#FFFFFF',
-    sealEmblem: 'lotus',
-    fontHeading: "'Moul', 'Moulpali', cursive",
-    fontBody: "'Kantumruy Pro', 'Siemreap', sans-serif"
+    bgColor: '#FAF6ED'
   },
   'western-modern': {
     id: 'western-modern',
-    name: 'Western Modern (រចនាបថបស្ចិមប្រទេស)',
+    name: 'Western Emerald Colors (បៃតងត្បូងមរកត & មាសស្រាល)',
     primaryColor: '#1B4332',
     accentColor: '#C5A059',
     secondaryColor: '#2D6A4F',
-    bgColor: '#F8F9FA',
-    cardBg: '#FFFFFF',
-    sealEmblem: 'initials',
-    fontHeading: "'Cinzel', 'Playfair Display', serif",
-    fontBody: "'Kantumruy Pro', 'Poppins', sans-serif"
+    bgColor: '#F8F9FA'
   },
   'chinese-traditional': {
     id: 'chinese-traditional',
-    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន)',
+    name: 'Chinese Auspicious Red Colors (ក្រហមមង្គល & មាស)',
     primaryColor: '#A31621',
     accentColor: '#D4AF37',
     secondaryColor: '#C72535',
-    bgColor: '#FFF7F7',
-    cardBg: '#FFFFFF',
-    sealEmblem: 'shuangxi',
-    fontHeading: "'Moul', 'Cinzel', serif",
-    fontBody: "'Kantumruy Pro', 'Siemreap', sans-serif"
+    bgColor: '#FFF7F7'
   },
   'e-theap-luxury': {
     id: 'e-theap-luxury',
-    name: 'E-Theap Bronze Luxury',
+    name: 'E-Theap Bronze Luxury Colors (ត្នោតប្រណិត & មាស)',
     primaryColor: '#4E3227',
     accentColor: '#C5A059',
     secondaryColor: '#6E4939',
-    bgColor: '#FAF7F2',
-    cardBg: '#FFFFFF',
-    sealEmblem: 'mail',
-    fontHeading: "'Moul', 'Playfair Display', serif",
-    fontBody: "'Kantumruy Pro', 'Poppins', sans-serif"
+    bgColor: '#FAF7F2'
   }
 };
 
@@ -268,6 +252,35 @@ function renderGuestsTable() {
   });
 }
 
+// Open Add Agenda Modal
+window.openAddAgendaModal = function() {
+  document.getElementById('form-save-agenda').reset();
+  document.getElementById('modal-agenda-id').value = '';
+  document.getElementById('modal-agenda-index').value = '-1';
+  document.getElementById('modal-agenda-title').textContent = 'បន្ថែមកម្មវិធីមង្គលការ (Add Agenda)';
+  document.getElementById('modal-agenda-time').value = '07:00 AM';
+  document.getElementById('modal-agenda-period').value = 'morning';
+  document.getElementById('modal-agenda').classList.add('active');
+};
+
+// Open Edit Agenda Modal
+window.openEditAgendaModal = function(idx) {
+  const item = weddingData.agenda[idx];
+  if (!item) return;
+  document.getElementById('modal-agenda-id').value = item.id || '';
+  document.getElementById('modal-agenda-index').value = idx;
+  document.getElementById('modal-agenda-title').textContent = 'កែប្រែកម្មវិធីមង្គលការ (Edit Agenda)';
+  document.getElementById('modal-agenda-time').value = item.time || '';
+  document.getElementById('modal-agenda-period').value = item.period || 'morning';
+  document.getElementById('modal-agenda-title-kh').value = item.title_kh || '';
+  document.getElementById('modal-agenda-title-en').value = item.title_en || '';
+  document.getElementById('modal-agenda-desc-kh').value = item.desc_kh || '';
+  document.getElementById('modal-agenda-desc-en').value = item.desc_en || '';
+  document.getElementById('modal-agenda-location-kh').value = item.location_kh || '';
+  document.getElementById('modal-agenda-icon').value = item.icon || 'gift';
+  document.getElementById('modal-agenda').classList.add('active');
+};
+
 // Render Agenda in Admin
 function renderAdminAgenda() {
   const container = document.getElementById('admin-agenda-list');
@@ -283,13 +296,18 @@ function renderAdminAgenda() {
         <span class="px-3 py-1 bg-white font-mono text-xs font-bold text-[#4E3227] rounded-full border border-[#E5D5BC]">${item.time}</span>
         <span class="px-2.5 py-0.5 bg-amber-50 text-amber-800 text-[10px] font-bold rounded-full border border-amber-200">${periodLabel}</span>
         <div>
-          <h4 class="font-bold text-xs text-[#4E3227]">${item.title_kh} (${item.title_en})</h4>
-          <p class="text-[11px] text-[#7A6F68]">${item.desc_kh} ${item.location_kh ? `• 📍 ${item.location_kh}` : ''}</p>
+          <h4 class="font-bold text-xs text-[#4E3227]">${escapeHTML(item.title_kh)} <span class="text-[#7A6F68] font-normal">(${escapeHTML(item.title_en || '')})</span></h4>
+          <p class="text-[11px] text-[#7A6F68] mt-0.5">${escapeHTML(item.desc_kh || '')} ${item.location_kh ? `• 📍 ${escapeHTML(item.location_kh)}` : ''}</p>
         </div>
       </div>
-      <button onclick="deleteAgendaItem(${index})" class="text-gray-400 hover:text-red-600 p-1" title="Delete">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-      </button>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="openEditAgendaModal(${index})" class="p-1.5 rounded-lg bg-white hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] transition cursor-pointer" title="កែប្រែ (Edit)">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        </button>
+        <button onclick="deleteAgendaItem(${index})" class="p-1.5 rounded-lg bg-white hover:bg-red-50 text-red-600 border border-red-200 transition cursor-pointer" title="លុប (Delete)">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
     `;
     container.appendChild(el);
   });
@@ -523,33 +541,57 @@ function initFormListeners() {
     });
   });
 
-  // Add agenda item button
-  document.getElementById('btn-add-agenda-item').addEventListener('click', async () => {
-    const time = prompt('ម៉ោងកម្មវិធី (Time, e.g. 07:00 AM):', '07:00 AM');
-    if (!time) return;
-    const title_kh = prompt('ឈ្មោះកម្មវិធី (Khmer title):', 'ពិធីសំពះផ្ទឹម');
-    if (!title_kh) return;
-    const title_en = prompt('English Title:', 'Ceremony') || title_kh;
-    const desc_kh = prompt('ពិពណ៌នាសង្ខេប (Description KH):', 'ជួបជុំភ្ញៀវកិត្តិយស') || '';
-
-    const newAgenda = [...(weddingData.agenda || []), {
-      id: Date.now(),
-      time,
-      title_kh,
-      title_en,
-      desc_kh,
-      desc_en: desc_kh,
-      icon: 'ring'
-    }];
-
-    await fetch('/api/wedding', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...weddingData, agenda: newAgenda })
+  // Add agenda item button - opens modal
+  const btnAddAgenda = document.getElementById('btn-add-agenda-item');
+  if (btnAddAgenda) {
+    btnAddAgenda.addEventListener('click', () => {
+      openAddAgendaModal();
     });
-    showToast('បានបន្ថែមកម្មវិធីជោគជ័យ!');
-    loadWeddingData();
-  });
+  }
+
+  // Save Agenda Form in Modal
+  const formSaveAgenda = document.getElementById('form-save-agenda');
+  if (formSaveAgenda) {
+    formSaveAgenda.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const idx = parseInt(document.getElementById('modal-agenda-index').value, 10);
+      const existingId = document.getElementById('modal-agenda-id').value;
+
+      const itemData = {
+        id: existingId ? Number(existingId) : Date.now(),
+        time: document.getElementById('modal-agenda-time').value.trim(),
+        period: document.getElementById('modal-agenda-period').value,
+        title_kh: document.getElementById('modal-agenda-title-kh').value.trim(),
+        title_en: document.getElementById('modal-agenda-title-en').value.trim(),
+        desc_kh: document.getElementById('modal-agenda-desc-kh').value.trim(),
+        desc_en: document.getElementById('modal-agenda-desc-en').value.trim(),
+        location_kh: document.getElementById('modal-agenda-location-kh').value.trim(),
+        location_en: document.getElementById('modal-agenda-location-kh').value.trim(),
+        icon: document.getElementById('modal-agenda-icon').value
+      };
+
+      const newAgenda = [...(weddingData.agenda || [])];
+      if (idx >= 0 && idx < newAgenda.length) {
+        newAgenda[idx] = itemData;
+      } else {
+        newAgenda.push(itemData);
+      }
+
+      const res = await fetch('/api/wedding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...weddingData, agenda: newAgenda })
+      });
+
+      if (res.ok) {
+        closeModals();
+        showToast(idx >= 0 ? 'បានកែប្រែកម្មវិធីជោគជ័យ!' : 'បានបន្ថែមកម្មវិធីជោគជ័យ!');
+        loadWeddingData();
+      } else {
+        showToast('បរាជ័យក្នុងការរក្សាទុក');
+      }
+    });
+  }
 
   // Add gallery item button
   document.getElementById('btn-add-gallery-item').addEventListener('click', async () => {

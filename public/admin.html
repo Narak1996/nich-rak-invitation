@@ -602,6 +602,79 @@
         </button>
       </form>
     </div>
+  <!-- ================= ADD / EDIT AGENDA MODAL ================= -->
+  <div id="modal-agenda" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full border border-[#E5D5BC] shadow-2xl relative text-left">
+      <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg cursor-pointer">✕</button>
+      <h3 class="font-khmer-title text-base text-[#4E3227] mb-1" id="modal-agenda-title">បន្ថែមកម្មវិធីមង្គលការ (Add Agenda)</h3>
+      <p class="text-xs text-[#7A6F68] mb-4">កំណត់ពេលវេលា ឈ្មោះពិធី និងការពិពណ៌នា</p>
+
+      <form id="form-save-agenda" class="space-y-3 text-xs">
+        <input type="hidden" id="modal-agenda-id">
+        <input type="hidden" id="modal-agenda-index" value="-1">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ម៉ោងកម្មវិធី (Time) *</label>
+            <input type="text" id="modal-agenda-time" required placeholder="ឧ. 07:00 AM" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">វេន (Period)</label>
+            <select id="modal-agenda-period" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+              <option value="morning">☀️ ពេលព្រឹក (Morning)</option>
+              <option value="evening">🌙 ពេលល្ងាច (Evening)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះកម្មវិធី (ខ្មែរ) *</label>
+          <input type="text" id="modal-agenda-title-kh" required placeholder="ឧ. ពិធីសំពះផ្ទឹម ចងដៃ និងបង្វិលពពិល" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះកម្មវិធី (English)</label>
+          <input type="text" id="modal-agenda-title-en" placeholder="e.g. Sacred Wrist-Tying Ceremony" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ពិពណ៌នាពិធី (Khmer Description)</label>
+          <textarea id="modal-agenda-desc-kh" rows="2" placeholder="ពិធីចងអំបោះក្រហម ប្រោះព្រំទឹកមន្ត និងប្រសិទ្ធពរជ័យ..." class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ពិពណ៌នា (English Description)</label>
+          <textarea id="modal-agenda-desc-en" rows="2" placeholder="Passing of the candle blessing ceremony..." class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ទីតាំង (Location)</label>
+            <input type="text" id="modal-agenda-location-kh" placeholder="ឧ. គេហដ្ឋានមង្គលខាងស្រី" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">រូបតំណាង (Icon)</label>
+            <select id="modal-agenda-icon" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+              <option value="gift">🎁 ជំនូន / កាដូ (Gift)</option>
+              <option value="hands-praying">🙏 សំពះ / ព្រះសង្ឃ (Prayer / Blessings)</option>
+              <option value="scissors">✂️ កាត់សក់ (Hair Cutting)</option>
+              <option value="ring">💍 សំពះផ្ទឹម / ចិញ្ចៀន (Ring / Tying)</option>
+              <option value="camera">📸 ទទួលភ្ញៀវ / ថតរូប (Photo)</option>
+              <option value="utensils">🍽️ ភោជនាហារ / ជប់លៀង (Banquet)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" class="modal-close flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#4E3227] font-bold rounded-xl transition">
+            បោះបង់ (Cancel)
+          </button>
+          <button type="submit" class="flex-1 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition shadow-xs">
+            រក្សាទុក (Save Program)
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ================= PRINT QR CODE MODAL ================= -->
