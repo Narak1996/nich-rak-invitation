@@ -107,6 +107,9 @@ function renderAll() {
     themeLabelEl.textContent = labelMap[themeId] || 'Theme';
   }
 
+  // Update top bar panel style toggle display
+  updatePanelStyleToggleBtn(panelStyle);
+
   // Language based text rendering
   const isKh = currentLang === 'kh';
 
@@ -909,12 +912,52 @@ window.switchThemeLive = async function(themeId) {
 
   // Persist to server
   try {
-    await fetch('/api/wedding', {
-      method: 'PUT',
+    await fetch('/api/wedding/quick-style', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(weddingData)
+      body: JSON.stringify({ theme: weddingData.theme })
     });
   } catch (err) {
     console.error('Failed to auto-save theme:', err);
   }
 };
+
+window.togglePanelStyleLive = async function() {
+  if (!weddingData || !weddingData.wedding) return;
+  const current = weddingData.wedding.panel_style === 'solid' ? 'solid' : 'glass';
+  const next = current === 'solid' ? 'glass' : 'solid';
+  weddingData.wedding.panel_style = next;
+
+  // Update body class dynamically
+  const themeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId} panel-style-${next}`;
+
+  updatePanelStyleToggleBtn(next);
+  showToast(next === 'glass' ? '🪟 បានប្តូរទៅ៖ Glass Style (បែបកញ្ចក់ថ្លា)' : '📜 បានប្តូរទៅ៖ Solid Style (បែបក្រដាសស្រួយ)');
+
+  // Persist to backend
+  try {
+    await fetch('/api/wedding/quick-style', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ panel_style: next })
+    });
+  } catch (err) {
+    console.error('Failed to auto-save panel style:', err);
+  }
+};
+
+function updatePanelStyleToggleBtn(style) {
+  const iconEl = document.getElementById('panel-style-icon');
+  const labelEl = document.getElementById('panel-style-label');
+  const btnEl = document.getElementById('panel-style-toggle-btn');
+  if (style === 'solid') {
+    if (iconEl) iconEl.textContent = '📜';
+    if (labelEl) labelEl.textContent = 'Solid';
+    if (btnEl) btnEl.title = 'បច្ចុប្បន្ន: Solid Style (ចុចដើម្បីប្តូរទៅ Glass)';
+  } else {
+    if (iconEl) iconEl.textContent = '🪟';
+    if (labelEl) labelEl.textContent = 'Glass';
+    if (btnEl) btnEl.title = 'បច្ចុប្បន្ន: Glass Style (ចុចដើម្បីប្តូរទៅ Solid)';
+  }
+}
