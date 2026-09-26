@@ -47,35 +47,43 @@ async function loadStats() {
 const THEME_PRESETS = {
   'khmer-traditional': {
     id: 'khmer-traditional',
-    name: 'Khmer Traditional Colors (ក្រហមប្រពៃណី & មាស)',
+    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាស)',
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
-    bgColor: '#FAF6ED'
+    bgColor: '#FAF6ED',
+    emblem: '🪷',
+    sealEmblem: 'lotus'
   },
   'western-modern': {
     id: 'western-modern',
-    name: 'Western Emerald Colors (បៃតងត្បូងមរកត & មាសស្រាល)',
+    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - ចិញ្ចៀន & ត្បូងមរកត)',
     primaryColor: '#1B4332',
     accentColor: '#C5A059',
     secondaryColor: '#2D6A4F',
-    bgColor: '#F8F9FA'
+    bgColor: '#F8F9FA',
+    emblem: '💍',
+    sealEmblem: 'rings'
   },
   'chinese-traditional': {
     id: 'chinese-traditional',
-    name: 'Chinese Auspicious Red Colors (ក្រហមមង្គល & មាស)',
+    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ក្រហម)',
     primaryColor: '#A31621',
     accentColor: '#D4AF37',
     secondaryColor: '#C72535',
-    bgColor: '#FFF7F7'
+    bgColor: '#FFF7F7',
+    emblem: '囍',
+    sealEmblem: 'shuangxi'
   },
   'e-theap-luxury': {
     id: 'e-theap-luxury',
-    name: 'E-Theap Bronze Luxury Colors (ត្នោតប្រណិត & មាស)',
+    name: 'E-Theap Bronze Luxury (រចនាបថ Bronze E-Theap)',
     primaryColor: '#4E3227',
     accentColor: '#C5A059',
     secondaryColor: '#6E4939',
-    bgColor: '#FAF7F2'
+    bgColor: '#FAF7F2',
+    emblem: '👑',
+    sealEmblem: 'crown'
   }
 };
 

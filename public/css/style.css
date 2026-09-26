@@ -45,7 +45,9 @@ body {
 }
 
 /* ================= THEME PRESETS ================= */
-/* 1. Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ) */
+/* ================= THEME PRESETS (ENTIRE INVITATION TRANSFORMATION) ================= */
+
+/* 1. KHMER TRADITIONAL (រចនាបថប្រពៃណីខ្មែរ) */
 body.theme-khmer-traditional {
   --primary: #8C1D2F;
   --primary-light: #B22B42;
@@ -56,19 +58,51 @@ body.theme-khmer-traditional {
   --bg-cream: #FAF6ED;
   --border-gold: #E8D3A7;
 }
+body.theme-khmer-traditional.wedding-bg-pattern {
+  background-color: #FAF6ED;
+  background-image: 
+    radial-gradient(#8C1D2F 0.7px, transparent 0.7px), 
+    radial-gradient(#D4AF37 0.7px, #FAF6ED 0.7px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
 body.theme-khmer-traditional #envelope-screen {
-  background: radial-gradient(circle at center, #9E263B 0%, #520F1B 100%);
+  background: radial-gradient(circle at center, #9E263B 0%, #4D0914 100%);
 }
 body.theme-khmer-traditional .envelope-card {
-  border-color: #D4AF37;
+  background: #FFFFFF;
+  border: 2px solid #D4AF37;
   box-shadow: 0 25px 60px rgba(140, 29, 47, 0.4), 0 0 0 2px rgba(212, 175, 55, 0.4);
 }
 body.theme-khmer-traditional .wax-seal-btn {
   background: radial-gradient(circle at 35% 35%, #F5D77F 0%, #D4AF37 70%, #997300 100%);
   border-color: #FFF3D4;
+  box-shadow: 0 6px 20px rgba(140, 29, 47, 0.4);
+}
+body.theme-khmer-traditional .floating-music-btn {
+  background: linear-gradient(135deg, #8C1D2F 0%, #D4AF37 100%);
+  border-color: #F5D77F;
+  box-shadow: 0 4px 20px rgba(140, 29, 47, 0.4);
+}
+body.theme-khmer-traditional .ornate-border-box {
+  background: #FFFFFF;
+  border: 1px solid #E8D3A7;
+  box-shadow: 0 10px 30px rgba(140, 29, 47, 0.05);
+}
+body.theme-khmer-traditional .ornate-border-box::before {
+  border: 1px dashed rgba(212, 175, 55, 0.45);
+}
+body.theme-khmer-traditional .khmer-corner-tl,
+body.theme-khmer-traditional .khmer-corner-tr,
+body.theme-khmer-traditional .khmer-corner-bl,
+body.theme-khmer-traditional .khmer-corner-br {
+  border-color: #D4AF37;
+  width: 26px;
+  height: 26px;
+  border-width: 2px;
 }
 
-/* 2. Western Modern (រចនាបថបស្ចិមប្រទេស / សម័យទំនើប) */
+/* 2. WESTERN MODERN LUXURY (រចនាបថបស្ចិមប្រទេស / សម័យទំនើប) */
 body.theme-western-modern {
   --primary: #1B4332;
   --primary-light: #2D6A4F;
@@ -79,18 +113,63 @@ body.theme-western-modern {
   --bg-cream: #F8F9FA;
   --border-gold: #DDE3DE;
 }
+body.theme-western-modern.wedding-bg-pattern {
+  background-color: #F8F9FA;
+  background-image: 
+    radial-gradient(#1B4332 0.5px, transparent 0.5px), 
+    radial-gradient(#C5A059 0.5px, #F8F9FA 0.5px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
 body.theme-western-modern #envelope-screen {
-  background: radial-gradient(circle at center, #2D6A4F 0%, #0D2818 100%);
+  background: radial-gradient(circle at center, #245A42 0%, #081C15 100%);
 }
 body.theme-western-modern .envelope-card {
-  border-color: #C5A059;
-  box-shadow: 0 25px 60px rgba(27, 67, 50, 0.4), 0 0 0 1px rgba(197, 160, 89, 0.4);
+  background: #FFFFFF;
+  border: 1px solid #C5A059;
+  border-radius: 28px;
+  box-shadow: 0 25px 60px rgba(27, 67, 50, 0.35), 0 0 0 1px rgba(197, 160, 89, 0.4);
 }
 body.theme-western-modern .wax-seal-btn {
   background: radial-gradient(circle at 35% 35%, #E5C384 0%, #C5A059 70%, #8C6239 100%);
+  border-color: #FFF2D6;
+  box-shadow: 0 6px 20px rgba(27, 67, 50, 0.35);
+}
+body.theme-western-modern .floating-music-btn {
+  background: linear-gradient(135deg, #1B4332 0%, #C5A059 100%);
+  border-color: #E5C384;
+  box-shadow: 0 4px 20px rgba(27, 67, 50, 0.35);
+}
+body.theme-western-modern .ornate-border-box {
+  background: #FFFFFF;
+  border-radius: 24px;
+  border: 1px solid #DDE3DE;
+  box-shadow: 0 12px 35px rgba(27, 67, 50, 0.05);
+}
+body.theme-western-modern .ornate-border-box::before {
+  display: none; /* Modern clean without dashed border */
+}
+body.theme-western-modern .khmer-corner-tl,
+body.theme-western-modern .khmer-corner-tr,
+body.theme-western-modern .khmer-corner-bl,
+body.theme-western-modern .khmer-corner-br {
+  border-color: #C5A059;
+  width: 18px;
+  height: 18px;
+  border-width: 1.5px;
+  border-radius: 4px;
+}
+body.theme-western-modern .countdown-box {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(27, 67, 50, 0.04);
+}
+body.theme-western-modern .countdown-box span:first-child {
+  color: #1B4332;
 }
 
-/* 3. Chinese Traditional (រចនាបថប្រពៃណីចិន / 囍) */
+/* 3. CHINESE TRADITIONAL (រចនាបថប្រពៃណីចិន / 囍) */
 body.theme-chinese-traditional {
   --primary: #A31621;
   --primary-light: #C72535;
@@ -101,20 +180,59 @@ body.theme-chinese-traditional {
   --bg-cream: #FFF7F7;
   --border-gold: #F7D070;
 }
+body.theme-chinese-traditional.wedding-bg-pattern {
+  background-color: #FFF7F7;
+  background-image: 
+    radial-gradient(#A31621 0.8px, transparent 0.8px), 
+    radial-gradient(#D4AF37 0.8px, #FFF7F7 0.8px);
+  background-size: 22px 22px;
+  background-position: 0 0, 11px 11px;
+}
 body.theme-chinese-traditional #envelope-screen {
   background: radial-gradient(circle at center, #C72535 0%, #680C14 100%);
 }
 body.theme-chinese-traditional .envelope-card {
-  border-color: #D4AF37;
   background: #FFFDF9;
+  border: 2px solid #D4AF37;
   box-shadow: 0 25px 60px rgba(163, 22, 33, 0.45), 0 0 0 2px rgba(212, 175, 55, 0.5);
 }
 body.theme-chinese-traditional .wax-seal-btn {
   background: radial-gradient(circle at 35% 35%, #FFE066 0%, #D4AF37 70%, #B8860B 100%);
   border-color: #FFF9C4;
+  box-shadow: 0 6px 22px rgba(163, 22, 33, 0.45);
+}
+body.theme-chinese-traditional .floating-music-btn {
+  background: linear-gradient(135deg, #A31621 0%, #D4AF37 100%);
+  border-color: #FFE066;
+  box-shadow: 0 4px 20px rgba(163, 22, 33, 0.45);
+}
+body.theme-chinese-traditional .ornate-border-box {
+  background: #FFFFFF;
+  border: 2px solid #D4AF37;
+  box-shadow: 0 12px 35px rgba(163, 22, 33, 0.08);
+}
+body.theme-chinese-traditional .ornate-border-box::before {
+  border: 1px solid rgba(163, 22, 33, 0.25);
+}
+body.theme-chinese-traditional .khmer-corner-tl,
+body.theme-chinese-traditional .khmer-corner-tr,
+body.theme-chinese-traditional .khmer-corner-bl,
+body.theme-chinese-traditional .khmer-corner-br {
+  border-color: #A31621;
+  width: 24px;
+  height: 24px;
+  border-width: 2.5px;
+}
+body.theme-chinese-traditional .countdown-box {
+  background: #FFFBF9;
+  border: 1px solid #F7D070;
+  box-shadow: 0 6px 16px rgba(163, 22, 33, 0.05);
+}
+body.theme-chinese-traditional .countdown-box span:first-child {
+  color: #A31621;
 }
 
-/* 4. E-Theap Luxury Bronze (រចនាបថ Bronze E-Theap) */
+/* 4. E-THEAP LUXURY BRONZE (រចនាបថ Bronze E-Theap) */
 body.theme-e-theap-luxury {
   --primary: #4E3227;
   --primary-light: #6E4939;
@@ -124,6 +242,49 @@ body.theme-e-theap-luxury {
   --accent-dark: #9F7B37;
   --bg-cream: #FAF7F2;
   --border-gold: #E5D5BC;
+}
+body.theme-e-theap-luxury.wedding-bg-pattern {
+  background-color: #FAF7F2;
+  background-image: 
+    radial-gradient(#4E3227 0.6px, transparent 0.6px), 
+    radial-gradient(#C5A059 0.6px, #FAF7F2 0.6px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+body.theme-e-theap-luxury #envelope-screen {
+  background: radial-gradient(circle at center, #634335 0%, #301F18 100%);
+}
+body.theme-e-theap-luxury .envelope-card {
+  background: #FFFFFF;
+  border: 1px solid #E5D5BC;
+  box-shadow: 0 20px 50px rgba(78, 50, 39, 0.25);
+}
+body.theme-e-theap-luxury .wax-seal-btn {
+  background: radial-gradient(circle at 35% 35%, #E5C384 0%, #C5A059 70%, #9F7B37 100%);
+  border-color: #FAF7F2;
+  box-shadow: 0 6px 20px rgba(78, 50, 39, 0.35);
+}
+body.theme-e-theap-luxury .floating-music-btn {
+  background: linear-gradient(135deg, #4E3227 0%, #C5A059 100%);
+  border-color: #E5C384;
+  box-shadow: 0 4px 20px rgba(78, 50, 39, 0.35);
+}
+body.theme-e-theap-luxury .ornate-border-box {
+  background: #FFFFFF;
+  border: 1px solid #E5D5BC;
+  box-shadow: 0 10px 30px rgba(78, 50, 39, 0.05);
+}
+body.theme-e-theap-luxury .ornate-border-box::before {
+  border: 1px dashed rgba(197, 160, 89, 0.4);
+}
+body.theme-e-theap-luxury .khmer-corner-tl,
+body.theme-e-theap-luxury .khmer-corner-tr,
+body.theme-e-theap-luxury .khmer-corner-bl,
+body.theme-e-theap-luxury .khmer-corner-br {
+  border-color: #C5A059;
+  width: 28px;
+  height: 28px;
+  border-width: 2px;
 }
 
 /* Typography Classes */

@@ -82,6 +82,49 @@ function renderAll() {
   // Language based text rendering
   const isKh = currentLang === 'kh';
 
+  // 1. Transform Wax Seal based on Theme
+  const sealContentEl = document.getElementById('wax-seal-content');
+  if (sealContentEl) {
+    if (themeId === 'chinese-traditional') {
+      sealContentEl.innerHTML = `<span class="text-3xl text-[#FFE866] font-bold block leading-none drop-shadow-md">囍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+    } else if (themeId === 'western-modern') {
+      sealContentEl.innerHTML = `<span class="text-2xl block leading-none">💍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+    } else if (themeId === 'e-theap-luxury') {
+      sealContentEl.innerHTML = `<svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold">OPEN</span>`;
+    } else {
+      // Default: khmer-traditional
+      sealContentEl.innerHTML = `<span class="text-2xl block leading-none">🪷</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+    }
+  }
+
+  // 2. Transform Hero Motif Ribbon
+  const heroMotifEl = document.getElementById('hero-motif-text');
+  if (heroMotifEl) {
+    if (themeId === 'chinese-traditional') {
+      heroMotifEl.innerHTML = isKh ? '囍 សិរីមង្គលអាពាហ៍ពិពាហ៍ 喜结良缘 囍' : '囍 Double Happiness Celebration 囍';
+    } else if (themeId === 'western-modern') {
+      heroMotifEl.innerHTML = isKh ? '🌿 អាពាហ៍ពិពាហ៍សម័យទំនើប 🌿' : '🌿 Wedding Celebration 🌿';
+    } else if (themeId === 'e-theap-luxury') {
+      heroMotifEl.innerHTML = isKh ? '👑 សិរីសួស្តី អាពាហ៍ពិពាហ៍ 👑' : '👑 Wedding Celebration 👑';
+    } else {
+      heroMotifEl.innerHTML = isKh ? '🪷 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🪷' : '🪷 Traditional Khmer Wedding 🪷';
+    }
+  }
+
+  // 3. Transform Footer Stamp Icon
+  const footerStampEl = document.getElementById('footer-stamp-icon');
+  if (footerStampEl) {
+    if (themeId === 'chinese-traditional') {
+      footerStampEl.innerHTML = `<span class="text-2xl font-bold text-[#A31621]">囍</span>`;
+    } else if (themeId === 'western-modern') {
+      footerStampEl.innerHTML = `<span class="text-xl">💍</span>`;
+    } else if (themeId === 'e-theap-luxury') {
+      footerStampEl.innerHTML = `<span class="font-en-title text-sm font-bold text-[#C5A059]">N&S</span>`;
+    } else {
+      footerStampEl.innerHTML = `<span class="text-xl">🪷</span>`;
+    }
+  }
+
   // Guest name on envelope
   const guestBadgeName = document.getElementById('envelope-guest-name');
   const envelopeInviteText = document.getElementById('envelope-invite-text');
@@ -91,17 +134,32 @@ function renderAll() {
     document.getElementById('envelope-guest-container').classList.remove('hidden');
   }
 
-  // Monogram initials
+  // Monogram initials on Envelope
   const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
   const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
   const monogramEl = document.getElementById('envelope-monogram');
   if (monogramEl) {
-    monogramEl.textContent = `${groomInitial} & ${brideInitial}`;
+    if (themeId === 'chinese-traditional') {
+      monogramEl.innerHTML = `<span class="text-2xl text-[#FFD700] font-bold">囍</span>`;
+    } else if (themeId === 'western-modern') {
+      monogramEl.innerHTML = `<span class="font-serif italic text-2xl tracking-widest text-[#1B4332]">${groomInitial} & ${brideInitial}</span>`;
+    } else {
+      monogramEl.textContent = `${groomInitial} & ${brideInitial}`;
+    }
   }
 
   // Couple names on Envelope
   const envelopeCoupleEl = document.getElementById('envelope-couple-names');
   if (envelopeCoupleEl) {
+    let connectorHtml = '<span>និង</span>';
+    if (themeId === 'western-modern') {
+      connectorHtml = '<span class="italic font-serif text-base text-[var(--accent)]">&</span>';
+    } else if (themeId === 'chinese-traditional') {
+      connectorHtml = '<span class="font-bold text-[#FFD700] text-xs">囍 និង 囍</span>';
+    } else if (themeId === 'khmer-traditional') {
+      connectorHtml = '<span class="text-xs">🪷 និង 🪷</span>';
+    }
+
     if (isKh) {
       envelopeCoupleEl.innerHTML = `
         <div class="flex flex-col items-center justify-center">
@@ -109,7 +167,7 @@ function renderAll() {
             ${escapeHTML(w.groom.name_kh)}
           </div>
           <div class="couple-connector">
-            <span>និង</span>
+            ${connectorHtml}
           </div>
           <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
             ${escapeHTML(w.bride.name_kh)}
@@ -118,9 +176,9 @@ function renderAll() {
       `;
     } else {
       envelopeCoupleEl.innerHTML = `
-        <div class="font-en-script text-3xl sm:text-4xl text-[#4E3227] leading-tight">
+        <div class="font-en-script text-3xl sm:text-4xl text-[var(--primary)] leading-tight">
           <div>${escapeHTML(w.groom.name_en)}</div>
-          <div class="text-xl text-[#C5A059] my-0.5">&</div>
+          <div class="text-xl text-[var(--accent)] my-0.5">&</div>
           <div>${escapeHTML(w.bride.name_en)}</div>
         </div>
       `;
@@ -132,12 +190,19 @@ function renderAll() {
   
   const mainCoupleKhEl = document.getElementById('main-couple-kh');
   if (mainCoupleKhEl) {
+    let mainConnector = `<span class="inline-block mx-2 text-[var(--accent)] font-normal text-sm font-khmer-body">និង</span>`;
+    if (themeId === 'chinese-traditional') {
+      mainConnector = `<span class="inline-block mx-2 text-[#A31621] font-bold text-sm">囍 និង 囍</span>`;
+    } else if (themeId === 'khmer-traditional') {
+      mainConnector = `<span class="inline-block mx-2 text-[var(--accent)] font-bold text-sm">🪷 និង 🪷</span>`;
+    }
+
     mainCoupleKhEl.innerHTML = `
-      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#4E3227]">
+      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[var(--primary)]">
         ${escapeHTML(w.groom.name_kh)}
       </span>
-      <span class="inline-block mx-2 text-[#C5A059] font-normal text-sm font-khmer-body">និង</span>
-      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#4E3227]">
+      ${mainConnector}
+      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[var(--primary)]">
         ${escapeHTML(w.bride.name_kh)}
       </span>
     `;
