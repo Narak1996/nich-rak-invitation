@@ -659,3 +659,75 @@ function escapeHTML(str) {
     '"': '&quot;'
   }[tag] || tag));
 }
+
+// File Upload Handlers
+window.uploadImage = async function(fileInput, targetInputId, previewImgId) {
+  if (!fileInput.files || !fileInput.files[0]) return;
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+
+  showToast('កំពុង Upload... (Uploading...)');
+
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (res.ok && data.url) {
+      document.getElementById(targetInputId).value = data.url;
+      if (previewImgId) {
+        const prev = document.getElementById(previewImgId);
+        if (prev) {
+          prev.src = data.url;
+          prev.classList.remove('hidden');
+        }
+      }
+      showToast('Upload ជោគជ័យ! (Upload complete)');
+    } else {
+      showToast(data.error || 'Upload failed');
+    }
+  } catch (err) {
+    showToast('Failed to upload image');
+  }
+};
+
+window.uploadGalleryFiles = async function(fileInput) {
+  if (!fileInput.files || fileInput.files.length === 0) return;
+  showToast('កំពុង Upload រូបថត... (Uploading photos...)');
+
+  for (let file of fileInput.files) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        weddingData.gallery = weddingData.gallery || [];
+        weddingData.gallery.push({
+          id: Date.now() + Math.round(Math.random() * 1000),
+          url: data.url,
+          caption_kh: 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម',
+          caption_en: 'Sweet Memories'
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Save gallery update
+  await fetch('/api/wedding', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...weddingData })
+  });
+
+  showToast('បាន Upload រូបថតចូលកម្រងរូបភាពជោគជ័យ!');
+  loadWeddingData();
+};
