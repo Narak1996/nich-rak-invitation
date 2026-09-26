@@ -1,13 +1,13 @@
 {
   "theme": {
-    "id": "chinese-traditional",
-    "name": "Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ផ្កាម៉ូនៀ)",
-    "primaryColor": "#A81822",
-    "accentColor": "#FFD700",
-    "secondaryColor": "#C72535",
-    "bgColor": "#FFF7F7",
-    "emblem": "囍",
-    "sealEmblem": "shuangxi"
+    "id": "western-modern",
+    "name": "Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - Cotton Paper & Olive)",
+    "primaryColor": "#1B4332",
+    "accentColor": "#C5A059",
+    "secondaryColor": "#2D6A4F",
+    "bgColor": "#FAF8F5",
+    "emblem": "💍",
+    "sealEmblem": "rings"
   },
   "wedding": {
     "title_kh": "សិរីសួស្តី អាពាហ៍ពិពាហ៍",
@@ -19,7 +19,7 @@
       "father_en": "Mr. Chan Sokhom",
       "mother_kh": "លោកស្រី ម៉ៅ សុផល",
       "mother_en": "Mrs. Mao Sophal",
-      "photo": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80",
+      "photo": "/uploads/upload-1790407818088-10763556.jpg",
       "side": "groom"
     },
     "bride": {
@@ -29,14 +29,14 @@
       "father_en": "Mr. Ly Heng",
       "mother_kh": "លោកស្រី កែវ រតនា",
       "mother_en": "Mrs. Keo Rathana",
-      "photo": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
+      "photo": "/uploads/upload-1790407844744-655100443.jpg",
       "side": "bride"
     },
     "couple_photo": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
     "quote_kh": "«សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»",
     "quote_en": "\"Two lives, two hearts, joined together in friendship, united forever in love.\"",
-    "event_date": "2026-11-28T07:00",
-    "date_solar_kh": "ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦",
+    "event_date": "2027-01-24T07:00",
+    "date_solar_kh": "ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧",
     "date_solar_en": "Saturday, November 28, 2026",
     "date_lunar_kh": "ត្រូវនឹងថ្ងៃ ៥រោច ខែកត្តិក ឆ្នាំរោង ឆស័ក ព.ស. ២៥៧០",
     "date_lunar_en": "Lunar Date: 5th Waning of Kattika, Year of the Dragon, B.E. 2570",
@@ -135,12 +135,6 @@
       "url": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80",
       "caption_kh": "កូនកំលោះដ៏សង្ហា",
       "caption_en": "The Handsome Groom"
-    },
-    {
-      "id": 4,
-      "url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
-      "caption_kh": "កូនក្រមុំដ៏ស្រស់សោភា",
-      "caption_en": "The Beautiful Bride"
     },
     {
       "id": 5,

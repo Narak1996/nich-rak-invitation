@@ -1,17 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Great+Vibes&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Koulen&family=Moul&family=Moulpali&family=Battambang:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Siemreap&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Great+Vibes&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Koulen&family=Moul&family=Moulpali&family=Battambang:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Siemreap&family=Noto+Serif+SC:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
 
 :root {
-  --primary: #4E3227;
-  --primary-light: #6E4939;
-  --primary-dark: #372219;
-  --accent: #C5A059;
-  --accent-light: #E5C384;
-  --accent-dark: #9F7B37;
-  --bg-cream: #FAF7F2;
+  --primary: #8C1D2F;
+  --primary-light: #B22B42;
+  --primary-dark: #63111E;
+  --accent: #D4AF37;
+  --accent-light: #F3E5AB;
+  --accent-dark: #AA820A;
+  --bg-cream: #FAF6ED;
   --bg-card: #FFFFFF;
   --text-dark: #2C2420;
   --text-muted: #7A6F68;
-  --border-gold: #E5D5BC;
+  --border-gold: #E8D3A7;
   --font-khmer-title: 'Moul', 'Moulpali', cursive;
   --font-khmer-body: 'Kantumruy Pro', 'Siemreap', sans-serif;
   --font-en-title: 'Cinzel', serif;
@@ -31,23 +31,13 @@ body {
   font-family: var(--font-khmer-body);
   line-height: 1.6;
   overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Luxury Background Pattern */
-.wedding-bg-pattern {
-  background-color: var(--bg-cream);
-  background-image: 
-    radial-gradient(var(--primary) 0.5px, transparent 0.5px), 
-    radial-gradient(var(--accent) 0.5px, var(--bg-cream) 0.5px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-  background-opacity: 0.05;
-}
-
-/* ================= THEME PRESETS ================= */
-/* ================= THEME PRESETS (ENTIRE INVITATION TRANSFORMATION) ================= */
-
-/* 1. KHMER TRADITIONAL (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាសអង្គរ) */
+/* ==========================================================================
+   1. KHMER TRADITIONAL THEME (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាសអង្គរ)
+   Warm Ivory, Deep Burgundy, Antique Gold, Cambodian Silk & Kbach
+   ========================================================================== */
 body.theme-khmer-traditional {
   --primary: #8C1D2F;
   --primary-light: #B22B42;
@@ -57,17 +47,64 @@ body.theme-khmer-traditional {
   --accent-dark: #AA820A;
   --bg-cream: #FAF6ED;
   --border-gold: #E8D3A7;
-  background-color: #FAF6ED !important;
+  background-color: #FAF5E8 !important;
+  color: #2C2420 !important;
 }
+
 body.theme-khmer-traditional.wedding-bg-pattern {
-  background-color: #FAF6ED !important;
+  background-color: #FAF5E8 !important;
   background-image: 
     radial-gradient(#8C1D2F 0.8px, transparent 0.8px), 
-    radial-gradient(#D4AF37 0.8px, #FAF6ED 0.8px),
+    radial-gradient(#D4AF37 0.8px, #FAF5E8 0.8px),
     url('/images/components/angkor-silhouette.svg') !important;
-  background-size: 24px 24px, 24px 24px, 320px auto !important;
-  background-position: 0 0, 12px 12px, center 120px !important;
+  background-size: 24px 24px, 24px 24px, 340px auto !important;
+  background-position: 0 0, 12px 12px, center 130px !important;
   background-repeat: repeat, repeat, no-repeat !important;
+}
+
+/* Khmer Typography & Titles */
+body.theme-khmer-traditional #main-wedding-title {
+  font-family: 'Moul', cursive !important;
+  color: #8C1D2F !important;
+  text-shadow: 0 1px 2px rgba(212, 175, 55, 0.4);
+}
+body.theme-khmer-traditional #main-couple-kh {
+  font-family: 'Moul', cursive !important;
+  color: #8C1D2F !important;
+}
+body.theme-khmer-traditional #main-couple-en {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic !important;
+  color: #D4AF37 !important;
+}
+
+/* Khmer Ornate Cards */
+body.theme-khmer-traditional .ornate-border-box,
+body.theme-khmer-traditional .bg-white.rounded-3xl {
+  background: #FFFDF8 !important;
+  border: 2px solid #D4AF37 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 12px 35px rgba(140, 29, 47, 0.08) !important;
+}
+body.theme-khmer-traditional .ornate-border-box::before {
+  border: 1px dashed rgba(212, 175, 55, 0.5) !important;
+  border-radius: 14px !important;
+}
+body.theme-khmer-traditional .khmer-corner-tl,
+body.theme-khmer-traditional .khmer-corner-tr,
+body.theme-khmer-traditional .khmer-corner-bl,
+body.theme-khmer-traditional .khmer-corner-br {
+  display: block !important;
+  border-color: #D4AF37 !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-width: 2.5px !important;
+}
+
+/* Khmer Inner Cards & Sub-elements */
+body.theme-khmer-traditional .bg-\[\#FAF7F2\] {
+  background-color: #FAF4E8 !important;
+  border-color: #E8D3A7 !important;
 }
 body.theme-khmer-traditional .text-\[\#4E3227\],
 body.theme-khmer-traditional .text-bronze {
@@ -80,12 +117,6 @@ body.theme-khmer-traditional .bg-bronze {
 body.theme-khmer-traditional .hover\:bg-\[\#6E4939\]:hover {
   background-color: #63111E !important;
 }
-body.theme-khmer-traditional .border-\[\#E5D5BC\] {
-  border-color: #E8D3A7 !important;
-}
-body.theme-khmer-traditional .bg-\[\#FAF7F2\] {
-  background-color: #FAF4E8 !important;
-}
 body.theme-khmer-traditional .text-\[\#C5A059\],
 body.theme-khmer-traditional .text-gold {
   color: #C2931A !important;
@@ -94,18 +125,28 @@ body.theme-khmer-traditional .border-\[\#C5A059\],
 body.theme-khmer-traditional .border-gold {
   border-color: #D4AF37 !important;
 }
-body.theme-khmer-traditional .gold-gradient-text {
-  background: linear-gradient(135deg, #8C1D2F 0%, #D4AF37 50%, #8C1D2F 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+
+/* Khmer Countdown */
+body.theme-khmer-traditional .countdown-box {
+  background: #FFFDF8 !important;
+  border: 1.5px solid #D4AF37 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 15px rgba(140, 29, 47, 0.06) !important;
 }
+body.theme-khmer-traditional .countdown-box span:first-child {
+  color: #8C1D2F !important;
+  font-family: 'Moul', cursive !important;
+}
+
+/* Khmer Envelope & Wax Seal */
 body.theme-khmer-traditional #envelope-screen {
   background: radial-gradient(circle at center, #9E263B 0%, #4D0914 100%) !important;
 }
 body.theme-khmer-traditional .envelope-card {
   background: #FFFFFF !important;
   border: 2px solid #D4AF37 !important;
-  box-shadow: 0 25px 60px rgba(140, 29, 47, 0.4), 0 0 0 2px rgba(212, 175, 55, 0.4) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 25px 60px rgba(140, 29, 47, 0.45), 0 0 0 2px rgba(212, 175, 55, 0.4) !important;
 }
 body.theme-khmer-traditional .wax-seal-btn {
   background: radial-gradient(circle at 35% 35%, #F5D77F 0%, #D4AF37 70%, #997300 100%) !important;
@@ -117,28 +158,12 @@ body.theme-khmer-traditional .floating-music-btn {
   border-color: #F5D77F !important;
   box-shadow: 0 4px 20px rgba(140, 29, 47, 0.4) !important;
 }
-body.theme-khmer-traditional .ornate-border-box {
-  background: #FFFFFF !important;
-  border: 1px solid #E8D3A7 !important;
-  box-shadow: 0 10px 30px rgba(140, 29, 47, 0.05) !important;
-}
-body.theme-khmer-traditional .ornate-border-box::before {
-  border: 1px dashed rgba(212, 175, 55, 0.45) !important;
-}
-body.theme-khmer-traditional .khmer-corner-tl,
-body.theme-khmer-traditional .khmer-corner-tr,
-body.theme-khmer-traditional .khmer-corner-bl,
-body.theme-khmer-traditional .khmer-corner-br {
-  border-color: #D4AF37 !important;
-  width: 26px !important;
-  height: 26px !important;
-  border-width: 2px !important;
-}
-body.theme-khmer-traditional #main-wedding-title {
-  color: #8C1D2F !important;
-}
 
-/* 2. WESTERN MODERN LUXURY (រចនាបថបស្ចិមប្រទេស / សម័យទំនើប - ចិញ្ចៀន & ត្បូងមរកត) */
+
+/* ==========================================================================
+   2. WESTERN MODERN LUXURY THEME (រចនាបថបស្ចិមប្រទេស - Editorial Modern Luxury)
+   Cotton Paper, Forest Green/Charcoal, Champagne Gold, Minimalist High-Fashion
+   ========================================================================== */
 body.theme-western-modern {
   --primary: #1B4332;
   --primary-light: #2D6A4F;
@@ -147,20 +172,81 @@ body.theme-western-modern {
   --accent-light: #E8D5B5;
   --accent-dark: #9E7B35;
   --bg-cream: #FAF8F5;
-  --border-gold: #E5DFD5;
+  --border-gold: #E2E8F0;
   background-color: #FAF8F5 !important;
+  color: #1A1A1A !important;
 }
+
 body.theme-western-modern.wedding-bg-pattern {
   background-color: #FAF8F5 !important;
   background-image: 
-    radial-gradient(#C5A059 0.5px, transparent 0.5px), 
-    radial-gradient(#E5DFD5 0.5px, #FAF8F5 0.5px) !important;
-  background-size: 32px 32px !important;
-  background-position: 0 0, 16px 16px !important;
+    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px) !important;
+  background-size: 28px 28px !important;
+  background-position: 0 0 !important;
+}
+
+/* Western Modern Typography: High Fashion Roman & Modern Serif */
+body.theme-western-modern #main-wedding-title {
+  font-family: 'Cinzel', serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 5px !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+  color: #1B4332 !important;
+  text-shadow: none !important;
+}
+body.theme-western-modern #hero-motif-text {
+  font-family: 'Cinzel', sans-serif !important;
+  letter-spacing: 4px !important;
+  font-size: 0.75rem !important;
+  color: #C5A059 !important;
+  font-weight: 700 !important;
+}
+body.theme-western-modern #main-couple-en {
+  font-family: 'Playfair Display', serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  font-size: 2.2rem !important;
+  color: #1B4332 !important;
+}
+body.theme-western-modern #main-couple-kh {
+  font-family: 'Cinzel', 'Kantumruy Pro', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  color: #2D2D2D !important;
+}
+
+/* Western Modern Luxury Cards: Sharp Editorial Minimalist (NO KBACH!) */
+body.theme-western-modern .ornate-border-box,
+body.theme-western-modern .bg-white.rounded-3xl,
+body.theme-western-modern .rounded-3xl.p-6,
+body.theme-western-modern .p-3.bg-white.rounded-3xl {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Completely remove Khmer kbach corners and dashed kbach frames */
+body.theme-western-modern .khmer-corner-tl,
+body.theme-western-modern .khmer-corner-tr,
+body.theme-western-modern .khmer-corner-bl,
+body.theme-western-modern .khmer-corner-br,
+body.theme-western-modern .ornate-border-box::before {
+  display: none !important;
+}
+
+/* Western Inner Cards & Sub-elements */
+body.theme-western-modern .bg-\[\#FAF7F2\] {
+  background-color: #FAFAFA !important;
+  border: 1px solid #EEEEEE !important;
+  border-radius: 4px !important;
 }
 body.theme-western-modern .text-\[\#4E3227\],
 body.theme-western-modern .text-bronze {
-  color: #2D2D2D !important;
+  color: #1B4332 !important;
 }
 body.theme-western-modern .bg-\[\#4E3227\],
 body.theme-western-modern .bg-bronze {
@@ -168,12 +254,6 @@ body.theme-western-modern .bg-bronze {
 }
 body.theme-western-modern .hover\:bg-\[\#6E4939\]:hover {
   background-color: #2D6A4F !important;
-}
-body.theme-western-modern .border-\[\#E5D5BC\] {
-  border-color: #E5DFD5 !important;
-}
-body.theme-western-modern .bg-\[\#FAF7F2\] {
-  background-color: #FFFFFF !important;
 }
 body.theme-western-modern .text-\[\#C5A059\],
 body.theme-western-modern .text-gold {
@@ -183,23 +263,51 @@ body.theme-western-modern .border-\[\#C5A059\],
 body.theme-western-modern .border-gold {
   border-color: #C5A059 !important;
 }
-body.theme-western-modern .gold-gradient-text {
-  background: linear-gradient(135deg, #1B4332 0%, #C5A059 50%, #1B4332 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+
+/* Western Countdown: Minimalist Clean Squares */
+body.theme-western-modern .countdown-box {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  padding: 12px 6px !important;
 }
+body.theme-western-modern .countdown-box span:first-child {
+  color: #1B4332 !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700 !important;
+}
+body.theme-western-modern .countdown-box span:last-child {
+  font-family: 'Cinzel', sans-serif !important;
+  letter-spacing: 2px !important;
+  font-size: 9px !important;
+}
+
+/* Western Buttons: Sleek Forest Green Pill */
+body.theme-western-modern button[type="submit"],
+body.theme-western-modern a.px-2\.5.py-1.bg-\[\#4E3227\] {
+  background-color: #1B4332 !important;
+  border-radius: 9999px !important;
+  font-family: 'Cinzel', sans-serif !important;
+  letter-spacing: 2px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+/* Western Envelope & Ring Wax Seal */
 body.theme-western-modern #envelope-screen {
-  background: radial-gradient(circle at center, #245A42 0%, #081C15 100%) !important;
+  background: radial-gradient(circle at center, #1B4332 0%, #081C15 100%) !important;
 }
 body.theme-western-modern .envelope-card {
   background: #FFFFFF !important;
   border: 1px solid #C5A059 !important;
-  border-radius: 28px !important;
-  box-shadow: 0 25px 60px rgba(27, 67, 50, 0.35), 0 0 0 1px rgba(197, 160, 89, 0.4) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 25px 60px rgba(27, 67, 50, 0.4) !important;
 }
 body.theme-western-modern .wax-seal-btn {
   background: radial-gradient(circle at 35% 35%, #E5C384 0%, #C5A059 70%, #8C6239 100%) !important;
   border-color: #FFF2D6 !important;
+  border-radius: 9999px !important;
   box-shadow: 0 6px 20px rgba(27, 67, 50, 0.35) !important;
 }
 body.theme-western-modern .floating-music-btn {
@@ -207,223 +315,198 @@ body.theme-western-modern .floating-music-btn {
   border-color: #E5C384 !important;
   box-shadow: 0 4px 20px rgba(27, 67, 50, 0.35) !important;
 }
-body.theme-western-modern .ornate-border-box {
-  background: #FFFFFF !important;
-  border-radius: 28px !important;
-  border: 1px solid #DDE3DE !important;
-  box-shadow: 0 15px 40px rgba(27, 67, 50, 0.06) !important;
-}
-body.theme-western-modern .ornate-border-box::before {
-  display: none !important; /* Modern minimal clean */
-}
-body.theme-western-modern .khmer-corner-tl,
-body.theme-western-modern .khmer-corner-tr,
-body.theme-western-modern .khmer-corner-bl,
-body.theme-western-modern .khmer-corner-br {
-  border-color: #C5A059 !important;
-  width: 14px !important;
-  height: 14px !important;
-  border-width: 1px !important;
-  border-radius: 4px !important;
-}
-body.theme-western-modern .countdown-box {
-  background: #FFFFFF !important;
-  border: 1px solid #DDE3DE !important;
-  border-radius: 18px !important;
-  box-shadow: 0 6px 16px rgba(27, 67, 50, 0.05) !important;
-}
-body.theme-western-modern .countdown-box span:first-child {
-  color: #1B4332 !important;
-}
-body.theme-western-modern #main-wedding-title {
-  color: #1B4332 !important;
-}
-body.theme-western-modern #main-couple-en {
-  color: #1B4332 !important;
-  font-family: 'Cinzel', serif !important;
-  font-weight: 700 !important;
-  letter-spacing: 2px !important;
+
+
+/* ==========================================================================
+   3. CHINESE TRADITIONAL THEME (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ 囍 & ក្រហមហុងស៊ុយ)
+   ENTIRE INVITATION TURNS INTO IMPERIAL CRIMSON SILK & IMPERIAL GOLD (喜帖)
+   ========================================================================== */
+body.theme-chinese-traditional {
+  --primary: #A81822;
+  --primary-light: #C72535;
+  --primary-dark: #6E0D14;
+  --accent: #FFD700;
+  --accent-light: #FFF099;
+  --accent-dark: #B8860B;
+  --bg-cream: #800B13;
+  --border-gold: #FFD700;
+  background-color: #7D0A12 !important;
+  color: #FFF9E6 !important;
 }
 
-/* 3. CHINESE TRADITIONAL (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ 囍 & ក្រហមហុងស៊ុយ) */
-body.theme-chinese-traditional {
-  --primary: #A31621;
-  --primary-light: #C72535;
-  --primary-dark: #700E16;
-  --accent: #D4AF37;
-  --accent-light: #FFE866;
-  --accent-dark: #CC9900;
-  --bg-cream: #FFF7F7;
-  --border-gold: #F7D070;
-  background-color: #FFF7F7 !important;
-}
 body.theme-chinese-traditional.wedding-bg-pattern {
-  background-color: #FFF7F7 !important;
+  background-color: #7D0A12 !important;
   background-image: 
-    radial-gradient(#A31621 0.8px, transparent 0.8px), 
-    radial-gradient(#D4AF37 0.8px, #FFF7F7 0.8px) !important;
-  background-size: 22px 22px !important;
-  background-position: 0 0, 11px 11px !important;
+    radial-gradient(#FFD700 0.85px, transparent 0.85px), 
+    radial-gradient(rgba(255, 215, 0, 0.15) 1.2px, #7D0A12 1.2px) !important;
+  background-size: 20px 20px !important;
+  background-position: 0 0, 10px 10px !important;
 }
-body.theme-chinese-traditional .text-\[\#4E3227\],
-body.theme-chinese-traditional .text-bronze {
-  color: #A31621 !important;
+
+/* Chinese Floating Navigation Bar */
+body.theme-chinese-traditional .floating-top-bar {
+  background: rgba(100, 8, 14, 0.95) !important;
+  border-color: #FFD700 !important;
+  color: #FFD700 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
-body.theme-chinese-traditional .bg-\[\#4E3227\],
-body.theme-chinese-traditional .bg-bronze {
-  background-color: #A31621 !important;
+body.theme-chinese-traditional .floating-top-bar a,
+body.theme-chinese-traditional .floating-top-bar button {
+  color: #FFD700 !important;
 }
-body.theme-chinese-traditional .hover\:bg-\[\#6E4939\]:hover {
-  background-color: #700E16 !important;
+body.theme-chinese-traditional .floating-top-bar .bg-\[\#FAF7F2\] {
+  background: rgba(125, 10, 18, 0.9) !important;
+  border-color: #FFD700 !important;
+  color: #FFD700 !important;
 }
-body.theme-chinese-traditional .border-\[\#E5D5BC\] {
-  border-color: #F7D070 !important;
+
+/* Chinese Typography & Headers */
+body.theme-chinese-traditional #main-wedding-title {
+  font-family: 'Noto Serif SC', 'Moul', serif !important;
+  color: #FFD700 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+  letter-spacing: 2px !important;
 }
-body.theme-chinese-traditional .bg-\[\#FAF7F2\] {
-  background-color: #FFF1F1 !important;
+body.theme-chinese-traditional #hero-motif-text {
+  color: #FFD700 !important;
+  font-weight: bold !important;
 }
-body.theme-chinese-traditional .text-\[\#C5A059\],
-body.theme-chinese-traditional .text-gold {
-  color: #CC9900 !important;
+body.theme-chinese-traditional #main-couple-en {
+  font-family: 'Cinzel', serif !important;
+  color: #FFD700 !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
 }
-body.theme-chinese-traditional .border-\[\#C5A059\],
-body.theme-chinese-traditional .border-gold {
-  border-color: #D4AF37 !important;
+body.theme-chinese-traditional #main-couple-kh {
+  color: #FFF9E6 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
 }
-body.theme-chinese-traditional .gold-gradient-text {
-  background: linear-gradient(135deg, #A31621 0%, #FFD700 50%, #A31621 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+body.theme-chinese-traditional #couple-quote {
+  color: #FCE7B8 !important;
 }
-body.theme-chinese-traditional #envelope-screen {
-  background: radial-gradient(circle at center, #C72535 0%, #680C14 100%) !important;
+
+/* Chinese Cards: Imperial Crimson Silk Cards with Gold Borders */
+body.theme-chinese-traditional .ornate-border-box,
+body.theme-chinese-traditional .bg-white.rounded-3xl,
+body.theme-chinese-traditional .rounded-3xl.p-6,
+body.theme-chinese-traditional .p-3.bg-white.rounded-3xl,
+body.theme-chinese-traditional section.bg-white {
+  background: #920F19 !important;
+  border: 2px solid #FFD700 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.2) !important;
+  color: #FFF9E6 !important;
 }
-body.theme-chinese-traditional .envelope-card {
-  background: #FFFDF9 !important;
-  border: 2px solid #D4AF37 !important;
-  box-shadow: 0 25px 60px rgba(163, 22, 33, 0.45), 0 0 0 2px rgba(212, 175, 55, 0.5) !important;
-}
-body.theme-chinese-traditional .wax-seal-btn {
-  background: radial-gradient(circle at 35% 35%, #FFE066 0%, #D4AF37 70%, #B8860B 100%) !important;
-  border-color: #FFF9C4 !important;
-  box-shadow: 0 6px 22px rgba(163, 22, 33, 0.45) !important;
-}
-body.theme-chinese-traditional .floating-music-btn {
-  background: linear-gradient(135deg, #A31621 0%, #D4AF37 100%) !important;
-  border-color: #FFE066 !important;
-  box-shadow: 0 4px 20px rgba(163, 22, 33, 0.45) !important;
-}
-body.theme-chinese-traditional .ornate-border-box {
-  background: #FFFFFF !important;
-  border: 2px solid #D4AF37 !important;
-  box-shadow: 0 12px 35px rgba(163, 22, 33, 0.08) !important;
-}
+
 body.theme-chinese-traditional .ornate-border-box::before {
-  border: 1px solid rgba(163, 22, 33, 0.25) !important;
+  border: 1px solid rgba(255, 215, 0, 0.35) !important;
+  border-radius: 12px !important;
 }
+
+/* Chinese Geometric Key / Meander Corner Brackets (回纹角) */
 body.theme-chinese-traditional .khmer-corner-tl,
 body.theme-chinese-traditional .khmer-corner-tr,
 body.theme-chinese-traditional .khmer-corner-bl,
 body.theme-chinese-traditional .khmer-corner-br {
-  border-color: #A31621 !important;
-  width: 24px !important;
-  height: 24px !important;
-  border-width: 2.5px !important;
-}
-body.theme-chinese-traditional .countdown-box {
-  background: #FFFBF9 !important;
-  border: 1px solid #F7D070 !important;
-  box-shadow: 0 6px 16px rgba(163, 22, 33, 0.05) !important;
-}
-body.theme-chinese-traditional .countdown-box span:first-child {
-  color: #A31621 !important;
-}
-body.theme-chinese-traditional #main-wedding-title {
-  color: #A31621 !important;
+  display: block !important;
+  border-color: #FFD700 !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-width: 3px !important;
 }
 
-/* 4. E-THEAP LUXURY BRONZE (រចនាបថ Bronze E-Theap - ស្ពាន់ & មាសបុរាណ) */
-body.theme-e-theap-luxury {
-  --primary: #4E3227;
-  --primary-light: #6E4939;
-  --primary-dark: #372219;
-  --accent: #C5A059;
-  --accent-light: #E5C384;
-  --accent-dark: #9F7B37;
-  --bg-cream: #FAF7F2;
-  --border-gold: #E5D5BC;
-  background-color: #FAF7F2 !important;
+/* Chinese Inner Sub-cards (Parents, Agenda items, Gifts, RSVP) */
+body.theme-chinese-traditional .bg-\[\#FAF7F2\],
+body.theme-chinese-traditional .p-4.bg-\[\#FAF7F2\] {
+  background-color: #7A0A12 !important;
+  border: 1.5px solid #FFD700 !important;
+  border-radius: 12px !important;
+  color: #FFF9E6 !important;
 }
-body.theme-e-theap-luxury.wedding-bg-pattern {
-  background-color: #FAF7F2 !important;
-  background-image: 
-    radial-gradient(#4E3227 0.6px, transparent 0.6px), 
-    radial-gradient(#C5A059 0.6px, #FAF7F2 0.6px) !important;
-  background-size: 20px 20px !important;
-  background-position: 0 0, 10px 10px !important;
+body.theme-chinese-traditional .text-\[\#4E3227\],
+body.theme-chinese-traditional .text-bronze {
+  color: #FFD700 !important;
 }
-body.theme-e-theap-luxury .text-\[\#4E3227\],
-body.theme-e-theap-luxury .text-bronze {
-  color: #4E3227 !important;
+body.theme-chinese-traditional .text-\[\#7A6F68\] {
+  color: #F8D9A3 !important;
 }
-body.theme-e-theap-luxury .bg-\[\#4E3227\],
-body.theme-e-theap-luxury .bg-bronze {
-  background-color: #4E3227 !important;
+body.theme-chinese-traditional .text-\[\#C5A059\],
+body.theme-chinese-traditional .text-gold {
+  color: #FFD700 !important;
 }
-body.theme-e-theap-luxury .hover\:bg-\[\#6E4939\]:hover {
-  background-color: #372219 !important;
+body.theme-chinese-traditional .border-\[\#E5D5BC\] {
+  border-color: #FFD700 !important;
 }
-body.theme-e-theap-luxury .border-\[\#E5D5BC\] {
-  border-color: #E5D5BC !important;
+body.theme-chinese-traditional .border-\[\#C5A059\],
+body.theme-chinese-traditional .border-gold {
+  border-color: #FFD700 !important;
 }
-body.theme-e-theap-luxury .bg-\[\#FAF7F2\] {
-  background-color: #FAF7F2 !important;
+
+/* Chinese Countdown: Crimson Red with Imperial Gold */
+body.theme-chinese-traditional .countdown-box {
+  background: #7A0A12 !important;
+  border: 1.5px solid #FFD700 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
 }
-body.theme-e-theap-luxury .text-\[\#C5A059\],
-body.theme-e-theap-luxury .text-gold {
-  color: #C5A059 !important;
+body.theme-chinese-traditional .countdown-box span:first-child {
+  color: #FFD700 !important;
+  font-weight: bold !important;
 }
-body.theme-e-theap-luxury .border-\[\#C5A059\],
-body.theme-e-theap-luxury .border-gold {
-  border-color: #C5A059 !important;
+body.theme-chinese-traditional .countdown-box span:last-child {
+  color: #F8D9A3 !important;
 }
-body.theme-e-theap-luxury #envelope-screen {
-  background: radial-gradient(circle at center, #634335 0%, #301F18 100%) !important;
+
+/* Chinese Form Inputs & Interactive */
+body.theme-chinese-traditional input,
+body.theme-chinese-traditional select,
+body.theme-chinese-traditional textarea {
+  background-color: #7A0A12 !important;
+  border: 1px solid #FFD700 !important;
+  color: #FFF9E6 !important;
 }
-body.theme-e-theap-luxury .envelope-card {
-  background: #FFFFFF !important;
-  border: 1px solid #E5D5BC !important;
-  box-shadow: 0 20px 50px rgba(78, 50, 39, 0.25) !important;
+body.theme-chinese-traditional input::placeholder,
+body.theme-chinese-traditional textarea::placeholder {
+  color: #E2B774 !important;
 }
-body.theme-e-theap-luxury .wax-seal-btn {
-  background: radial-gradient(circle at 35% 35%, #E5C384 0%, #C5A059 70%, #9F7B37 100%) !important;
-  border-color: #FAF7F2 !important;
-  box-shadow: 0 6px 20px rgba(78, 50, 39, 0.35) !important;
+
+/* Chinese Buttons: Radiant Imperial Gold Gradient */
+body.theme-chinese-traditional button[type="submit"],
+body.theme-chinese-traditional .bg-\[\#4E3227\],
+body.theme-chinese-traditional a.px-2\.5.py-1.bg-\[\#4E3227\] {
+  background: linear-gradient(135deg, #FFD700 0%, #E5A93C 100%) !important;
+  color: #750910 !important;
+  font-weight: 800 !important;
+  border: 1px solid #FFF3B3 !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
 }
-body.theme-e-theap-luxury .floating-music-btn {
-  background: linear-gradient(135deg, #4E3227 0%, #C5A059 100%) !important;
-  border-color: #E5C384 !important;
-  box-shadow: 0 4px 20px rgba(78, 50, 39, 0.35) !important;
+body.theme-chinese-traditional button[type="submit"]:hover {
+  background: linear-gradient(135deg, #FFF099 0%, #FFD700 100%) !important;
 }
-body.theme-e-theap-luxury .ornate-border-box {
-  background: #FFFFFF !important;
-  border: 1px solid #E5D5BC !important;
-  box-shadow: 0 10px 30px rgba(78, 50, 39, 0.05) !important;
+
+/* Chinese Envelope & Double Happiness Wax Seal */
+body.theme-chinese-traditional #envelope-screen {
+  background: radial-gradient(circle at center, #A81822 0%, #52090F 100%) !important;
 }
-body.theme-e-theap-luxury .ornate-border-box::before {
-  border: 1px dashed rgba(197, 160, 89, 0.4) !important;
+body.theme-chinese-traditional .envelope-card {
+  background: #920F19 !important;
+  border: 3px solid #FFD700 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 215, 0, 0.5) !important;
+  color: #FFF9E6 !important;
 }
-body.theme-e-theap-luxury .khmer-corner-tl,
-body.theme-e-theap-luxury .khmer-corner-tr,
-body.theme-e-theap-luxury .khmer-corner-bl,
-body.theme-e-theap-luxury .khmer-corner-br {
-  border-color: #C5A059 !important;
-  width: 28px !important;
-  height: 28px !important;
-  border-width: 2px !important;
+body.theme-chinese-traditional .envelope-card p,
+body.theme-chinese-traditional .envelope-card span {
+  color: #FFF9E6 !important;
 }
-body.theme-e-theap-luxury #main-wedding-title {
-  color: #4E3227 !important;
+body.theme-chinese-traditional .wax-seal-btn {
+  background: radial-gradient(circle at 35% 35%, #FFF099 0%, #FFD700 70%, #B8860B 100%) !important;
+  border-color: #FFFDE6 !important;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5) !important;
+}
+body.theme-chinese-traditional .floating-music-btn {
+  background: linear-gradient(135deg, #A81822 0%, #FFD700 100%) !important;
+  border-color: #FFF099 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Typography Classes */

@@ -162,11 +162,11 @@ function renderAll() {
   const heroMotifEl = document.getElementById('hero-motif-text');
   if (heroMotifEl) {
     if (themeId === 'chinese-traditional') {
-      heroMotifEl.innerHTML = isKh ? '囍 សិរីមង្គលអាពាហ៍ពិពាហ៍ 喜结良缘 囍' : '囍 Double Happiness Celebration 囍';
+      heroMotifEl.innerHTML = isKh ? '囍 喜结良缘 • 百年好合 • 鸾凤和鸣 囍' : '囍 Double Happiness • A Celebration of Love 囍';
     } else if (themeId === 'western-modern') {
-      heroMotifEl.innerHTML = isKh ? '🌿 អាពាហ៍ពិពាហ៍សម័យទំនើប 🌿' : '🌿 Wedding Celebration 🌿';
+      heroMotifEl.innerHTML = isKh ? 'TOGETHER WITH THEIR FAMILIES' : 'TOGETHER WITH THEIR FAMILIES';
     } else {
-      heroMotifEl.innerHTML = isKh ? '🪷 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🪷' : '🪷 Traditional Khmer Wedding 🪷';
+      heroMotifEl.innerHTML = isKh ? '🪷 សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ 🪷' : '🪷 Traditional Khmer Wedding Celebration 🪷';
     }
   }
 
@@ -174,7 +174,7 @@ function renderAll() {
   const footerStampEl = document.getElementById('footer-stamp-icon');
   if (footerStampEl) {
     if (themeId === 'chinese-traditional') {
-      footerStampEl.innerHTML = `<span class="text-2xl font-bold text-[#A31621]">囍</span>`;
+      footerStampEl.innerHTML = `<span class="text-2xl font-bold text-[#FFD700]">囍</span>`;
     } else if (themeId === 'western-modern') {
       footerStampEl.innerHTML = `<span class="text-xl">💍</span>`;
     } else {
@@ -195,9 +195,9 @@ function renderAll() {
   const monogramEl = document.getElementById('envelope-monogram');
   if (monogramEl) {
     if (themeId === 'chinese-traditional') {
-      monogramEl.innerHTML = `<span class="text-2xl text-[#FFD700] font-bold">囍</span>`;
+      monogramEl.innerHTML = `<span class="text-3xl text-[#FFD700] font-bold">囍</span>`;
     } else if (themeId === 'western-modern') {
-      monogramEl.innerHTML = `<span class="font-serif italic text-2xl tracking-widest text-[#1B4332]">${groomInitial} & ${brideInitial}</span>`;
+      monogramEl.innerHTML = `<span class="font-serif text-2xl tracking-widest text-[#1B4332] font-bold">${groomInitial} & ${brideInitial}</span>`;
     } else {
       monogramEl.textContent = `${groomInitial} & ${brideInitial}`;
     }
@@ -210,7 +210,7 @@ function renderAll() {
     if (themeId === 'western-modern') {
       connectorHtml = '<span class="italic font-serif text-base text-[var(--accent)]">&</span>';
     } else if (themeId === 'chinese-traditional') {
-      connectorHtml = '<span class="font-bold text-[#FFD700] text-xs">囍 និង 囍</span>';
+      connectorHtml = '<span class="font-bold text-[#FFD700] text-sm">囍</span>';
     } else if (themeId === 'khmer-traditional') {
       connectorHtml = '<span class="text-xs">🪷 និង 🪷</span>';
     }
@@ -221,7 +221,7 @@ function renderAll() {
           <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
             ${escapeHTML(w.groom.name_kh)}
           </div>
-          <div class="couple-connector">
+          <div class="couple-connector my-1">
             ${connectorHtml}
           </div>
           <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
@@ -240,40 +240,77 @@ function renderAll() {
     }
   }
 
-  // Main Page Header Titles
-  document.getElementById('main-wedding-title').textContent = isKh ? w.title_kh : w.title_en;
+  // Main Page Header Titles - Theme Tailored
+  const mainTitleEl = document.getElementById('main-wedding-title');
+  if (mainTitleEl) {
+    if (themeId === 'chinese-traditional') {
+      mainTitleEl.textContent = isKh ? '囍 សិរីសួស្តី អាពាហ៍ពិពាហ៍ 喜结良缘 囍' : '囍 DOUBLE HAPPINESS CELEBRATION 囍';
+    } else if (themeId === 'western-modern') {
+      mainTitleEl.textContent = isKh ? 'WEDDING CELEBRATION' : 'THE WEDDING CELEBRATION OF';
+    } else {
+      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ') : (w.title_en || 'Traditional Khmer Wedding');
+    }
+  }
   
   const mainCoupleKhEl = document.getElementById('main-couple-kh');
   if (mainCoupleKhEl) {
     let mainConnector = `<span class="inline-block mx-2 text-[var(--accent)] font-normal text-sm font-khmer-body">និង</span>`;
     if (themeId === 'chinese-traditional') {
-      mainConnector = `<span class="inline-block mx-2 text-[#A31621] font-bold text-sm">囍 និង 囍</span>`;
+      mainConnector = `<span class="inline-block mx-2 text-[#FFD700] font-bold text-base">囍</span>`;
+    } else if (themeId === 'western-modern') {
+      mainConnector = `<span class="inline-block mx-2 text-[#C5A059] font-serif italic text-lg">&</span>`;
     } else if (themeId === 'khmer-traditional') {
-      mainConnector = `<span class="inline-block mx-2 text-[var(--accent)] font-bold text-sm">🪷 និង 🪷</span>`;
+      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-sm">🪷 និង 🪷</span>`;
     }
 
     mainCoupleKhEl.innerHTML = `
-      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[var(--primary)]">
+      <span class="couple-names-khmer text-xl sm:text-2xl font-bold">
         ${escapeHTML(w.groom.name_kh)}
       </span>
       ${mainConnector}
-      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[var(--primary)]">
+      <span class="couple-names-khmer text-xl sm:text-2xl font-bold">
         ${escapeHTML(w.bride.name_kh)}
       </span>
     `;
   }
-  document.getElementById('main-couple-en').textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
 
-  // Quote
-  document.getElementById('couple-quote').textContent = isKh ? w.quote_kh : w.quote_en;
+  const mainCoupleEnEl = document.getElementById('main-couple-en');
+  if (mainCoupleEnEl) {
+    if (themeId === 'western-modern') {
+      mainCoupleEnEl.textContent = `${w.groom.name_en.toUpperCase()} & ${w.bride.name_en.toUpperCase()}`;
+    } else if (themeId === 'chinese-traditional') {
+      mainCoupleEnEl.textContent = `${w.groom.name_en} 囍 ${w.bride.name_en}`;
+    } else {
+      mainCoupleEnEl.textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
+    }
+  }
 
-  // Parents
-  document.getElementById('groom-parents-heading').textContent = isKh ? 'លោកឪពុក អ្នកម្តាយ ខាងកូនប្រុស' : "Groom's Parents";
+  // Quote - Theme Tailored
+  const quoteEl = document.getElementById('couple-quote');
+  if (quoteEl) {
+    if (themeId === 'chinese-traditional') {
+      quoteEl.textContent = isKh ? '«两姓联姻，一堂缔约，良缘永结，匹配同称»' : '"Two families united, a blessed bond formed for eternity."';
+    } else if (themeId === 'western-modern') {
+      quoteEl.textContent = isKh ? '"Two lives, two hearts, joined together in friendship, united forever in love."' : '"Two lives, two hearts, joined together in friendship, united forever in love."';
+    } else {
+      quoteEl.textContent = isKh ? (w.quote_kh || '«សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»') : (w.quote_en || 'Love is patient, love is kind.');
+    }
+  }
+
+  // Parents Headings - Theme Tailored
+  const groomParentsH = document.getElementById('groom-parents-heading');
+  const brideParentsH = document.getElementById('bride-parents-heading');
+  if (groomParentsH) {
+    groomParentsH.textContent = themeId === 'chinese-traditional' ? '男方家长 (Groom\'s Parents)' : (isKh ? 'លោកឪពុក អ្នកម្តាយ ខាងកូនប្រុស' : "GROOM'S PARENTS");
+  }
+  if (brideParentsH) {
+    brideParentsH.textContent = themeId === 'chinese-traditional' ? '女方家长 (Bride\'s Parents)' : (isKh ? 'លោកឪពុក អ្នកម្តាយ ខាងកូនស្រី' : "BRIDE'S PARENTS");
+  }
+
   document.getElementById('groom-father').textContent = isKh ? w.groom.father_kh : w.groom.father_en;
   document.getElementById('groom-mother').textContent = isKh ? w.groom.mother_kh : w.groom.mother_en;
   document.getElementById('groom-name-card').textContent = isKh ? w.groom.name_kh : w.groom.name_en;
 
-  document.getElementById('bride-parents-heading').textContent = isKh ? 'លោកឪពុក អ្នកម្តាយ ខាងកូនស្រី' : "Bride's Parents";
   document.getElementById('bride-father').textContent = isKh ? w.bride.father_kh : w.bride.father_en;
   document.getElementById('bride-mother').textContent = isKh ? w.bride.mother_kh : w.bride.mother_en;
   document.getElementById('bride-name-card').textContent = isKh ? w.bride.name_kh : w.bride.name_en;
@@ -401,8 +438,17 @@ function renderDigitalGift() {
   const isKh = currentLang === 'kh';
   const dg = weddingData.digital_gift;
 
-  document.getElementById('gift-title').textContent = isKh ? dg.title_kh : dg.title_en;
-  document.getElementById('gift-description').textContent = isKh ? dg.description_kh : dg.description_en;
+  const themeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+  if (themeId === 'chinese-traditional') {
+    document.getElementById('gift-title').textContent = isKh ? '🧧 ចំណងដៃមង្គលការ (红包 / Red Packet)' : '🧧 AUSPICIOUS RED PACKET & GIFT';
+    document.getElementById('gift-description').textContent = isKh ? 'ពាក្យជូនពរ និងអំណោយចំណងដៃរបស់អ្នក គឺជាពរជ័យដ៏មានតម្លៃបំផុតសម្រាប់យើងខ្ញុំទាំងពីរ។' : 'Your blessings and warm gifts are the most cherished wishes for our new journey together.';
+  } else if (themeId === 'western-modern') {
+    document.getElementById('gift-title').textContent = 'WEDDING REGISTRY & GIFT';
+    document.getElementById('gift-description').textContent = isKh ? 'វត្តមានរបស់អ្នក គឺជាអំណោយដ៏ធំធេងបំផុត។ ប្រសិនបើលោកអ្នកមានបំណងជូនពរតាមរយៈចំណងដៃឌីជីថល៖' : 'Your presence is the greatest gift. If you wish to celebrate with a gift, digital details are below:';
+  } else {
+    document.getElementById('gift-title').textContent = isKh ? dg.title_kh : dg.title_en;
+    document.getElementById('gift-description').textContent = isKh ? dg.description_kh : dg.description_en;
+  }
 
   // Groom account
   document.getElementById('groom-bank-name').textContent = dg.groom_account.bank_name;
