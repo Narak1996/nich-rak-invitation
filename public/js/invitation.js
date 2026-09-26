@@ -88,14 +88,57 @@ function renderAll() {
     document.getElementById('envelope-guest-container').classList.remove('hidden');
   }
 
+  // Monogram initials
+  const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
+  const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
+  const monogramEl = document.getElementById('envelope-monogram');
+  if (monogramEl) {
+    monogramEl.textContent = `${groomInitial} & ${brideInitial}`;
+  }
+
   // Couple names on Envelope
-  document.getElementById('envelope-couple-names').textContent = isKh 
-    ? `${w.groom.name_kh} & ${w.bride.name_kh}`
-    : `${w.groom.name_en} & ${w.bride.name_en}`;
+  const envelopeCoupleEl = document.getElementById('envelope-couple-names');
+  if (envelopeCoupleEl) {
+    if (isKh) {
+      envelopeCoupleEl.innerHTML = `
+        <div class="flex flex-col items-center justify-center">
+          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
+            ${escapeHTML(w.groom.name_kh)}
+          </div>
+          <div class="couple-connector">
+            <span>និង</span>
+          </div>
+          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal">
+            ${escapeHTML(w.bride.name_kh)}
+          </div>
+        </div>
+      `;
+    } else {
+      envelopeCoupleEl.innerHTML = `
+        <div class="font-en-script text-3xl sm:text-4xl text-[#4E3227] leading-tight">
+          <div>${escapeHTML(w.groom.name_en)}</div>
+          <div class="text-xl text-[#C5A059] my-0.5">&</div>
+          <div>${escapeHTML(w.bride.name_en)}</div>
+        </div>
+      `;
+    }
+  }
 
   // Main Page Header Titles
   document.getElementById('main-wedding-title').textContent = isKh ? w.title_kh : w.title_en;
-  document.getElementById('main-couple-kh').textContent = `${w.groom.name_kh} & ${w.bride.name_kh}`;
+  
+  const mainCoupleKhEl = document.getElementById('main-couple-kh');
+  if (mainCoupleKhEl) {
+    mainCoupleKhEl.innerHTML = `
+      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#4E3227]">
+        ${escapeHTML(w.groom.name_kh)}
+      </span>
+      <span class="inline-block mx-2 text-[#C5A059] font-normal text-sm font-khmer-body">និង</span>
+      <span class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#4E3227]">
+        ${escapeHTML(w.bride.name_kh)}
+      </span>
+    `;
+  }
   document.getElementById('main-couple-en').textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
 
   // Quote

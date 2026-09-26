@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Great+Vibes&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Moul&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Siemreap&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Great+Vibes&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Koulen&family=Moul&family=Moulpali&family=Battambang:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Siemreap&display=swap');
 
 :root {
   --primary: #4E3227;
@@ -12,8 +12,8 @@
   --text-dark: #2C2420;
   --text-muted: #7A6F68;
   --border-gold: #E5D5BC;
-  --font-khmer-title: 'Moul', cursive;
-  --font-khmer-body: 'Kantumruy Pro', sans-serif;
+  --font-khmer-title: 'Moul', 'Moulpali', cursive;
+  --font-khmer-body: 'Kantumruy Pro', 'Siemreap', sans-serif;
   --font-en-title: 'Cinzel', serif;
   --font-en-script: 'Great Vibes', cursive;
   --font-en-body: 'Playfair Display', serif;
@@ -74,6 +74,39 @@ body {
   background: linear-gradient(135deg, #4E3227 0%, #8C6239 50%, #4E3227 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Beautiful Couple Name Styling */
+.couple-names-khmer {
+  font-family: var(--font-khmer-title);
+  color: var(--primary);
+  line-height: 1.6;
+  text-shadow: 0 1px 1px rgba(197, 160, 89, 0.2);
+}
+
+.couple-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--accent);
+  font-family: var(--font-khmer-body);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 6px 0;
+}
+
+.couple-connector::before,
+.couple-connector::after {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--accent));
+}
+
+.couple-connector::after {
+  background: linear-gradient(to left, transparent, var(--accent));
 }
 
 /* Floating Music Player Button */
