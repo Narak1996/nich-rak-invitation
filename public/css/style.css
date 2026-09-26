@@ -153,6 +153,39 @@ body.theme-khmer-traditional .khmer-corner-br {
   }
 }
 
+/* Card Panel Styles for Khmer Theme (Solid vs Glass) */
+body.theme-khmer-traditional.panel-style-glass .ornate-border-box,
+body.theme-khmer-traditional.panel-style-glass .bg-white.rounded-3xl,
+body.theme-khmer-traditional.panel-style-glass .bg-white.rounded-2xl {
+  background: rgba(255, 253, 248, 0.84) !important;
+  backdrop-filter: blur(14px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.65) !important;
+  box-shadow: 0 16px 36px rgba(140, 29, 47, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+}
+
+body.theme-khmer-traditional.panel-style-glass .bg-\[\#FAF7F2\] {
+  background: rgba(250, 244, 232, 0.68) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body.theme-khmer-traditional.panel-style-solid .ornate-border-box,
+body.theme-khmer-traditional.panel-style-solid .bg-white.rounded-3xl,
+body.theme-khmer-traditional.panel-style-solid .bg-white.rounded-2xl {
+  background: #FFFDF8 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2px solid #D4AF37 !important;
+  box-shadow: 0 12px 35px rgba(140, 29, 47, 0.08) !important;
+}
+
+body.theme-khmer-traditional.panel-style-solid .bg-\[\#FAF7F2\] {
+  background: #FAF4E8 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* Khmer Inner Cards & Sub-elements */
 body.theme-khmer-traditional .bg-\[\#FAF7F2\] {
   background-color: #FAF4E8 !important;
@@ -887,27 +920,110 @@ body.theme-chinese-traditional .floating-music-btn {
   display: flex;
 }
 
-/* Toast Message */
+/* Toast Notification Banner (Floating Top Center, High Visibility) */
 .toast-notice {
   position: fixed;
-  bottom: 30px;
+  top: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: #4E3227;
+  transform: translateX(-50%) translateY(-100px);
+  background: #1B4332;
   color: #FFF;
-  padding: 12px 24px;
+  padding: 12px 28px;
   border-radius: 999px;
-  border: 1px solid #C5A059;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  font-size: 14px;
-  z-index: 3000;
+  border: 1.5px solid #D4AF37;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+  font-size: 13.5px;
+  font-weight: 600;
+  z-index: 99999;
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .toast-notice.show {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+}
+
+/* ==========================================================================
+   ROMDUOL LUXURY ANIMATIONS
+   ========================================================================== */
+
+/* Romduol Corner Branches: Subtle Golden Shimmer / Breathing Glow */
+@keyframes romduolCornerGleam {
+  0%, 100% {
+    filter: drop-shadow(0 1px 2px rgba(212, 175, 55, 0.25)) brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 2px 9px rgba(212, 175, 55, 0.6)) brightness(1.1);
+    transform: scale(1.02);
+  }
+}
+
+body.theme-khmer-traditional .khmer-corner-tl {
+  animation: romduolCornerGleam 4.5s ease-in-out infinite;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+body.theme-khmer-traditional .khmer-corner-tr {
+  animation: romduolCornerGleam 4.5s ease-in-out infinite 0.75s;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+body.theme-khmer-traditional .khmer-corner-bl {
+  animation: romduolCornerGleam 4.5s ease-in-out infinite 1.5s;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+body.theme-khmer-traditional .khmer-corner-br {
+  animation: romduolCornerGleam 4.5s ease-in-out infinite 2.25s;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+/* On hover card: interactive gentle expansion */
+.ornate-border-box:hover .khmer-corner-tl {
+  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
+}
+.ornate-border-box:hover .khmer-corner-tr {
+  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
+}
+.ornate-border-box:hover .khmer-corner-bl {
+  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
+}
+.ornate-border-box:hover .khmer-corner-br {
+  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
+}
+
+/* Floating Romduol Flower Emblem */
+@keyframes romduolBloomPulse {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 4px 10px rgba(212, 175, 55, 0.35));
+  }
+  50% {
+    transform: scale(1.05) translateY(-5px);
+    filter: drop-shadow(0 8px 20px rgba(212, 175, 55, 0.65));
+  }
+}
+
+#hero-theme-emblem img {
+  animation: romduolBloomPulse 4s ease-in-out infinite;
+}
+
+/* Card Reveal Smooth Entrance */
+.ornate-border-box {
+  animation: cardEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive tweaks */

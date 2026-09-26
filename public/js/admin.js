@@ -92,6 +92,10 @@ async function loadWeddingData() {
     document.getElementById('selected-theme-id').value = currentThemeId;
     updateThemeSelectionUI(currentThemeId);
 
+    // Panel style (solid vs glass)
+    const currentPanelStyle = (w && w.panel_style) || 'glass';
+    updatePanelStyleUI(currentPanelStyle);
+
     // Groom
     document.getElementById('groom-name-kh').value = w.groom.name_kh || '';
     document.getElementById('groom-name-en').value = w.groom.name_en || '';
@@ -403,7 +407,23 @@ function initFormListeners() {
   // Wedding settings save
   document.getElementById('wedding-settings-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const origText = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span class="inline-flex items-center gap-2">
+          <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          កំពុងរក្សាទុក... (Saving...)
+        </span>
+      `;
+    }
+
     const selThemeId = document.getElementById('selected-theme-id').value || 'khmer-traditional';
+    const selPanelStyle = document.getElementById('selected-panel-style').value || 'glass';
     const themeObj = THEME_PRESETS[selThemeId] || THEME_PRESETS['khmer-traditional'];
     const updated = {
       ...weddingData,
@@ -412,6 +432,7 @@ function initFormListeners() {
       },
       wedding: {
         ...weddingData.wedding,
+        panel_style: selPanelStyle,
         groom: {
           ...weddingData.wedding.groom,
           name_kh: document.getElementById('groom-name-kh').value.trim(),
@@ -443,14 +464,41 @@ function initFormListeners() {
       }
     };
 
-    const res = await fetch('/api/wedding', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated)
-    });
-    if (res.ok) {
-      showToast('បានរក្សាទុកព័ត៌មានមង្គលការដោយជោគជ័យ!');
-      loadWeddingData();
+    try {
+      const res = await fetch('/api/wedding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) {
+        if (submitBtn) {
+          submitBtn.innerHTML = `<span>✓ បានរក្សាទុកជោគជ័យ! (Saved Successfully)</span>`;
+          submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+          submitBtn.classList.add('bg-emerald-600', 'text-white');
+          setTimeout(() => {
+            submitBtn.innerHTML = origText;
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('bg-emerald-600');
+            submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+          }, 3000);
+        }
+        showToast('✓ បានរក្សាទុកព័ត៌មានមង្គលការដោយជោគជ័យ!');
+        await loadWeddingData();
+      } else {
+        const err = await res.json().catch(() => ({}));
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origText;
+        }
+        showToast(`⚠️ បរាជ័យក្នុងការរក្សាទុក៖ ${err.error || res.statusText || 'Error saving'}`);
+      }
+    } catch (err) {
+      console.error('Save error:', err);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origText;
+      }
+      showToast(`⚠️ បញ្ហាបណ្តាញក្នុងការរក្សាទុក (Network Error): ${err.message}`);
     }
   });
 
@@ -764,10 +812,19 @@ function closeModals() {
 }
 
 function showToast(msg) {
-  const toast = document.getElementById('toast-notice');
-  toast.textContent = msg;
+  let toast = document.getElementById('toast-notice');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-notice';
+    toast.className = 'toast-notice';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span class="text-base">🔔</span> <span>${escapeHTML(msg)}</span>`;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3500);
 }
 
 function escapeHTML(str) {
@@ -866,6 +923,50 @@ function updateThemeSelectionUI(themeId) {
   const themeObj = THEME_PRESETS[themeId] || THEME_PRESETS['khmer-traditional'];
   const badge = document.getElementById('current-theme-badge');
   if (badge) badge.textContent = themeObj.name;
+}
+
+window.selectPanelStyle = function(style) {
+  document.getElementById('selected-panel-style').value = style;
+  updatePanelStyleUI(style);
+  if (weddingData && weddingData.wedding) {
+    weddingData.wedding.panel_style = style;
+  }
+};
+
+function updatePanelStyleUI(style) {
+  const panelInput = document.getElementById('selected-panel-style');
+  if (panelInput) panelInput.value = style;
+  const isGlass = style === 'glass';
+  const cardSolid = document.getElementById('card-panel-solid');
+  const cardGlass = document.getElementById('card-panel-glass');
+  const badge = document.getElementById('current-panel-style-badge');
+
+  if (cardSolid) {
+    if (!isGlass) {
+      cardSolid.classList.add('border-[#D4AF37]', 'shadow-md');
+      cardSolid.classList.remove('border-gray-200', 'shadow-2xs');
+    } else {
+      cardSolid.classList.remove('border-[#D4AF37]', 'shadow-md');
+      cardSolid.classList.add('border-gray-200', 'shadow-2xs');
+    }
+  }
+
+  if (cardGlass) {
+    if (isGlass) {
+      cardGlass.classList.add('border-[#D4AF37]', 'shadow-md');
+      cardGlass.classList.remove('border-gray-200', 'shadow-2xs');
+    } else {
+      cardGlass.classList.remove('border-[#D4AF37]', 'shadow-md');
+      cardGlass.classList.add('border-gray-200', 'shadow-2xs');
+    }
+  }
+
+  if (badge) {
+    badge.textContent = isGlass ? 'Glass Style (កញ្ចក់ថ្លា)' : 'Solid Style (ពណ៌រឹង)';
+    badge.className = isGlass 
+      ? 'px-3 py-1 bg-white rounded-full text-xs font-bold text-[#8C1D2F] border border-[#E5D5BC]' 
+      : 'px-3 py-1 bg-white rounded-full text-xs font-bold text-[#4E3227] border border-[#E5D5BC]';
+  }
 }
 
 window.uploadAudio = async function(fileInput, targetInputId) {

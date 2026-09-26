@@ -77,9 +77,10 @@ function renderAll() {
   if (!weddingData) return;
   const w = weddingData.wedding;
 
-  // Set Theme Class on Body
+  // Set Theme & Panel Style Class on Body
   const themeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
-  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId}`;
+  const panelStyle = (w && w.panel_style) || 'glass';
+  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId} panel-style-${panelStyle}`;
 
   if (weddingData.theme) {
     document.documentElement.style.setProperty('--primary', weddingData.theme.primaryColor || '#8C1D2F');
@@ -674,29 +675,35 @@ function initCountdown() {
   setInterval(update, 1000);
 }
 
-// Falling Golden Petals
+// Falling Golden Romduol Petals
 function initPetals() {
-  const colors = ['#C5A059', '#E5C384', '#F4E3C1', '#D4AF37'];
+  const colors = [
+    'linear-gradient(135deg, #FFF2BF 0%, #E5BE53 100%)',
+    'linear-gradient(135deg, #F9E2AF 0%, #D4AF37 100%)',
+    'linear-gradient(135deg, #FFFFFF 0%, #F5DE88 100%)',
+    'linear-gradient(135deg, #EAD7A1 0%, #C29424 100%)'
+  ];
   const container = document.body;
 
   function createPetal() {
     if (document.hidden) return;
     const petal = document.createElement('div');
     petal.className = 'petal-fall';
-    const size = Math.random() * 8 + 6;
+    const size = Math.random() * 9 + 8;
     petal.style.width = `${size}px`;
-    petal.style.height = `${size * 1.4}px`;
+    petal.style.height = `${size * 1.5}px`;
     petal.style.left = `${Math.random() * 100}vw`;
-    petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-    petal.style.borderRadius = '50% 0 50% 50%';
-    petal.style.animationDuration = `${Math.random() * 6 + 6}s`;
-    petal.style.opacity = (Math.random() * 0.5 + 0.3).toString();
+    petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+    petal.style.borderRadius = '55% 45% 70% 30% / 30% 60% 40% 70%';
+    petal.style.boxShadow = '0 2px 6px rgba(212, 175, 55, 0.25)';
+    petal.style.animationDuration = `${Math.random() * 5 + 7}s`;
+    petal.style.opacity = (Math.random() * 0.4 + 0.4).toString();
 
     container.appendChild(petal);
-    setTimeout(() => petal.remove(), 12000);
+    setTimeout(() => petal.remove(), 13000);
   }
 
-  setInterval(createPetal, 1200);
+  setInterval(createPetal, 1000);
 }
 
 // Add to Calendar
@@ -891,7 +898,8 @@ window.switchThemeLive = async function(themeId) {
   weddingData.theme = { ...themeObj };
 
   // Set Theme Class on Body
-  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId}`;
+  const panelStyle = (weddingData.wedding && weddingData.wedding.panel_style) || 'glass';
+  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId} panel-style-${panelStyle}`;
   document.documentElement.style.setProperty('--primary', themeObj.primaryColor);
   document.documentElement.style.setProperty('--accent', themeObj.accentColor);
 
