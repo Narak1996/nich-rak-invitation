@@ -108,39 +108,49 @@ body.theme-khmer-traditional .khmer-corner-bl,
 body.theme-khmer-traditional .khmer-corner-br {
   display: block !important;
   border: none !important;
-  width: 56px !important;
-  height: 56px !important;
+  width: 76px !important;
+  height: 76px !important;
   background-image: url('/images/components/khmer-corner.png') !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
   pointer-events: none !important;
-  filter: drop-shadow(0 1px 3px rgba(212, 175, 55, 0.25)) !important;
+  filter: drop-shadow(0 1px 2px rgba(212, 175, 55, 0.2)) !important;
   z-index: 2 !important;
 }
 body.theme-khmer-traditional .khmer-corner-tl {
-  top: 3px !important;
-  left: 3px !important;
+  top: 2px !important;
+  left: 2px !important;
   transform: none !important;
 }
 body.theme-khmer-traditional .khmer-corner-tr {
-  top: 3px !important;
-  right: 3px !important;
+  top: 2px !important;
+  right: 2px !important;
   left: auto !important;
   transform: scaleX(-1) !important;
 }
 body.theme-khmer-traditional .khmer-corner-bl {
-  bottom: 3px !important;
-  left: 3px !important;
+  bottom: 2px !important;
+  left: 2px !important;
   top: auto !important;
   transform: scaleY(-1) !important;
 }
 body.theme-khmer-traditional .khmer-corner-br {
-  bottom: 3px !important;
-  right: 3px !important;
+  bottom: 2px !important;
+  right: 2px !important;
   top: auto !important;
   left: auto !important;
   transform: scale(-1, -1) !important;
+}
+
+@media (max-width: 640px) {
+  body.theme-khmer-traditional .khmer-corner-tl,
+  body.theme-khmer-traditional .khmer-corner-tr,
+  body.theme-khmer-traditional .khmer-corner-bl,
+  body.theme-khmer-traditional .khmer-corner-br {
+    width: 56px !important;
+    height: 56px !important;
+  }
 }
 
 /* Khmer Inner Cards & Sub-elements */
@@ -769,8 +779,8 @@ body.theme-chinese-traditional .floating-music-btn {
 .khmer-corner-bl,
 .khmer-corner-br {
   position: absolute;
-  width: 54px;
-  height: 54px;
+  width: 76px;
+  height: 76px;
   background-image: url('/images/components/khmer-corner.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -780,24 +790,34 @@ body.theme-chinese-traditional .floating-music-btn {
   filter: drop-shadow(0 1px 2px rgba(197, 160, 89, 0.2));
 }
 .khmer-corner-tl {
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   transform: none;
 }
 .khmer-corner-tr {
-  top: 3px;
-  right: 3px;
+  top: 2px;
+  right: 2px;
   transform: scaleX(-1);
 }
 .khmer-corner-bl {
-  bottom: 3px;
-  left: 3px;
+  bottom: 2px;
+  left: 2px;
   transform: scaleY(-1);
 }
 .khmer-corner-br {
-  bottom: 3px;
-  right: 3px;
+  bottom: 2px;
+  right: 2px;
   transform: scale(-1, -1);
+}
+
+@media (max-width: 640px) {
+  .khmer-corner-tl,
+  .khmer-corner-tr,
+  .khmer-corner-bl,
+  .khmer-corner-br {
+    width: 56px;
+    height: 56px;
+  }
 }
 
 /* Khmer Numbers Typography: Modern & Legible Glyphs */
