@@ -192,8 +192,6 @@ function renderAll() {
   }
 
   // Monogram initials on Envelope
-  const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
-  const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
   const monogramEl = document.getElementById('envelope-monogram');
   if (monogramEl) {
     if (themeId === 'chinese-traditional') {
@@ -437,61 +435,97 @@ function closeLightbox() {
 function initEventListeners() {
   // Wax seal envelope open
   const waxBtn = document.getElementById('btn-open-envelope');
-  waxBtn.addEventListener('click', () => {
-    openEnvelope();
-  });
+  if (waxBtn) {
+    waxBtn.addEventListener('click', () => {
+      openEnvelope();
+    });
+  }
 
   // Music toggle
   const musicBtn = document.getElementById('floating-music-btn');
-  musicBtn.addEventListener('click', () => {
-    toggleMusic();
-  });
+  if (musicBtn) {
+    musicBtn.addEventListener('click', () => {
+      toggleMusic();
+    });
+  }
 
   // Language toggle
-  document.getElementById('lang-toggle-btn').addEventListener('click', () => {
-    currentLang = currentLang === 'kh' ? 'en' : 'kh';
-    document.getElementById('current-lang-label').textContent = currentLang === 'kh' ? 'ខ្មែរ' : 'EN';
-    renderAll();
-  });
+  const langBtn = document.getElementById('lang-toggle-btn');
+  if (langBtn) {
+    langBtn.addEventListener('click', () => {
+      currentLang = currentLang === 'kh' ? 'en' : 'kh';
+      const label = document.getElementById('current-lang-label');
+      if (label) label.textContent = currentLang === 'kh' ? 'ខ្មែរ' : 'EN';
+      renderAll();
+    });
+  }
+
+  // Theme dropdown toggle on click (mobile friendly)
+  const themeBtn = document.getElementById('theme-menu-btn');
+  const themeDropdown = document.getElementById('theme-menu-dropdown');
+  if (themeBtn && themeDropdown) {
+    themeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      themeDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', () => {
+      themeDropdown.classList.add('hidden');
+    });
+  }
 
   // Lightbox close
-  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-  document.getElementById('lightbox-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'lightbox-modal') closeLightbox();
-  });
+  const lbClose = document.getElementById('lightbox-close');
+  if (lbClose) lbClose.addEventListener('click', closeLightbox);
+  const lbModal = document.getElementById('lightbox-modal');
+  if (lbModal) {
+    lbModal.addEventListener('click', (e) => {
+      if (e.target.id === 'lightbox-modal') closeLightbox();
+    });
+  }
 
   // Copy account buttons
-  document.getElementById('btn-copy-groom-acc').addEventListener('click', () => {
-    const acc = weddingData.digital_gift.groom_account.account_number;
-    navigator.clipboard.writeText(acc);
-    showToast(currentLang === 'kh' ? 'បានចម្លងលេខគណនីជោគជ័យ!' : 'Account number copied!');
-  });
+  const groomCopyBtn = document.getElementById('btn-copy-groom-acc');
+  if (groomCopyBtn) {
+    groomCopyBtn.addEventListener('click', () => {
+      const acc = weddingData?.digital_gift?.groom_account?.account_number || '';
+      navigator.clipboard.writeText(acc);
+      showToast(currentLang === 'kh' ? 'បានចម្លងលេខគណនីជោគជ័យ!' : 'Account number copied!');
+    });
+  }
 
-  document.getElementById('btn-copy-bride-acc').addEventListener('click', () => {
-    const acc = weddingData.digital_gift.bride_account.account_number;
-    navigator.clipboard.writeText(acc);
-    showToast(currentLang === 'kh' ? 'បានចម្លងលេខគណនីជោគជ័យ!' : 'Account number copied!');
-  });
+  const brideCopyBtn = document.getElementById('btn-copy-bride-acc');
+  if (brideCopyBtn) {
+    brideCopyBtn.addEventListener('click', () => {
+      const acc = weddingData?.digital_gift?.bride_account?.account_number || '';
+      navigator.clipboard.writeText(acc);
+      showToast(currentLang === 'kh' ? 'បានចម្លងលេខគណនីជោគជ័យ!' : 'Account number copied!');
+    });
+  }
 
   // Add to Calendar Button
-  document.getElementById('btn-add-calendar').addEventListener('click', addToCalendar);
+  const calBtn = document.getElementById('btn-add-calendar');
+  if (calBtn) calBtn.addEventListener('click', addToCalendar);
 
   // RSVP Form submission
-  document.getElementById('rsvp-form').addEventListener('submit', handleRSVPSubmit);
+  const rsvpForm = document.getElementById('rsvp-form');
+  if (rsvpForm) rsvpForm.addEventListener('submit', handleRSVPSubmit);
 
   // Wish Form submission
-  document.getElementById('wish-form').addEventListener('submit', handleWishSubmit);
+  const wishForm = document.getElementById('wish-form');
+  if (wishForm) wishForm.addEventListener('submit', handleWishSubmit);
 }
 
 // Open Envelope
 function openEnvelope() {
   const screen = document.getElementById('envelope-screen');
-  screen.classList.add('opened');
+  if (screen) screen.classList.add('opened');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // Play music on first interaction
   playMusic();
 }
+window.openEnvelope = openEnvelope;
+window.toggleMusic = toggleMusic;
 
 // Audio Control
 function playMusic() {

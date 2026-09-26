@@ -1,13 +1,13 @@
 {
   "theme": {
-    "id": "khmer-traditional",
-    "name": "Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្កាឈូក & មាស)",
-    "primaryColor": "#8C1D2F",
-    "accentColor": "#D4AF37",
-    "secondaryColor": "#B22B42",
-    "bgColor": "#FAF6ED",
-    "emblem": "🪷",
-    "sealEmblem": "lotus"
+    "id": "chinese-traditional",
+    "name": "Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ផ្កាម៉ូនៀ)",
+    "primaryColor": "#A81822",
+    "accentColor": "#FFD700",
+    "secondaryColor": "#C72535",
+    "bgColor": "#FFF7F7",
+    "emblem": "囍",
+    "sealEmblem": "shuangxi"
   },
   "wedding": {
     "title_kh": "សិរីសួស្តី អាពាហ៍ពិពាហ៍",

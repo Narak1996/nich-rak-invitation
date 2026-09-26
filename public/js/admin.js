@@ -549,10 +549,11 @@ function initFormListeners() {
     window.location.href = '/login';
   });
 
-  // Color preset selector
+  // Color preset selector (legacy fallback)
   document.querySelectorAll('input[name="preset-color"]').forEach(r => {
     r.addEventListener('change', (e) => {
-      document.getElementById('setting-primary-color').value = e.target.value;
+      const el = document.getElementById('setting-primary-color');
+      if (el) el.value = e.target.value;
     });
   });
 
