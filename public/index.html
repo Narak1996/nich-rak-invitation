@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>សិរីសួស្តី អាពាហ៍ពិពាហ៍ | Wedding E-Invitation</title>
+  <meta name="description" content="កម្មវិធីមង្គលការ - Digital Wedding Invitation Card">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bronze: '#4E3227',
+            gold: '#C5A059',
+            goldLight: '#E5C384',
+            cream: '#FAF7F2'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="wedding-bg-pattern min-h-screen relative text-[#2C2420]">
+
+  <!-- ================= ENVELOPE OPENING OVERLAY ================= -->
+  <div id="envelope-screen">
+    <div class="envelope-card">
+      <!-- Decorative Ornaments -->
+      <div class="khmer-corner-tl"></div>
+      <div class="khmer-corner-tr"></div>
+      <div class="khmer-corner-bl"></div>
+      <div class="khmer-corner-br"></div>
+
+      <!-- Wedding Monogram -->
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full border border-[#C5A059] flex items-center justify-center bg-[#FAF7F2] shadow-inner">
+        <span class="font-en-title text-xl font-bold gold-gradient-text tracking-widest">N&S</span>
+      </div>
+
+      <p class="font-khmer-title text-sm text-[#C5A059] uppercase tracking-widest mb-1" id="envelope-sub">
+        លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍
+      </p>
+
+      <h1 class="font-en-script text-3xl md:text-4xl text-[#4E3227] mb-4" id="envelope-couple-names">
+        Chan Narak & Ly Sreymech
+      </h1>
+
+      <!-- Personalized Guest Badge (Shown if guest link) -->
+      <div id="envelope-guest-container" class="my-4 py-3 px-4 bg-[#FAF7F2] rounded-xl border border-[#E5D5BC] inline-block max-w-xs mx-auto hidden">
+        <span class="text-xs text-[#7A6F68] block font-khmer-body" id="envelope-invite-text">សូមគោរពអញ្ជើញ</span>
+        <span class="text-base font-bold text-[#4E3227] font-khmer-title block mt-1" id="envelope-guest-name">
+          ភ្ញៀវកិត្តិយស
+        </span>
+      </div>
+
+      <p class="text-xs text-[#7A6F68] max-w-xs mx-auto mb-8 font-khmer-body leading-relaxed">
+        វត្តមានដ៏ខ្ពង់ខ្ពស់របស់លោកអ្នក គឺជាកិត្តិយសដ៏ធំធេងសម្រាប់យើងខ្ញុំទាំងពីរ។
+      </p>
+
+      <!-- Wax Seal Open Button -->
+      <div class="wax-seal-btn" id="btn-open-envelope" title="ចុចដើម្បីបើកសំបុត្រ">
+        <div class="text-center text-white">
+          <svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-[9px] font-bold tracking-wider uppercase block mt-0.5">OPEN</span>
+        </div>
+      </div>
+      <p class="text-[11px] text-[#A67C1E] mt-3 font-medium animate-pulse">ចុចត្រាដើម្បីបើកសំបុត្រ / Tap to Open</p>
+    </div>
+  </div>
+
+  <!-- ================= TOP FLOATING NAVIGATION BAR ================= -->
+  <header class="floating-top-bar">
+    <!-- Language Switcher -->
+    <button id="lang-toggle-btn" class="flex items-center gap-1.5 px-3 py-1 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-full text-xs font-bold text-[#4E3227] transition border border-[#E5D5BC]">
+      <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+      <span id="current-lang-label">ខ្មែរ</span>
+    </button>
+
+    <div class="h-4 w-px bg-[#E5D5BC]"></div>
+
+    <!-- Quick Navigation Links -->
+    <nav class="flex items-center gap-3 text-xs font-medium text-[#4E3227]">
+      <a href="#ceremony-section" class="hover:text-[#C5A059] transition" data-kh="កម្មវិធី" data-en="Agenda">កម្មវិធី</a>
+      <a href="#venue-section" class="hover:text-[#C5A059] transition" data-kh="ទីតាំង" data-en="Venue">ទីតាំង</a>
+      <a href="#gallery-section" class="hover:text-[#C5A059] transition" data-kh="រូបថត" data-en="Gallery">រូបថត</a>
+      <a href="#rsvp-section" class="px-2.5 py-1 bg-[#4E3227] text-white rounded-full hover:bg-[#6E4939] transition" data-kh="ចូលរួម" data-en="RSVP">ចូលរួម</a>
+    </nav>
+
+    <div class="h-4 w-px bg-[#E5D5BC]"></div>
+
+    <!-- Admin Link -->
+    <a href="/admin" title="Admin Panel" class="text-[#7A6F68] hover:text-[#4E3227] p-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+    </a>
+  </header>
+
+  <!-- ================= FLOATING MUSIC PLAYER BUTTON ================= -->
+  <button id="floating-music-btn" class="floating-music-btn" title="តន្ត្រីមង្គលការ / Background Music">
+    <svg id="music-icon-play" class="w-6 h-6 text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+    </svg>
+    <svg id="music-icon-pause" class="w-6 h-6 text-amber-200 hidden" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
+
+  <!-- ================= MAIN INVITATION CARD CONTENT ================= -->
+  <main class="max-w-2xl mx-auto px-4 pt-20 pb-28">
+
+    <!-- HERO SECTION -->
+    <section class="text-center mb-12">
+      <!-- Traditional Floral Header Motif -->
+      <div class="flex items-center justify-center gap-3 mb-3">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
+        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-semibold" data-kh="សិរីសួស្តី អាពាហ៍ពិពាហ៍" data-en="Wedding Celebration">
+          សិរីសួស្តី អាពាហ៍ពិពាហ៍
+        </span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
+      </div>
+
+      <h2 id="main-wedding-title" class="font-khmer-title text-2xl md:text-3xl text-[#4E3227] mb-2 leading-tight">
+        សិរីសួស្តី អាពាហ៍ពិពាហ៍
+      </h2>
+
+      <p class="font-en-script text-4xl md:text-5xl text-[#C5A059] my-2" id="main-couple-en">
+        Chan Narak & Ly Sreymech
+      </p>
+
+      <p class="font-khmer-title text-lg text-[#4E3227] tracking-wider mb-6" id="main-couple-kh">
+        ចាន់ ណារ៉ាក់ & លី ស្រីម៉ិច
+      </p>
+
+      <!-- Main Couple Portrait with Ornate Frame -->
+      <div class="relative max-w-md mx-auto mb-6">
+        <div class="p-3 bg-white rounded-3xl shadow-xl border border-[#E5D5BC]">
+          <div class="overflow-hidden rounded-2xl aspect-4/5 relative group">
+            <img id="main-couple-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80" alt="Couple" class="w-full h-full object-cover">
+          </div>
+        </div>
+      </div>
+
+      <!-- Couple Quote -->
+      <p id="couple-quote" class="text-sm italic text-[#7A6F68] max-w-md mx-auto leading-relaxed px-4 font-khmer-body">
+        «សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»
+      </p>
+    </section>
+
+    <!-- PARENTS & COUPLE PRESENTATION -->
+    <section class="ornate-border-box p-6 md:p-8 mb-10 text-center">
+      <div class="khmer-corner-tl"></div>
+      <div class="khmer-corner-tr"></div>
+      <div class="khmer-corner-bl"></div>
+      <div class="khmer-corner-br"></div>
+
+      <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-4" data-kh="កិត្តិយសដ៏ថ្លៃថ្លា" data-en="With Honor & Blessing">
+        កិត្តិយសដ៏ថ្លៃថ្លា
+      </span>
+
+      <p class="text-xs text-[#7A6F68] mb-6 font-khmer-body" data-kh="យើងខ្ញុំមានកិត្តិយស សូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស" data-en="We cordially request the pleasure of your company to celebrate our wedding">
+        យើងខ្ញុំមានកិត្តិយស សូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស
+      </p>
+
+      <!-- Two Columns: Groom Side & Bride Side -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-6">
+        <!-- Groom Side -->
+        <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]/60">
+          <div class="w-20 h-20 mx-auto rounded-full overflow-hidden border-2 border-[#C5A059] shadow-sm mb-3">
+            <img id="groom-img" src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80" alt="Groom" class="w-full h-full object-cover">
+          </div>
+          <h3 id="groom-parents-heading" class="text-xs font-bold text-[#C5A059] uppercase tracking-wider mb-2">
+            លោកឪពុក អ្នកម្តាយ ខាងកូនប្រុស
+          </h3>
+          <p id="groom-father" class="text-sm font-semibold text-[#4E3227]">លោក ចាន់ សុខុម</p>
+          <p id="groom-mother" class="text-sm font-semibold text-[#4E3227] mb-3">លោកស្រី ម៉ៅ សុផល</p>
+          <div class="h-px w-16 bg-[#E5D5BC] mx-auto my-2"></div>
+          <span class="text-xs text-[#7A6F68] block" data-kh="កូនប្រុសនាម" data-en="Groom">កូនប្រុសនាម</span>
+          <h4 id="groom-name-card" class="font-khmer-title text-base text-[#4E3227] mt-1 font-bold">ចាន់ ណារ៉ាក់</h4>
+        </div>
+
+        <!-- Bride Side -->
+        <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]/60">
+          <div class="w-20 h-20 mx-auto rounded-full overflow-hidden border-2 border-[#C5A059] shadow-sm mb-3">
+            <img id="bride-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" alt="Bride" class="w-full h-full object-cover">
+          </div>
+          <h3 id="bride-parents-heading" class="text-xs font-bold text-[#C5A059] uppercase tracking-wider mb-2">
+            លោកឪពុក អ្នកម្តាយ ខាងកូនស្រី
+          </h3>
+          <p id="bride-father" class="text-sm font-semibold text-[#4E3227]">លោក លី ហេង</p>
+          <p id="bride-mother" class="text-sm font-semibold text-[#4E3227] mb-3">លោកស្រី កែវ រតនា</p>
+          <div class="h-px w-16 bg-[#E5D5BC] mx-auto my-2"></div>
+          <span class="text-xs text-[#7A6F68] block" data-kh="កូនស្រីនាម" data-en="Bride">កូនស្រីនាម</span>
+          <h4 id="bride-name-card" class="font-khmer-title text-base text-[#4E3227] mt-1 font-bold">លី ស្រីម៉ិច</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN SECTION -->
+    <section class="text-center mb-10">
+      <div class="inline-block px-4 py-1 rounded-full bg-white border border-[#E5D5BC] shadow-xs text-xs font-semibold text-[#C5A059] mb-4" data-kh="រាប់ថយក្រោយដល់ថ្ងៃមង្គល" data-en="Counting Down to the Big Day">
+        រាប់ថយក្រោយដល់ថ្ងៃមង្គល
+      </div>
+
+      <div class="grid grid-cols-4 gap-3 max-w-sm mx-auto">
+        <div class="countdown-box">
+          <span id="cd-days" class="text-2xl md:text-3xl font-bold text-[#4E3227] block">00</span>
+          <span class="text-[10px] uppercase text-[#7A6F68] font-medium" data-kh="ថ្ងៃ" data-en="Days">ថ្ងៃ</span>
+        </div>
+        <div class="countdown-box">
+          <span id="cd-hours" class="text-2xl md:text-3xl font-bold text-[#4E3227] block">00</span>
+          <span class="text-[10px] uppercase text-[#7A6F68] font-medium" data-kh="ម៉ោង" data-en="Hours">ម៉ោង</span>
+        </div>
+        <div class="countdown-box">
+          <span id="cd-minutes" class="text-2xl md:text-3xl font-bold text-[#4E3227] block">00</span>
+          <span class="text-[10px] uppercase text-[#7A6F68] font-medium" data-kh="នាទី" data-en="Minutes">នាទី</span>
+        </div>
+        <div class="countdown-box">
+          <span id="cd-seconds" class="text-2xl md:text-3xl font-bold text-[#C5A059] block">00</span>
+          <span class="text-[10px] uppercase text-[#7A6F68] font-medium" data-kh="វិនាទី" data-en="Seconds">វិនាទី</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENT DATE & VENUE SECTION -->
+    <section id="venue-section" class="ornate-border-box p-6 md:p-8 mb-10 text-center">
+      <div class="khmer-corner-tl"></div>
+      <div class="khmer-corner-tr"></div>
+      <div class="khmer-corner-bl"></div>
+      <div class="khmer-corner-br"></div>
+
+      <div class="w-12 h-12 rounded-full bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center mx-auto mb-3 shadow-xs">
+        <svg class="w-6 h-6 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </div>
+
+      <h3 class="font-khmer-title text-xl text-[#4E3227] mb-2" data-kh="កាលបរិច្ឆេទ និងទីតាំង" data-en="Date & Venue">
+        កាលបរិច្ឆេទ និងទីតាំង
+      </h3>
+
+      <!-- Solar & Lunar Date -->
+      <div class="my-4">
+        <p id="event-date-solar" class="text-base font-bold text-[#4E3227]">
+          ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦
+        </p>
+        <p id="event-date-lunar" class="text-xs text-[#7A6F68] mt-1 font-khmer-body">
+          ត្រូវនឹងថ្ងៃ ៥រោច ខែកត្តិក ឆ្នាំរោង ឆស័ក ព.ស. ២៥៧០
+        </p>
+      </div>
+
+      <!-- Add to Calendar Button -->
+      <button id="btn-add-calendar" class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] rounded-full text-xs font-semibold shadow-2xs transition mb-6">
+        <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        <span data-kh="កត់ត្រាក្នុងប្រតិទិន (Add to Calendar)" data-en="Add to Google Calendar">កត់ត្រាក្នុងប្រតិទិន (Add to Calendar)</span>
+      </button>
+
+      <div class="h-px w-3/4 bg-[#E5D5BC] mx-auto my-4"></div>
+
+      <!-- Venue Details -->
+      <div class="mb-6">
+        <h4 id="venue-name" class="font-khmer-title text-base font-bold text-[#4E3227]">
+          មជ្ឈមណ្ឌលសន្និបាត និងពិព័រណ៍ ព្រីមៀរ សែនសុខ (អគារ A)
+        </h4>
+        <p id="venue-address" class="text-xs text-[#7A6F68] mt-1 max-w-md mx-auto font-khmer-body">
+          ផ្លូវ ១០០៣ សង្កាត់ភ្នំពេញថ្មី ខណ្ឌសែនសុខ រាជធានីភ្នំពេញ
+        </p>
+      </div>
+
+      <!-- Google Maps Embed -->
+      <div class="rounded-2xl overflow-hidden shadow-sm border border-[#E5D5BC] mb-4 aspect-16/9 w-full">
+        <iframe id="map-iframe" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+
+      <!-- Open in Google Maps Button -->
+      <a id="btn-google-maps" href="#" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white rounded-full text-xs font-bold shadow-md transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span data-kh="បើកមើលក្នុង Google Maps" data-en="Open in Google Maps">បើកមើលក្នុង Google Maps</span>
+      </a>
+    </section>
+
+    <!-- AGENDA & CEREMONY SCHEDULE -->
+    <section id="ceremony-section" class="mb-10">
+      <div class="text-center mb-8">
+        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="លំដាប់លំដោយ" data-en="Program Schedule">
+          លំដាប់លំដោយ
+        </span>
+        <h3 class="font-khmer-title text-2xl text-[#4E3227]" data-kh="កម្មវិធីមង្គលការ" data-en="Wedding Agenda">
+          កម្មវិធីមង្គលការ
+        </h3>
+      </div>
+
+      <!-- Timeline Container -->
+      <div id="agenda-container" class="timeline-stem max-w-lg mx-auto">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- PRE-WEDDING PHOTO GALLERY -->
+    <section id="gallery-section" class="mb-10">
+      <div class="text-center mb-8">
+        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="អនុស្សាវរីយ៍" data-en="Sweet Memories">
+          អនុស្សាវរីយ៍
+        </span>
+        <h3 class="font-khmer-title text-2xl text-[#4E3227]" data-kh="កម្រងរូបភាពអនុស្សាវរីយ៍" data-en="Photo Gallery">
+          កម្រងរូបភាពអនុស្សាវរីយ៍
+        </h3>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div id="gallery-container" class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Video Embed (Optional) -->
+      <div id="video-container" class="mt-8 ornate-border-box p-4 rounded-2xl hidden">
+        <h4 class="font-khmer-title text-sm text-center text-[#4E3227] mb-3" data-kh="វីដេអូអនុស្សាវរីយ៍ (Our Story)" data-en="Love Story Video">
+          វីដេអូអនុស្សាវរីយ៍ (Our Story)
+        </h4>
+        <div class="aspect-16/9 rounded-xl overflow-hidden">
+          <iframe id="wedding-video-iframe" class="w-full h-full" src="" title="Wedding Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIGITAL GIFTING SECTION (CAMBODIA KHQR / ABA) -->
+    <section id="digital-gift-section" class="ornate-border-box p-6 md:p-8 mb-10 text-center">
+      <div class="khmer-corner-tl"></div>
+      <div class="khmer-corner-tr"></div>
+      <div class="khmer-corner-bl"></div>
+      <div class="khmer-corner-br"></div>
+
+      <div class="w-12 h-12 rounded-full bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center mx-auto mb-3 shadow-xs">
+        <svg class="w-6 h-6 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+
+      <h3 id="gift-title" class="font-khmer-title text-xl text-[#4E3227] mb-2">
+        ចងដៃតាមប្រព័ន្ធឌីជីថល (Digital Wedding Blessing)
+      </h3>
+
+      <p id="gift-description" class="text-xs text-[#7A6F68] max-w-md mx-auto mb-8 font-khmer-body leading-relaxed">
+        វត្តមានដ៏ឧត្តុង្គឧត្តមរបស់លោកអ្នកជាកិត្តិយសដ៏ថ្លៃថ្លាបំផុត។ ប្រសិនបើលោកអ្នកមានបំណងជូនពរតាមរយៈការចងដៃឌីជីថល លោកអ្នកអាចស្កេន KHQR ខាងក្រោមបាន។
+      </p>
+
+      <!-- Two QR Cards: Groom & Bride -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-lg mx-auto">
+        <!-- Groom KHQR Card -->
+        <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC] shadow-xs text-center">
+          <span class="text-xs font-bold text-[#C5A059] uppercase block mb-2" data-kh="ខាងកូនប្រុស" data-en="Groom's Side">ខាងកូនប្រុស</span>
+          <div class="bg-white p-3 rounded-xl border border-[#E5D5BC] inline-block shadow-inner mb-3">
+            <img id="groom-qr-img" src="" alt="Groom QR" class="w-36 h-36 object-contain mx-auto">
+          </div>
+          <h5 id="groom-bank-name" class="text-xs font-bold text-[#4E3227]">ABA Bank / KHQR</h5>
+          <p id="groom-acc-name" class="text-xs font-semibold text-[#7A6F68] uppercase mt-0.5">CHAN NARAK</p>
+          <p id="groom-acc-num" class="text-sm font-mono font-bold text-[#4E3227] my-1">001 888 999 (USD)</p>
+          <button id="btn-copy-groom-acc" class="mt-2 text-xs px-3 py-1 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-full text-[#4E3227] font-medium shadow-2xs inline-flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span data-kh="ចម្លងលេខគណនី" data-en="Copy Number">ចម្លងលេខគណនី</span>
+          </button>
+        </div>
+
+        <!-- Bride KHQR Card -->
+        <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC] shadow-xs text-center">
+          <span class="text-xs font-bold text-[#C5A059] uppercase block mb-2" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</span>
+          <div class="bg-white p-3 rounded-xl border border-[#E5D5BC] inline-block shadow-inner mb-3">
+            <img id="bride-qr-img" src="" alt="Bride QR" class="w-36 h-36 object-contain mx-auto">
+          </div>
+          <h5 id="bride-bank-name" class="text-xs font-bold text-[#4E3227]">Bakong / ACLEDA</h5>
+          <p id="bride-acc-name" class="text-xs font-semibold text-[#7A6F68] uppercase mt-0.5">LY SREYMECH</p>
+          <p id="bride-acc-num" class="text-sm font-mono font-bold text-[#4E3227] my-1">012 345 678 (USD)</p>
+          <button id="btn-copy-bride-acc" class="mt-2 text-xs px-3 py-1 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-full text-[#4E3227] font-medium shadow-2xs inline-flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span data-kh="ចម្លងលេខគណនី" data-en="Copy Number">ចម្លងលេខគណនី</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RSVP SECTION -->
+    <section id="rsvp-section" class="ornate-border-box p-6 md:p-8 mb-10">
+      <div class="khmer-corner-tl"></div>
+      <div class="khmer-corner-tr"></div>
+      <div class="khmer-corner-bl"></div>
+      <div class="khmer-corner-br"></div>
+
+      <div class="text-center mb-6">
+        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="ការឆ្លើយតប" data-en="RSVP">
+          ការឆ្លើយតប
+        </span>
+        <h3 class="font-khmer-title text-2xl text-[#4E3227]" data-kh="ឆ្លើយតបការចូលរួម" data-en="Confirm Your Attendance">
+          ឆ្លើយតបការចូលរួម
+        </h3>
+        <p class="text-xs text-[#7A6F68] mt-1 font-khmer-body" data-kh="សូមមេត្តាឆ្លើយតបមុនថ្ងៃពិធី ដើម្បីភាពងាយស្រួលក្នុងការរៀបចំទទួលបដិសណ្ឋារកិច្ច" data-en="Please kindly RSVP to help us accommodate you warmly">
+          សូមមេត្តាឆ្លើយតបមុនថ្ងៃពិធី ដើម្បីភាពងាយស្រួលក្នុងការរៀបចំទទួលបដិសណ្ឋារកិច្ច
+        </p>
+      </div>
+
+      <form id="rsvp-form" class="space-y-4 max-w-md mx-auto">
+        <!-- Guest Name -->
+        <div>
+          <label class="block text-xs font-bold text-[#4E3227] mb-1" data-kh="ឈ្មោះភ្ញៀវកិត្តិយស *" data-en="Guest Name *">ឈ្មោះភ្ញៀវកិត្តិយស *</label>
+          <input type="text" id="rsvp-name" required class="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none focus:border-[#C5A059]" placeholder="ឧ. លោក សុខ ដារ៉ា">
+        </div>
+
+        <!-- Phone / Telegram -->
+        <div>
+          <label class="block text-xs font-bold text-[#4E3227] mb-1" data-kh="លេខទូរស័ព្ទ / Telegram" data-en="Phone / Telegram">លេខទូរស័ព្ទ / Telegram</label>
+          <input type="tel" id="rsvp-phone" class="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none focus:border-[#C5A059]" placeholder="012 345 678">
+        </div>
+
+        <!-- Side & Attendance -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#4E3227] mb-1" data-kh="ភ្ញៀវខាងណា?" data-en="Whose Guest?">ភ្ញៀវខាងណា?</label>
+            <select id="rsvp-side" class="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none focus:border-[#C5A059]">
+              <option value="groom" data-kh="ខាងកូនប្រុស" data-en="Groom's Side">ខាងកូនប្រុស</option>
+              <option value="bride" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#4E3227] mb-1" data-kh="ស្ថានភាពចូលរួម" data-en="Attendance">ស្ថានភាពចូលរួម</label>
+            <select id="rsvp-status" class="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none focus:border-[#C5A059]">
+              <option value="confirmed" data-kh="ចូលរួមដោយរីករាយ" data-en="Joyfully Attend">ចូលរួមដោយរីករាយ</option>
+              <option value="declined" data-kh="មិនអាចចូលរួមបាន" data-en="Regretfully Decline">មិនអាចចូលរួមបាន</option>
+              <option value="pending" data-kh="មិនទាន់ច្បាស់" data-en="Not Sure Yet">មិនទាន់ច្បាស់</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Attendees Count -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-[#4E3227]" data-kh="ចំនួនអ្នកចូលរួម" data-en="Number of Guests">ចំនួនអ្នកចូលរួម</label>
+            <span id="rsvp-pax-hint" class="text-[11px] text-[#C5A059]"></span>
+          </div>
+          <select id="rsvp-attendees" class="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none focus:border-[#C5A059]">
+            <option value="1">១ នាក់ (1 person)</option>
+            <option value="2" selected>២ នាក់ (2 persons)</option>
+            <option value="3">៣ នាក់ (3 persons)</option>
+            <option value="4">៤ នាក់ (4 persons)</option>
+            <option value="0">០ នាក់ (Unable to attend)</option>
+          </select>
+        </div>
+
+        <!-- Wishes Message -->
+        <div>
+          <label class="block text-xs font-bold text-[#4E3227] mb-1" data-kh="សារជូនពរដល់គូស្នេហ៍ថ្មី" data-en="Wishes / Blessings">សារជូនពរដល់គូស្នេហ៍ថ្មី</label>
+          <textarea id="rsvp-wishes" rows="3" class="w-full px-4 py-2 text-sm rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none focus:border-[#C5A059]" placeholder="សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី..."></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-3 bg-[#4E3227] hover:bg-[#6E4939] text-white rounded-xl text-sm font-bold shadow-md transition flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <span data-kh="បញ្ជាក់ការចូលរួម (Submit RSVP)" data-en="Submit RSVP">បញ្ជាក់ការចូលរួម (Submit RSVP)</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- WISHES GUESTBOOK WALL -->
+    <section class="mb-12">
+      <div class="text-center mb-6">
+        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="ពាក្យជូនពរ" data-en="Guest Wishes">
+          ពាក្យជូនពរ
+        </span>
+        <h3 class="font-khmer-title text-2xl text-[#4E3227]" data-kh="សៀវភៅជូនពរឌីជីថល" data-en="Wishes Guestbook">
+          សៀវភៅជូនពរឌីជីថល
+        </h3>
+      </div>
+
+      <!-- Quick Wish Submission Form -->
+      <div class="bg-white p-5 rounded-2xl border border-[#E5D5BC] shadow-xs mb-6 max-w-md mx-auto">
+        <form id="wish-form" class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="wish-sender-name" required placeholder="ឈ្មោះរបស់អ្នក *" class="px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+            <select id="wish-sender-rel" class="px-2 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+              <option value="ភ្ញៀវខាងប្រុស">ភ្ញៀវខាងប្រុស</option>
+              <option value="ភ្ញៀវខាងស្រី">ភ្ញៀវខាងស្រី</option>
+              <option value="មិត្តភក្តិ">មិត្តភក្តិ</option>
+              <option value="សាច់ញាតិ">សាច់ញាតិ</option>
+            </select>
+          </div>
+          <textarea id="wish-message" rows="2" required placeholder="សរសេរសារជូនពរនៅទីនេះ..." class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none"></textarea>
+          <button type="submit" class="w-full py-2 bg-[#C5A059] hover:bg-[#B38D43] text-white rounded-xl text-xs font-bold transition">
+            ផ្ញើសារជូនពរ (Send Wish)
+          </button>
+        </form>
+      </div>
+
+      <!-- Wishes List Stream -->
+      <div id="wishes-list" class="max-w-md mx-auto space-y-3">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center pt-8 border-t border-[#E5D5BC]">
+      <div class="w-12 h-12 rounded-full border border-[#C5A059] flex items-center justify-center mx-auto mb-3 bg-white">
+        <span class="font-en-title text-sm font-bold text-[#C5A059]">N&S</span>
+      </div>
+      <p class="font-khmer-title text-sm text-[#4E3227] mb-1">
+        សូមអរព្រះគុណ និងអរគុណយ៉ាងជ្រាលជ្រៅ
+      </p>
+      <p class="text-xs text-[#7A6F68] font-khmer-body">
+        ចំពោះវត្តមានដ៏មានតម្លៃរបស់ភ្ញៀវកិត្តិយសទាំងអស់គ្នា!
+      </p>
+      <div class="mt-4 text-[11px] text-[#A67C1E]">
+        © 2026 Digital Wedding E-Invitation Platform
+      </div>
+    </footer>
+  </main>
+
+  <!-- ================= LIGHTBOX MODAL ================= -->
+  <div id="lightbox-modal" class="lightbox-modal">
+    <div class="relative max-w-2xl w-full p-2 text-center">
+      <button id="lightbox-close" class="absolute -top-10 right-2 text-white hover:text-amber-300 text-2xl font-bold">✕</button>
+      <img id="lightbox-img" src="" alt="Zoom" class="max-h-[80vh] w-auto mx-auto rounded-xl shadow-2xl object-contain">
+      <p id="lightbox-caption" class="text-white text-xs mt-3 font-khmer-body"></p>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="toast-notice" class="toast-notice"></div>
+
+  <!-- JavaScript -->
+  <script src="/js/invitation.js"></script>
+</body>
+</html>

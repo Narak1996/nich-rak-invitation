@@ -1,0 +1,58 @@
+[
+  {
+    "id": "g-1",
+    "slug": "sok-dara",
+    "name": "លោក សុខ ដារ៉ា និងភរិយា",
+    "name_en": "Mr. Sok Dara & Spouse",
+    "side": "groom",
+    "category": "VIP",
+    "phone": "012888999",
+    "pax_allowed": 2,
+    "status": "confirmed",
+    "attendees": 2,
+    "wishes": "សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី មានសុភមង្គល ស្រឡាញ់គ្នារហូតដល់ចាស់កោងខ្នង!",
+    "updatedAt": "2026-09-20T14:30:00.000Z"
+  },
+  {
+    "id": "g-2",
+    "slug": "vireak-thol",
+    "name": "លោក ថុល វិរៈ",
+    "name_en": "Mr. Thol Vireak",
+    "side": "bride",
+    "category": "Colleague",
+    "phone": "098765432",
+    "pax_allowed": 1,
+    "status": "confirmed",
+    "attendees": 1,
+    "wishes": "Congratulations to Narak & Sreymech! Wishing you lifetime of love and joy!",
+    "updatedAt": "2026-09-21T09:15:00.000Z"
+  },
+  {
+    "id": "g-3",
+    "slug": "chan-pisey",
+    "name": "កញ្ញា ចាន់ ពិសី",
+    "name_en": "Ms. Chan Pisey",
+    "side": "groom",
+    "category": "Family",
+    "phone": "077112233",
+    "pax_allowed": 2,
+    "status": "pending",
+    "attendees": 0,
+    "wishes": "",
+    "updatedAt": null
+  },
+  {
+    "id": "g-4",
+    "slug": "oknha-heng",
+    "name": "ឯកឧត្តម លោកជំទាវ ហេង",
+    "name_en": "H.E. & Lok Chumteav Heng",
+    "side": "bride",
+    "category": "VIP",
+    "phone": "012334455",
+    "pax_allowed": 4,
+    "status": "confirmed",
+    "attendees": 2,
+    "wishes": "សូមប្រសិទ្ធិពរជ័យ សិរីសួស្តី ជោគជ័យគ្រប់ភារកិច្ច និងរកទទួលទានមានបានគ្រប់ប្រការ!",
+    "updatedAt": "2026-09-22T16:00:00.000Z"
+  }
+]

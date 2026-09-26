@@ -1,0 +1,13 @@
+services:
+  wedding-invitation:
+    build: .
+    container_name: e-invitation
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads
+    environment:
+      - PORT=3000
+      - NODE_ENV=production

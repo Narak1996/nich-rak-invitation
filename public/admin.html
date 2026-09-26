@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | E-Invitation Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-gray-50 min-h-screen text-[#2C2420] font-khmer-body">
+
+  <!-- TOP HEADER -->
+  <header class="bg-white border-b border-[#E5D5BC] sticky top-0 z-50 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center font-bold text-[#4E3227]">
+          💍
+        </div>
+        <div>
+          <h1 class="font-khmer-title text-base font-bold text-[#4E3227]">ផ្ទាំងគ្រប់គ្រងពិធីមង្គលការ</h1>
+          <p class="text-[11px] text-[#7A6F68]" id="header-couple-sub">Chan Narak & Ly Sreymech</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#4E3227] bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-xl border border-[#E5D5BC] transition">
+          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <span>មើលសំបុត្រ (View Invitation)</span>
+        </a>
+        <button id="btn-logout" class="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl border border-red-200 transition">
+          ចាកចេញ (Logout)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- STATS OVERVIEW CARDS -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div class="bg-white p-4 rounded-2xl border border-[#E5D5BC] shadow-xs">
+        <span class="text-xs text-[#7A6F68] block">ភ្ញៀវសរុប (Total Guests)</span>
+        <span id="stat-total" class="text-2xl font-bold text-[#4E3227] mt-1 block">0</span>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-green-200 shadow-xs">
+        <span class="text-xs text-green-700 block">ចូលរួម (Confirmed)</span>
+        <span id="stat-confirmed" class="text-2xl font-bold text-green-700 mt-1 block">0</span>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-red-200 shadow-xs">
+        <span class="text-xs text-red-700 block">មិនអាចចូលរួម (Declined)</span>
+        <span id="stat-declined" class="text-2xl font-bold text-red-700 mt-1 block">0</span>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-xs">
+        <span class="text-xs text-[#C5A059] block">ចំនួនមនុស្សចូលរួម (Pax Count)</span>
+        <span id="stat-pax" class="text-2xl font-bold text-[#C5A059] mt-1 block">0</span>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-purple-200 shadow-xs">
+        <span class="text-xs text-purple-700 block">សារជូនពរ (Wishes)</span>
+        <span id="stat-wishes" class="text-2xl font-bold text-purple-700 mt-1 block">0</span>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="flex items-center gap-2 border-b border-[#E5D5BC] mb-6 overflow-x-auto pb-2">
+      <button class="admin-tab active px-4 py-2.5 rounded-xl font-bold text-xs transition" data-target="tab-guests">
+        👥 ភ្ញៀវ & តំណភ្ជាប់សំបុត្រ (Guests & Links)
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-wedding">
+        ⚙️ ព័ត៌មានមង្គលការ & Theme
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-agenda">
+        📅 កម្មវិធីមង្គលការ (Agenda)
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-gallery">
+        🖼️ កម្រងរូបថត (Gallery)
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-gifts">
+        💳 ចងដៃ KHQR / ABA
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-wishes">
+        💌 ពាក្យជូនពរ (Guestbook)
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: GUESTS & LINKS ================= -->
+    <section id="tab-guests" class="tab-content">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs mb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="font-khmer-title text-lg text-[#4E3227]">បញ្ជីរាយនាមភ្ញៀវកិត្តិយស & តំណភ្ជាប់</h2>
+            <p class="text-xs text-[#7A6F68]">បង្កើតតំណភ្ជាប់សំបុត្រផ្ទាល់ខ្លួន ចែករំលែកតាម Telegram/WhatsApp និងតាមដាន RSVP</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-open-add-guest" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
+              <span>+ បន្ថែមភ្ញៀវ (Add Guest)</span>
+            </button>
+            <button id="btn-open-bulk-import" class="px-4 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+              <span>📋 បញ្ចូលជាក្រុម (Bulk Import)</span>
+            </button>
+            <a href="/api/guests/export" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Export CSV (Excel)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <input type="text" id="guest-search" placeholder="ស្វែងរកឈ្មោះភ្ញៀវ..." class="px-4 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+          <select id="guest-filter-status" class="px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+            <option value="">ទាំងអស់ (All Status)</option>
+            <option value="confirmed">ចូលរួម (Confirmed)</option>
+            <option value="declined">មិនអាចចូលរួម (Declined)</option>
+            <option value="pending">រង់ចាំការឆ្លើយតប (Pending)</option>
+          </select>
+          <select id="guest-filter-side" class="px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+            <option value="">គ្រប់ភាគី (All Sides)</option>
+            <option value="groom">ខាងកូនប្រុស (Groom)</option>
+            <option value="bride">ខាងកូនស្រី (Bride)</option>
+          </select>
+        </div>
+
+        <!-- Guest List Table -->
+        <div class="overflow-x-auto rounded-2xl border border-[#E5D5BC]">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#FAF7F2] text-[#4E3227] border-b border-[#E5D5BC] uppercase font-bold">
+              <tr>
+                <th class="p-3">ឈ្មោះភ្ញៀវ (Guest Name)</th>
+                <th class="p-3">ភាគី (Side)</th>
+                <th class="p-3">ប្រភេទ (Category)</th>
+                <th class="p-3">ចំនួន (Pax)</th>
+                <th class="p-3">ស្ថានភាព RSVP</th>
+                <th class="p-3 text-center">ចែករំលែកសំបុត្រ (Share Links)</th>
+                <th class="p-3 text-right">សកម្មភាព</th>
+              </tr>
+            </thead>
+            <tbody id="guests-table-body" class="divide-y divide-[#E5D5BC]/60">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: WEDDING & THEME SETTINGS ================= -->
+    <section id="tab-wedding" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+        <h2 class="font-khmer-title text-lg text-[#4E3227] mb-1">ព័ត៌មានលម្អិតពិធីមង្គលការ និង ស្បែកពណ៌</h2>
+        <p class="text-xs text-[#7A6F68] mb-6">កែសម្រួលឈ្មោះកូនកំលោះ-កូនក្រមុំ មាតាបិតា កាលបរិច្ឆេទ ទីតាំង និងស្បែកពណ៌ Theme</p>
+
+        <form id="wedding-settings-form" class="space-y-6">
+          <!-- Theme Colors -->
+          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">ស្បែកពណ៌ (Theme Color)</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="preset-color" value="#4E3227" checked class="accent-[#4E3227]">
+                <span class="w-5 h-5 rounded-full bg-[#4E3227] inline-block border border-gray-300"></span>
+                <span class="text-xs font-semibold">Bronze Luxury (#4E3227 - E-Theap)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="preset-color" value="#C5A059" class="accent-[#C5A059]">
+                <span class="w-5 h-5 rounded-full bg-[#C5A059] inline-block border border-gray-300"></span>
+                <span class="text-xs font-semibold">Royal Gold (#C5A059)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="preset-color" value="#722F37" class="accent-[#722F37]">
+                <span class="w-5 h-5 rounded-full bg-[#722F37] inline-block border border-gray-300"></span>
+                <span class="text-xs font-semibold">Wine Red (#722F37)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="preset-color" value="#2D5A27" class="accent-[#2D5A27]">
+                <span class="w-5 h-5 rounded-full bg-[#2D5A27] inline-block border border-gray-300"></span>
+                <span class="text-xs font-semibold">Emerald (#2D5A27)</span>
+              </label>
+            </div>
+            <div class="mt-3 flex items-center gap-3">
+              <span class="text-xs text-[#7A6F68]">Custom Color:</span>
+              <input type="color" id="setting-primary-color" value="#4E3227" class="w-8 h-8 rounded-lg cursor-pointer border border-[#E5D5BC]">
+            </div>
+          </div>
+
+          <!-- Groom Info -->
+          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">ព័ត៌មានខាងកូនប្រុស (Groom)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះកូនប្រុស (ខ្មែរ)</label>
+                <input type="text" id="groom-name-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">Groom Name (English)</label>
+                <input type="text" id="groom-name-en" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឪពុកកូនប្រុស (Father)</label>
+                <input type="text" id="groom-father-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ម្តាយកូនប្រុស (Mother)</label>
+                <input type="text" id="groom-mother-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនប្រុស (Photo URL)</label>
+                <input type="text" id="groom-photo" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+            </div>
+          </div>
+
+          <!-- Bride Info -->
+          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">ព័ត៌មានខាងកូនស្រី (Bride)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះកូនស្រី (ខ្មែរ)</label>
+                <input type="text" id="bride-name-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">Bride Name (English)</label>
+                <input type="text" id="bride-name-en" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឪពុកកូនស្រី (Father)</label>
+                <input type="text" id="bride-father-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ម្តាយកូនស្រី (Mother)</label>
+                <input type="text" id="bride-mother-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនស្រី (Photo URL)</label>
+                <input type="text" id="bride-photo" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+            </div>
+          </div>
+
+          <!-- Couple Photo & Quotes -->
+          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">រូបថតគូស្នេហ៍ & ពាក្យស្លោក</h3>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតគូស្នេហ៍ចម្បង (Couple Cover Photo URL)</label>
+                <input type="text" id="couple-photo-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ពាក្យស្លោក/សារស្នេហា (ខ្មែរ)</label>
+                <input type="text" id="quote-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">Romantic Quote (English)</label>
+                <input type="text" id="quote-en" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+            </div>
+          </div>
+
+          <!-- Date & Venue -->
+          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">កាលបរិច្ឆេទ និង ទីតាំង</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">កាលបរិច្ឆេទពិធី (Event DateTime)</label>
+                <input type="datetime-local" id="event-datetime" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ថ្ងៃខែឆ្នាំសកល (Solar Date Text KH)</label>
+                <input type="text" id="date-solar-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ថ្ងៃខែឆ្នាំចន្ទគតិ (Lunar Date Text KH)</label>
+                <input type="text" id="date-lunar-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះទីតាំង (Venue Name KH)</label>
+                <input type="text" id="venue-name-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">អាសយដ្ឋាន (Address KH)</label>
+                <input type="text" id="venue-address-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">តំណភ្ជាប់ Google Maps (Direct Link)</label>
+                <input type="text" id="map-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">Google Maps Embed URL (Iframe src)</label>
+                <input type="text" id="map-embed-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+            </div>
+          </div>
+
+          <!-- Music & Video -->
+          <div class="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+            <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">តន្ត្រី និង វីដេអូ (Music & Video)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">តន្ត្រីកំដរ Background Music (MP3 URL)</label>
+                <input type="text" id="music-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#4E3227] mb-1">វីដេអូអនុស្សាវរីយ៍ (YouTube Embed URL)</label>
+                <input type="text" id="video-url" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="px-6 py-3 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl shadow-md transition">
+            រក្សាទុកការកែប្រែ (Save All Changes)
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: AGENDA ================= -->
+    <section id="tab-agenda" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="font-khmer-title text-lg text-[#4E3227]">កម្មវិធីមង្គលការ (Agenda Timeline)</h2>
+            <p class="text-xs text-[#7A6F68]">កំណត់ពេលវេលា និងពិធីនីមួយៗក្នុងថ្ងៃមង្គល</p>
+          </div>
+          <button id="btn-add-agenda-item" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition">
+            + បន្ថែមកម្មវិធីថ្មី
+          </button>
+        </div>
+
+        <div id="admin-agenda-list" class="space-y-4">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: GALLERY ================= -->
+    <section id="tab-gallery" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="font-khmer-title text-lg text-[#4E3227]">កម្រងរូបភាពអនុស្សាវរីយ៍ (Pre-Wedding Photos)</h2>
+            <p class="text-xs text-[#7A6F68]">បន្ថែមរូបថត Pre-wedding ដើម្បីបង្ហាញលើទំព័រសំបុត្រ</p>
+          </div>
+          <button id="btn-add-gallery-item" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition">
+            + បន្ថែមរូបថតថ្មី
+          </button>
+        </div>
+
+        <div id="admin-gallery-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: DIGITAL GIFT KHQR ================= -->
+    <section id="tab-gifts" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+        <h2 class="font-khmer-title text-lg text-[#4E3227] mb-1">គ្រប់គ្រងការចងដៃឌីជីថល (KHQR / ABA / Bakong)</h2>
+        <p class="text-xs text-[#7A6F68] mb-6">កំណត់គណនីធនាគារ និងរូបភាព QR Code សម្រាប់ភ្ញៀវស្កេនចងដៃ</p>
+
+        <form id="digital-gift-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Groom Bank -->
+            <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+              <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">ធនាគារខាងកូនប្រុស (Groom Bank)</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះធនាគារ (Bank Name)</label>
+                  <input type="text" id="dg-groom-bank" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះម្ចាស់គណនី (Account Name)</label>
+                  <input type="text" id="dg-groom-name" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">លេខគណនី (Account Number)</label>
+                  <input type="text" id="dg-groom-acc" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Path)</label>
+                  <input type="text" id="dg-groom-qr" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+              </div>
+            </div>
+
+            <!-- Bride Bank -->
+            <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
+              <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider mb-3">ធនាគារខាងកូនស្រី (Bride Bank)</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះធនាគារ (Bank Name)</label>
+                  <input type="text" id="dg-bride-bank" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">ឈ្មោះម្ចាស់គណនី (Account Name)</label>
+                  <input type="text" id="dg-bride-name" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">លេខគណនី (Account Number)</label>
+                  <input type="text" id="dg-bride-acc" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Path)</label>
+                  <input type="text" id="dg-bride-qr" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="px-6 py-3 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl shadow-md transition">
+            រក្សាទុកការចងដៃឌីជីថល (Save QR Settings)
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: WISHES GUESTBOOK ================= -->
+    <section id="tab-wishes" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+        <h2 class="font-khmer-title text-lg text-[#4E3227] mb-1">គ្រប់គ្រងពាក្យជូនពរពីភ្ញៀវកិត្តិយស</h2>
+        <p class="text-xs text-[#7A6F68] mb-6">មើល និងលុបសារជូនពរដែលមិនសមរម្យ</p>
+
+        <div id="admin-wishes-list" class="space-y-3">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= ADD GUEST MODAL ================= -->
+  <div id="modal-add-guest" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full border border-[#E5D5BC] shadow-2xl relative text-left">
+      <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg">✕</button>
+      <h3 class="font-khmer-title text-base text-[#4E3227] mb-1" id="modal-guest-title">បន្ថែមភ្ញៀវកិត្តិយស</h3>
+      <p class="text-xs text-[#7A6F68] mb-4">បញ្ចូលព័ត៌មានភ្ញៀវដើម្បីបង្កើតតំណភ្ជាប់ផ្ទាល់ខ្លួន</p>
+
+      <form id="form-save-guest" class="space-y-3 text-xs">
+        <input type="hidden" id="modal-guest-id">
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះភ្ញៀវ (ខ្មែរ) *</label>
+          <input type="text" id="modal-guest-name" required placeholder="ឧ. លោក សុខ ដារ៉ា និងភរិយា" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">Guest Name (English)</label>
+          <input type="text" id="modal-guest-name-en" placeholder="e.g. Mr. Sok Dara & Spouse" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ភាគី (Side)</label>
+            <select id="modal-guest-side" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+              <option value="groom">ខាងកូនប្រុស (Groom)</option>
+              <option value="bride">ខាងកូនស្រី (Bride)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ប្រភេទ (Category)</label>
+            <select id="modal-guest-category" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+              <option value="VIP">VIP</option>
+              <option value="Family">សាច់ញាតិ (Family)</option>
+              <option value="Colleague">មិត្តរួមការងារ (Colleague)</option>
+              <option value="Friend">មិត្តភក្តិ (Friend)</option>
+              <option value="General">ទូទៅ (General)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ទូរស័ព្ទ / Telegram</label>
+            <input type="tel" id="modal-guest-phone" placeholder="012..." class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ចំនួនកៅអី (Pax Allowed)</label>
+            <input type="number" id="modal-guest-pax" min="1" max="10" value="2" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
+          រក្សាទុក (Save Guest)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= BULK IMPORT MODAL ================= -->
+  <div id="modal-bulk-import" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full border border-[#E5D5BC] shadow-2xl relative text-left">
+      <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg">✕</button>
+      <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">បញ្ចូលបញ្ជីភ្ញៀវជាក្រុម (Bulk Import)</h3>
+      <p class="text-xs text-[#7A6F68] mb-4">Paste ឬវាយឈ្មោះភ្ញៀវបំបែកដោយចុះបន្ទាត់ ឬសញ្ញាក្បៀស (,)</p>
+
+      <form id="form-bulk-import" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">បញ្ជីឈ្មោះភ្ញៀវ *</label>
+          <textarea id="bulk-names" rows="6" required placeholder="លោក សុខ ដារ៉ា&#10;កញ្ញា ចាន់ ពិសី&#10;លោក ថុល វិរៈ" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none font-mono"></textarea>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ភាគី (Side)</label>
+            <select id="bulk-side" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2]">
+              <option value="groom">ខាងកូនប្រុស</option>
+              <option value="bride">ខាងកូនស្រី</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">ប្រភេទ (Category)</label>
+            <select id="bulk-category" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2]">
+              <option value="General">ទូទៅ</option>
+              <option value="VIP">VIP</option>
+              <option value="Colleague">មិត្តរួមការងារ</option>
+              <option value="Family">សាច់ញាតិ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#4E3227] mb-1">Pax ម្នាក់ៗ</label>
+            <input type="number" id="bulk-pax" min="1" max="10" value="2" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2]">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
+          បញ្ចូលបញ្ជីឈ្មោះ (Import All)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= PRINT QR CODE MODAL ================= -->
+  <div id="modal-qr" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full border border-[#E5D5BC] shadow-2xl text-center relative">
+      <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg">✕</button>
+      <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">QR Code សំបុត្រអញ្ជើញ</h3>
+      <p id="qr-guest-title" class="text-xs font-bold text-[#C5A059] mb-4">លោក សុខ ដារ៉ា</p>
+
+      <div class="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC] inline-block shadow-inner mb-4">
+        <img id="qr-img-preview" src="" alt="QR Code" class="w-52 h-52 mx-auto">
+      </div>
+
+      <p class="text-[11px] text-[#7A6F68] mb-4">អាចទាញយក ឬព្រីនបិទលើស្រោមសំបុត្រ ឬផ្ញើតាមឆាត</p>
+
+      <div class="flex gap-2">
+        <a id="btn-download-qr" href="#" download="guest-qr.png" class="flex-1 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition">
+          ទាញយក (Download PNG)
+        </a>
+        <button id="btn-print-qr" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-[#4E3227] text-xs font-bold rounded-xl transition">
+          ព្រីន (Print)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTICE -->
+  <div id="toast-notice" class="toast-notice"></div>
+
+  <!-- Admin JS Script -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>

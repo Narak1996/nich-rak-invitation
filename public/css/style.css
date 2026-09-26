@@ -1,0 +1,332 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Great+Vibes&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Moul&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Siemreap&display=swap');
+
+:root {
+  --primary: #4E3227;
+  --primary-light: #6E4939;
+  --primary-dark: #372219;
+  --accent: #C5A059;
+  --accent-light: #E5C384;
+  --accent-dark: #9F7B37;
+  --bg-cream: #FAF7F2;
+  --bg-card: #FFFFFF;
+  --text-dark: #2C2420;
+  --text-muted: #7A6F68;
+  --border-gold: #E5D5BC;
+  --font-khmer-title: 'Moul', cursive;
+  --font-khmer-body: 'Kantumruy Pro', sans-serif;
+  --font-en-title: 'Cinzel', serif;
+  --font-en-script: 'Great Vibes', cursive;
+  --font-en-body: 'Playfair Display', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+  font-family: var(--font-khmer-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Luxury Background Pattern */
+.wedding-bg-pattern {
+  background-color: #FAF7F2;
+  background-image: 
+    radial-gradient(#4E3227 0.5px, transparent 0.5px), 
+    radial-gradient(#C5A059 0.5px, #FAF7F2 0.5px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  background-opacity: 0.05;
+}
+
+/* Typography Classes */
+.font-khmer-title {
+  font-family: var(--font-khmer-title);
+  letter-spacing: 0.5px;
+}
+.font-khmer-body {
+  font-family: var(--font-khmer-body);
+}
+.font-en-title {
+  font-family: var(--font-en-title);
+  letter-spacing: 2px;
+}
+.font-en-script {
+  font-family: var(--font-en-script);
+}
+.font-en-body {
+  font-family: var(--font-en-body);
+}
+
+/* Gold Gradient Text */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #C5A059 0%, #E5C384 50%, #9F7B37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bronze-gradient-text {
+  background: linear-gradient(135deg, #4E3227 0%, #8C6239 50%, #4E3227 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Floating Music Player Button */
+.floating-music-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4E3227 0%, #C5A059 100%);
+  border: 2px solid #E5C384;
+  box-shadow: 0 4px 20px rgba(78, 50, 39, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.floating-music-btn:hover {
+  transform: scale(1.1);
+}
+
+.spin-record {
+  animation: spinRecord 4s linear infinite;
+}
+
+@keyframes spinRecord {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Top Sticky Floating Bar */
+.floating-top-bar {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: 0 4px 15px rgba(78, 50, 39, 0.12);
+  border: 1px solid var(--border-gold);
+}
+
+/* Envelope Cover Overlay */
+#envelope-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: radial-gradient(circle at center, #634335 0%, #301F18 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+}
+
+#envelope-screen.opened {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Envelope Card Design */
+.envelope-card {
+  width: 100%;
+  max-width: 440px;
+  background: #FFFDFC;
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(197, 160, 89, 0.3);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #E5C384;
+  text-align: center;
+  padding: 40px 24px 36px;
+  animation: envelopeFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes envelopeFloat {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+
+.wax-seal-btn {
+  width: 74px;
+  height: 74px;
+  background: radial-gradient(circle at 35% 35%, #D4AF37 0%, #A67C1E 70%, #7A570C 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px dashed #FFF3D4;
+}
+
+.wax-seal-btn:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5);
+}
+
+/* Ornate Border Frame */
+.ornate-border-box {
+  position: relative;
+  border: 1px solid var(--border-gold);
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(78, 50, 39, 0.05);
+}
+
+.ornate-border-box::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed rgba(197, 160, 89, 0.4);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* Khmer Floral Corner Motif */
+.khmer-corner-tl {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 28px;
+  height: 28px;
+  border-top: 2px solid #C5A059;
+  border-left: 2px solid #C5A059;
+}
+.khmer-corner-tr {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-top: 2px solid #C5A059;
+  border-right: 2px solid #C5A059;
+}
+.khmer-corner-bl {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 28px;
+  height: 28px;
+  border-bottom: 2px solid #C5A059;
+  border-left: 2px solid #C5A059;
+}
+.khmer-corner-br {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-bottom: 2px solid #C5A059;
+  border-right: 2px solid #C5A059;
+}
+
+/* Countdown Clock Card */
+.countdown-box {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF7F2 100%);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 12px 6px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(78, 50, 39, 0.06);
+}
+
+/* Timeline Vertical Line */
+.timeline-stem {
+  position: relative;
+}
+.timeline-stem::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 24px;
+  width: 2px;
+  background: linear-gradient(to bottom, #C5A059 0%, #4E3227 50%, #C5A059 100%);
+}
+
+/* Petals Falling Animation */
+.petal-fall {
+  position: fixed;
+  top: -20px;
+  pointer-events: none;
+  z-index: 50;
+  animation: fallAnimation linear infinite;
+}
+
+@keyframes fallAnimation {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(105vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.9);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.lightbox-modal.active {
+  display: flex;
+}
+
+/* Toast Message */
+.toast-notice {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #4E3227;
+  color: #FFF;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid #C5A059;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  font-size: 14px;
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+.toast-notice.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .envelope-card {
+    padding: 30px 16px 28px;
+  }
+}
