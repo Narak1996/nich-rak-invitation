@@ -219,7 +219,7 @@ function renderAll() {
   updateUITranslations();
 }
 
-// Render Agenda
+// Render Agenda on page
 function renderAgenda() {
   const container = document.getElementById('agenda-container');
   container.innerHTML = '';
@@ -239,26 +239,219 @@ function renderAgenda() {
   weddingData.agenda.forEach(item => {
     const iconHtml = iconsMap[item.icon] || iconsMap['gift'];
     const el = document.createElement('div');
-    el.className = 'relative flex items-start gap-4 mb-8 group';
+    el.className = 'relative flex items-start gap-4 mb-6 group cursor-pointer';
+    el.title = isKh ? 'ចុចដើម្បីបើកមើលក្នុងផ្ទាំងពិស្ដារ' : 'Click to view ceremony details modal';
     el.innerHTML = `
-      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#C5A059] shadow-md shrink-0">
+      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#C5A059] shadow-md shrink-0 group-hover:scale-110 transition-transform">
         ${iconHtml}
       </div>
-      <div class="bg-white/80 backdrop-blur-xs p-5 rounded-2xl border border-[#E5D5BC] shadow-xs flex-1 transition hover:shadow-md hover:border-[#C5A059]">
-        <div class="inline-block px-3 py-1 bg-[#FAF7F2] text-[#4E3227] text-xs font-bold rounded-full mb-2 border border-[#E5D5BC]">
-          ${item.time}
+      <div class="bg-white/85 backdrop-blur-xs p-5 rounded-2xl border border-[#E5D5BC] shadow-xs flex-1 transition-all duration-300 hover:shadow-md hover:border-[#C5A059] hover:-translate-y-0.5">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <div class="inline-block px-3 py-1 bg-[#FAF7F2] text-[#4E3227] text-xs font-bold rounded-full border border-[#E5D5BC]">
+            ⏰ ${item.time}
+          </div>
+          <span class="text-[11px] font-semibold text-[#C5A059] flex items-center gap-1 group-hover:underline">
+            <span>🔎</span>
+            <span>${isKh ? 'មើលពិស្ដារ' : 'Details'}</span>
+          </span>
         </div>
         <h4 class="text-base font-bold text-[#4E3227] mb-1 font-khmer-title">
           ${isKh ? item.title_kh : item.title_en}
         </h4>
-        <p class="text-sm text-[#7A6F68] font-khmer-body">
+        <p class="text-sm text-[#7A6F68] font-khmer-body line-clamp-2">
           ${isKh ? item.desc_kh : item.desc_en}
         </p>
+        ${(item.location_kh || item.location_en) ? `
+          <div class="mt-2 pt-2 border-t border-[#E5D5BC]/50 flex items-center gap-1.5 text-xs text-[#7A6F68]">
+            <svg class="w-3.5 h-3.5 text-[#C5A059] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="truncate">${isKh ? (item.location_kh || '') : (item.location_en || '')}</span>
+          </div>
+        ` : ''}
       </div>
     `;
+    el.addEventListener('click', () => {
+      openAgendaModal(item.id);
+    });
     container.appendChild(el);
   });
 }
+
+// State for active agenda tab in modal
+let currentAgendaTab = 'all';
+
+// Open Agenda Modal
+function openAgendaModal(selectedItemId = null) {
+  const modal = document.getElementById('agenda-modal');
+  if (!modal) return;
+  const isKh = currentLang === 'kh';
+  const w = weddingData ? weddingData.wedding : null;
+
+  // Set Theme Emblem inside Modal
+  const themeId = (weddingData && weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+  const emblemMap = {
+    'khmer-traditional': '🪷',
+    'western-modern': '💍',
+    'chinese-traditional': '囍',
+    'e-theap-luxury': '👑'
+  };
+  const emblemEl = document.getElementById('agenda-modal-emblem');
+  if (emblemEl) emblemEl.textContent = emblemMap[themeId] || '🪷';
+
+  // Subtitle with couple names and solar date
+  const subtitleEl = document.getElementById('agenda-modal-subtitle');
+  if (subtitleEl && w) {
+    const coupleText = isKh 
+      ? `${w.groom.name_kh} & ${w.bride.name_kh}` 
+      : `${w.groom.name_en} & ${w.bride.name_en}`;
+    const dateText = isKh ? w.date_solar_kh : w.date_solar_en;
+    subtitleEl.textContent = `${coupleText} • ${dateText}`;
+  }
+
+  // Google Maps link in modal footer
+  const mapLinkEl = document.getElementById('agenda-modal-map-link');
+  if (mapLinkEl && w && w.map_url) {
+    mapLinkEl.href = w.map_url;
+  }
+
+  // If a selected item is passed, switch to matching tab
+  if (selectedItemId && weddingData && weddingData.agenda) {
+    const targetItem = weddingData.agenda.find(it => it.id === selectedItemId);
+    if (targetItem && targetItem.period) {
+      currentAgendaTab = targetItem.period;
+      document.querySelectorAll('.agenda-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === currentAgendaTab) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  // Render modal items
+  renderAgendaModalContent(currentAgendaTab, selectedItemId);
+
+  // Show modal
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// Close Agenda Modal
+function closeAgendaModal() {
+  const modal = document.getElementById('agenda-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+// Render Content Inside Agenda Modal
+function renderAgendaModalContent(tab = 'all', highlightId = null) {
+  const body = document.getElementById('agenda-modal-body');
+  if (!body || !weddingData || !weddingData.agenda) return;
+  body.innerHTML = '';
+  const isKh = currentLang === 'kh';
+
+  const iconsMap = {
+    'gift': `<svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V3.5a2.5 2.5 0 115 0V8h-5zm0 0H7.5A2.5 2.5 0 105 10.5V13h7V8zm0 5h7a2 2 0 012 2v5a2 2 0 01-2 2h-7v-9z"/></svg>`,
+    'hands-praying': `<svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"/></svg>`,
+    'scissors': `<svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879a3 3 0 11-4.242-4.242 3 3 0 014.242 0L12 12zm0 0l-2.879-2.879a3 3 0 10-4.242 4.242 3 3 0 004.242 0L12 12z"/></svg>`,
+    'ring': `<svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M9 5l3-3 3 3"/></svg>`,
+    'camera': `<svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="4" stroke-width="2"/></svg>`,
+    'utensils': `<svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>`
+  };
+
+  const filteredItems = weddingData.agenda.filter(item => {
+    if (tab === 'all') return true;
+    return item.period === tab;
+  });
+
+  if (filteredItems.length === 0) {
+    body.innerHTML = `
+      <div class="text-center py-10 text-[#7A6F68] text-xs">
+        <p>${isKh ? 'មិនមានកម្មវិធីក្នុងផ្នែកនេះទេ' : 'No ceremony scheduled for this period.'}</p>
+      </div>
+    `;
+    return;
+  }
+
+  let targetScrollEl = null;
+
+  filteredItems.forEach((item) => {
+    const isHighlight = highlightId && (item.id === highlightId);
+    const el = document.createElement('div');
+    el.id = `modal-agenda-item-${item.id}`;
+    el.className = `agenda-modal-item ${isHighlight ? 'highlighted' : ''}`;
+
+    const iconHtml = iconsMap[item.icon] || iconsMap['gift'];
+    const periodBadge = item.period === 'evening'
+      ? (isKh ? '🌙 ពេលល្ងាច' : '🌙 Evening')
+      : (isKh ? '☀️ ពេលព្រឹក' : '☀️ Morning');
+
+    el.innerHTML = `
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-full bg-[#FAF7F2] border-2 border-[#C5A059] flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+          ${iconHtml}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#4E3227] text-white">
+              ⏰ ${item.time}
+            </span>
+            <span class="text-[11px] font-semibold text-[#C5A059] bg-[#FAF7F2] px-2 py-0.5 rounded-full border border-[#E5D5BC]">
+              ${periodBadge}
+            </span>
+          </div>
+
+          <h4 class="font-khmer-title text-base text-[#4E3227] mb-1 font-bold leading-snug">
+            ${isKh ? item.title_kh : item.title_en}
+          </h4>
+          
+          <p class="text-xs text-[#5C504A] font-khmer-body leading-relaxed mb-2.5">
+            ${isKh ? item.desc_kh : item.desc_en}
+          </p>
+
+          <div class="flex items-center justify-between gap-2 pt-2 border-t border-[#E5D5BC]/60 flex-wrap">
+            <div class="flex items-center gap-1.5 text-xs text-[#7A6F68]">
+              <svg class="w-3.5 h-3.5 text-[#C5A059] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="font-medium">${isKh ? (item.location_kh || 'ទីតាំងរៀបអាពាហ៍ពិពាហ៍') : (item.location_en || 'Wedding Venue')}</span>
+            </div>
+            
+            <button class="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8C1D2F] hover:text-[#C5A059] transition cursor-pointer" onclick="addToCalendarItem('${encodeURIComponent(isKh ? item.title_kh : item.title_en)}', '${encodeURIComponent(isKh ? item.desc_kh : item.desc_en)}')">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>${isKh ? '+ ប្រតិទិន' : '+ Calendar'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    body.appendChild(el);
+
+    if (isHighlight) {
+      targetScrollEl = el;
+    }
+  });
+
+  if (targetScrollEl) {
+    setTimeout(() => {
+      targetScrollEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+  }
+}
+
+// Add individual ceremony item to Google Calendar
+function addToCalendarItem(titleEncoded, descEncoded) {
+  const title = decodeURIComponent(titleEncoded);
+  const desc = decodeURIComponent(descEncoded);
+  const w = weddingData ? weddingData.wedding : null;
+  const startIso = "20261128T070000";
+  const endIso = "20261128T220000";
+  const venue = (w && w.venue_name_kh) ? `${w.venue_name_kh}, ${w.venue_address_kh}` : "Premier Centre Sen Sok";
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(desc)}&location=${encodeURIComponent(venue)}`;
+  window.open(googleCalUrl, '_blank');
+}
+
 
 // Render Gallery
 function renderGallery() {
@@ -367,6 +560,52 @@ function initEventListeners() {
 
   // Add to Calendar Button
   document.getElementById('btn-add-calendar').addEventListener('click', addToCalendar);
+
+  // Agenda Modal Triggers & Controls
+  const btnOpenAgendaModal = document.getElementById('btn-open-agenda-modal');
+  if (btnOpenAgendaModal) {
+    btnOpenAgendaModal.addEventListener('click', () => openAgendaModal());
+  }
+
+  const navBtnAgenda = document.getElementById('nav-btn-agenda');
+  if (navBtnAgenda) {
+    navBtnAgenda.addEventListener('click', () => openAgendaModal());
+  }
+
+  const agendaCloseBtn = document.getElementById('agenda-modal-close');
+  if (agendaCloseBtn) {
+    agendaCloseBtn.addEventListener('click', closeAgendaModal);
+  }
+
+  const agendaFooterCloseBtn = document.getElementById('agenda-modal-btn-close');
+  if (agendaFooterCloseBtn) {
+    agendaFooterCloseBtn.addEventListener('click', closeAgendaModal);
+  }
+
+  const agendaModalOverlay = document.getElementById('agenda-modal');
+  if (agendaModalOverlay) {
+    agendaModalOverlay.addEventListener('click', (e) => {
+      if (e.target.id === 'agenda-modal') closeAgendaModal();
+    });
+  }
+
+  // Agenda Tab buttons in Modal
+  document.querySelectorAll('.agenda-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.agenda-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentAgendaTab = btn.getAttribute('data-tab');
+      renderAgendaModalContent(currentAgendaTab);
+    });
+  });
+
+  // Global ESC key listener to close modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAgendaModal();
+      closeLightbox();
+    }
+  });
 
   // RSVP Form submission
   document.getElementById('rsvp-form').addEventListener('submit', handleRSVPSubmit);

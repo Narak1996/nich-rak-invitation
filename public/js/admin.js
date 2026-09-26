@@ -277,12 +277,14 @@ function renderAdminAgenda() {
   weddingData.agenda.forEach((item, index) => {
     const el = document.createElement('div');
     el.className = 'p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC] flex items-center justify-between gap-4';
+    const periodLabel = item.period === 'evening' ? '🌙 ពេលល្ងាច' : '☀️ ពេលព្រឹក';
     el.innerHTML = `
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 flex-wrap">
         <span class="px-3 py-1 bg-white font-mono text-xs font-bold text-[#4E3227] rounded-full border border-[#E5D5BC]">${item.time}</span>
+        <span class="px-2.5 py-0.5 bg-amber-50 text-amber-800 text-[10px] font-bold rounded-full border border-amber-200">${periodLabel}</span>
         <div>
           <h4 class="font-bold text-xs text-[#4E3227]">${item.title_kh} (${item.title_en})</h4>
-          <p class="text-[11px] text-[#7A6F68]">${item.desc_kh}</p>
+          <p class="text-[11px] text-[#7A6F68]">${item.desc_kh} ${item.location_kh ? `• 📍 ${item.location_kh}` : ''}</p>
         </div>
       </div>
       <button onclick="deleteAgendaItem(${index})" class="text-gray-400 hover:text-red-600 p-1" title="Delete">

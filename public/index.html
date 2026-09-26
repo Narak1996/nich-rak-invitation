@@ -87,8 +87,11 @@
     <div class="h-4 w-px bg-[#E5D5BC]"></div>
 
     <!-- Quick Navigation Links -->
-    <nav class="flex items-center gap-3 text-xs font-medium text-[#4E3227]">
-      <a href="#ceremony-section" class="hover:text-[#C5A059] transition" data-kh="កម្មវិធី" data-en="Agenda">កម្មវិធី</a>
+    <nav class="flex items-center gap-2.5 text-xs font-medium text-[#4E3227]">
+      <button id="nav-btn-agenda" class="hover:text-[#C5A059] transition flex items-center gap-1 font-semibold cursor-pointer">
+        <span>📅</span>
+        <span data-kh="កម្មវិធី" data-en="Agenda">កម្មវិធី</span>
+      </button>
       <a href="#venue-section" class="hover:text-[#C5A059] transition" data-kh="ទីតាំង" data-en="Venue">ទីតាំង</a>
       <a href="#gallery-section" class="hover:text-[#C5A059] transition" data-kh="រូបថត" data-en="Gallery">រូបថត</a>
       <a href="#rsvp-section" class="px-2.5 py-1 bg-[#4E3227] text-white rounded-full hover:bg-[#6E4939] transition" data-kh="ចូលរួម" data-en="RSVP">ចូលរួម</a>
@@ -284,18 +287,28 @@
     </section>
 
     <!-- AGENDA & CEREMONY SCHEDULE -->
-    <section id="ceremony-section" class="mb-10">
-      <div class="text-center mb-8">
+    <section id="ceremony-section" class="mb-10 text-center">
+      <div class="mb-6">
         <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="លំដាប់លំដោយ" data-en="Program Schedule">
           លំដាប់លំដោយ
         </span>
-        <h3 class="font-khmer-title text-2xl text-[#4E3227]" data-kh="កម្មវិធីមង្គលការ" data-en="Wedding Agenda">
+        <h3 class="font-khmer-title text-2xl text-[#4E3227] mb-2" data-kh="កម្មវិធីមង្គលការ" data-en="Wedding Agenda">
           កម្មវិធីមង្គលការ
         </h3>
+        <p class="text-xs text-[#7A6F68] font-khmer-body max-w-sm mx-auto mb-4" data-kh="សូមពិនិត្យមើលកាលវិភាគពិធីមង្គលការ ឬចុចមើលព័ត៌មានពិស្ដារតាម Modal" data-en="Explore the ceremony timeline or tap below for full modal details">
+          សូមពិនិត្យមើលកាលវិភាគពិធីមង្គលការ ឬចុចមើលព័ត៌មានពិស្ដារតាម Modal
+        </p>
+
+        <!-- Button to open Agenda Modal -->
+        <button id="btn-open-agenda-modal" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-[#FAF7F2] rounded-full text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 border border-[#C5A059]/40 cursor-pointer">
+          <span class="text-sm">🗓️</span>
+          <span data-kh="បើកមើលកាលវិភាគពិស្ដារ (View Agenda Modal)" data-en="Open Full Agenda Modal">បើកមើលកាលវិភាគពិស្ដារ (View Agenda Modal)</span>
+          <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
       </div>
 
       <!-- Timeline Container -->
-      <div id="agenda-container" class="timeline-stem max-w-lg mx-auto">
+      <div id="agenda-container" class="timeline-stem max-w-lg mx-auto text-left">
         <!-- Rendered dynamically -->
       </div>
     </section>
@@ -512,6 +525,63 @@
       </div>
     </footer>
   </main>
+
+  <!-- ================= AGENDA MODAL ================= -->
+  <div id="agenda-modal" class="agenda-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="agenda-modal-title">
+    <div class="agenda-modal-container">
+      <div class="khmer-corner-tl"></div>
+      <div class="khmer-corner-tr"></div>
+      <div class="khmer-corner-bl"></div>
+      <div class="khmer-corner-br"></div>
+
+      <!-- Modal Header -->
+      <div class="agenda-modal-header">
+        <button id="agenda-modal-close" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 hover:bg-white border border-[#E5D5BC] text-[#4E3227] hover:text-black flex items-center justify-center font-bold text-base shadow-2xs transition cursor-pointer" aria-label="Close">
+          ✕
+        </button>
+
+        <div class="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center mx-auto mb-2 shadow-2xs">
+          <span id="agenda-modal-emblem" class="text-xl">🪷</span>
+        </div>
+
+        <span class="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="កាលវិភាគពិធីមង្គលការ" data-en="Wedding Ceremony Schedule">
+          កាលវិភាគពិធីមង្គលការ
+        </span>
+
+        <h3 id="agenda-modal-title" class="font-khmer-title text-xl text-[#4E3227]">
+          កម្មវិធីបុណ្យអាពាហ៍ពិពាហ៍
+        </h3>
+
+        <p id="agenda-modal-subtitle" class="text-xs text-[#7A6F68] font-khmer-body mt-1">
+          <!-- Populated dynamically -->
+        </p>
+
+        <!-- Filter Tabs -->
+        <div class="flex items-center justify-center gap-2 mt-4">
+          <button class="agenda-tab-btn active" data-tab="all" data-kh="ទាំងអស់ (All)" data-en="All Program">ទាំងអស់ (All)</button>
+          <button class="agenda-tab-btn" data-tab="morning" data-kh="ពេលព្រឹក (Morning)" data-en="Morning Ceremony">ពេលព្រឹក (Morning)</button>
+          <button class="agenda-tab-btn" data-tab="evening" data-kh="ពេលល្ងាច (Evening)" data-en="Evening Reception">ពេលល្ងាច (Evening)</button>
+        </div>
+      </div>
+
+      <!-- Modal Scrollable Body -->
+      <div id="agenda-modal-body" class="agenda-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="agenda-modal-footer">
+        <a id="agenda-modal-map-link" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FAF7F2] hover:bg-[#E5D5BC]/60 text-[#4E3227] border border-[#E5D5BC] rounded-full text-xs font-semibold transition">
+          <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span data-kh="មើលទីតាំងលើ Google Maps" data-en="View on Maps">មើលទីតាំងលើ Google Maps</span>
+        </a>
+
+        <button id="agenda-modal-btn-close" class="px-5 py-1.5 bg-[#4E3227] hover:bg-[#6E4939] text-white rounded-full text-xs font-bold transition shadow-xs cursor-pointer">
+          <span data-kh="បិទ (Close)" data-en="Close">បិទ (Close)</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= LIGHTBOX MODAL ================= -->
   <div id="lightbox-modal" class="lightbox-modal">
