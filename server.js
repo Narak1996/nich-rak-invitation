@@ -65,7 +65,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('e-invitation-secret-token-2026'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 // ================= SECURE AUTHENTICATION & USER MANAGEMENT =================
 // Password security with PBKDF2 & SHA-512
@@ -484,13 +484,17 @@ app.post('/api/upload', requireAdmin, upload.single('file'), (req, res) => {
   res.json({ success: true, url: fileUrl });
 });
 
-// Public: Get guest by slug or name
+// Public: Get guest by slug or name (handles /to/:slug, /api/guest/:slug, spaces and hyphens)
 app.get('/api/guest/:slug', (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);
-  const slug = decodeURIComponent(req.params.slug).toLowerCase().trim();
+  const raw = decodeURIComponent(req.params.slug).trim();
+  const slug = raw.toLowerCase();
+  const slugNoDash = slug.replace(/-/g, ' ');
+
   const guest = guests.find(g => 
-    (g.slug && g.slug.toLowerCase() === slug) || 
-    (g.name && g.name.toLowerCase() === slug) ||
+    (g.slug && (g.slug.toLowerCase() === slug || g.slug.toLowerCase() === slugNoDash)) || 
+    (g.name && (g.name.toLowerCase() === slug || g.name.toLowerCase() === slugNoDash)) ||
+    (g.name_en && (g.name_en.toLowerCase() === slug || g.name_en.toLowerCase() === slugNoDash)) ||
     (g.id && g.id.toLowerCase() === slug)
   );
 
@@ -728,11 +732,15 @@ app.delete('/api/guests/:id', requireAdmin, (req, res) => {
 // Admin: Export guests CSV
 app.get('/api/guests/export', requireAdmin, (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);
-  const headers = ['ID', 'Name (Khmer)', 'Name (English)', 'Slug', 'Side', 'Category', 'Phone', 'Allowed Pax', 'RSVP Status', 'Attendees', 'Wishes', 'Updated At'];
+  const proto = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'rak-nich.onrender.com';
+  const baseUrl = `${proto}://${host}`;
+  const headers = ['ID', 'Name (Khmer)', 'Name (English)', 'Invitation Link', 'Slug', 'Side', 'Category', 'Phone', 'Allowed Pax', 'RSVP Status', 'Attendees', 'Wishes', 'Updated At'];
   const rows = guests.map(g => [
     `"${g.id}"`,
     `"${(g.name || '').replace(/"/g, '""')}"`,
     `"${(g.name_en || '').replace(/"/g, '""')}"`,
+    `"${baseUrl}/to/${encodeURIComponent(g.name)}"`,
     `"${g.slug}"`,
     `"${g.side}"`,
     `"${g.category}"`,
@@ -775,10 +783,121 @@ app.get('/api/stats', requireAdmin, (req, res) => {
   });
 });
 
+// HTML Entity Escaper for Meta Tags
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Render Friendly Invitation Page with Dynamic Open Graph Preview & Cover Image
+function renderInvitationPage(req, res) {
+  let guestName = '';
+
+  const rawParam = req.params.guest || req.params.slug || req.query.to || req.query.guest;
+  if (rawParam) {
+    guestName = decodeURIComponent(rawParam).replace(/\+/g, ' ').replace(/-/g, ' ').trim();
+  }
+
+  // Look up guest in guests.json for accurate name display
+  const guests = readJSON(GUESTS_FILE, []);
+  if (guestName && Array.isArray(guests)) {
+    const cleanLower = guestName.toLowerCase();
+    const match = guests.find(g => 
+      (g.name && g.name.toLowerCase() === cleanLower) ||
+      (g.name_en && g.name_en.toLowerCase() === cleanLower) ||
+      (g.slug && g.slug.toLowerCase() === cleanLower) ||
+      (g.id && g.id === cleanLower)
+    );
+    if (match) {
+      guestName = match.name || match.name_en;
+    }
+  }
+
+  // Load wedding info
+  const weddingData = readJSON(WEDDING_FILE, {});
+  const w = weddingData.wedding || {};
+  const groomKh = (w.groom && w.groom.name_kh) || 'ឡេង ចាន់ណារៈ';
+  const groomEn = (w.groom && w.groom.name_en) || 'Leng Channarak';
+  const brideKh = (w.bride && w.bride.name_kh) || 'នាត ស្រីនិច';
+  const brideEn = (w.bride && w.bride.name_en) || 'Neat SreyNich';
+  const dateSolarKh = w.date_solar_kh || 'ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧';
+  const venueKh = w.venue_name_kh || 'មជ្ឈមណ្ឌលសន្និបាត និងពិព័រណ៍ ព្រីមៀរ សែនសុខ (អគារ A)';
+
+  // Build absolute URLs for Open Graph crawlers (Telegram, WhatsApp, Facebook, iMessage)
+  const proto = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'rak-nich.onrender.com';
+  const baseUrl = `${proto}://${host}`;
+  const fullUrl = `${baseUrl}${req.originalUrl}`;
+  const ogCoverImage = `${baseUrl}/images/wedding-og-cover.jpg`;
+
+  let pageTitle = `សិរីសួស្តី អាពាហ៍ពិពាហ៍ | ${groomKh} & ${brideKh}`;
+  let ogTitle = `💍 លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍ | ${groomKh} & ${brideKh}`;
+  let ogDesc = `សិរីសួស្តី អាពាហ៍ពិពាហ៍ ${groomKh} (${groomEn}) ❤️ ${brideKh} (${brideEn}) — ${dateSolarKh} នៅ ${venueKh}`;
+
+  if (guestName) {
+    pageTitle = `លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍ | សូមគោរពអញ្ជើញ ${guestName}`;
+    ogTitle = `💌 សូមគោរពអញ្ជើញ៖ ${guestName}`;
+    ogDesc = `ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការ ${groomKh} ❤️ ${brideKh} — ${dateSolarKh} នៅ ${venueKh}`;
+  }
+
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  try {
+    let html = fs.readFileSync(indexPath, 'utf-8');
+
+    const metaTags = [
+      `  <title>${escapeHTML(pageTitle)}</title>`,
+      `  <meta name="title" content="${escapeHTML(pageTitle)}">`,
+      `  <meta name="description" content="${escapeHTML(ogDesc)}">`,
+      `  <meta name="theme-color" content="#4E3227">`,
+      ``,
+      `  <!-- Open Graph / Facebook / Telegram / WhatsApp -->`,
+      `  <meta property="og:type" content="website">`,
+      `  <meta property="og:url" content="${escapeHTML(fullUrl)}">`,
+      `  <meta property="og:title" content="${escapeHTML(ogTitle)}">`,
+      `  <meta property="og:description" content="${escapeHTML(ogDesc)}">`,
+      `  <meta property="og:image" content="${escapeHTML(ogCoverImage)}">`,
+      `  <meta property="og:image:secure_url" content="${escapeHTML(ogCoverImage)}">`,
+      `  <meta property="og:image:type" content="image/jpeg">`,
+      `  <meta property="og:image:width" content="1200">`,
+      `  <meta property="og:image:height" content="630">`,
+      `  <meta property="og:image:alt" content="${escapeHTML(groomKh)} & ${escapeHTML(brideKh)} Wedding Invitation">`,
+      `  <meta property="og:site_name" content="សំបុត្រអាពាហ៍ពិពាហ៍ | Digital Wedding Invitation">`,
+      `  <meta property="og:locale" content="km_KH">`,
+      ``,
+      `  <!-- Twitter Card -->`,
+      `  <meta name="twitter:card" content="summary_large_image">`,
+      `  <meta name="twitter:url" content="${escapeHTML(fullUrl)}">`,
+      `  <meta name="twitter:title" content="${escapeHTML(ogTitle)}">`,
+      `  <meta name="twitter:description" content="${escapeHTML(ogDesc)}">`,
+      `  <meta name="twitter:image" content="${escapeHTML(ogCoverImage)}">`
+    ].join('\n');
+
+    // Strip static title/description/meta if present
+    html = html.replace(/<title>.*?<\/title>/is, '');
+    html = html.replace(/<meta\s+name="title"[^>]*>/is, '');
+    html = html.replace(/<meta\s+name="description"[^>]*>/is, '');
+    html = html.replace(/<!--\s*Open Graph.*?-->[\s\S]*?<!--\s*Twitter Card.*?-->[\s\S]*?(?=<link|<script|<\/head>)/is, '');
+
+    // Insert new tags right after viewport
+    html = html.replace(/(<meta\s+name="viewport"[^>]*>)/i, `$1\n${metaTags}`);
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (err) {
+    console.error('Error rendering invitation page:', err);
+    res.sendFile(indexPath);
+  }
+}
+
 // Page Routes
 app.get('/admin', (req, res) => {
   const token = req.cookies.admin_token;
-  if (token !== 'logged-in-admin-token') {
+  if (!getSession(token)) {
     return res.redirect('/login');
   }
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
@@ -788,12 +907,18 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.get('/invitation/:slug', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// Friendly Invitation Routes
+app.get('/', renderInvitationPage);
+app.get('/to/:guest', renderInvitationPage);
+app.get('/invite/:guest', renderInvitationPage);
+app.get('/invitation/:slug', renderInvitationPage);
 
+// Fallback for all other GET requests (SPA support)
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  if (req.method === 'GET' && !req.path.startsWith('/api/')) {
+    return renderInvitationPage(req, res);
+  }
+  res.status(404).json({ error: 'Not found' });
 });
 
 // Start Server
@@ -802,9 +927,10 @@ if (!process.env.VERCEL) {
     console.log(`=======================================================`);
     console.log(`  E-Invitation Wedding System is running!`);
     console.log(`  Web Invitation: http://localhost:${PORT}`);
+    console.log(`  Friendly URL:   http://localhost:${PORT}/to/YourName`);
+    console.log(`  Cover Image:    http://localhost:${PORT}/images/wedding-og-cover.jpg`);
     console.log(`  Admin Panel:    http://localhost:${PORT}/admin`);
     console.log(`  Login Page:     http://localhost:${PORT}/login`);
-    console.log(`  Admin Default:  username: admin | password: admin123`);
     console.log(`=======================================================`);
   });
 }

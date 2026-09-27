@@ -138,35 +138,45 @@ async function fetchWeddingData() {
   }
 }
 
-// Check guest parameter from URL
+// Check guest parameter from URL (friendly routes: /to/:name, /invite/:name, /invitation/:slug, ?to=...)
 async function checkGuestParameter() {
   const urlParams = new URLSearchParams(window.location.search);
   let guestSlug = urlParams.get('to') || urlParams.get('guest');
 
-  // Also check pathname: /invitation/:slug
-  const pathParts = window.location.pathname.split('/');
-  if (pathParts[1] === 'invitation' && pathParts[2]) {
-    guestSlug = pathParts[2];
+  // Check friendly pathnames: /to/:guest, /invite/:guest, /invitation/:slug
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  if (pathParts.length >= 2) {
+    const prefix = pathParts[0].toLowerCase();
+    if (prefix === 'to' || prefix === 'invite' || prefix === 'invitation') {
+      guestSlug = decodeURIComponent(pathParts.slice(1).join('/'));
+    }
   }
 
   if (guestSlug) {
+    const rawClean = decodeURIComponent(guestSlug).replace(/\+/g, ' ').trim();
+    const cleanWithSpaces = rawClean.replace(/-/g, ' ');
+
     try {
-      const res = await fetch(`/api/guest/${encodeURIComponent(guestSlug)}`);
+      let res = await fetch(`/api/guest/${encodeURIComponent(rawClean)}`);
+      if (!res.ok && rawClean !== cleanWithSpaces) {
+        res = await fetch(`/api/guest/${encodeURIComponent(cleanWithSpaces)}`);
+      }
+
       if (res.ok) {
         currentGuest = await res.json();
       } else {
-        // Fallback: use query param as plain name
+        // Fallback: use decoded name
         currentGuest = {
-          name: decodeURIComponent(guestSlug).replace(/\+/g, ' '),
-          name_en: decodeURIComponent(guestSlug).replace(/\+/g, ' '),
+          name: cleanWithSpaces,
+          name_en: cleanWithSpaces,
           side: 'groom',
           pax_allowed: 2
         };
       }
     } catch (e) {
       currentGuest = {
-        name: decodeURIComponent(guestSlug).replace(/\+/g, ' '),
-        name_en: decodeURIComponent(guestSlug).replace(/\+/g, ' '),
+        name: cleanWithSpaces,
+        name_en: cleanWithSpaces,
         side: 'groom',
         pax_allowed: 2
       };

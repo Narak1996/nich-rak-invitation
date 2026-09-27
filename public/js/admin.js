@@ -205,16 +205,16 @@ function renderGuestsTable() {
   }
 
   filtered.forEach(g => {
-    // Generate personalized invitation URL
-    const guestUrl = `${window.location.origin}/?to=${encodeURIComponent(g.name)}`;
+    // Generate personalized friendly invitation URL
+    const guestUrl = `${window.location.origin}/to/${encodeURIComponent(g.name)}`;
     const statusBadges = {
       'confirmed': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-800">✓ ចូលរួម (Confirmed)</span>',
       'declined': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-800">✕ មិនចូលរួម (Declined)</span>',
       'pending': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">⏳ រង់ចាំ (Pending)</span>'
     };
 
-    // Pre-composed telegram invitation text in Khmer
-    const tgText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ។ សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញ៖\n${guestUrl}`);
+    // Pre-composed invitation text in Khmer
+    const tgText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ។\n\n💌 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញ៖\n${guestUrl}`);
     const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(guestUrl)}&text=${tgText}`;
     const waUrl = `https://api.whatsapp.com/send?text=${tgText}`;
 
