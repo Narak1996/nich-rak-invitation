@@ -6,17 +6,27 @@ let currentUser = null;
 let usersList = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem('admin_token');
+  const authHeaders = token ? { 'Authorization': 'Bearer ' + token } : {};
+
   // Check auth
-  const authRes = await fetch('/api/auth/check');
-  const auth = await authRes.json();
-  if (!auth.authenticated) {
+  try {
+    const authRes = await fetch('/api/auth/check', { headers: authHeaders });
+    const auth = await authRes.json();
+    if (!auth || !auth.authenticated) {
+      localStorage.removeItem('admin_token');
+      window.location.href = '/login';
+      return;
+    }
+  } catch (err) {
+    console.error('Auth check error:', err);
     window.location.href = '/login';
     return;
   }
 
   // Fetch current user profile
   try {
-    const meRes = await fetch('/api/auth/me');
+    const meRes = await fetch('/api/auth/me', { headers: authHeaders });
     if (meRes.ok) {
       currentUser = await meRes.json();
       renderCurrentUserInfo();
@@ -723,7 +733,13 @@ function initFormListeners() {
 
   // Logout
   document.getElementById('btn-logout').addEventListener('click', async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    const token = localStorage.getItem('admin_token');
+    await fetch('/api/auth/logout', { 
+      method: 'POST',
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
+    localStorage.removeItem('admin_token');
+    document.cookie = 'admin_token=; path=/; max-age=0; SameSite=Lax';
     window.location.href = '/login';
   });
 

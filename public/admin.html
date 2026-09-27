@@ -6,6 +6,21 @@
   <title>Admin Dashboard | E-Invitation Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    // Synchronize authentication token into cookie and localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const qToken = urlParams.get('token');
+    if (qToken) {
+      localStorage.setItem('admin_token', qToken);
+      document.cookie = `admin_token=${qToken}; path=/; max-age=604800; SameSite=Lax`;
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      const savedToken = localStorage.getItem('admin_token');
+      if (savedToken && !document.cookie.includes('admin_token=')) {
+        document.cookie = `admin_token=${savedToken}; path=/; max-age=604800; SameSite=Lax`;
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-50 min-h-screen text-[#2C2420] font-khmer-body">
 

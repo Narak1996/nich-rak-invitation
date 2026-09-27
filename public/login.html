@@ -46,11 +46,30 @@
   </div>
 
   <script>
+    // If already authenticated, redirect to /admin
+    (async () => {
+      try {
+        const savedToken = localStorage.getItem('admin_token');
+        const headers = savedToken ? { 'Authorization': 'Bearer ' + savedToken } : {};
+        const chk = await fetch('/api/auth/check', { headers });
+        const data = await chk.json();
+        if (data.authenticated) {
+          window.location.href = '/admin';
+        }
+      } catch (e) {}
+    })();
+
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = document.getElementById('username').value.trim();
       const p = document.getElementById('password').value.trim();
       const errBox = document.getElementById('login-error');
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const origText = submitBtn.innerHTML;
+
+      errBox.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>កំពុងផ្ទៀងផ្ទាត់... (Signing in...)</span>`;
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -59,14 +78,24 @@
           body: JSON.stringify({ username: u, password: p })
         });
         const data = await res.json();
-        if (res.ok) {
-          window.location.href = '/admin';
+        if (res.ok && data.success) {
+          if (data.token) {
+            localStorage.setItem('admin_token', data.token);
+            document.cookie = `admin_token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
+            window.location.href = `/admin?token=${encodeURIComponent(data.token)}`;
+          } else {
+            window.location.href = '/admin';
+          }
         } else {
-          errBox.textContent = data.error || 'Invalid credentials';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origText;
+          errBox.textContent = data.error || 'ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវឡើយ';
           errBox.classList.remove('hidden');
         }
       } catch (err) {
-        errBox.textContent = 'Server connection error';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origText;
+        errBox.textContent = 'បញ្ហាបណ្តាញក្នុងការតភ្ជាប់ (Network connection error)';
         errBox.classList.remove('hidden');
       }
     });
