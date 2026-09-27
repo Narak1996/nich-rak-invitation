@@ -134,10 +134,9 @@ function renderAll() {
   if (heroDividerEl) {
     if (themeId === 'chinese-traditional') {
       heroDividerEl.innerHTML = `
-        <div class="flex items-center gap-3">
-          <img src="/images/components/auspicious-cloud.svg" alt="Cloud" class="h-6 opacity-75">
-          <span class="text-xs text-[#A31621] font-bold">百年好合 • 喜结良缘</span>
-          <img src="/images/components/auspicious-cloud.svg" alt="Cloud" class="h-6 opacity-75 transform scale-x-[-1]">
+        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
+          <img src="/images/components/chinese-divider.svg" alt="囍" class="h-8 w-full filter drop-shadow-sm">
+          <span class="text-[11px] text-[#FFD700] font-bold tracking-widest">百年好合 • 喜结良缘 • 永结同心</span>
         </div>
       `;
     } else if (themeId === 'western-modern') {
@@ -163,7 +162,12 @@ function renderAll() {
   const sealContentEl = document.getElementById('wax-seal-content');
   if (sealContentEl) {
     if (themeId === 'chinese-traditional') {
-      sealContentEl.innerHTML = `<span class="text-3xl text-[#FFE866] font-bold block leading-none drop-shadow-md">囍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
+      sealContentEl.innerHTML = `
+        <div class="flex flex-col items-center justify-center">
+          <span class="text-3xl text-[#FFE866] font-bold block leading-none drop-shadow-md">囍</span>
+          <span class="text-[8px] tracking-wider uppercase block mt-1 font-bold text-[#FFF9E6]">开 • OPEN</span>
+        </div>
+      `;
     } else if (themeId === 'western-modern') {
       sealContentEl.innerHTML = `<span class="text-2xl block leading-none">💍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
     } else {
@@ -673,18 +677,26 @@ function initCountdown() {
   setInterval(update, 1000);
 }
 
-// Falling Golden Romduol Petals
+// Falling Golden / Auspicious Petals
 function initPetals() {
-  const colors = [
-    'linear-gradient(135deg, #FFF2BF 0%, #E5BE53 100%)',
-    'linear-gradient(135deg, #F9E2AF 0%, #D4AF37 100%)',
-    'linear-gradient(135deg, #FFFFFF 0%, #F5DE88 100%)',
-    'linear-gradient(135deg, #EAD7A1 0%, #C29424 100%)'
-  ];
   const container = document.body;
 
   function createPetal() {
     if (document.hidden) return;
+    const themeId = (weddingData && weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+    const colors = themeId === 'chinese-traditional'
+      ? [
+          'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+          'linear-gradient(135deg, #FF4D4D 0%, #C72535 100%)',
+          'linear-gradient(135deg, #FFF099 0%, #D4AF37 100%)',
+          'linear-gradient(135deg, #D91E2A 0%, #8A0E17 100%)'
+        ]
+      : [
+          'linear-gradient(135deg, #FFF2BF 0%, #E5BE53 100%)',
+          'linear-gradient(135deg, #F9E2AF 0%, #D4AF37 100%)',
+          'linear-gradient(135deg, #FFFFFF 0%, #F5DE88 100%)',
+          'linear-gradient(135deg, #EAD7A1 0%, #C29424 100%)'
+        ];
     const petal = document.createElement('div');
     petal.className = 'petal-fall';
     const size = Math.random() * 9 + 8;

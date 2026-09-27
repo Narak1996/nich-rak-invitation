@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" fill="none">
+  <defs>
+    <radialGradient id="knotGold" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF2A3"/>
+      <stop offset="60%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#9E780E"/>
+    </radialGradient>
+    <filter id="knotShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#4A050B" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Hanging Cord Top -->
+  <line x1="40" y1="0" x2="40" y2="18" stroke="#D11A2A" stroke-width="3"/>
+
+  <!-- Chinese Mystic Knot (Pan Chang - 盘长结) in Imperial Red & Gold Cord -->
+  <g filter="url(#knotShadow)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Outer Loops -->
+    <path d="M 40 18 C 25 18, 18 25, 18 35 C 18 45, 25 50, 40 50 C 55 50, 62 45, 62 35 C 62 25, 55 18, 40 18 Z" fill="#B2182B" stroke="url(#knotGold)" stroke-width="2"/>
+    
+    <!-- Cross Interlacing Bands -->
+    <rect x="26" y="24" width="28" height="22" rx="4" fill="#990E1D" stroke="url(#knotGold)" stroke-width="1.8"/>
+    <rect x="33" y="17" width="14" height="36" rx="4" fill="#C21F30" stroke="url(#knotGold)" stroke-width="1.8"/>
+    
+    <!-- Center Auspicious Coin/Gem -->
+    <circle cx="40" cy="35" r="5" fill="url(#knotGold)"/>
+    <rect x="38" y="33" width="4" height="4" fill="#7D0A12"/>
+
+    <!-- Bottom Ears / Loops -->
+    <path d="M 28 46 C 20 54, 20 62, 28 66 C 36 62, 34 50, 34 46" fill="none" stroke="#D11A2A" stroke-width="2.5"/>
+    <path d="M 52 46 C 60 54, 60 62, 52 66 C 44 62, 46 50, 46 46" fill="none" stroke="#D11A2A" stroke-width="2.5"/>
+
+    <!-- Central Gold Ring Connection -->
+    <circle cx="40" cy="62" r="5" fill="#C72535" stroke="url(#knotGold)" stroke-width="2"/>
+
+    <!-- Twin Flowing Tassels (流苏) -->
+    <path d="M 36 67 L 32 115 M 38 67 L 36 118 M 40 67 L 40 120 M 42 67 L 44 118 M 44 67 L 48 115" stroke="url(#knotGold)" stroke-width="1.8" opacity="0.95"/>
+    <rect x="33" y="70" width="14" height="4" rx="1.5" fill="#D11A2A" stroke="url(#knotGold)" stroke-width="1"/>
+  </g>
+</svg>
