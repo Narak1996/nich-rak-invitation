@@ -64,7 +64,7 @@ body.theme-khmer-traditional {
 body.theme-khmer-traditional.wedding-bg-pattern {
   background-color: #FAF5E8 !important;
   background-image: 
-    linear-gradient(rgba(250, 245, 232, 0.72), rgba(250, 245, 232, 0.72)),
+    linear-gradient(rgba(250, 245, 232, 0.88), rgba(250, 245, 232, 0.88)),
     url('/images/components/khmer-silk-bg.jpg') !important;
   background-size: auto, 380px 380px !important;
   background-repeat: repeat, repeat !important;
