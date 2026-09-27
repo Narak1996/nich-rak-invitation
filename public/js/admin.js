@@ -2,6 +2,8 @@
 let weddingData = null;
 let guestList = [];
 let wishesList = [];
+let currentUser = null;
+let usersList = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Check auth
@@ -10,6 +12,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!auth.authenticated) {
     window.location.href = '/login';
     return;
+  }
+
+  // Fetch current user profile
+  try {
+    const meRes = await fetch('/api/auth/me');
+    if (meRes.ok) {
+      currentUser = await meRes.json();
+      renderCurrentUserInfo();
+    }
+  } catch (err) {
+    console.error('Failed to load user profile:', err);
   }
 
   initTabs();
@@ -24,7 +37,8 @@ async function loadAllData() {
     loadStats(),
     loadWeddingData(),
     loadGuests(),
-    loadWishes()
+    loadWishes(),
+    loadUsers()
   ]);
 }
 
@@ -377,6 +391,118 @@ async function loadWishes() {
   }
 }
 
+// User Profile & Management
+function renderCurrentUserInfo() {
+  if (!currentUser) return;
+  const initialEl = document.getElementById('user-avatar-initial');
+  const nameEl = document.getElementById('user-display-name');
+  const roleEl = document.getElementById('user-role-badge');
+  if (initialEl) initialEl.textContent = (currentUser.displayName || currentUser.username || 'A').charAt(0).toUpperCase();
+  if (nameEl) nameEl.textContent = currentUser.displayName || currentUser.username;
+  if (roleEl) roleEl.textContent = currentUser.role === 'superadmin' ? 'Super Admin' : 'Editor';
+}
+
+async function loadUsers() {
+  try {
+    const res = await fetch('/api/users');
+    if (!res.ok) {
+      if (res.status === 403) {
+        renderUsers([], false);
+      }
+      return;
+    }
+    usersList = await res.json();
+    renderUsers(usersList, true);
+  } catch (err) {
+    console.error('Failed to load users:', err);
+  }
+}
+
+function renderUsers(users, isSuperAdmin) {
+  const tbody = document.getElementById('users-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (!isSuperAdmin) {
+    if (currentUser) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="p-3">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs">${escapeHTML((currentUser.displayName || 'A').charAt(0).toUpperCase())}</span>
+            <div>
+              <span class="font-bold text-[#4E3227] block">${escapeHTML(currentUser.displayName || currentUser.username)}</span>
+              <span class="text-[11px] text-[#7A6F68]">@${escapeHTML(currentUser.username)}</span>
+            </div>
+          </div>
+        </td>
+        <td class="p-3">
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800 uppercase">${escapeHTML(currentUser.role)}</span>
+        </td>
+        <td class="p-3 text-[#7A6F68]">-</td>
+        <td class="p-3 text-[#7A6F68]">បច្ចុប្បន្ន (Active Now)</td>
+        <td class="p-3 text-right">
+          <button onclick="openChangePasswordModal('${currentUser.id}', true)" class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition">
+            🔑 ប្តូរពាក្យសម្ងាត់
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+    return;
+  }
+
+  if (!users || users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-400">មិនមានទិន្នន័យអ្នកប្រើប្រាស់</td></tr>';
+    return;
+  }
+
+  users.forEach(u => {
+    const isMe = currentUser && currentUser.id === u.id;
+    const roleBadge = u.role === 'superadmin' 
+      ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800">👑 Super Admin</span>'
+      : '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800">✏️ Editor</span>';
+
+    const createdStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('km-KH', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+    const lastLoginStr = u.lastLogin ? new Date(u.lastLogin).toLocaleString('km-KH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'មិនទាន់ចូល (Never)';
+
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-gray-50/80 transition';
+    tr.innerHTML = `
+      <td class="p-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+            ${escapeHTML((u.displayName || u.username || 'A').charAt(0).toUpperCase())}
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-[#4E3227]">${escapeHTML(u.displayName || u.username)}</span>
+              ${isMe ? '<span class="px-1.5 py-0.2 rounded text-[10px] bg-green-100 text-green-700 font-bold">You</span>' : ''}
+            </div>
+            <span class="text-[11px] text-[#7A6F68]">@${escapeHTML(u.username)}</span>
+          </div>
+        </div>
+      </td>
+      <td class="p-3">${roleBadge}</td>
+      <td class="p-3 text-[#7A6F68]">${createdStr}</td>
+      <td class="p-3 text-[#7A6F68]">${lastLoginStr}</td>
+      <td class="p-3 text-right">
+        <div class="flex items-center justify-end gap-1.5">
+          <button onclick="openChangePasswordModal('${u.id}', ${isMe})" class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition" title="ប្តូរពាក្យសម្ងាត់">
+            🔑 ប្តូរពាក្យសម្ងាត់
+          </button>
+          ${!isMe ? `
+            <button onclick="deleteUser('${u.id}', '${escapeHTML(u.username)}')" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition" title="លុបគណនី">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          ` : ''}
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
 // Form listeners
 function initFormListeners() {
   // Search & Filters
@@ -690,6 +816,70 @@ function initFormListeners() {
     showToast('បានបន្ថែមកម្រងរូបថតជោគជ័យ!');
     loadWeddingData();
   });
+
+  // Add user submit listener
+  const formAddUser = document.getElementById('form-add-user');
+  if (formAddUser) {
+    formAddUser.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('modal-user-username').value.trim();
+      const displayName = document.getElementById('modal-user-displayname').value.trim();
+      const password = document.getElementById('modal-user-password').value;
+      const role = document.getElementById('modal-user-role').value;
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, displayName, password, role })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('បានបង្កើតគណនី Admin ថ្មីជោគជ័យ!');
+          closeModals();
+          loadUsers();
+        } else {
+          showToast(`⚠️ ${data.error || 'បរាជ័យក្នុងការបង្កើតគណនី'}`);
+        }
+      } catch (err) {
+        showToast('⚠️ បញ្ហាបណ្តាញក្នុងការតភ្ជាប់');
+      }
+    });
+  }
+
+  // Change password submit listener
+  const formChangePwd = document.getElementById('form-change-password');
+  if (formChangePwd) {
+    formChangePwd.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById('modal-pwd-user-id').value;
+      const currentPassword = document.getElementById('modal-pwd-current') ? document.getElementById('modal-pwd-current').value : '';
+      const newPassword = document.getElementById('modal-pwd-new').value;
+      const confirmPassword = document.getElementById('modal-pwd-confirm').value;
+
+      if (newPassword !== confirmPassword) {
+        showToast('⚠️ ពាក្យសម្ងាត់ផ្ទៀងផ្ទាត់មិនដូចគ្នាទេ!');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/users/${userId}/password`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('✓ បានប្តូរពាក្យសម្ងាត់ដោយជោគជ័យ!');
+          closeModals();
+        } else {
+          showToast(`⚠️ ${data.error || 'បរាជ័យក្នុងការប្តូរពាក្យសម្ងាត់'}`);
+        }
+      } catch (err) {
+        showToast('⚠️ បញ្ហាបណ្តាញក្នុងការតភ្ជាប់');
+      }
+    });
+  }
 }
 
 // Global actions
@@ -771,6 +961,46 @@ window.openGuestQR = function(url, name) {
   document.getElementById('modal-qr').classList.add('active');
 };
 
+window.openChangePasswordModal = function(userId, isSelf) {
+  const form = document.getElementById('form-change-password');
+  if (form) form.reset();
+  document.getElementById('modal-pwd-user-id').value = userId;
+
+  const currentField = document.getElementById('pwd-field-current');
+  const currentInput = document.getElementById('modal-pwd-current');
+  const desc = document.getElementById('modal-pwd-user-desc');
+
+  if (isSelf) {
+    if (currentField) currentField.classList.remove('hidden');
+    if (currentInput) currentInput.required = true;
+    if (desc) desc.textContent = 'ប្តូរពាក្យសម្ងាត់សម្រាប់គណនីផ្ទាល់ខ្លួនរបស់អ្នក';
+  } else {
+    if (currentField) currentField.classList.add('hidden');
+    if (currentInput) currentInput.required = false;
+    const targetUser = usersList.find(u => u.id === userId);
+    if (desc) desc.textContent = `កំណត់ពាក្យសម្ងាត់ថ្មីជូនអ្នកប្រើប្រាស់: ${targetUser ? targetUser.displayName : ''}`;
+  }
+
+  document.getElementById('modal-change-password').classList.add('active');
+};
+
+window.deleteUser = async function(userId, username) {
+  if (!confirm(`តើអ្នកពិតជាចង់លុបគណនី "${username}" នេះមែនទេ?`)) return;
+  try {
+    const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (res.ok) {
+      showToast('✓ បានលុបគណនីជោគជ័យ!');
+      loadUsers();
+    } else {
+      showToast(`⚠️ ${data.error || 'បរាជ័យក្នុងការលុបគណនី'}`);
+    }
+  } catch (err) {
+    console.error('Failed to delete user:', err);
+    showToast('⚠️ បញ្ហាបណ្តាញក្នុងការតភ្ជាប់');
+  }
+};
+
 // Tabs
 function initTabs() {
   const tabs = document.querySelectorAll('.admin-tab');
@@ -809,6 +1039,15 @@ function initModals() {
     document.getElementById('form-bulk-import').reset();
     document.getElementById('modal-bulk-import').classList.add('active');
   });
+
+  const btnOpenAddUser = document.getElementById('btn-open-add-user');
+  if (btnOpenAddUser) {
+    btnOpenAddUser.addEventListener('click', () => {
+      const form = document.getElementById('form-add-user');
+      if (form) form.reset();
+      document.getElementById('modal-add-user').classList.add('active');
+    });
+  }
 
   document.querySelectorAll('.modal-close').forEach(btn => {
     btn.addEventListener('click', closeModals);

@@ -6,6 +6,8 @@ const multer = require('multer');
 const QRCode = require('qrcode');
 const cookieParser = require('cookie-parser');
 
+const crypto = require('crypto');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -14,6 +16,8 @@ const DATA_DIR = path.join(__dirname, 'data');
 const WEDDING_FILE = path.join(DATA_DIR, 'wedding-data.json');
 const GUESTS_FILE = path.join(DATA_DIR, 'guests.json');
 const WISHES_FILE = path.join(DATA_DIR, 'wishes.json');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
 
 // Ensure directories exist
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -63,13 +67,89 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('e-invitation-secret-token-2026'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Simple Auth middleware
+// ================= SECURE AUTHENTICATION & USER MANAGEMENT =================
+// Password security with PBKDF2 & SHA-512
+function hashPassword(password, salt) {
+  if (!salt) salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+  return { hash, salt };
+}
+
+function verifyPassword(password, hash, salt) {
+  if (!password || !hash || !salt) return false;
+  try {
+    const check = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    return crypto.timingSafeEqual(Buffer.from(check, 'hex'), Buffer.from(hash, 'hex'));
+  } catch (e) {
+    return false;
+  }
+}
+
+// User helper: auto-seed default superadmin if users.json is missing or empty
+function getOrInitUsers() {
+  let users = readJSON(USERS_FILE, []);
+  if (!Array.isArray(users) || users.length === 0) {
+    const { hash, salt } = hashPassword('admin123');
+    users = [{
+      id: 'usr_' + Date.now(),
+      username: 'admin',
+      displayName: 'Admin (Channarak)',
+      role: 'superadmin',
+      passwordHash: hash,
+      salt: salt,
+      createdAt: new Date().toISOString(),
+      lastLogin: null
+    }];
+    writeJSON(USERS_FILE, users);
+  }
+  return users;
+}
+
+// In-memory sessions synchronized with sessions.json
+let activeSessions = readJSON(SESSIONS_FILE, {});
+function saveSessions() {
+  const now = Date.now();
+  const valid = {};
+  for (const [token, sess] of Object.entries(activeSessions)) {
+    if (sess && sess.expiresAt > now) {
+      valid[token] = sess;
+    }
+  }
+  activeSessions = valid;
+  writeJSON(SESSIONS_FILE, activeSessions);
+}
+
+function getSession(token) {
+  if (!token) return null;
+  const sess = activeSessions[token];
+  if (!sess) return null;
+  if (sess.expiresAt < Date.now()) {
+    delete activeSessions[token];
+    saveSessions();
+    return null;
+  }
+  return sess;
+}
+
+// Require Admin Middleware (Validates token against active sessions)
 function requireAdmin(req, res, next) {
   const token = req.cookies.admin_token;
-  if (token === 'logged-in-admin-token') {
-    return next();
+  const sess = getSession(token);
+  if (!sess) {
+    return res.status(401).json({ error: 'Unauthorized: Please log in to continue.' });
   }
-  return res.status(401).json({ error: 'Unauthorized. Please login.' });
+  req.user = sess;
+  next();
+}
+
+// Require Superadmin Middleware
+function requireSuperAdmin(req, res, next) {
+  requireAdmin(req, res, () => {
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({ error: 'Permission denied: Superadmin role required.' });
+    }
+    next();
+  });
 }
 
 // Convert any YouTube URL format to clean embed URL
@@ -82,31 +162,282 @@ function formatYouTubeEmbedUrl(url) {
   return String(url).trim();
 }
 
-// Auth routes
+// ================= AUTH ROUTES =================
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
-  const weddingData = readJSON(WEDDING_FILE);
-  const admin = weddingData.admin || { username: 'admin', passwordHash: 'admin123' };
-
-  if (username === admin.username && password === admin.passwordHash) {
-    res.cookie('admin_token', 'logged-in-admin-token', {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    });
-    return res.json({ success: true, message: 'Logged in successfully' });
+  if (!username || !password) {
+    return res.status(400).json({ error: 'សូមបញ្ចូលឈ្មោះគណនី និងពាក្យសម្ងាត់' });
   }
-  return res.status(401).json({ error: 'Invalid username or password' });
+
+  const users = getOrInitUsers();
+  const user = users.find(u => u.username.toLowerCase() === String(username).trim().toLowerCase());
+
+  if (!user || !verifyPassword(password, user.passwordHash, user.salt)) {
+    return res.status(401).json({ error: 'ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវឡើយ' });
+  }
+
+  // Update last login
+  user.lastLogin = new Date().toISOString();
+  writeJSON(USERS_FILE, users);
+
+  // Generate 32-byte secure random token
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+
+  activeSessions[token] = {
+    userId: user.id,
+    username: user.username,
+    displayName: user.displayName || user.username,
+    role: user.role || 'admin',
+    createdAt: Date.now(),
+    expiresAt
+  };
+  saveSessions();
+
+  res.cookie('admin_token', token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+
+  return res.json({
+    success: true,
+    message: 'Logged in successfully',
+    user: {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName || user.username,
+      role: user.role || 'admin',
+      isDefaultPassword: verifyPassword('admin123', user.passwordHash, user.salt)
+    }
+  });
 });
 
 app.post('/api/auth/logout', (req, res) => {
+  const token = req.cookies.admin_token;
+  if (token && activeSessions[token]) {
+    delete activeSessions[token];
+    saveSessions();
+  }
   res.clearCookie('admin_token');
   res.json({ success: true, message: 'Logged out' });
 });
 
 app.get('/api/auth/check', (req, res) => {
   const token = req.cookies.admin_token;
-  res.json({ authenticated: token === 'logged-in-admin-token' });
+  const sess = getSession(token);
+  res.json({
+    authenticated: !!sess,
+    user: sess ? {
+      id: sess.userId,
+      username: sess.username,
+      displayName: sess.displayName,
+      role: sess.role
+    } : null
+  });
+});
+
+app.get('/api/auth/me', requireAdmin, (req, res) => {
+  const users = getOrInitUsers();
+  const user = users.find(u => u.id === req.user.userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  res.json({
+    id: user.id,
+    username: user.username,
+    displayName: user.displayName || user.username,
+    role: user.role || 'admin',
+    lastLogin: user.lastLogin,
+    isDefaultPassword: verifyPassword('admin123', user.passwordHash, user.salt)
+  });
+});
+
+// ================= USER MANAGEMENT ROUTES =================
+// 1. List all users (Sanitized without passwordHash/salt)
+app.get('/api/users', requireAdmin, (req, res) => {
+  const users = getOrInitUsers();
+  const safeUsers = users.map(u => ({
+    id: u.id,
+    username: u.username,
+    displayName: u.displayName || u.username,
+    role: u.role || 'admin',
+    createdAt: u.createdAt,
+    lastLogin: u.lastLogin,
+    isDefaultPassword: verifyPassword('admin123', u.passwordHash, u.salt)
+  }));
+  res.json(safeUsers);
+});
+
+// 2. Create new user
+app.post('/api/users', requireAdmin, (req, res) => {
+  if (req.user.role !== 'superadmin' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Permission denied: Only admins can create users.' });
+  }
+
+  const { username, password, displayName, role } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'សូមបញ្ចូលឈ្មោះគណនី និងពាក្យសម្ងាត់' });
+  }
+
+  const cleanUsername = String(username).trim().toLowerCase();
+  if (cleanUsername.length < 3) {
+    return res.status(400).json({ error: 'ឈ្មោះគណនីត្រូវមានយ៉ាងតិច ៣ តួអក្សរ' });
+  }
+  if (!/^[a-zA-Z0-9_.-]+$/.test(cleanUsername)) {
+    return res.status(400).json({ error: 'ឈ្មោះគណនីត្រូវតែជាអក្សរឡាតាំង លេខ ឬសញ្ញា _ . - ប៉ុណ្ណោះ' });
+  }
+  if (String(password).length < 6) {
+    return res.status(400).json({ error: 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៦ តួអក្សរ' });
+  }
+
+  const users = getOrInitUsers();
+  if (users.some(u => u.username.toLowerCase() === cleanUsername)) {
+    return res.status(400).json({ error: `ឈ្មោះគណនី "${cleanUsername}" មានរួចហើយ សូមជ្រើសរើសឈ្មោះផ្សេង` });
+  }
+
+  const allowedRole = (req.user.role === 'superadmin' && role === 'superadmin') ? 'superadmin' : (role === 'editor' ? 'editor' : 'admin');
+  const { hash, salt } = hashPassword(String(password).trim());
+
+  const newUser = {
+    id: 'usr_' + Date.now(),
+    username: cleanUsername,
+    displayName: String(displayName || cleanUsername).trim(),
+    role: allowedRole,
+    passwordHash: hash,
+    salt,
+    createdAt: new Date().toISOString(),
+    lastLogin: null
+  };
+
+  users.push(newUser);
+  writeJSON(USERS_FILE, users);
+
+  res.status(201).json({
+    success: true,
+    message: `បានបង្កើតអ្នកគ្រប់គ្រង ${newUser.username} ដោយជោគជ័យ`,
+    user: {
+      id: newUser.id,
+      username: newUser.username,
+      displayName: newUser.displayName,
+      role: newUser.role,
+      createdAt: newUser.createdAt
+    }
+  });
+});
+
+// 3. Update User Profile (displayName, role)
+app.put('/api/users/:id', requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const { displayName, role } = req.body;
+  const users = getOrInitUsers();
+  const userIndex = users.findIndex(u => u.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'រកមិនឃើញគណនីនេះឡើយ' });
+  }
+
+  const targetUser = users[userIndex];
+  const isSelf = req.user.userId === id;
+
+  if (!isSelf && req.user.role !== 'superadmin') {
+    return res.status(403).json({ error: 'Permission denied: Superadmin role required.' });
+  }
+
+  if (displayName) targetUser.displayName = String(displayName).trim();
+
+  // Role modification
+  if (role && req.user.role === 'superadmin') {
+    const superAdmins = users.filter(u => u.role === 'superadmin');
+    if (targetUser.role === 'superadmin' && role !== 'superadmin' && superAdmins.length <= 1) {
+      return res.status(400).json({ error: 'មិនអាចបន្ថយតួនាទី Superadmin ចុងក្រោយបង្អស់បានទេ' });
+    }
+    targetUser.role = role;
+  }
+
+  users[userIndex] = targetUser;
+  writeJSON(USERS_FILE, users);
+
+  res.json({
+    success: true,
+    message: 'បានកែសម្រួលគណនីជោគជ័យ',
+    user: {
+      id: targetUser.id,
+      username: targetUser.username,
+      displayName: targetUser.displayName,
+      role: targetUser.role
+    }
+  });
+});
+
+// 4. Change Password
+app.put('/api/users/:id/password', requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  if (!newPassword || String(newPassword).length < 6) {
+    return res.status(400).json({ error: 'ពាក្យសម្ងាត់ថ្មីត្រូវមានយ៉ាងតិច ៦ តួអក្សរ' });
+  }
+
+  const users = getOrInitUsers();
+  const user = users.find(u => u.id === id);
+
+  if (!user) {
+    return res.status(404).json({ error: 'រកមិនឃើញគណនីនេះឡើយ' });
+  }
+
+  const isSelf = req.user.userId === id;
+  const isSuperAdmin = req.user.role === 'superadmin';
+
+  if (isSelf) {
+    if (!currentPassword || !verifyPassword(currentPassword, user.passwordHash, user.salt)) {
+      return res.status(400).json({ error: 'ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវឡើយ' });
+    }
+  } else if (!isSuperAdmin) {
+    return res.status(403).json({ error: 'Permission denied: Superadmin required to reset other users.' });
+  }
+
+  const { hash, salt } = hashPassword(String(newPassword).trim());
+  user.passwordHash = hash;
+  user.salt = salt;
+  user.updatedAt = new Date().toISOString();
+
+  writeJSON(USERS_FILE, users);
+
+  res.json({ success: true, message: `បានប្តូរពាក្យសម្ងាត់សម្រាប់ ${user.username} ដោយជោគជ័យ` });
+});
+
+// 5. Delete User (Superadmin only)
+app.delete('/api/users/:id', requireSuperAdmin, (req, res) => {
+  const { id } = req.params;
+  if (req.user.userId === id) {
+    return res.status(400).json({ error: 'មិនអាចលុបគណនីដែលកំពុង Login នេះបានឡើយ' });
+  }
+
+  let users = getOrInitUsers();
+  const user = users.find(u => u.id === id);
+  if (!user) {
+    return res.status(404).json({ error: 'រកមិនឃើញគណនីនេះឡើយ' });
+  }
+
+  if (user.role === 'superadmin') {
+    const superAdmins = users.filter(u => u.role === 'superadmin');
+    if (superAdmins.length <= 1) {
+      return res.status(400).json({ error: 'មិនអាចលុបគណនី Superadmin ចុងក្រោយបង្អស់បានទេ' });
+    }
+  }
+
+  users = users.filter(u => u.id !== id);
+  writeJSON(USERS_FILE, users);
+
+  // Invalidate any sessions for this deleted user
+  for (const [token, sess] of Object.entries(activeSessions)) {
+    if (sess && sess.userId === id) {
+      delete activeSessions[token];
+    }
+  }
+  saveSessions();
+
+  res.json({ success: true, message: `បានលុបគណនី ${user.username} ដោយជោគជ័យ` });
 });
 
 // Public: Get Wedding Details

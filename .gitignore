@@ -4,4 +4,4 @@ npm-debug.log*
 .DS_Store
 tools/
 tunnel.js
-
+data/sessions.json

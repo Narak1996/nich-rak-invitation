@@ -23,6 +23,13 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <div id="user-info-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#FAF7F2] border border-[#E5D5BC] rounded-xl text-xs">
+          <span class="w-6 h-6 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-[10px]" id="user-avatar-initial">A</span>
+          <div class="leading-tight text-left">
+            <span id="user-display-name" class="font-bold text-[#4E3227] block truncate max-w-[120px]">Admin</span>
+            <span id="user-role-badge" class="text-[10px] text-[#C5A059] uppercase tracking-wider block font-semibold">Superadmin</span>
+          </div>
+        </div>
         <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#4E3227] bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-xl border border-[#E5D5BC] transition">
           <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
           <span>មើលសំបុត្រ (View Invitation)</span>
@@ -79,6 +86,9 @@
       </button>
       <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-wishes">
         💌 ពាក្យជូនពរ (Guestbook)
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-users">
+        🔐 អ្នកគ្រប់គ្រង (Admin Users)
       </button>
     </div>
 
@@ -493,6 +503,38 @@
         </div>
       </div>
     </section>
+
+    <!-- ================= TAB 7: USER MANAGEMENT & SECURITY ================= -->
+    <section id="tab-users" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="font-khmer-title text-lg text-[#4E3227]">គ្រប់គ្រងអ្នកប្រើប្រាស់ & សុវត្ថិភាព (User Management)</h2>
+            <p class="text-xs text-[#7A6F68]">គ្រប់គ្រងគណនី Admin, ប្តូរពាក្យសម្ងាត់ និងកំណត់សិទ្ធិ (Role-Based Access)</p>
+          </div>
+          <button id="btn-open-add-user" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
+            <span>➕ បន្ថែមអ្នកគ្រប់គ្រង (Add Admin)</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#FAF7F2] text-[#4E3227] border-b border-[#E5D5BC]">
+              <tr>
+                <th class="p-3">គណនី / ឈ្មោះ (User & Name)</th>
+                <th class="p-3">តួនាទី (Role)</th>
+                <th class="p-3">ថ្ងៃបង្កើត (Created Date)</th>
+                <th class="p-3">ចូលចុងក្រោយ (Last Login)</th>
+                <th class="p-3 text-right">សកម្មភាព (Actions)</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body" class="divide-y divide-gray-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ================= ADD GUEST MODAL ================= -->
@@ -687,6 +729,71 @@
           ព្រីន (Print)
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ================= ADD USER MODAL ================= -->
+  <div id="modal-add-user" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full border border-[#E5D5BC] shadow-2xl relative text-left">
+      <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg">✕</button>
+      <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">បន្ថែមអ្នកគ្រប់គ្រងថ្មី</h3>
+      <p class="text-xs text-[#7A6F68] mb-4">បង្កើតគណនីសម្រាប់ចូលគ្រប់គ្រងគេហទំព័រមង្គលការ</p>
+
+      <form id="form-add-user" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះគណនី (Username) *</label>
+          <input type="text" id="modal-user-username" required placeholder="ឧ. nich_admin" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+          <span class="text-[10px] text-gray-400">អក្សរតូច ឬលេខ គ្មានដកឃ្លា (យ៉ាងតិច 3 តួ)</span>
+        </div>
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះបង្ហាញ (Display Name) *</label>
+          <input type="text" id="modal-user-displayname" required placeholder="ឧ. Ly Sreymech" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ពាក្យសម្ងាត់ (Password) *</label>
+          <input type="password" id="modal-user-password" required minlength="6" placeholder="យ៉ាងតិច 6 តួអក្សរ" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">តួនាទី (Role) *</label>
+          <select id="modal-user-role" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+            <option value="editor">Editor (អាចកែប្រែព័ត៌មាន និងភ្ញៀវ)</option>
+            <option value="superadmin">Super Admin (សិទ្ធិពេញលេញ + គ្រប់គ្រង Users)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
+          បង្កើតគណនី (Create User)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= CHANGE PASSWORD MODAL ================= -->
+  <div id="modal-change-password" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full border border-[#E5D5BC] shadow-2xl relative text-left">
+      <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg">✕</button>
+      <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">ប្តូរពាក្យសម្ងាត់គណនី</h3>
+      <p class="text-xs text-[#7A6F68] mb-4" id="modal-pwd-user-desc">ប្តូរពាក្យសម្ងាត់សម្រាប់គណនី</p>
+
+      <form id="form-change-password" class="space-y-3 text-xs">
+        <input type="hidden" id="modal-pwd-user-id">
+        <div id="pwd-field-current" class="hidden">
+          <label class="block font-bold text-[#4E3227] mb-1">ពាក្យសម្ងាត់បច្ចុប្បន្ន (Current Password) *</label>
+          <input type="password" id="modal-pwd-current" placeholder="ពាក្យសម្ងាត់ចាស់" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">ពាក្យសម្ងាត់ថ្មី (New Password) *</label>
+          <input type="password" id="modal-pwd-new" required minlength="6" placeholder="យ៉ាងតិច 6 តួអក្សរ" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+        <div>
+          <label class="block font-bold text-[#4E3227] mb-1">បញ្ជាក់ពាក្យសម្ងាត់ថ្មី (Confirm New Password) *</label>
+          <input type="password" id="modal-pwd-confirm" required minlength="6" placeholder="បញ្ចូលពាក្យសម្ងាត់ថ្មីម្តងទៀត" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
+          រក្សាទុកពាក្យសម្ងាត់ថ្មី (Save New Password)
+        </button>
+      </form>
     </div>
   </div>
 
