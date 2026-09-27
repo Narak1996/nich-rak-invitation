@@ -5,12 +5,11 @@
     "primaryColor": "#8C1D2F",
     "accentColor": "#D4AF37",
     "secondaryColor": "#B22B42",
-    "bgColor": "#FAF6ED",
+    "bgColor": "#FAF5E8",
     "emblem": "romduol",
     "sealEmblem": "romduol"
   },
   "wedding": {
-    "panel_style": "glass",
     "title_kh": "សិរីសួស្តី អាពាហ៍ពិពាហ៍",
     "title_en": "Happy Wedding Celebration",
     "groom": {

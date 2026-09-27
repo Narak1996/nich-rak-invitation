@@ -92,10 +92,6 @@ async function loadWeddingData() {
     document.getElementById('selected-theme-id').value = currentThemeId;
     updateThemeSelectionUI(currentThemeId);
 
-    // Panel style (solid vs glass)
-    const currentPanelStyle = (w && w.panel_style) || 'glass';
-    updatePanelStyleUI(currentPanelStyle);
-
     // Groom
     document.getElementById('groom-name-kh').value = w.groom.name_kh || '';
     document.getElementById('groom-name-en').value = w.groom.name_en || '';
@@ -423,7 +419,6 @@ function initFormListeners() {
     }
 
     const selThemeId = document.getElementById('selected-theme-id').value || 'khmer-traditional';
-    const selPanelStyle = document.getElementById('selected-panel-style').value || 'glass';
     const themeObj = THEME_PRESETS[selThemeId] || THEME_PRESETS['khmer-traditional'];
     const updated = {
       ...weddingData,
@@ -432,7 +427,6 @@ function initFormListeners() {
       },
       wedding: {
         ...weddingData.wedding,
-        panel_style: selPanelStyle,
         groom: {
           ...weddingData.wedding.groom,
           name_kh: document.getElementById('groom-name-kh').value.trim(),
@@ -923,50 +917,6 @@ function updateThemeSelectionUI(themeId) {
   const themeObj = THEME_PRESETS[themeId] || THEME_PRESETS['khmer-traditional'];
   const badge = document.getElementById('current-theme-badge');
   if (badge) badge.textContent = themeObj.name;
-}
-
-window.selectPanelStyle = function(style) {
-  document.getElementById('selected-panel-style').value = style;
-  updatePanelStyleUI(style);
-  if (weddingData && weddingData.wedding) {
-    weddingData.wedding.panel_style = style;
-  }
-};
-
-function updatePanelStyleUI(style) {
-  const panelInput = document.getElementById('selected-panel-style');
-  if (panelInput) panelInput.value = style;
-  const isGlass = style === 'glass';
-  const cardSolid = document.getElementById('card-panel-solid');
-  const cardGlass = document.getElementById('card-panel-glass');
-  const badge = document.getElementById('current-panel-style-badge');
-
-  if (cardSolid) {
-    if (!isGlass) {
-      cardSolid.classList.add('border-[#D4AF37]', 'shadow-md');
-      cardSolid.classList.remove('border-gray-200', 'shadow-2xs');
-    } else {
-      cardSolid.classList.remove('border-[#D4AF37]', 'shadow-md');
-      cardSolid.classList.add('border-gray-200', 'shadow-2xs');
-    }
-  }
-
-  if (cardGlass) {
-    if (isGlass) {
-      cardGlass.classList.add('border-[#D4AF37]', 'shadow-md');
-      cardGlass.classList.remove('border-gray-200', 'shadow-2xs');
-    } else {
-      cardGlass.classList.remove('border-[#D4AF37]', 'shadow-md');
-      cardGlass.classList.add('border-gray-200', 'shadow-2xs');
-    }
-  }
-
-  if (badge) {
-    badge.textContent = isGlass ? 'Glass Style (កញ្ចក់ថ្លា)' : 'Solid Style (ពណ៌រឹង)';
-    badge.className = isGlass 
-      ? 'px-3 py-1 bg-white rounded-full text-xs font-bold text-[#8C1D2F] border border-[#E5D5BC]' 
-      : 'px-3 py-1 bg-white rounded-full text-xs font-bold text-[#4E3227] border border-[#E5D5BC]';
-  }
 }
 
 window.uploadAudio = async function(fileInput, targetInputId) {

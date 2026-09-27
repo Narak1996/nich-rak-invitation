@@ -119,19 +119,15 @@ app.put('/api/wedding', requireAdmin, (req, res) => {
   res.json({ success: true, message: 'Wedding information updated', data: updated });
 });
 
-// Public / Live Preview: Quick Style / Theme / Panel Style Switcher
+// Public / Live Preview: Quick Theme Switcher
 app.post('/api/wedding/quick-style', (req, res) => {
-  const { theme, panel_style } = req.body;
+  const { theme } = req.body;
   const current = readJSON(WEDDING_FILE);
   if (theme) {
     current.theme = { ...theme };
   }
-  if (panel_style) {
-    if (!current.wedding) current.wedding = {};
-    current.wedding.panel_style = panel_style;
-  }
   writeJSON(WEDDING_FILE, current);
-  res.json({ success: true, theme: current.theme, panel_style: current.wedding.panel_style });
+  res.json({ success: true, theme: current.theme });
 });
 
 // Admin: Upload file (photo, QR, music)
