@@ -64,7 +64,7 @@ body.theme-khmer-traditional {
 body.theme-khmer-traditional.wedding-bg-pattern {
   background-color: #FAF5E8 !important;
   background-image: 
-    linear-gradient(rgba(250, 245, 232, 0.88), rgba(250, 245, 232, 0.88)),
+    linear-gradient(rgba(250, 245, 232, 0.72), rgba(250, 245, 232, 0.72)),
     url('/images/components/khmer-silk-bg.jpg') !important;
   background-size: auto, 380px 380px !important;
   background-repeat: repeat, repeat !important;
@@ -91,11 +91,14 @@ body.theme-khmer-traditional #main-couple-en {
 
 /* Khmer Ornate Cards */
 body.theme-khmer-traditional .ornate-border-box,
-body.theme-khmer-traditional .bg-white.rounded-3xl {
-  background: #FFFDF8 !important;
+body.theme-khmer-traditional .bg-white.rounded-3xl,
+body.theme-khmer-traditional .bg-white.rounded-2xl {
+  background: rgba(255, 253, 248, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   border: 2px solid #D4AF37 !important;
   border-radius: 20px !important;
-  box-shadow: 0 12px 35px rgba(140, 29, 47, 0.08) !important;
+  box-shadow: 0 12px 35px rgba(140, 29, 47, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.85) !important;
 }
 body.theme-khmer-traditional .ornate-border-box::before {
   border: 1px solid rgba(212, 175, 55, 0.45) !important;
@@ -155,8 +158,11 @@ body.theme-khmer-traditional .khmer-corner-br {
 
 /* Khmer Inner Cards & Sub-elements */
 body.theme-khmer-traditional .bg-\[\#FAF7F2\] {
-  background-color: #FAF4E8 !important;
-  border-color: #E8D3A7 !important;
+  background-color: rgba(250, 244, 232, 0.70) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border-color: rgba(232, 211, 167, 0.75) !important;
+  box-shadow: 0 2px 10px rgba(140, 29, 47, 0.03) !important;
 }
 body.theme-khmer-traditional .text-\[\#4E3227\],
 body.theme-khmer-traditional .text-bronze {
@@ -180,7 +186,9 @@ body.theme-khmer-traditional .border-gold {
 
 /* Khmer Countdown */
 body.theme-khmer-traditional .countdown-box {
-  background: #FFFDF8 !important;
+  background: rgba(255, 253, 248, 0.82) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
   border: 1.5px solid #D4AF37 !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 15px rgba(140, 29, 47, 0.06) !important;
