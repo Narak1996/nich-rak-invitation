@@ -79,21 +79,21 @@
   <!-- ================= TOP FLOATING NAVIGATION BAR ================= -->
   <header class="floating-top-bar">
     <!-- Quick Theme Switcher Dropdown -->
-    <div class="relative group">
+    <div class="relative">
       <button id="theme-menu-btn" class="flex items-center gap-1.5 px-2.5 py-1 bg-[#FAF7F2] hover:bg-white rounded-full text-xs font-bold text-[#4E3227] transition border border-[#E5D5BC]">
         <span id="active-theme-icon" class="flex items-center"><img src="/images/components/romduol-flower.svg" class="w-3.5 h-3.5 object-contain" alt="Theme"></span>
-        <span id="active-theme-label" class="hidden sm:inline">Theme</span>
+        <span id="active-theme-label" class="hidden sm:inline">ខ្មែរ</span>
         <svg class="w-3 h-3 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
       </button>
-      <div id="theme-menu-dropdown" class="absolute left-0 mt-1 hidden group-hover:flex flex-col bg-white rounded-2xl shadow-xl border border-[#E5D5BC] p-1.5 w-48 z-50">
+      <div id="theme-menu-dropdown" class="absolute left-0 mt-1 hidden flex-col bg-white rounded-2xl shadow-xl border border-[#E5D5BC] p-1.5 w-36 z-50">
         <button onclick="window.switchThemeLive('khmer-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <img src="/images/components/romduol-flower.svg" class="w-4 h-4 object-contain inline-block" alt="ផ្ការំដួល"> <span>១. ផ្ការំដួល (Khmer)</span>
+          <img src="/images/components/romduol-flower.svg" class="w-4 h-4 object-contain inline-block" alt="Khmer"> <span>ខ្មែរ</span>
         </button>
         <button onclick="window.switchThemeLive('western-modern')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-base">💍</span> <span>២. Western Modern</span>
+          <span class="text-base leading-none">💍</span> <span>សម័យថ្មី</span>
         </button>
         <button onclick="window.switchThemeLive('chinese-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-base">囍</span> <span>៣. ប្រពៃណីចិន (Chinese)</span>
+          <span class="text-base leading-none font-bold text-[#A81822]">囍</span> <span>ចិន</span>
         </button>
       </div>
     </div>
@@ -147,29 +147,31 @@
       <!-- Traditional Floral Header Motif -->
       <div class="flex items-center justify-center gap-3 mb-3">
         <div class="h-px w-12 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
-        <span id="hero-motif-text" class="text-xs uppercase tracking-widest text-[#C5A059] font-semibold" data-kh="សិរីសួស្តី អាពាហ៍ពិពាហ៍" data-en="Wedding Celebration">
+        <span id="hero-motif-text" class="text-xs font-khmer-title whitespace-nowrap text-[#C5A059] font-semibold" data-kh="សិរីសួស្តី អាពាហ៍ពិពាហ៍" data-en="Wedding Celebration">
           សិរីសួស្តី អាពាហ៍ពិពាហ៍
         </span>
         <div class="h-px w-12 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
       </div>
 
-      <h2 id="main-wedding-title" class="font-khmer-title text-2xl md:text-3xl text-[#4E3227] mb-2 leading-tight">
+      <h2 id="main-wedding-title" class="font-khmer-title text-2xl md:text-3xl text-[#4E3227] mb-2 leading-tight whitespace-nowrap">
         សិរីសួស្តី អាពាហ៍ពិពាហ៍
       </h2>
 
-      <p class="font-en-script text-4xl md:text-5xl text-[#C5A059] my-2" id="main-couple-en">
+      <p class="font-en-script text-3xl sm:text-4xl md:text-5xl text-[#C5A059] my-2 whitespace-nowrap" id="main-couple-en">
         Chan Narak & Ly Sreymech
       </p>
 
-      <p class="font-khmer-title text-lg text-[#4E3227] tracking-wider mb-6" id="main-couple-kh">
+      <p class="font-khmer-title text-lg text-[#4E3227] mb-6 whitespace-nowrap" id="main-couple-kh">
         ចាន់ ណារ៉ាក់ & លី ស្រីម៉ិច
       </p>
 
-      <!-- Main Couple Portrait with Ornate Frame -->
-      <div class="relative max-w-md mx-auto mb-6">
-        <div class="p-3 bg-white rounded-3xl shadow-xl border border-[#E5D5BC]">
-          <div class="overflow-hidden rounded-2xl aspect-4/5 relative group">
-            <img id="main-couple-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80" alt="Couple" class="w-full h-full object-cover">
+      <!-- Main Couple Portrait with Ornate Frame (Landscape Cinematic View) -->
+      <div class="relative w-full max-w-2xl mx-auto mb-8 px-1">
+        <div id="couple-cover-box" class="couple-cover-box overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl relative group">
+          <div class="w-full aspect-[16/10] sm:aspect-[16/9] relative overflow-hidden bg-black/10">
+            <img id="main-couple-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80" alt="Couple" onclick="openLightbox(this.src, 'រូបថតគូស្នេហ៍ចម្បង / Couple Cover Photo')" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 cursor-pointer block" title="ចុចដើម្បីមើលរូបធំ (Click to zoom)">
+            <!-- Inner subtle gilded rim & shadow -->
+            <div class="absolute inset-0 pointer-events-none ring-1 ring-inset ring-black/10 rounded-2xl sm:rounded-3xl"></div>
           </div>
         </div>
       </div>
@@ -349,12 +351,17 @@
       </div>
 
       <!-- Video Embed (Optional) -->
-      <div id="video-container" class="mt-8 ornate-border-box p-4 rounded-2xl hidden">
-        <h4 class="font-khmer-title text-sm text-center text-[#4E3227] mb-3" data-kh="វីដេអូអនុស្សាវរីយ៍ (Our Story)" data-en="Love Story Video">
-          វីដេអូអនុស្សាវរីយ៍ (Our Story)
-        </h4>
-        <div class="aspect-16/9 rounded-xl overflow-hidden">
-          <iframe id="wedding-video-iframe" class="w-full h-full" src="" title="Wedding Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div id="video-container" class="mt-8 ornate-border-box p-4 sm:p-5 rounded-2xl hidden">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <h4 class="font-khmer-title text-sm text-[#4E3227] flex items-center gap-1.5" data-kh="🎬 វីដេអូអនុស្សាវរីយ៍ (Our Story)" data-en="🎬 Love Story Video">
+            🎬 វីដេអូអនុស្សាវរីយ៍ (Our Story)
+          </h4>
+          <button id="btn-toggle-video-aspect" onclick="toggleVideoAspect()" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white/70 hover:bg-white text-[#4E3227] border border-[#E5D5BC] transition cursor-pointer shadow-2xs flex items-center gap-1" title="ប្តូរទំហំវីដេអូ (Toggle Aspect Ratio)">
+            <span id="video-aspect-label">📱 ទំហំវែង (Tall)</span>
+          </button>
+        </div>
+        <div id="video-player-wrapper" class="w-full rounded-2xl overflow-hidden shadow-xl bg-black flex items-center justify-center relative min-h-[280px] sm:min-h-[380px] md:min-h-[440px] h-[300px] sm:h-[400px] md:h-[460px] transition-all duration-300">
+          <iframe id="wedding-video-iframe" class="w-full h-full" src="" title="Wedding Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
       </div>
     </section>
@@ -504,7 +511,7 @@
       </div>
 
       <!-- Quick Wish Submission Form -->
-      <div class="bg-white p-5 rounded-2xl border border-[#E5D5BC] shadow-xs mb-6 max-w-md mx-auto">
+      <div id="wish-form-card" class="bg-white p-5 rounded-2xl border border-[#E5D5BC] shadow-xs mb-6 max-w-md mx-auto">
         <form id="wish-form" class="space-y-3">
           <div class="grid grid-cols-2 gap-2">
             <input type="text" id="wish-sender-name" required placeholder="ឈ្មោះរបស់អ្នក *" class="px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
@@ -556,6 +563,9 @@
 
   <!-- ================= TOAST NOTIFICATION ================= -->
   <div id="toast-notice" class="toast-notice"></div>
+
+  <!-- Hidden YouTube Background Music Player Container -->
+  <div id="yt-bg-audio-container" style="position:fixed;bottom:-500px;left:-500px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;"></div>
 
   <!-- JavaScript -->
   <script src="/js/invitation.js"></script>

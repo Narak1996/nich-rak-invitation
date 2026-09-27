@@ -44,10 +44,20 @@ async function loadStats() {
   }
 }
 
+// Convert any YouTube URL format to clean embed URL
+function formatYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  const match = String(url).trim().match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+  if (match && match[1]) {
+    return `https://www.youtube.com/embed/${match[1]}?enablejsapi=1&rel=0&modestbranding=1`;
+  }
+  return String(url).trim();
+}
+
 const THEME_PRESETS = {
   'khmer-traditional': {
     id: 'khmer-traditional',
-    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្ការំដួល & មាស)',
+    name: 'ខ្មែរ',
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
@@ -57,7 +67,7 @@ const THEME_PRESETS = {
   },
   'western-modern': {
     id: 'western-modern',
-    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - Cotton Paper & Olive)',
+    name: 'សម័យថ្មី',
     primaryColor: '#1B4332',
     accentColor: '#C5A059',
     secondaryColor: '#2D6A4F',
@@ -67,7 +77,7 @@ const THEME_PRESETS = {
   },
   'chinese-traditional': {
     id: 'chinese-traditional',
-    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ផ្កាម៉ូនៀ)',
+    name: 'ចិន',
     primaryColor: '#A81822',
     accentColor: '#FFD700',
     secondaryColor: '#C72535',
@@ -454,7 +464,7 @@ function initFormListeners() {
         map_url: document.getElementById('map-url').value.trim(),
         map_embed: document.getElementById('map-embed-url').value.trim(),
         music_url: document.getElementById('music-url').value.trim(),
-        video_embed: document.getElementById('video-url').value.trim()
+        video_embed: formatYouTubeEmbedUrl(document.getElementById('video-url').value.trim())
       }
     };
 
@@ -635,18 +645,26 @@ function initFormListeners() {
         newAgenda.push(itemData);
       }
 
-      const res = await fetch('/api/wedding', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...weddingData, agenda: newAgenda })
-      });
+      weddingData.agenda = newAgenda;
+      renderAdminAgenda();
 
-      if (res.ok) {
-        closeModals();
-        showToast(idx >= 0 ? 'បានកែប្រែកម្មវិធីជោគជ័យ!' : 'បានបន្ថែមកម្មវិធីជោគជ័យ!');
-        loadWeddingData();
-      } else {
-        showToast('បរាជ័យក្នុងការរក្សាទុក');
+      try {
+        const res = await fetch('/api/wedding', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...weddingData, agenda: newAgenda })
+        });
+
+        if (res.ok) {
+          closeModals();
+          showToast(idx >= 0 ? 'បានកែប្រែកម្មវិធីជោគជ័យ!' : 'បានបន្ថែមកម្មវិធីជោគជ័យ!');
+          loadWeddingData();
+        } else {
+          showToast('បរាជ័យក្នុងការរក្សាទុក');
+        }
+      } catch (err) {
+        console.error('Error saving agenda:', err);
+        showToast('មានបញ្ហាក្នុងការរក្សាទុក');
       }
     });
   }
@@ -679,13 +697,22 @@ window.deleteAgendaItem = async function(idx) {
   if (!confirm('តើអ្នកពិតជាចង់លុបកម្មវិធីនេះមែនទេ?')) return;
   const newAgenda = [...weddingData.agenda];
   newAgenda.splice(idx, 1);
-  await fetch('/api/wedding', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...weddingData, agenda: newAgenda })
-  });
-  showToast('បានលុបកម្មវិធីជោគជ័យ!');
-  loadWeddingData();
+  weddingData.agenda = newAgenda;
+  renderAdminAgenda();
+
+  try {
+    const res = await fetch('/api/wedding', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...weddingData, agenda: newAgenda })
+    });
+    if (res.ok) {
+      showToast('បានលុបកម្មវិធីជោគជ័យ!');
+      loadWeddingData();
+    }
+  } catch (err) {
+    console.error('Error deleting agenda:', err);
+  }
 };
 
 window.deleteGalleryItem = async function(idx) {

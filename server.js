@@ -72,6 +72,16 @@ function requireAdmin(req, res, next) {
   return res.status(401).json({ error: 'Unauthorized. Please login.' });
 }
 
+// Convert any YouTube URL format to clean embed URL
+function formatYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  const match = String(url).trim().match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+  if (match && match[1]) {
+    return `https://www.youtube.com/embed/${match[1]}?enablejsapi=1&rel=0&modestbranding=1`;
+  }
+  return String(url).trim();
+}
+
 // Auth routes
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
@@ -81,6 +91,7 @@ app.post('/api/auth/login', (req, res) => {
   if (username === admin.username && password === admin.passwordHash) {
     res.cookie('admin_token', 'logged-in-admin-token', {
       httpOnly: true,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
     return res.json({ success: true, message: 'Logged in successfully' });
@@ -110,6 +121,9 @@ app.get('/api/wedding', (req, res) => {
 // Admin: Update Wedding Details
 app.put('/api/wedding', requireAdmin, (req, res) => {
   const current = readJSON(WEDDING_FILE);
+  if (req.body.wedding && req.body.wedding.video_embed) {
+    req.body.wedding.video_embed = formatYouTubeEmbedUrl(req.body.wedding.video_embed);
+  }
   const updated = {
     ...current,
     ...req.body,
@@ -452,12 +466,16 @@ app.use((req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(`  E-Invitation Wedding System is running!`);
-  console.log(`  Web Invitation: http://localhost:${PORT}`);
-  console.log(`  Admin Panel:    http://localhost:${PORT}/admin`);
-  console.log(`  Login Page:     http://localhost:${PORT}/login`);
-  console.log(`  Admin Default:  username: admin | password: admin123`);
-  console.log(`=======================================================`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`=======================================================`);
+    console.log(`  E-Invitation Wedding System is running!`);
+    console.log(`  Web Invitation: http://localhost:${PORT}`);
+    console.log(`  Admin Panel:    http://localhost:${PORT}/admin`);
+    console.log(`  Login Page:     http://localhost:${PORT}/login`);
+    console.log(`  Admin Default:  username: admin | password: admin123`);
+    console.log(`=======================================================`);
+  });
+}
+
+module.exports = app;

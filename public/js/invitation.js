@@ -5,6 +5,110 @@ let currentGuest = null;
 let isAudioPlaying = false;
 const audioPlayer = new Audio();
 
+// YouTube Background Music Player State
+let ytMusicPlayer = null;
+let isYtMusicActive = false;
+let pendingYtPlay = false;
+
+// Extract YouTube Video ID from any YouTube URL format (youtu.be, watch?v=, embed, shorts)
+function extractYouTubeId(url) {
+  if (!url) return null;
+  const match = String(url).trim().match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
+// Convert any YouTube link into a clean Embed URL
+function formatYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  const videoId = extractYouTubeId(url);
+  if (videoId) {
+    return `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1`;
+  }
+  return String(url).trim();
+}
+
+// Initialize Background Music (Supports standard MP3 audio file OR YouTube video link)
+function initMusic(musicUrl) {
+  if (!musicUrl) musicUrl = '/audio/wedding-music.mp3';
+  const ytId = extractYouTubeId(musicUrl);
+
+  if (ytId) {
+    isYtMusicActive = true;
+    try { audioPlayer.pause(); } catch (e) {}
+
+    const setupYT = () => {
+      if (ytMusicPlayer && ytMusicPlayer.loadVideoById) {
+        try { ytMusicPlayer.cueVideoById(ytId); } catch (e) {}
+        return;
+      }
+      if (window.YT && window.YT.Player) {
+        try {
+          ytMusicPlayer = new YT.Player('yt-bg-audio-container', {
+            height: '1',
+            width: '1',
+            videoId: ytId,
+            playerVars: {
+              autoplay: 0,
+              loop: 1,
+              playlist: ytId,
+              controls: 0,
+              disablekb: 1,
+              fs: 0,
+              rel: 0
+            },
+            events: {
+              onReady: (e) => {
+                if (pendingYtPlay) {
+                  try { e.target.playVideo(); } catch (err) {}
+                  isAudioPlaying = true;
+                  updateMusicBtn();
+                }
+              },
+              onStateChange: (e) => {
+                if (window.YT && e.data === YT.PlayerState.PLAYING) {
+                  isAudioPlaying = true;
+                  updateMusicBtn();
+                } else if (window.YT && (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED)) {
+                  isAudioPlaying = false;
+                  updateMusicBtn();
+                }
+              }
+            }
+          });
+        } catch (err) {
+          console.error('Error creating YouTube audio player:', err);
+        }
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      setupYT();
+    } else {
+      const prevCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function() {
+        if (typeof prevCallback === 'function') prevCallback();
+        setupYT();
+      };
+      if (!document.getElementById('yt-iframe-api-script')) {
+        const tag = document.createElement('script');
+        tag.id = 'yt-iframe-api-script';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScript = document.getElementsByTagName('script')[0];
+        if (firstScript && firstScript.parentNode) {
+          firstScript.parentNode.insertBefore(tag, firstScript);
+        } else {
+          document.head.appendChild(tag);
+        }
+      }
+    }
+  } else {
+    isYtMusicActive = false;
+    audioPlayer.src = musicUrl;
+    audioPlayer.loop = true;
+    audioPlayer.preload = 'auto';
+  }
+}
+
 // Convert Arabic digits (0-9) to authentic Khmer numerals (០-៩)
 function toKhmerNumber(val) {
   if (val === null || val === undefined) return '';
@@ -28,9 +132,7 @@ async function fetchWeddingData() {
     const res = await fetch('/api/wedding');
     weddingData = await res.json();
     const musicUrl = (weddingData.wedding && weddingData.wedding.music_url) || '/audio/wedding-music.mp3';
-    audioPlayer.src = musicUrl;
-    audioPlayer.loop = true;
-    audioPlayer.preload = 'auto';
+    initMusic(musicUrl);
   } catch (err) {
     console.error('Failed to load wedding data:', err);
   }
@@ -79,7 +181,7 @@ function renderAll() {
 
   // Set Theme Class on Body
   const themeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
-  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId}`;
+  document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId} ${currentLang === 'en' ? 'lang-en' : 'lang-kh'}`;
 
   if (weddingData.theme) {
     document.documentElement.style.setProperty('--primary', weddingData.theme.primaryColor || '#8C1D2F');
@@ -101,8 +203,8 @@ function renderAll() {
   }
   const themeLabelEl = document.getElementById('active-theme-label');
   if (themeLabelEl) {
-    const labelMap = { 'khmer-traditional': '១. ផ្ការំដួល', 'western-modern': '២. Modern', 'chinese-traditional': '៣. 囍 ចិន' };
-    themeLabelEl.textContent = labelMap[themeId] || 'Theme';
+    const labelMap = { 'khmer-traditional': 'ខ្មែរ', 'western-modern': 'សម័យថ្មី', 'chinese-traditional': 'ចិន' };
+    themeLabelEl.textContent = labelMap[themeId] || 'ខ្មែរ';
   }
 
   // Language based text rendering
@@ -236,24 +338,25 @@ function renderAll() {
       connectorHtml = '<span class="text-sm text-[#D4AF37] font-bold font-khmer-body">និង</span>';
     }
 
-    // In Khmer theme: strictly display Khmer name without English
-    if (themeId === 'khmer-traditional' || isKh) {
+    // In Khmer & Chinese themes: strictly display Khmer name without English
+    const coupleNameColor = themeId === 'chinese-traditional' ? 'text-[#FFD700]' : 'text-[var(--primary)]';
+    if (themeId === 'khmer-traditional' || themeId === 'chinese-traditional' || isKh) {
       envelopeCoupleEl.innerHTML = `
         <div class="flex flex-col items-center justify-center">
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal text-[var(--primary)]">
+          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal ${coupleNameColor}">
             ${escapeHTML(w.groom.name_kh)}
           </div>
           <div class="couple-connector my-1">
             ${connectorHtml}
           </div>
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal text-[var(--primary)]">
+          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal ${coupleNameColor}">
             ${escapeHTML(w.bride.name_kh)}
           </div>
         </div>
       `;
     } else {
       envelopeCoupleEl.innerHTML = `
-        <div class="font-en-script text-3xl sm:text-4xl text-[var(--primary)] leading-tight">
+        <div class="font-en-script text-3xl sm:text-4xl ${coupleNameColor} leading-tight">
           <div>${escapeHTML(w.groom.name_en)}</div>
           <div class="text-xl text-[var(--accent)] my-0.5">&</div>
           <div>${escapeHTML(w.bride.name_en)}</div>
@@ -266,9 +369,11 @@ function renderAll() {
   const mainTitleEl = document.getElementById('main-wedding-title');
   if (mainTitleEl) {
     if (themeId === 'chinese-traditional') {
-      mainTitleEl.textContent = isKh ? '囍 សិរីសួស្តី អាពាហ៍ពិពាហ៍ 喜结良缘 囍' : '囍 DOUBLE HAPPINESS CELEBRATION 囍';
+      mainTitleEl.innerHTML = isKh
+        ? `<span class="kh-title-line">សិរីសួស្តី អាពាហ៍ពិពាហ៍</span><span class="cn-title-line">囍 喜结良缘 囍</span>`
+        : `<span class="kh-title-line">WEDDING CELEBRATION</span><span class="cn-title-line">囍 DOUBLE HAPPINESS 囍</span>`;
     } else if (themeId === 'western-modern') {
-      mainTitleEl.textContent = isKh ? 'WEDDING CELEBRATION' : 'THE WEDDING CELEBRATION OF';
+      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍') : (w.title_en || 'WEDDING CELEBRATION');
     } else {
       mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ') : (w.title_en || 'Traditional Khmer Wedding');
     }
@@ -296,18 +401,15 @@ function renderAll() {
     `;
   }
 
-  // Couple English Name - Completely removed / hidden in Khmer theme
+  // Couple English Name - Completely removed / hidden in Khmer & Chinese themes
   const mainCoupleEnEl = document.getElementById('main-couple-en');
   if (mainCoupleEnEl) {
-    if (themeId === 'khmer-traditional') {
+    if (themeId === 'khmer-traditional' || themeId === 'chinese-traditional') {
       mainCoupleEnEl.style.display = 'none';
       mainCoupleEnEl.textContent = '';
     } else if (themeId === 'western-modern') {
       mainCoupleEnEl.style.display = '';
       mainCoupleEnEl.textContent = `${w.groom.name_en.toUpperCase()} & ${w.bride.name_en.toUpperCase()}`;
-    } else if (themeId === 'chinese-traditional') {
-      mainCoupleEnEl.style.display = '';
-      mainCoupleEnEl.textContent = `${w.groom.name_en} 囍 ${w.bride.name_en}`;
     } else {
       mainCoupleEnEl.style.display = '';
       mainCoupleEnEl.textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
@@ -336,13 +438,14 @@ function renderAll() {
     brideParentsH.textContent = themeId === 'chinese-traditional' ? '女方家长 (Bride\'s Parents)' : (isKh ? 'លោកឪពុក អ្នកម្តាយ ខាងកូនស្រី' : "BRIDE'S PARENTS");
   }
 
-  document.getElementById('groom-father').textContent = isKh ? w.groom.father_kh : w.groom.father_en;
-  document.getElementById('groom-mother').textContent = isKh ? w.groom.mother_kh : w.groom.mother_en;
-  document.getElementById('groom-name-card').textContent = isKh ? w.groom.name_kh : w.groom.name_en;
+  const useKhmerNames = themeId === 'khmer-traditional' || themeId === 'chinese-traditional' || isKh;
+  document.getElementById('groom-father').textContent = useKhmerNames ? w.groom.father_kh : w.groom.father_en;
+  document.getElementById('groom-mother').textContent = useKhmerNames ? w.groom.mother_kh : w.groom.mother_en;
+  document.getElementById('groom-name-card').textContent = useKhmerNames ? w.groom.name_kh : w.groom.name_en;
 
-  document.getElementById('bride-father').textContent = isKh ? w.bride.father_kh : w.bride.father_en;
-  document.getElementById('bride-mother').textContent = isKh ? w.bride.mother_kh : w.bride.mother_en;
-  document.getElementById('bride-name-card').textContent = isKh ? w.bride.name_kh : w.bride.name_en;
+  document.getElementById('bride-father').textContent = useKhmerNames ? w.bride.father_kh : w.bride.father_en;
+  document.getElementById('bride-mother').textContent = useKhmerNames ? w.bride.mother_kh : w.bride.mother_en;
+  document.getElementById('bride-name-card').textContent = useKhmerNames ? w.bride.name_kh : w.bride.name_en;
 
   // Photos
   if (w.couple_photo) document.getElementById('main-couple-img').src = w.couple_photo;
@@ -359,8 +462,22 @@ function renderAll() {
 
   // Video embed
   if (w.video_embed) {
+    const isShorts = String(w.video_embed).includes('/shorts/');
+    const wrapper = document.getElementById('video-player-wrapper');
+    const label = document.getElementById('video-aspect-label');
+    if (isShorts) {
+      currentVideoAspect = 'portrait';
+      if (wrapper) wrapper.className = 'w-full max-w-sm mx-auto rounded-2xl overflow-hidden shadow-2xl bg-black flex items-center justify-center relative min-h-[460px] sm:min-h-[520px] h-[480px] sm:h-[540px] transition-all duration-300';
+      if (label) label.textContent = '🎬 ទំហំកុន (Wide)';
+    } else {
+      currentVideoAspect = 'cinema';
+      if (wrapper) wrapper.className = 'w-full rounded-2xl overflow-hidden shadow-xl bg-black flex items-center justify-center relative min-h-[280px] sm:min-h-[380px] md:min-h-[440px] h-[300px] sm:h-[400px] md:h-[460px] transition-all duration-300';
+      if (label) label.textContent = '📱 ទំហំវែង (Tall)';
+    }
     document.getElementById('video-container').classList.remove('hidden');
-    document.getElementById('wedding-video-iframe').src = w.video_embed;
+    document.getElementById('wedding-video-iframe').src = formatYouTubeEmbedUrl(w.video_embed);
+  } else {
+    document.getElementById('video-container').classList.add('hidden');
   }
 
   // Render Agenda / Schedule
@@ -535,16 +652,36 @@ function initEventListeners() {
     });
   }
 
-  // Theme dropdown toggle on click (mobile friendly)
+  // Theme dropdown toggle on click (open when click, not hover)
   const themeBtn = document.getElementById('theme-menu-btn');
   const themeDropdown = document.getElementById('theme-menu-dropdown');
   if (themeBtn && themeDropdown) {
     themeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      themeDropdown.classList.toggle('hidden');
+      const isHidden = themeDropdown.classList.contains('hidden');
+      if (isHidden) {
+        themeDropdown.classList.remove('hidden');
+        themeDropdown.classList.add('flex');
+      } else {
+        themeDropdown.classList.add('hidden');
+        themeDropdown.classList.remove('flex');
+      }
     });
-    document.addEventListener('click', () => {
-      themeDropdown.classList.add('hidden');
+
+    // Close when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      if (!themeDropdown.contains(e.target) && !themeBtn.contains(e.target)) {
+        themeDropdown.classList.add('hidden');
+        themeDropdown.classList.remove('flex');
+      }
+    });
+
+    // Close after clicking an option
+    themeDropdown.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeDropdown.classList.add('hidden');
+        themeDropdown.classList.remove('flex');
+      });
     });
   }
 
@@ -602,22 +739,48 @@ function openEnvelope() {
 window.openEnvelope = openEnvelope;
 window.toggleMusic = toggleMusic;
 
-// Audio Control
+// Audio Control (Supports both HTML5 Audio and YouTube Audio)
 function playMusic() {
-  audioPlayer.play().then(() => {
-    isAudioPlaying = true;
-    updateMusicBtn();
-  }).catch(e => {
-    console.log('Audio autoplay prevented:', e);
-  });
+  if (isYtMusicActive) {
+    if (ytMusicPlayer && ytMusicPlayer.playVideo) {
+      try {
+        ytMusicPlayer.playVideo();
+        isAudioPlaying = true;
+        updateMusicBtn();
+      } catch (e) {
+        console.log('YT play error:', e);
+      }
+    } else {
+      pendingYtPlay = true;
+    }
+  } else {
+    audioPlayer.play().then(() => {
+      isAudioPlaying = true;
+      updateMusicBtn();
+    }).catch(e => {
+      console.log('Audio autoplay prevented:', e);
+    });
+  }
 }
 
 function toggleMusic() {
+  if (isYtMusicActive && ytMusicPlayer && ytMusicPlayer.playVideo) {
+    if (isAudioPlaying) {
+      try { ytMusicPlayer.pauseVideo(); } catch (e) {}
+      isAudioPlaying = false;
+    } else {
+      try { ytMusicPlayer.playVideo(); } catch (e) {}
+      isAudioPlaying = true;
+    }
+    updateMusicBtn();
+    return;
+  }
+
   if (isAudioPlaying) {
     audioPlayer.pause();
     isAudioPlaying = false;
   } else {
-    audioPlayer.play();
+    audioPlayer.play().catch(e => console.log(e));
     isAudioPlaying = true;
   }
   updateMusicBtn();
@@ -638,6 +801,25 @@ function updateMusicBtn() {
     btn.classList.remove('spin-record');
   }
 }
+
+// Video Aspect Ratio Toggle (Cinema Wide vs Portrait Tall)
+let currentVideoAspect = 'cinema';
+
+window.toggleVideoAspect = function() {
+  const wrapper = document.getElementById('video-player-wrapper');
+  const label = document.getElementById('video-aspect-label');
+  if (!wrapper) return;
+
+  if (currentVideoAspect === 'cinema') {
+    currentVideoAspect = 'portrait';
+    wrapper.className = 'w-full max-w-sm mx-auto rounded-2xl overflow-hidden shadow-2xl bg-black flex items-center justify-center relative min-h-[460px] sm:min-h-[520px] h-[480px] sm:h-[540px] transition-all duration-300';
+    if (label) label.textContent = '🎬 ទំហំកុន (Wide)';
+  } else {
+    currentVideoAspect = 'cinema';
+    wrapper.className = 'w-full rounded-2xl overflow-hidden shadow-xl bg-black flex items-center justify-center relative min-h-[280px] sm:min-h-[380px] md:min-h-[440px] h-[300px] sm:h-[400px] md:h-[460px] transition-all duration-300';
+    if (label) label.textContent = '📱 ទំហំវែង (Tall)';
+  }
+};
 
 // Countdown Timer
 function initCountdown() {
@@ -677,43 +859,265 @@ function initCountdown() {
   setInterval(update, 1000);
 }
 
-// Falling Golden / Auspicious Petals
+// Unique Traditional Falling Objects (Authentic Khmer Flowers, Western Rose & Olive, Chinese Double Happiness & Peonies)
+const THEME_FALLING_GENERATORS = {
+  'khmer-traditional': [
+    // 1. Cambodia National Flower: ផ្ការំដួល (Authentic Romduol Flower Component)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 10 + 24); // 24-34px
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="w-full h-full object-contain filter drop-shadow-md select-none">
+      `;
+      return el;
+    },
+    // 2. Khmer Sacred Golden Lotus (ផ្កាឈូកមាសអង្គរ)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 8 + 22); // 22-30px
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <img src="/images/components/lotus-ornament.svg" alt="ផ្កាឈូក" class="w-full h-full object-contain filter drop-shadow-sm select-none">
+      `;
+      return el;
+    },
+    // 3. Khmer Sacred Wedding Pka Sla (ផ្កាស្លាពន្លកមង្គល - Areca Palm Blossom Spikes)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 5 + 16); // 16-21px
+      const h = Math.floor(w * 1.6);
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.innerHTML = `
+        <svg viewBox="0 0 20 32" width="${w}" height="${h}" class="filter drop-shadow-xs">
+          <!-- Pka Sla Golden Stem -->
+          <path d="M10 2 Q11 16 10 30" stroke="#C29424" stroke-width="1.3" fill="none"/>
+          <!-- Sacred Golden Palm Blossom Beads -->
+          <circle cx="10" cy="4" r="2.8" fill="#FFF2BF" stroke="#A67817" stroke-width="0.7"/>
+          <circle cx="6" cy="10" r="2.5" fill="#FFE07A" stroke="#A67817" stroke-width="0.7"/>
+          <circle cx="14" cy="10" r="2.5" fill="#FFE07A" stroke="#A67817" stroke-width="0.7"/>
+          <circle cx="5" cy="17" r="2.3" fill="#DFB342" stroke="#A67817" stroke-width="0.7"/>
+          <circle cx="15" cy="17" r="2.3" fill="#DFB342" stroke="#A67817" stroke-width="0.7"/>
+          <circle cx="7" cy="24" r="2" fill="#C29424" stroke="#8C630D" stroke-width="0.6"/>
+          <circle cx="13" cy="24" r="2" fill="#C29424" stroke="#8C630D" stroke-width="0.6"/>
+        </svg>
+      `;
+      return el;
+    },
+    // 4. Golden Romduol Petal (ត្របកផ្ការំដួលមាស)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 6 + 16); // 16-22px
+      const h = Math.floor(w * 1.4);
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.innerHTML = `
+        <svg viewBox="0 0 24 34" width="${w}" height="${h}" class="filter drop-shadow-xs">
+          <defs>
+            <linearGradient id="romPetalG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFF2BF"/>
+              <stop offset="45%" stop-color="#E5BE53"/>
+              <stop offset="90%" stop-color="#C29424"/>
+            </linearGradient>
+          </defs>
+          <path d="M12 2 C3 10, 2 24, 12 32 C22 24, 21 10, 12 2 Z" fill="url(#romPetalG)" stroke="#A67817" stroke-width="0.8"/>
+          <path d="M12 4 Q12 18 12 30" stroke="#FFF7CC" stroke-width="1.1" fill="none" opacity="0.9"/>
+        </svg>
+      `;
+      return el;
+    },
+    // 5. Fragrant White Jasmine Blossom (ផ្កាម្លិះពន្លកសួស្តី)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 6 + 16); // 16-22px
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <svg viewBox="0 0 24 24" width="${size}" height="${size}">
+          <g filter="drop-shadow(0 1px 2px rgba(200, 170, 100, 0.3))">
+            <circle cx="12" cy="5.5" r="4.2" fill="#FFFFFF" stroke="#EAE2D2" stroke-width="0.6"/>
+            <circle cx="17.5" cy="10" r="4.2" fill="#FFFFF4" stroke="#EAE2D2" stroke-width="0.6"/>
+            <circle cx="15.5" cy="16.5" r="4.2" fill="#FFFFFF" stroke="#EAE2D2" stroke-width="0.6"/>
+            <circle cx="8.5" cy="16.5" r="4.2" fill="#FFFFF4" stroke="#EAE2D2" stroke-width="0.6"/>
+            <circle cx="6.5" cy="10" r="4.2" fill="#FFFFFF" stroke="#EAE2D2" stroke-width="0.6"/>
+            <circle cx="12" cy="12" r="2.5" fill="#FCE182"/>
+          </g>
+        </svg>
+      `;
+      return el;
+    }
+  ],
+
+  'western-modern': [
+    // 1. Silky Ivory White Rose Petal
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 8 + 17);
+      const h = Math.floor(w * 1.35);
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.style.background = 'linear-gradient(145deg, #FFFFFF 0%, #FBF8F3 60%, #E8DFC8 100%)';
+      el.style.borderRadius = '50% 50% 55% 45% / 40% 40% 60% 60%';
+      el.style.boxShadow = '0 3px 8px rgba(78, 50, 39, 0.08)';
+      return el;
+    },
+    // 2. Tuscan Olive / Eucalyptus Branch (Botanical SVG Component)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 8 + 26); // 26-34px
+      const h = Math.floor(w * 0.35);
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.innerHTML = `
+        <img src="/images/components/botanical-olive.svg" alt="Olive Branch" class="w-full h-full object-contain filter drop-shadow-sm select-none opacity-85">
+      `;
+      return el;
+    },
+    // 3. Champagne Gold Sparkle Star (✦ Diamond Light)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 6 + 15);
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="#C5A059">
+          <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" filter="drop-shadow(0 0 3px rgba(197, 160, 89, 0.5))"/>
+        </svg>
+      `;
+      return el;
+    },
+    // 4. Tuscan Botanical Olive & Eucalyptus Single Leaf
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 5 + 11);
+      const h = Math.floor(w * 2.2);
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.innerHTML = `
+        <svg viewBox="0 0 16 34" width="${w}" height="${h}" fill="none">
+          <path d="M8 0 C0 10, 0 24, 8 34 C16 24, 16 10, 8 0 Z" fill="#3D5A47" opacity="0.65"/>
+          <path d="M8 3 L8 31" stroke="#A3B18A" stroke-width="0.8" opacity="0.8"/>
+        </svg>
+      `;
+      return el;
+    },
+    // 5. Luxury Champagne Gold Confetti
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 5 + 7);
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.style.background = 'linear-gradient(135deg, #FFF2D6 0%, #C5A059 100%)';
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      el.style.boxShadow = '0 2px 6px rgba(197, 160, 89, 0.35)';
+      return el;
+    }
+  ],
+
+  'chinese-traditional': [
+    // 1. Auspicious Double Happiness Medallion (囍 Medallion SVG Component)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 8 + 22); // 22-30px
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <img src="/images/components/chinese-double-happiness.svg" alt="囍" class="w-full h-full object-contain filter drop-shadow-md select-none">
+      `;
+      return el;
+    },
+    // 2. Auspicious Peony Flower (Peony SVG Component)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 8 + 20); // 20-28px
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <img src="/images/components/chinese-peony.svg" alt="牡丹" class="w-full h-full object-contain filter drop-shadow-sm select-none">
+      `;
+      return el;
+    },
+    // 3. Imperial Ruby Peony Petal (牡丹花瓣)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 8 + 16);
+      const h = Math.floor(w * 1.4);
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.style.background = 'linear-gradient(145deg, #FF334B 0%, #D41428 50%, #7D0A14 100%)';
+      el.style.borderRadius = '50% 50% 60% 0 / 40% 50% 60% 0';
+      el.style.boxShadow = '0 3px 12px rgba(168, 24, 34, 0.45)';
+      return el;
+    },
+    // 4. Auspicious Gold Coin / Sycee (金钱/元宝)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 5 + 15);
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.innerHTML = `
+        <svg viewBox="0 0 20 20" width="${size}" height="${size}">
+          <circle cx="10" cy="10" r="9" fill="#FFD700" stroke="#B8860B" stroke-width="1.2" filter="drop-shadow(0 1px 3px rgba(0,0,0,0.4))"/>
+          <rect x="7.5" y="7.5" width="5" height="5" fill="#800B13" stroke="#B8860B" stroke-width="0.8"/>
+        </svg>
+      `;
+      return el;
+    },
+    // 5. Shimmering Gold Flake (金箔飞金)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const size = Math.floor(Math.random() * 5 + 9);
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.style.background = 'linear-gradient(135deg, #FFF6BD 0%, #FFD700 60%, #FFA500 100%)';
+      el.style.clipPath = 'polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%)';
+      el.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
+      return el;
+    }
+  ]
+};
+
 function initPetals() {
   const container = document.body;
+  const animations = ['fallSwayLeft', 'fallSwayRight', 'fallFlutter'];
 
-  function createPetal() {
+  function createFallingItem() {
     if (document.hidden) return;
     const themeId = (weddingData && weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
-    const colors = themeId === 'chinese-traditional'
-      ? [
-          'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-          'linear-gradient(135deg, #FF4D4D 0%, #C72535 100%)',
-          'linear-gradient(135deg, #FFF099 0%, #D4AF37 100%)',
-          'linear-gradient(135deg, #D91E2A 0%, #8A0E17 100%)'
-        ]
-      : [
-          'linear-gradient(135deg, #FFF2BF 0%, #E5BE53 100%)',
-          'linear-gradient(135deg, #F9E2AF 0%, #D4AF37 100%)',
-          'linear-gradient(135deg, #FFFFFF 0%, #F5DE88 100%)',
-          'linear-gradient(135deg, #EAD7A1 0%, #C29424 100%)'
-        ];
-    const petal = document.createElement('div');
-    petal.className = 'petal-fall';
-    const size = Math.random() * 9 + 8;
-    petal.style.width = `${size}px`;
-    petal.style.height = `${size * 1.5}px`;
-    petal.style.left = `${Math.random() * 100}vw`;
-    petal.style.background = colors[Math.floor(Math.random() * colors.length)];
-    petal.style.borderRadius = '55% 45% 70% 30% / 30% 60% 40% 70%';
-    petal.style.boxShadow = '0 2px 6px rgba(212, 175, 55, 0.25)';
-    petal.style.animationDuration = `${Math.random() * 5 + 7}s`;
-    petal.style.opacity = (Math.random() * 0.4 + 0.4).toString();
+    const generatorList = THEME_FALLING_GENERATORS[themeId] || THEME_FALLING_GENERATORS['khmer-traditional'];
+    const randomGen = generatorList[Math.floor(Math.random() * generatorList.length)];
+    const el = randomGen();
 
-    container.appendChild(petal);
-    setTimeout(() => petal.remove(), 13000);
+    const animName = animations[Math.floor(Math.random() * animations.length)];
+    const duration = Math.random() * 5 + 8; // 8s - 13s graceful descent
+    el.style.animationName = animName;
+    el.style.animationDuration = `${duration}s`;
+    el.style.left = `${Math.random() * 94 + 3}vw`;
+    el.style.opacity = (Math.random() * 0.3 + 0.65).toString();
+
+    container.appendChild(el);
+    setTimeout(() => el.remove(), (duration + 1) * 1000);
   }
 
-  setInterval(createPetal, 1000);
+  setInterval(createFallingItem, 900);
 }
 
 // Add to Calendar
@@ -872,7 +1276,7 @@ function updateUITranslations() {
 const THEME_DATA_MAP = {
   'khmer-traditional': {
     id: 'khmer-traditional',
-    name: 'Khmer Traditional (រចនាបថប្រពៃណីខ្មែរ - ផ្ការំដួល & មាស)',
+    name: 'ខ្មែរ',
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
@@ -882,7 +1286,7 @@ const THEME_DATA_MAP = {
   },
   'western-modern': {
     id: 'western-modern',
-    name: 'Western Modern Luxury (រចនាបថបស្ចិមប្រទេស - ចិញ្ចៀន & Cotton Paper)',
+    name: 'សម័យថ្មី',
     primaryColor: '#1B4332',
     accentColor: '#C5A059',
     secondaryColor: '#2D6A4F',
@@ -892,7 +1296,7 @@ const THEME_DATA_MAP = {
   },
   'chinese-traditional': {
     id: 'chinese-traditional',
-    name: 'Chinese Traditional 囍 (រចនាបថប្រពៃណីចិន - មង្គលទ្វេ & ក្រហម)',
+    name: 'ចិន',
     primaryColor: '#A81822',
     accentColor: '#FFD700',
     secondaryColor: '#C72535',
@@ -911,6 +1315,9 @@ window.switchThemeLive = async function(themeId) {
   document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId}`;
   document.documentElement.style.setProperty('--primary', themeObj.primaryColor);
   document.documentElement.style.setProperty('--accent', themeObj.accentColor);
+
+  // Clear falling objects from previous theme
+  document.querySelectorAll('.falling-object-wrap').forEach(el => el.remove());
 
   renderAll();
 

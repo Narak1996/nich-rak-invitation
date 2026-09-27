@@ -92,13 +92,21 @@ body.theme-khmer-traditional #main-couple-en {
 /* Khmer Ornate Cards */
 body.theme-khmer-traditional .ornate-border-box,
 body.theme-khmer-traditional .bg-white.rounded-3xl,
+body.theme-khmer-traditional .rounded-3xl.p-6,
+body.theme-khmer-traditional #wish-form-card,
 body.theme-khmer-traditional .bg-white.rounded-2xl {
-  background: rgba(255, 253, 248, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  background: rgba(255, 253, 248, 0.30) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
   border: 2px solid #D4AF37 !important;
   border-radius: 20px !important;
   box-shadow: 0 12px 35px rgba(140, 29, 47, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.85) !important;
+}
+
+body.theme-khmer-traditional .couple-cover-box {
+  border: 2.5px solid #D4AF37 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 16px 45px rgba(140, 29, 47, 0.16), 0 0 0 1px rgba(255, 248, 220, 0.6) inset !important;
 }
 body.theme-khmer-traditional .ornate-border-box::before {
   border: 1px solid rgba(212, 175, 55, 0.45) !important;
@@ -158,9 +166,9 @@ body.theme-khmer-traditional .khmer-corner-br {
 
 /* Khmer Inner Cards & Sub-elements */
 body.theme-khmer-traditional .bg-\[\#FAF7F2\] {
-  background-color: rgba(250, 244, 232, 0.70) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  background-color: rgba(250, 244, 232, 0.30) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
   border-color: rgba(232, 211, 167, 0.75) !important;
   box-shadow: 0 2px 10px rgba(140, 29, 47, 0.03) !important;
 }
@@ -240,55 +248,81 @@ body.theme-western-modern {
 }
 
 body.theme-western-modern.wedding-bg-pattern {
-  background-color: #FAF8F5 !important;
+  background-color: #F8F5F0 !important;
   background-image: 
-    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px) !important;
-  background-size: 28px 28px !important;
-  background-position: 0 0 !important;
+    radial-gradient(ellipse 90% 70% at 50% 8%, rgba(255, 255, 255, 0.40) 0%, rgba(248, 245, 240, 0.20) 55%, rgba(236, 230, 220, 0.40) 100%),
+    url('/images/components/western-luxury-bg.svg') !important;
+  background-size: auto, 300px 300px !important;
+  background-repeat: no-repeat, repeat !important;
+  background-attachment: fixed, fixed !important;
 }
 
 /* Western Modern Typography: High Fashion Roman & Modern Serif */
 body.theme-western-modern #main-wedding-title {
-  font-family: 'Cinzel', serif !important;
-  text-transform: uppercase !important;
-  letter-spacing: 5px !important;
+  font-family: var(--font-khmer-title), 'Moul', cursive !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
   font-weight: 700 !important;
-  font-size: 1.5rem !important;
+  font-size: clamp(1.15rem, 4vw, 1.7rem) !important;
   color: #1B4332 !important;
   text-shadow: none !important;
+  white-space: nowrap !important;
+}
+body.theme-western-modern.lang-en #main-wedding-title {
+  font-family: 'Cinzel', serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 4px !important;
 }
 body.theme-western-modern #hero-motif-text {
-  font-family: 'Cinzel', sans-serif !important;
-  letter-spacing: 4px !important;
-  font-size: 0.75rem !important;
+  font-family: var(--font-khmer-title), 'Moul', cursive !important;
+  letter-spacing: normal !important;
+  font-size: 0.85rem !important;
   color: #C5A059 !important;
   font-weight: 700 !important;
+  white-space: nowrap !important;
 }
 body.theme-western-modern #main-couple-en {
   font-family: 'Playfair Display', serif !important;
   font-style: normal !important;
   font-weight: 700 !important;
-  letter-spacing: 2px !important;
-  font-size: 2.2rem !important;
+  letter-spacing: 1px !important;
+  font-size: clamp(1.1rem, 4.5vw, 2.2rem) !important;
   color: #1B4332 !important;
+  white-space: nowrap !important;
 }
 body.theme-western-modern #main-couple-kh {
-  font-family: 'Cinzel', 'Kantumruy Pro', serif !important;
+  font-family: var(--font-khmer-title), 'Moul', serif !important;
   font-weight: 600 !important;
-  letter-spacing: 1px !important;
-  color: #2D2D2D !important;
+  letter-spacing: normal !important;
+  font-size: clamp(1.05rem, 4vw, 1.6rem) !important;
+  color: #1B4332 !important;
+  white-space: nowrap !important;
+}
+body.theme-western-modern #main-couple-kh .couple-names-khmer {
+  font-family: var(--font-khmer-title), 'Moul', serif !important;
+  letter-spacing: normal !important;
+  white-space: nowrap !important;
+  color: #1B4332 !important;
 }
 
 /* Western Modern Luxury Cards: Sharp Editorial Minimalist (NO KBACH!) */
 body.theme-western-modern .ornate-border-box,
 body.theme-western-modern .bg-white.rounded-3xl,
 body.theme-western-modern .rounded-3xl.p-6,
-body.theme-western-modern .p-3.bg-white.rounded-3xl {
-  background: #FFFFFF !important;
-  border: 1px solid #E5E7EB !important;
-  border-radius: 4px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+body.theme-western-modern #wish-form-card,
+body.theme-western-modern .bg-white.rounded-2xl {
+  background: rgba(255, 253, 248, 0.30) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  border: 1px solid rgba(229, 231, 235, 0.8) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.theme-western-modern .couple-cover-box {
+  border: 1.5px solid #C5A059 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 16px 40px rgba(27, 67, 50, 0.12), 0 0 0 1px rgba(229, 195, 132, 0.3) inset !important;
 }
 
 /* Completely remove Khmer kbach corners and dashed kbach frames */
@@ -302,9 +336,11 @@ body.theme-western-modern .ornate-border-box::before {
 
 /* Western Inner Cards & Sub-elements */
 body.theme-western-modern .bg-\[\#FAF7F2\] {
-  background-color: #FAFAFA !important;
-  border: 1px solid #EEEEEE !important;
-  border-radius: 4px !important;
+  background-color: rgba(255, 255, 255, 0.30) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  border: 1px solid rgba(238, 238, 238, 0.7) !important;
+  border-radius: 6px !important;
 }
 body.theme-western-modern .text-\[\#4E3227\],
 body.theme-western-modern .text-bronze {
@@ -340,9 +376,17 @@ body.theme-western-modern .countdown-box span:first-child {
   font-weight: 700 !important;
 }
 body.theme-western-modern .countdown-box span:last-child {
+  font-family: var(--font-khmer-body), 'Kantumruy Pro', sans-serif !important;
+  letter-spacing: normal !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
+body.theme-western-modern.lang-en .countdown-box span:last-child {
   font-family: 'Cinzel', sans-serif !important;
-  letter-spacing: 2px !important;
+  letter-spacing: 1.5px !important;
   font-size: 9px !important;
+  text-transform: uppercase !important;
 }
 
 /* Western Buttons: Sleek Forest Green Pill */
@@ -350,9 +394,15 @@ body.theme-western-modern button[type="submit"],
 body.theme-western-modern a.px-2\.5.py-1.bg-\[\#4E3227\] {
   background-color: #1B4332 !important;
   border-radius: 9999px !important;
-  font-family: 'Cinzel', sans-serif !important;
-  letter-spacing: 2px !important;
+  font-family: var(--font-khmer-body), 'Kantumruy Pro', sans-serif !important;
+  letter-spacing: normal !important;
   font-weight: 600 !important;
+  text-transform: none !important;
+}
+body.theme-western-modern.lang-en button[type="submit"],
+body.theme-western-modern.lang-en a.px-2\.5.py-1.bg-\[\#4E3227\] {
+  font-family: 'Cinzel', sans-serif !important;
+  letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
 }
 
@@ -377,6 +427,11 @@ body.theme-western-modern .floating-music-btn {
   border-color: #E5C384 !important;
   box-shadow: 0 4px 20px rgba(27, 67, 50, 0.35) !important;
 }
+body.theme-western-modern #btn-toggle-video-aspect {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #1B4332 !important;
+  border-color: #C5A059 !important;
+}
 
 
 /* ==========================================================================
@@ -394,17 +449,17 @@ body.theme-chinese-traditional {
   --border-gold: #FFD700;
   background-color: #690A11 !important;
   color: #FFF9E6 !important;
-  font-family: 'Noto Serif SC', 'Kantumruy Pro', serif !important;
+  font-family: 'Kantumruy Pro', 'Noto Serif SC', 'Siemreap', serif !important;
 }
 
 body.theme-chinese-traditional.wedding-bg-pattern {
-  background-color: #690A11 !important;
+  background-color: #63080F !important;
   background-image: 
-    linear-gradient(rgba(110, 10, 18, 0.78), rgba(90, 8, 14, 0.84)), 
+    radial-gradient(circle at 50% 18%, rgba(185, 20, 32, 0.20) 0%, rgba(105, 10, 18, 0.40) 50%, rgba(55, 4, 8, 0.60) 100%),
     url('/images/components/chinese-silk-bg.svg') !important;
   background-size: auto, 240px 240px !important;
-  background-repeat: repeat, repeat !important;
-  background-attachment: fixed !important;
+  background-repeat: no-repeat, repeat !important;
+  background-attachment: fixed, fixed !important;
 }
 
 /* Chinese Floating Navigation Bar */
@@ -426,10 +481,30 @@ body.theme-chinese-traditional .floating-top-bar .bg-\[\#FAF7F2\] {
 
 /* Chinese Typography & Headers */
 body.theme-chinese-traditional #main-wedding-title {
-  font-family: 'Noto Serif SC', 'Moul', serif !important;
   color: #FFD700 !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
-  letter-spacing: 2px !important;
+  line-height: 1.4 !important;
+}
+body.theme-chinese-traditional #main-wedding-title .kh-title-line {
+  font-family: var(--font-khmer-title) !important;
+  font-size: 1.6rem !important;
+  letter-spacing: normal !important;
+  display: block;
+}
+body.theme-chinese-traditional #main-wedding-title .cn-title-line {
+  font-family: 'Noto Serif SC', serif !important;
+  font-size: 1.35rem !important;
+  letter-spacing: 3px !important;
+  display: block;
+  margin-top: 0.35rem !important;
+}
+@media (min-width: 640px) {
+  body.theme-chinese-traditional #main-wedding-title .kh-title-line {
+    font-size: 2rem !important;
+  }
+  body.theme-chinese-traditional #main-wedding-title .cn-title-line {
+    font-size: 1.6rem !important;
+  }
 }
 body.theme-chinese-traditional #hero-motif-text {
   color: #FFD700 !important;
@@ -452,15 +527,22 @@ body.theme-chinese-traditional #couple-quote {
 body.theme-chinese-traditional .ornate-border-box,
 body.theme-chinese-traditional .bg-white.rounded-3xl,
 body.theme-chinese-traditional .rounded-3xl.p-6,
-body.theme-chinese-traditional .p-3.bg-white.rounded-3xl,
-body.theme-chinese-traditional section.bg-white {
-  background: linear-gradient(165deg, rgba(146, 15, 25, 0.88) 0%, rgba(105, 10, 18, 0.92) 100%) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+body.theme-chinese-traditional section.bg-white,
+body.theme-chinese-traditional #wish-form-card,
+body.theme-chinese-traditional .bg-white.rounded-2xl {
+  background: linear-gradient(165deg, rgba(146, 15, 25, 0.30) 0%, rgba(105, 10, 18, 0.35) 100%) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
   border: 2px solid #FFD700 !important;
   border-radius: 20px !important;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55), inset 0 1px 1.5px rgba(255, 240, 150, 0.4), inset 0 0 25px rgba(255, 215, 0, 0.08) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1.5px rgba(255, 240, 150, 0.4), inset 0 0 25px rgba(255, 215, 0, 0.08) !important;
   color: #FFF9E6 !important;
+}
+
+body.theme-chinese-traditional .couple-cover-box {
+  border: 2.5px solid #FFD700 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 45px rgba(168, 24, 34, 0.35), 0 0 0 1px rgba(255, 215, 0, 0.6) inset !important;
 }
 
 body.theme-chinese-traditional .ornate-border-box::before {
@@ -538,9 +620,9 @@ body.theme-chinese-traditional .khmer-corner-br {
 /* Chinese Inner Sub-cards (Parents, Agenda items, Gifts, RSVP) */
 body.theme-chinese-traditional .bg-\[\#FAF7F2\],
 body.theme-chinese-traditional .p-4.bg-\[\#FAF7F2\] {
-  background: linear-gradient(145deg, rgba(110, 10, 18, 0.72) 0%, rgba(75, 7, 12, 0.78) 100%) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  background: linear-gradient(145deg, rgba(110, 10, 18, 0.30) 0%, rgba(75, 7, 12, 0.35) 100%) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
   border: 1.5px solid rgba(255, 215, 0, 0.6) !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 215, 0, 0.2) !important;
@@ -551,10 +633,16 @@ body.theme-chinese-traditional .text-bronze {
   color: #FFD700 !important;
 }
 body.theme-chinese-traditional .text-\[\#7A6F68\] {
-  color: #F8D9A3 !important;
+  color: #FFE6B3 !important;
+}
+body.theme-chinese-traditional .text-\[\#2C2420\] {
+  color: #FFFDF0 !important;
 }
 body.theme-chinese-traditional .text-\[\#C5A059\],
 body.theme-chinese-traditional .text-gold {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional .text-\[\#A67C1E\] {
   color: #FFD700 !important;
 }
 body.theme-chinese-traditional .border-\[\#E5D5BC\] {
@@ -563,6 +651,55 @@ body.theme-chinese-traditional .border-\[\#E5D5BC\] {
 body.theme-chinese-traditional .border-\[\#C5A059\],
 body.theme-chinese-traditional .border-gold {
   border-color: #FFD700 !important;
+}
+body.theme-chinese-traditional .bg-\[\#E5D5BC\] {
+  background-color: rgba(255, 215, 0, 0.4) !important;
+}
+
+/* Chinese Paragraphs & Body General Text Contrast */
+body.theme-chinese-traditional p,
+body.theme-chinese-traditional span.font-khmer-body,
+body.theme-chinese-traditional p.font-khmer-body {
+  color: #FFE6B3 !important;
+}
+body.theme-chinese-traditional h1,
+body.theme-chinese-traditional h2,
+body.theme-chinese-traditional h3,
+body.theme-chinese-traditional h4,
+body.theme-chinese-traditional h5 {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #main-couple-kh {
+  margin-top: 0.75rem !important;
+  margin-bottom: 1.5rem !important;
+}
+body.theme-chinese-traditional #main-couple-kh,
+body.theme-chinese-traditional #main-couple-kh .couple-names-khmer {
+  font-family: var(--font-khmer-title), 'Moul', cursive !important;
+  letter-spacing: normal !important;
+  color: #FFFDF0 !important;
+  font-size: 1.5rem !important;
+  line-height: 1.6 !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+@media (min-width: 640px) {
+  body.theme-chinese-traditional #main-couple-kh,
+  body.theme-chinese-traditional #main-couple-kh .couple-names-khmer {
+    font-size: 1.85rem !important;
+  }
+}
+body.theme-chinese-traditional #groom-name-card,
+body.theme-chinese-traditional #bride-name-card {
+  font-family: var(--font-khmer-title), 'Moul', cursive !important;
+  letter-spacing: normal !important;
+  color: #FFFDF0 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+body.theme-chinese-traditional #groom-father,
+body.theme-chinese-traditional #groom-mother,
+body.theme-chinese-traditional #bride-father,
+body.theme-chinese-traditional #bride-mother {
+  color: #FFD700 !important;
 }
 
 /* Chinese Countdown: Crimson Red with Imperial Gold */
@@ -582,6 +719,167 @@ body.theme-chinese-traditional .countdown-box span:first-child {
 }
 body.theme-chinese-traditional .countdown-box span:last-child {
   color: #F8D9A3 !important;
+  font-family: var(--font-khmer-body), 'Kantumruy Pro', sans-serif !important;
+  letter-spacing: normal !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+/* Chinese Countdown Top Badge */
+body.theme-chinese-traditional .rounded-full.bg-white {
+  background: rgba(120, 12, 20, 0.9) !important;
+  border-color: #FFD700 !important;
+  color: #FFD700 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Chinese Bank & QR Details */
+body.theme-chinese-traditional #groom-bank-name,
+body.theme-chinese-traditional #bride-bank-name {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #groom-acc-name,
+body.theme-chinese-traditional #bride-acc-name {
+  color: #FFE6B3 !important;
+}
+body.theme-chinese-traditional #groom-acc-num,
+body.theme-chinese-traditional #bride-acc-num {
+  color: #FFD700 !important;
+}
+
+/* Copy Account Number Buttons (Imperial Gold on Red for maximum visibility) */
+body.theme-chinese-traditional #btn-copy-groom-acc,
+body.theme-chinese-traditional #btn-copy-bride-acc {
+  background: linear-gradient(135deg, #FFD700 0%, #E5A93C 100%) !important;
+  color: #6E0910 !important;
+  font-weight: 700 !important;
+  border-color: #FFF2A3 !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+}
+body.theme-chinese-traditional #btn-copy-groom-acc svg,
+body.theme-chinese-traditional #btn-copy-bride-acc svg {
+  color: #6E0910 !important;
+}
+body.theme-chinese-traditional #btn-copy-groom-acc span,
+body.theme-chinese-traditional #btn-copy-bride-acc span {
+  color: #6E0910 !important;
+}
+
+/* Chinese Wish Form Card & Guestbook Wall */
+body.theme-chinese-traditional #wish-form-card {
+  background: linear-gradient(165deg, rgba(146, 15, 25, 0.30) 0%, rgba(105, 10, 18, 0.35) 100%) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  border: 1.5px solid #FFD700 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+}
+body.theme-chinese-traditional #wish-form-card label {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #wishes-list .bg-\[\#FAF7F2\] {
+  background: linear-gradient(145deg, rgba(120, 12, 20, 0.30) 0%, rgba(85, 8, 14, 0.35) 100%) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  border-color: #FFD700 !important;
+}
+body.theme-chinese-traditional #wishes-list .bg-white {
+  background: #FFD700 !important;
+  border-color: #FFE57F !important;
+  color: #6E0910 !important;
+  font-weight: 800 !important;
+}
+body.theme-chinese-traditional #wishes-list .bg-white.text-\[\#C5A059\],
+body.theme-chinese-traditional #wishes-list .bg-white .text-\[\#C5A059\] {
+  color: #6E0910 !important;
+}
+body.theme-chinese-traditional #wishes-list p {
+  color: #FFFDF0 !important;
+}
+body.theme-chinese-traditional #wishes-list span.font-bold {
+  color: #FFD700 !important;
+}
+
+/* Chinese Theme Switcher Dropdown */
+body.theme-chinese-traditional #theme-menu-dropdown {
+  background: #750910 !important;
+  border: 1.5px solid #FFD700 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+}
+body.theme-chinese-traditional #theme-menu-dropdown button {
+  color: #FFFDF0 !important;
+}
+body.theme-chinese-traditional #theme-menu-dropdown button:hover {
+  background: rgba(255, 215, 0, 0.2) !important;
+  color: #FFD700 !important;
+}
+
+body.theme-chinese-traditional #btn-toggle-video-aspect {
+  background: rgba(140, 20, 30, 0.75) !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+}
+body.theme-chinese-traditional #video-container h4 {
+  color: #FFD700 !important;
+}
+
+/* Chinese Envelope Screen, Couple Names & Badges */
+body.theme-chinese-traditional #envelope-screen {
+  background: radial-gradient(circle at center, #A81822 0%, #4D050B 100%) !important;
+}
+body.theme-chinese-traditional .envelope-card {
+  background: linear-gradient(165deg, #96101B 0%, #700911 100%) !important;
+  border: 2.5px solid #FFD700 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 215, 0, 0.4) !important;
+  color: #FFF9E6 !important;
+}
+body.theme-chinese-traditional .envelope-card p,
+body.theme-chinese-traditional .envelope-card span {
+  color: #FFF9E6 !important;
+}
+body.theme-chinese-traditional #envelope-sub {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #envelope-monogram {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #envelope-couple-names,
+body.theme-chinese-traditional #envelope-couple-names div,
+body.theme-chinese-traditional #envelope-couple-names span,
+body.theme-chinese-traditional .envelope-card .couple-names-khmer {
+  color: #FFD700 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+}
+body.theme-chinese-traditional .envelope-card .gold-gradient-text {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #envelope-guest-container {
+  background: rgba(90, 8, 14, 0.9) !important;
+  border-color: #FFD700 !important;
+}
+body.theme-chinese-traditional #envelope-invite-text {
+  color: #FFE6B3 !important;
+}
+body.theme-chinese-traditional #envelope-guest-name {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional .envelope-card .text-\[\#A67C1E\] {
+  color: #FFD700 !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
+}
+body.theme-chinese-traditional .wax-seal-btn {
+  background: radial-gradient(circle at 35% 35%, #FFF099 0%, #FFD700 70%, #996515 100%) !important;
+  border: 2.5px solid #FFFDE6 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55), 0 0 15px rgba(255, 215, 0, 0.4) !important;
+}
+body.theme-chinese-traditional .floating-music-btn {
+  background: linear-gradient(135deg, #A81822 0%, #FFD700 100%) !important;
+  border-color: #FFF099 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Chinese Form Inputs & Interactive */
@@ -592,9 +890,27 @@ body.theme-chinese-traditional textarea {
   border: 1px solid #FFD700 !important;
   color: #FFF9E6 !important;
 }
+body.theme-chinese-traditional input:focus,
+body.theme-chinese-traditional select:focus,
+body.theme-chinese-traditional textarea:focus {
+  background-color: #8E0D17 !important;
+  border-color: #FFE666 !important;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.4) !important;
+  color: #FFFFFF !important;
+}
 body.theme-chinese-traditional input::placeholder,
 body.theme-chinese-traditional textarea::placeholder {
   color: #E2B774 !important;
+}
+body.theme-chinese-traditional select option {
+  background-color: #7A0A12 !important;
+  color: #FFF9E6 !important;
+}
+body.theme-chinese-traditional #rsvp-form label {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional #rsvp-pax-hint {
+  color: #FFE6B3 !important;
 }
 
 /* Chinese Buttons: Radiant Imperial Gold Gradient */
@@ -611,38 +927,14 @@ body.theme-chinese-traditional button[type="submit"]:hover {
   background: linear-gradient(135deg, #FFF099 0%, #FFD700 100%) !important;
 }
 
-/* Chinese Envelope & Double Happiness Wax Seal */
-body.theme-chinese-traditional #envelope-screen {
-  background: radial-gradient(circle at center, #A81822 0%, #4D050B 100%) !important;
-}
-body.theme-chinese-traditional .envelope-card {
-  background: linear-gradient(165deg, #96101B 0%, #700911 100%) !important;
-  border: 2.5px solid #FFD700 !important;
-  border-radius: 18px !important;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 215, 0, 0.4) !important;
-  color: #FFF9E6 !important;
-}
-body.theme-chinese-traditional .envelope-card p,
-body.theme-chinese-traditional .envelope-card span {
-  color: #FFF9E6 !important;
-}
-body.theme-chinese-traditional .wax-seal-btn {
-  background: radial-gradient(circle at 35% 35%, #FFF099 0%, #FFD700 70%, #996515 100%) !important;
-  border: 2.5px solid #FFFDE6 !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55), 0 0 15px rgba(255, 215, 0, 0.4) !important;
-}
-body.theme-chinese-traditional .floating-music-btn {
-  background: linear-gradient(135deg, #A81822 0%, #FFD700 100%) !important;
-  border-color: #FFF099 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
-}
-
 /* Chinese Timeline & Agenda Styling */
 body.theme-chinese-traditional .timeline-stem::before {
   background: linear-gradient(to bottom, #FFD700 0%, #D11A2A 50%, #FFD700 100%) !important;
 }
 body.theme-chinese-traditional .timeline-stem .bg-white\/80 {
-  background: linear-gradient(145deg, rgba(120, 12, 20, 0.85) 0%, rgba(85, 8, 14, 0.90) 100%) !important;
+  background: linear-gradient(145deg, rgba(120, 12, 20, 0.30) 0%, rgba(85, 8, 14, 0.35) 100%) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
   border-color: #FFD700 !important;
   color: #FFF9E6 !important;
 }
@@ -665,13 +957,49 @@ body.theme-chinese-traditional #btn-add-calendar:hover {
   background: #A81822 !important;
 }
 
+/* Chinese Footer Styling */
+body.theme-chinese-traditional footer {
+  border-top-color: rgba(255, 215, 0, 0.35) !important;
+}
+body.theme-chinese-traditional #footer-stamp-icon {
+  background: #96101B !important;
+  border: 1.5px solid #FFD700 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
+}
+body.theme-chinese-traditional #footer-stamp-icon span {
+  color: #FFD700 !important;
+}
+body.theme-chinese-traditional footer p.font-khmer-title {
+  color: #FFD700 !important;
+  font-weight: bold !important;
+}
+body.theme-chinese-traditional footer p.font-khmer-body {
+  color: #FFE6B3 !important;
+}
+body.theme-chinese-traditional footer .text-\[\#A67C1E\] {
+  color: #FFD700 !important;
+  opacity: 0.9 !important;
+  font-weight: 500 !important;
+}
+
+/* Chinese Toast Notice */
+body.theme-chinese-traditional .toast-notice {
+  background: #8C0F1A !important;
+  color: #FFFDF0 !important;
+  border: 1.5px solid #FFD700 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
 /* Typography Classes */
 .font-khmer-title {
-  font-family: var(--font-khmer-title);
-  letter-spacing: 0.5px;
+  font-family: var(--font-khmer-title), 'Moul', 'Moulpali', cursive !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
 }
 .font-khmer-body {
-  font-family: var(--font-khmer-body);
+  font-family: var(--font-khmer-body), 'Kantumruy Pro', 'Siemreap', sans-serif !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
 }
 .font-en-title {
   font-family: var(--font-en-title);
@@ -682,6 +1010,62 @@ body.theme-chinese-traditional #btn-add-calendar:hover {
 }
 .font-en-body {
   font-family: var(--font-en-body);
+}
+
+/* Universal Khmer Typography Protection - Prevents letter-spacing/tracking/uppercase from breaking Khmer vowels & subscripts across all themes */
+:lang(km),
+body.lang-kh,
+[data-kh],
+.font-khmer-title,
+.font-khmer-body,
+.couple-names-khmer,
+#main-couple-kh,
+#hero-motif-text,
+#envelope-sub,
+#groom-parents-heading,
+#bride-parents-heading,
+#groom-name-card,
+#bride-name-card {
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+/* Ensure Khmer text inside headings maintains proper Moul font across all themes */
+body.lang-kh h2.font-khmer-title,
+body.lang-kh h3.font-khmer-title,
+body.lang-kh h4.font-khmer-title,
+h2.font-khmer-title,
+h3.font-khmer-title,
+h4.font-khmer-title {
+  font-family: var(--font-khmer-title), 'Moul', cursive !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+/* Universal Khmer Typography & Nowrap Safeguards */
+#hero-motif-text,
+#main-wedding-title,
+#main-couple-en,
+#main-couple-kh,
+.couple-names-khmer {
+  white-space: nowrap !important;
+}
+
+#hero-motif-text {
+  font-family: var(--font-khmer-title), 'Moul', cursive !important;
+  letter-spacing: normal !important;
+}
+
+#main-couple-en {
+  font-size: clamp(1.15rem, 4.5vw, 2.3rem) !important;
+  line-height: 1.25 !important;
+  overflow: visible;
+}
+
+#main-couple-kh {
+  font-size: clamp(1.1rem, 4.2vw, 1.85rem) !important;
+  line-height: 1.5 !important;
+  letter-spacing: normal !important;
 }
 
 /* Gold Gradient Text */
@@ -699,7 +1083,9 @@ body.theme-chinese-traditional #btn-add-calendar:hover {
 
 /* Beautiful Couple Name Styling */
 .couple-names-khmer {
-  font-family: var(--font-khmer-title);
+  font-family: var(--font-khmer-title) !important;
+  letter-spacing: normal !important;
+  white-space: nowrap !important;
   color: var(--primary);
   line-height: 1.6;
   text-shadow: 0 1px 1px rgba(197, 160, 89, 0.2);
@@ -840,11 +1226,25 @@ body.theme-chinese-traditional #btn-add-calendar:hover {
   box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5);
 }
 
+/* Couple Cover Photo Box Frame - Fits Photo Seamlessly */
+.couple-cover-box {
+  width: 100%;
+  position: relative;
+  overflow: hidden !important;
+  border: 2px solid var(--border-gold, #D4AF37);
+  border-radius: 20px;
+  background: #000;
+  box-shadow: 0 14px 40px rgba(78, 50, 39, 0.12);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
 /* Ornate Border Frame */
 .ornate-border-box {
   position: relative;
   border: 1px solid var(--border-gold);
-  background: #FFFFFF;
+  background: rgba(255, 253, 248, 0.30);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(78, 50, 39, 0.05);
 }
@@ -937,22 +1337,82 @@ body.theme-chinese-traditional #btn-add-calendar:hover {
   background: linear-gradient(to bottom, #C5A059 0%, #4E3227 50%, #C5A059 100%);
 }
 
-/* Petals Falling Animation */
-.petal-fall {
+/* Unique Traditional Falling Objects Animation */
+.falling-object-wrap {
   position: fixed;
-  top: -20px;
+  top: -45px;
   pointer-events: none;
-  z-index: 50;
-  animation: fallAnimation linear infinite;
+  z-index: 45;
+  will-change: transform, opacity;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-fill-mode: forwards;
 }
 
-@keyframes fallAnimation {
+@keyframes fallSwayLeft {
   0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.9;
+    transform: translate3d(0, -40px, 0) rotate(0deg) rotateY(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.95;
+  }
+  30% {
+    transform: translate3d(-35px, 32vh, 0) rotate(90deg) rotateY(180deg);
+  }
+  65% {
+    transform: translate3d(30px, 68vh, 0) rotate(210deg) rotateY(360deg);
+  }
+  90% {
+    opacity: 0.85;
   }
   100% {
-    transform: translateY(105vh) rotate(360deg);
+    transform: translate3d(-15px, 105vh, 0) rotate(360deg) rotateY(540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fallSwayRight {
+  0% {
+    transform: translate3d(0, -40px, 0) rotate(0deg) rotateX(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.95;
+  }
+  35% {
+    transform: translate3d(40px, 36vh, 0) rotate(-100deg) rotateX(180deg);
+  }
+  70% {
+    transform: translate3d(-25px, 72vh, 0) rotate(-230deg) rotateX(360deg);
+  }
+  90% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(20px, 105vh, 0) rotate(-360deg) rotateX(540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fallFlutter {
+  0% {
+    transform: translate3d(0, -40px, 0) scale(0.9) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.95;
+  }
+  45% {
+    transform: translate3d(25px, 46vh, 0) scale(1.08) rotate(160deg);
+  }
+  80% {
+    transform: translate3d(-20px, 82vh, 0) scale(0.95) rotate(280deg);
+  }
+  100% {
+    transform: translate3d(15px, 105vh, 0) scale(0.9) rotate(360deg);
     opacity: 0;
   }
 }
