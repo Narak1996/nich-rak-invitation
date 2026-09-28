@@ -499,15 +499,91 @@ function renderAll() {
   // Digital Gift info
   renderDigitalGift();
 
-  // RSVP Form Guest prepopulation
+  // RSVP Form & Frontend Guest Prepopulation
   if (currentGuest) {
-    document.getElementById('rsvp-name').value = isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name);
-    if (currentGuest.phone) document.getElementById('rsvp-phone').value = currentGuest.phone;
-    if (currentGuest.side) document.getElementById('rsvp-side').value = currentGuest.side;
-    if (currentGuest.pax_allowed) {
-      document.getElementById('rsvp-pax-hint').textContent = isKh 
+    const guestDisplayName = isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name);
+    
+    // 1. RSVP Guest Name
+    const rsvpNameEl = document.getElementById('rsvp-name');
+    if (rsvpNameEl) {
+      rsvpNameEl.value = guestDisplayName || '';
+    }
+
+    // 2. RSVP Phone
+    const rsvpPhoneEl = document.getElementById('rsvp-phone');
+    if (rsvpPhoneEl && currentGuest.phone) {
+      rsvpPhoneEl.value = currentGuest.phone;
+    }
+
+    // 3. RSVP Side (groom/bride)
+    const rsvpSideEl = document.getElementById('rsvp-side');
+    if (rsvpSideEl && currentGuest.side) {
+      rsvpSideEl.value = currentGuest.side;
+    }
+
+    // 4. RSVP Attendance Status
+    const rsvpStatusEl = document.getElementById('rsvp-status');
+    if (rsvpStatusEl) {
+      if (currentGuest.status && currentGuest.status !== 'pending') {
+        rsvpStatusEl.value = currentGuest.status;
+      } else {
+        // Default to confirmed for quick one-click submission
+        rsvpStatusEl.value = 'confirmed';
+      }
+    }
+
+    // 5. RSVP Attendees count and dropdown options
+    const rsvpAttendeesEl = document.getElementById('rsvp-attendees');
+    if (rsvpAttendeesEl) {
+      const allowed = parseInt(currentGuest.pax_allowed, 10) || 1;
+      const targetVal = (currentGuest.attendees && currentGuest.attendees > 0) ? currentGuest.attendees : allowed;
+      
+      const maxOpt = Math.max(4, allowed);
+      rsvpAttendeesEl.innerHTML = '';
+      for (let i = 1; i <= maxOpt; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = isKh ? `${toKhmerNumber(i)} នាក់ (${i} person${i > 1 ? 's' : ''})` : `${i} person${i > 1 ? 's' : ''}`;
+        if (i === targetVal) opt.selected = true;
+        rsvpAttendeesEl.appendChild(opt);
+      }
+      const optZero = document.createElement('option');
+      optZero.value = 0;
+      optZero.textContent = isKh ? '០ នាក់ (មិនអាចចូលរួមបាន)' : '0 (Unable to attend)';
+      if (targetVal === 0 || currentGuest.status === 'declined') optZero.selected = true;
+      rsvpAttendeesEl.appendChild(optZero);
+    }
+
+    // 6. RSVP Pax Hint
+    const rsvpPaxHintEl = document.getElementById('rsvp-pax-hint');
+    if (rsvpPaxHintEl && currentGuest.pax_allowed) {
+      rsvpPaxHintEl.textContent = isKh 
         ? `(ចំនួនភ្ញៀវអញ្ជើញចូលរួម: ${toKhmerNumber(currentGuest.pax_allowed)} នាក់)`
         : `(Reserved for: ${currentGuest.pax_allowed} pax)`;
+    }
+
+    // 7. RSVP Wishes
+    const rsvpWishesEl = document.getElementById('rsvp-wishes');
+    if (rsvpWishesEl && currentGuest.wishes) {
+      rsvpWishesEl.value = currentGuest.wishes;
+    }
+
+    // 8. Wishes Guestbook Form Auto-fill
+    const wishSenderName = document.getElementById('wish-sender-name');
+    if (wishSenderName && !wishSenderName.value) {
+      wishSenderName.value = guestDisplayName || '';
+    }
+    const wishSenderRel = document.getElementById('wish-sender-rel');
+    if (wishSenderRel && currentGuest.side) {
+      wishSenderRel.value = currentGuest.side === 'bride' ? 'ភ្ញៀវខាងស្រី' : 'ភ្ញៀវខាងប្រុស';
+    }
+
+    // 9. Main Invitation Presentation Greeting Banner
+    const mainGuestBanner = document.getElementById('main-guest-invitation-banner');
+    const mainGuestName = document.getElementById('main-guest-invitation-name');
+    if (mainGuestBanner && mainGuestName) {
+      mainGuestName.textContent = guestDisplayName || '';
+      mainGuestBanner.classList.remove('hidden');
     }
   }
 
