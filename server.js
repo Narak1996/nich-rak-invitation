@@ -25,26 +25,24 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-// Helper functions for reading/writing JSON
+// Cloud Database (MongoDB Atlas) Adapter with File Fallback
+const db = require('./db');
+
+// Helper functions for reading/writing JSON (backed by MongoDB / Cache / Files)
 function readJSON(file, fallback = {}) {
-  try {
-    if (fs.existsSync(file)) {
-      return JSON.parse(fs.readFileSync(file, 'utf-8'));
-    }
-  } catch (err) {
-    console.error(`Error reading ${file}:`, err);
-  }
-  return fallback;
+  if (file === GUESTS_FILE) return db.getGuests();
+  if (file === WEDDING_FILE) return db.getWedding();
+  if (file === WISHES_FILE) return db.getWishes();
+  if (file === USERS_FILE) return db.getUsers();
+  return db.readLocalJSON(file, fallback);
 }
 
 function writeJSON(file, data) {
-  try {
-    fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf-8');
-    return true;
-  } catch (err) {
-    console.error(`Error writing ${file}:`, err);
-    return false;
-  }
+  if (file === GUESTS_FILE) { db.saveGuests(data); return true; }
+  if (file === WEDDING_FILE) { db.saveWedding(data); return true; }
+  if (file === WISHES_FILE) { db.saveWishes(data); return true; }
+  if (file === USERS_FILE) { db.saveUsers(data); return true; }
+  return db.writeLocalJSON(file, data);
 }
 
 // Multer storage for uploads
@@ -1000,17 +998,29 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
+// Admin / System: DB status
+app.get('/api/db-status', requireAdmin, (req, res) => {
+  res.json({
+    connected: db.isDBConnected(),
+    type: db.isDBConnected() ? 'MongoDB Atlas (Cloud)' : 'Local File Storage (data/*.json)',
+    hasEnv: Boolean(process.env.MONGODB_URI)
+  });
+});
+
 // Start Server
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`=======================================================`);
-    console.log(`  E-Invitation Wedding System is running!`);
-    console.log(`  Web Invitation: http://localhost:${PORT}`);
-    console.log(`  Friendly URL:   http://localhost:${PORT}/to/YourName`);
-    console.log(`  Cover Image:    http://localhost:${PORT}/images/wedding-og-cover.jpg`);
-    console.log(`  Admin Panel:    http://localhost:${PORT}/admin`);
-    console.log(`  Login Page:     http://localhost:${PORT}/login`);
-    console.log(`=======================================================`);
+  db.initDB().finally(() => {
+    app.listen(PORT, () => {
+      console.log(`=======================================================`);
+      console.log(`  E-Invitation Wedding System is running!`);
+      console.log(`  Web Invitation: http://localhost:${PORT}`);
+      console.log(`  Friendly URL:   http://localhost:${PORT}/to/YourName`);
+      console.log(`  Cover Image:    http://localhost:${PORT}/images/wedding-og-cover.jpg`);
+      console.log(`  Admin Panel:    http://localhost:${PORT}/admin`);
+      console.log(`  Login Page:     http://localhost:${PORT}/login`);
+      console.log(`  Database Mode:  ${db.isDBConnected() ? '🟢 MongoDB Atlas' : '🟡 Local File Storage'}`);
+      console.log(`=======================================================`);
+    });
   });
 }
 

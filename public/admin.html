@@ -38,6 +38,10 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <div id="db-status-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] font-semibold text-gray-600">
+          <span id="db-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span id="db-status-text">Database Loading...</span>
+        </div>
         <div id="user-info-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#FAF7F2] border border-[#E5D5BC] rounded-xl text-xs">
           <span class="w-6 h-6 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-[10px]" id="user-avatar-initial">A</span>
           <div class="leading-tight text-left">

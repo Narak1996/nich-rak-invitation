@@ -44,12 +44,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load all initial data
 async function loadAllData() {
   await Promise.all([
+    checkDBStatus(),
     loadStats(),
     loadWeddingData(),
     loadGuests(),
     loadWishes(),
     loadUsers()
   ]);
+}
+
+// Check Database Connection Status (MongoDB Atlas vs Local Files)
+async function checkDBStatus() {
+  try {
+    const res = await fetch('/api/db-status');
+    if (res.ok) {
+      const data = await res.json();
+      const dot = document.getElementById('db-status-dot');
+      const text = document.getElementById('db-status-text');
+      const badge = document.getElementById('db-status-badge');
+      if (dot && text && badge) {
+        badge.classList.remove('hidden');
+        if (data.connected) {
+          dot.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
+          text.textContent = '🟢 MongoDB Atlas Connected';
+          badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-xl text-[11px] font-semibold text-green-700';
+          badge.title = 'ទិន្នន័យត្រូវបានរក្សាទុកលើ Cloud MongoDB ឥតបាត់បង់ពេល Deploy';
+        } else {
+          dot.className = 'w-2 h-2 rounded-full bg-amber-500';
+          text.textContent = '🟡 Local File Storage';
+          badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] font-semibold text-amber-800';
+          badge.title = 'កំណត់ MONGODB_URI លើ Render ដើម្បីភ្ជាប់ Cloud Database';
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Failed to check DB status:', e);
+  }
 }
 
 // Load stats
