@@ -503,10 +503,12 @@ function renderAll() {
   if (currentGuest) {
     const guestDisplayName = isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name);
     
-    // 1. RSVP Guest Name
+    // 1. RSVP Guest Name (Readonly for invited guest)
     const rsvpNameEl = document.getElementById('rsvp-name');
     if (rsvpNameEl) {
       rsvpNameEl.value = guestDisplayName || '';
+      rsvpNameEl.readOnly = true;
+      rsvpNameEl.classList.add('cursor-default', 'bg-amber-50/40', 'font-semibold', 'text-[#4E3227]');
     }
 
     // 2. RSVP Phone
@@ -515,13 +517,7 @@ function renderAll() {
       rsvpPhoneEl.value = currentGuest.phone;
     }
 
-    // 3. RSVP Side (groom/bride)
-    const rsvpSideEl = document.getElementById('rsvp-side');
-    if (rsvpSideEl && currentGuest.side) {
-      rsvpSideEl.value = currentGuest.side;
-    }
-
-    // 4. RSVP Attendance Status
+    // 3. RSVP Attendance Status
     const rsvpStatusEl = document.getElementById('rsvp-status');
     if (rsvpStatusEl) {
       if (currentGuest.status && currentGuest.status !== 'pending') {
@@ -532,7 +528,7 @@ function renderAll() {
       }
     }
 
-    // 5. RSVP Attendees count and dropdown options
+    // 4. RSVP Attendees count and dropdown options
     const rsvpAttendeesEl = document.getElementById('rsvp-attendees');
     if (rsvpAttendeesEl) {
       const allowed = parseInt(currentGuest.pax_allowed, 10) || 1;
@@ -554,7 +550,7 @@ function renderAll() {
       rsvpAttendeesEl.appendChild(optZero);
     }
 
-    // 6. RSVP Pax Hint
+    // 5. RSVP Pax Hint
     const rsvpPaxHintEl = document.getElementById('rsvp-pax-hint');
     if (rsvpPaxHintEl && currentGuest.pax_allowed) {
       rsvpPaxHintEl.textContent = isKh 
@@ -562,28 +558,38 @@ function renderAll() {
         : `(Reserved for: ${currentGuest.pax_allowed} pax)`;
     }
 
-    // 7. RSVP Wishes
+    // 6. RSVP Wishes
     const rsvpWishesEl = document.getElementById('rsvp-wishes');
     if (rsvpWishesEl && currentGuest.wishes) {
       rsvpWishesEl.value = currentGuest.wishes;
     }
 
-    // 8. Wishes Guestbook Form Auto-fill
+    // 7. Wishes Guestbook Form Auto-fill (Readonly)
     const wishSenderName = document.getElementById('wish-sender-name');
-    if (wishSenderName && !wishSenderName.value) {
+    if (wishSenderName) {
       wishSenderName.value = guestDisplayName || '';
-    }
-    const wishSenderRel = document.getElementById('wish-sender-rel');
-    if (wishSenderRel && currentGuest.side) {
-      wishSenderRel.value = currentGuest.side === 'bride' ? 'ភ្ញៀវខាងស្រី' : 'ភ្ញៀវខាងប្រុស';
+      wishSenderName.readOnly = true;
+      wishSenderName.classList.add('cursor-default', 'bg-amber-50/40', 'font-semibold', 'text-[#4E3227]');
     }
 
-    // 9. Main Invitation Presentation Greeting Banner
+    // 8. Main Invitation Presentation Greeting Banner
     const mainGuestBanner = document.getElementById('main-guest-invitation-banner');
     const mainGuestName = document.getElementById('main-guest-invitation-name');
     if (mainGuestBanner && mainGuestName) {
       mainGuestName.textContent = guestDisplayName || '';
       mainGuestBanner.classList.remove('hidden');
+    }
+  } else {
+    // If no guest slug in URL, allow typing manually
+    const rsvpNameEl = document.getElementById('rsvp-name');
+    if (rsvpNameEl) {
+      rsvpNameEl.readOnly = false;
+      rsvpNameEl.classList.remove('cursor-default', 'bg-amber-50/40');
+    }
+    const wishSenderName = document.getElementById('wish-sender-name');
+    if (wishSenderName) {
+      wishSenderName.readOnly = false;
+      wishSenderName.classList.remove('cursor-default', 'bg-amber-50/40');
     }
   }
 
@@ -1233,7 +1239,7 @@ async function handleRSVPSubmit(e) {
   const phone = document.getElementById('rsvp-phone').value.trim();
   const status = document.getElementById('rsvp-status').value;
   const attendees = document.getElementById('rsvp-attendees').value;
-  const side = document.getElementById('rsvp-side').value;
+  const side = (currentGuest && currentGuest.side) ? currentGuest.side : 'groom';
   const wishes = document.getElementById('rsvp-wishes').value.trim();
 
   const isKh = currentLang === 'kh';
@@ -1259,7 +1265,7 @@ async function handleRSVPSubmit(e) {
     const data = await res.json();
     if (res.ok) {
       showToast(isKh ? 'សូមអរគុណ! ការឆ្លើយតបរបស់អ្នកត្រូវបានកត់ត្រា។' : 'Thank you! Your RSVP has been submitted.');
-      document.getElementById('rsvp-form').reset();
+      document.getElementById('rsvp-wishes').value = '';
       loadWishes();
     } else {
       showToast(data.error || 'Submission error');
@@ -1273,7 +1279,14 @@ async function handleRSVPSubmit(e) {
 async function handleWishSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('wish-sender-name').value.trim();
-  const relationship = document.getElementById('wish-sender-rel').value;
+  let relationship = '';
+  if (currentGuest && currentGuest.side === 'bride') {
+    relationship = 'ភ្ញៀវខាងស្រី';
+  } else if (currentGuest && currentGuest.side === 'groom') {
+    relationship = 'ភ្ញៀវខាងប្រុស';
+  } else {
+    relationship = 'ភ្ញៀវកិត្តិយស (Honored Guest)';
+  }
   const message = document.getElementById('wish-message').value.trim();
 
   const isKh = currentLang === 'kh';
