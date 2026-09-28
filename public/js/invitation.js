@@ -116,14 +116,40 @@ function toKhmerNumber(val) {
   return String(val).replace(/[0-9]/g, digit => khmerDigits[parseInt(digit, 10)]);
 }
 
+// Hide luxury preloader smoothly
+function hidePreloader() {
+  const preloader = document.getElementById('app-preloader');
+  if (preloader && !preloader.classList.contains('loaded')) {
+    preloader.classList.add('loaded');
+    setTimeout(() => {
+      try { preloader.remove(); } catch (e) {}
+    }, 750);
+  }
+}
+
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
-  await fetchWeddingData();
-  await checkGuestParameter();
-  initPetals();
-  initCountdown();
-  initEventListeners();
-  renderAll();
+  // Safety timeout so preloader never hangs indefinitely
+  const preloaderTimer = setTimeout(() => {
+    hidePreloader();
+  }, 3500);
+
+  try {
+    await Promise.all([
+      fetchWeddingData(),
+      checkGuestParameter()
+    ]);
+  } catch (err) {
+    console.error('Initialization fetch error:', err);
+  } finally {
+    clearTimeout(preloaderTimer);
+    initPetals();
+    initCountdown();
+    initEventListeners();
+    renderAll();
+    initScrollReveal();
+    hidePreloader();
+  }
 });
 
 // Fetch wedding data from API
@@ -131,6 +157,14 @@ async function fetchWeddingData() {
   try {
     const res = await fetch('/api/wedding');
     weddingData = await res.json();
+    if (weddingData?.wedding) {
+      const preloaderCouple = document.getElementById('preloader-couple');
+      if (preloaderCouple) {
+        const groomKh = weddingData.wedding.groom?.name_kh || 'ឡេង ចាន់ណារៈ';
+        const brideKh = weddingData.wedding.bride?.name_kh || 'នាត ស្រីនិច';
+        preloaderCouple.textContent = `${groomKh} & ${brideKh}`;
+      }
+    }
     const musicUrl = (weddingData.wedding && weddingData.wedding.music_url) || '/audio/wedding-music.mp3';
     initMusic(musicUrl);
   } catch (err) {
@@ -822,11 +856,24 @@ function initEventListeners() {
 // Open Envelope
 function openEnvelope() {
   const screen = document.getElementById('envelope-screen');
-  if (screen) screen.classList.add('opened');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (!screen || screen.classList.contains('opened')) return;
+
+  // Add opening animation class for wax seal burst & card lift
+  screen.classList.add('opening');
 
   // Play music on first interaction
   playMusic();
+
+  // Smoothly finish envelope opening transition
+  setTimeout(() => {
+    screen.classList.add('opened');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Trigger visible reveals for hero / initial viewport content
+    setTimeout(() => {
+      triggerVisibleReveals();
+    }, 150);
+  }, 500);
 }
 window.openEnvelope = openEnvelope;
 window.toggleMusic = toggleMusic;
@@ -1433,3 +1480,49 @@ window.switchThemeLive = async function(themeId) {
     console.error('Failed to auto-save theme:', err);
   }
 };
+
+// ================= ULTRA-SMOOTH SCROLL REVEAL OBSERVER =================
+let scrollRevealObserver = null;
+
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.reveal-on-scroll');
+  if (!revealElements.length) return;
+
+  if ('IntersectionObserver' in window) {
+    if (scrollRevealObserver) {
+      try { scrollRevealObserver.disconnect(); } catch (e) {}
+    }
+
+    scrollRevealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px 0px -40px 0px',
+      threshold: 0.08
+    });
+
+    revealElements.forEach(el => scrollRevealObserver.observe(el));
+  } else {
+    // Fallback if IntersectionObserver is not supported
+    revealElements.forEach(el => el.classList.add('is-visible'));
+  }
+}
+
+function triggerVisibleReveals() {
+  const revealElements = document.querySelectorAll('.reveal-on-scroll:not(.is-visible)');
+  revealElements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('is-visible');
+      if (scrollRevealObserver) {
+        try { scrollRevealObserver.unobserve(el); } catch (e) {}
+      }
+    }
+  });
+}
+
