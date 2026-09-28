@@ -215,8 +215,9 @@ function renderGuestsTable() {
   }
 
   filtered.forEach(g => {
-    // Generate personalized friendly invitation URL
-    const guestUrl = `${window.location.origin}/to/${encodeURIComponent(g.name)}`;
+    // Generate personalized friendly short invitation URL
+    const shortKey = (g.slug && !g.slug.startsWith('guest-')) ? g.slug : (g.id || encodeURIComponent(g.name));
+    const guestUrl = `${window.location.origin}/to/${shortKey}`;
     const statusBadges = {
       'confirmed': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-800">✓ ចូលរួម (Confirmed)</span>',
       'declined': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-800">✕ មិនចូលរួម (Declined)</span>',
@@ -224,9 +225,13 @@ function renderGuestsTable() {
     };
 
     // Pre-composed invitation text in Khmer
-    const tgText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ។\n\n💌 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញ៖\n${guestUrl}`);
+    // Telegram share API already attaches ?url=, so we do NOT duplicate the URL inside &text=
+    const tgText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ ឡេង ចាន់ណារៈ & នាត ស្រីនិច។\n\n💌 សូមចុចតំណភ្ជាប់ខាងលើដើម្បីបើកសំបុត្រអញ្ជើញ`);
     const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(guestUrl)}&text=${tgText}`;
-    const waUrl = `https://api.whatsapp.com/send?text=${tgText}`;
+    
+    // WhatsApp does not have a separate url parameter, so include link at bottom
+    const waText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ ឡេង ចាន់ណារៈ & នាត ស្រីនិច។\n\n💌 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញ៖\n${guestUrl}`);
+    const waUrl = `https://api.whatsapp.com/send?text=${waText}`;
 
     const tr = document.createElement('tr');
     tr.className = 'hover:bg-gray-50/80 transition';
@@ -234,6 +239,9 @@ function renderGuestsTable() {
       <td class="p-3">
         <span class="font-bold text-[#4E3227] text-xs block">${escapeHTML(g.name)}</span>
         <span class="text-[11px] text-[#7A6F68] block">${escapeHTML(g.name_en || '')}</span>
+        <a href="${guestUrl}" target="_blank" class="text-[10px] text-[#C5A059] hover:underline font-mono inline-flex items-center gap-1 mt-0.5" title="ចុចដើម្បីបើកតំណភ្ជាប់">
+          <span>🔗 /to/${escapeHTML(shortKey)}</span>
+        </a>
       </td>
       <td class="p-3">
         <span class="px-2 py-0.5 rounded-md text-[11px] ${g.side === 'groom' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'} font-medium">
@@ -679,6 +687,7 @@ function initFormListeners() {
     const payload = {
       name: document.getElementById('modal-guest-name').value.trim(),
       name_en: document.getElementById('modal-guest-name-en').value.trim(),
+      slug: document.getElementById('modal-guest-slug') ? document.getElementById('modal-guest-slug').value.trim() : '',
       side: document.getElementById('modal-guest-side').value,
       category: document.getElementById('modal-guest-category').value,
       phone: document.getElementById('modal-guest-phone').value.trim(),
@@ -940,6 +949,9 @@ window.editGuest = function(id) {
   document.getElementById('modal-guest-id').value = g.id;
   document.getElementById('modal-guest-name').value = g.name;
   document.getElementById('modal-guest-name-en').value = g.name_en || '';
+  if (document.getElementById('modal-guest-slug')) {
+    document.getElementById('modal-guest-slug').value = g.slug || '';
+  }
   document.getElementById('modal-guest-side').value = g.side || 'groom';
   document.getElementById('modal-guest-category').value = g.category || 'General';
   document.getElementById('modal-guest-phone').value = g.phone || '';

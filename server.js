@@ -664,13 +664,20 @@ app.get('/api/guests', requireAdmin, (req, res) => {
 // Admin: Add guest
 app.post('/api/guests', requireAdmin, (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);
-  const { name, name_en, side, category, phone, pax_allowed } = req.body;
+  const { name, name_en, slug: customSlug, side, category, phone, pax_allowed } = req.body;
 
   if (!name) return res.status(400).json({ error: 'Guest name is required' });
 
-  // Generate unique slug
-  let baseSlug = (name_en || name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  if (!baseSlug) baseSlug = 'guest';
+  // Generate unique clean slug
+  let baseSlug = '';
+  if (customSlug && typeof customSlug === 'string' && customSlug.trim()) {
+    baseSlug = customSlug.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-|-$/g, '');
+  } else if (name_en && typeof name_en === 'string' && name_en.trim()) {
+    baseSlug = name_en.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  if (!baseSlug) {
+    baseSlug = 'g' + (guests.length + 1);
+  }
   let slug = baseSlug;
   let counter = 1;
   while (guests.some(g => g.slug === slug)) {
@@ -711,10 +718,10 @@ app.post('/api/guests/bulk', requireAdmin, (req, res) => {
     if (!trimmed) continue;
 
     let baseSlug = trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    if (!baseSlug) baseSlug = 'guest';
+    if (!baseSlug) baseSlug = 'g' + (guests.length + created.length + 1);
     let slug = baseSlug;
     let counter = 1;
-    while (guests.some(g => g.slug === slug)) {
+    while (guests.some(g => g.slug === slug) || created.some(g => g.slug === slug)) {
       slug = `${baseSlug}-${counter++}`;
     }
 
@@ -732,10 +739,10 @@ app.post('/api/guests/bulk', requireAdmin, (req, res) => {
       wishes: '',
       updatedAt: null
     };
-    guests.push(g);
     created.push(g);
   }
 
+  guests.push(...created);
   writeJSON(GUESTS_FILE, guests);
   res.json({ success: true, count: created.length, guests: created });
 });
@@ -746,7 +753,19 @@ app.put('/api/guests/:id', requireAdmin, (req, res) => {
   const index = guests.findIndex(g => g.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Guest not found' });
 
-  guests[index] = { ...guests[index], ...req.body };
+  let updatedSlug = guests[index].slug;
+  if (req.body.slug && typeof req.body.slug === 'string' && req.body.slug.trim()) {
+    const cleanSlug = req.body.slug.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-|-$/g, '');
+    if (cleanSlug && !guests.some(g => g.id !== req.params.id && g.slug === cleanSlug)) {
+      updatedSlug = cleanSlug;
+    }
+  }
+
+  guests[index] = { 
+    ...guests[index], 
+    ...req.body,
+    slug: updatedSlug
+  };
   writeJSON(GUESTS_FILE, guests);
   res.json({ success: true, guest: guests[index] });
 });
@@ -766,21 +785,24 @@ app.get('/api/guests/export', requireAdmin, (req, res) => {
   const host = req.headers['x-forwarded-host'] || req.headers.host || 'rak-nich.onrender.com';
   const baseUrl = `${proto}://${host}`;
   const headers = ['ID', 'Name (Khmer)', 'Name (English)', 'Invitation Link', 'Slug', 'Side', 'Category', 'Phone', 'Allowed Pax', 'RSVP Status', 'Attendees', 'Wishes', 'Updated At'];
-  const rows = guests.map(g => [
-    `"${g.id}"`,
-    `"${(g.name || '').replace(/"/g, '""')}"`,
-    `"${(g.name_en || '').replace(/"/g, '""')}"`,
-    `"${baseUrl}/to/${encodeURIComponent(g.name)}"`,
-    `"${g.slug}"`,
-    `"${g.side}"`,
-    `"${g.category}"`,
-    `"${g.phone || ''}"`,
-    g.pax_allowed,
-    `"${g.status}"`,
-    g.attendees,
-    `"${(g.wishes || '').replace(/"/g, '""')}"`,
-    `"${g.updatedAt || ''}"`
-  ]);
+  const rows = guests.map(g => {
+    const shortKey = (g.slug && !g.slug.startsWith('guest-')) ? g.slug : (g.id || encodeURIComponent(g.name));
+    return [
+      `"${g.id}"`,
+      `"${(g.name || '').replace(/"/g, '""')}"`,
+      `"${(g.name_en || '').replace(/"/g, '""')}"`,
+      `"${baseUrl}/to/${shortKey}"`,
+      `"${g.slug}"`,
+      `"${g.side}"`,
+      `"${g.category}"`,
+      `"${g.phone || ''}"`,
+      g.pax_allowed,
+      `"${g.status}"`,
+      g.attendees,
+      `"${(g.wishes || '').replace(/"/g, '""')}"`,
+      `"${g.updatedAt || ''}"`
+    ];
+  });
 
   const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
@@ -824,28 +846,36 @@ function escapeHTML(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Render Friendly Invitation Page with Dynamic Open Graph Preview & Cover Image
+// Render Friendly Invitation Page with Dynamic Open Graph Preview & Couple Cover Photo
 function renderInvitationPage(req, res) {
   let guestName = '';
 
   const rawParam = req.params.guest || req.params.slug || req.query.to || req.query.guest;
+  let rawQuery = '';
   if (rawParam) {
-    guestName = decodeURIComponent(rawParam).replace(/\+/g, ' ').replace(/-/g, ' ').trim();
+    rawQuery = decodeURIComponent(rawParam).replace(/\+/g, ' ').trim();
   }
 
   // Look up guest in guests.json for accurate name display
   const guests = readJSON(GUESTS_FILE, []);
-  if (guestName && Array.isArray(guests)) {
-    const cleanLower = guestName.toLowerCase();
-    const match = guests.find(g => 
-      (g.name && g.name.toLowerCase() === cleanLower) ||
-      (g.name_en && g.name_en.toLowerCase() === cleanLower) ||
-      (g.slug && g.slug.toLowerCase() === cleanLower) ||
-      (g.id && g.id === cleanLower)
+  let foundGuest = null;
+  if (rawQuery && Array.isArray(guests)) {
+    const queryLower = rawQuery.toLowerCase();
+    const queryNoDash = queryLower.replace(/-/g, ' ');
+    const queryWithDash = queryLower.replace(/\s+/g, '-');
+
+    foundGuest = guests.find(g => 
+      (g.slug && (g.slug.toLowerCase() === queryLower || g.slug.toLowerCase() === queryWithDash || g.slug.toLowerCase() === queryNoDash)) ||
+      (g.id && (g.id.toLowerCase() === queryLower || g.id.toLowerCase() === queryNoDash)) ||
+      (g.name && (g.name.toLowerCase() === queryLower || g.name.toLowerCase() === queryNoDash)) ||
+      (g.name_en && (g.name_en.toLowerCase() === queryLower || g.name_en.toLowerCase() === queryNoDash))
     );
-    if (match) {
-      guestName = match.name || match.name_en;
-    }
+  }
+
+  if (foundGuest) {
+    guestName = foundGuest.name || foundGuest.name_en;
+  } else if (rawQuery) {
+    guestName = rawQuery.replace(/-/g, ' ');
   }
 
   // Load wedding info
@@ -863,7 +893,26 @@ function renderInvitationPage(req, res) {
   const host = req.headers['x-forwarded-host'] || req.headers.host || 'rak-nich.onrender.com';
   const baseUrl = `${proto}://${host}`;
   const fullUrl = `${baseUrl}${req.originalUrl}`;
-  const ogCoverImage = `${baseUrl}/images/wedding-og-cover.jpg`;
+
+  // Dynamic Couple Cover Photo for Open Graph thumbnail preview
+  let ogCoverImage = '';
+  if (w.couple_photo && typeof w.couple_photo === 'string' && w.couple_photo.trim()) {
+    let cp = w.couple_photo.trim();
+    if (cp.endsWith('.webp')) {
+      const jpgCandidate = cp.replace(/\.webp$/i, '.jpg');
+      const localJpgPath = path.join(__dirname, 'public', jpgCandidate.replace(/^\//, ''));
+      if (fs.existsSync(localJpgPath)) {
+        cp = jpgCandidate;
+      }
+    }
+    if (cp.startsWith('http://') || cp.startsWith('https://')) {
+      ogCoverImage = cp;
+    } else {
+      ogCoverImage = `${baseUrl}${cp.startsWith('/') ? cp : '/' + cp}`;
+    }
+  } else {
+    ogCoverImage = `${baseUrl}/images/wedding-og-cover.jpg`;
+  }
 
   let pageTitle = `សិរីសួស្តី អាពាហ៍ពិពាហ៍ | ${groomKh} & ${brideKh}`;
   let ogTitle = `💍 លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍ | ${groomKh} & ${brideKh}`;
