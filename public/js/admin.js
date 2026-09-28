@@ -4,6 +4,19 @@ let guestList = [];
 let wishesList = [];
 let currentUser = null;
 let usersList = [];
+let isSlugManuallyEdited = false;
+
+// Helper to convert English names into clean URL slugs with hyphens (-)
+function slugify(text) {
+  return (text || '')
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9_-]+/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('admin_token');
@@ -747,6 +760,27 @@ function initFormListeners() {
     }
   });
 
+  // Auto-fill Short Link Slug from English Name (spaces replaced with -)
+  const guestNameEnInput = document.getElementById('modal-guest-name-en');
+  const guestSlugInput = document.getElementById('modal-guest-slug');
+  if (guestNameEnInput && guestSlugInput) {
+    guestNameEnInput.addEventListener('input', () => {
+      if (!isSlugManuallyEdited || !guestSlugInput.value.trim()) {
+        guestSlugInput.value = slugify(guestNameEnInput.value);
+      }
+    });
+
+    guestSlugInput.addEventListener('input', () => {
+      isSlugManuallyEdited = Boolean(guestSlugInput.value.trim());
+    });
+
+    guestSlugInput.addEventListener('blur', () => {
+      if (guestSlugInput.value.trim()) {
+        guestSlugInput.value = slugify(guestSlugInput.value);
+      }
+    });
+  }
+
   // Bulk import guests
   document.getElementById('form-bulk-import').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -982,6 +1016,7 @@ window.editGuest = function(id) {
   if (document.getElementById('modal-guest-slug')) {
     document.getElementById('modal-guest-slug').value = g.slug || '';
   }
+  isSlugManuallyEdited = Boolean(g.slug);
   document.getElementById('modal-guest-side').value = g.side || 'groom';
   document.getElementById('modal-guest-category').value = g.category || 'General';
   document.getElementById('modal-guest-phone').value = g.phone || '';
@@ -1089,6 +1124,7 @@ function initModals() {
   document.getElementById('btn-open-add-guest').addEventListener('click', () => {
     document.getElementById('form-save-guest').reset();
     document.getElementById('modal-guest-id').value = '';
+    isSlugManuallyEdited = false;
     document.getElementById('modal-guest-title').textContent = 'បន្ថែមភ្ញៀវកិត្តិយស';
     document.getElementById('modal-add-guest').classList.add('active');
   });

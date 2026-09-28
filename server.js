@@ -659,6 +659,17 @@ app.get('/api/guests', requireAdmin, (req, res) => {
   res.json(guests);
 });
 
+// Helper to generate clean URL slug with spaces converted to hyphens (-)
+function slugifyString(text) {
+  return String(text || '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9_-]+/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // Admin: Add guest
 app.post('/api/guests', requireAdmin, (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);
@@ -666,12 +677,12 @@ app.post('/api/guests', requireAdmin, (req, res) => {
 
   if (!name) return res.status(400).json({ error: 'Guest name is required' });
 
-  // Generate unique clean slug
+  // Generate unique clean slug (auto-filled from English name with spaces replaced with -)
   let baseSlug = '';
   if (customSlug && typeof customSlug === 'string' && customSlug.trim()) {
-    baseSlug = customSlug.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-|-$/g, '');
+    baseSlug = slugifyString(customSlug);
   } else if (name_en && typeof name_en === 'string' && name_en.trim()) {
-    baseSlug = name_en.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    baseSlug = slugifyString(name_en);
   }
   if (!baseSlug) {
     baseSlug = 'g' + (guests.length + 1);
@@ -753,7 +764,12 @@ app.put('/api/guests/:id', requireAdmin, (req, res) => {
 
   let updatedSlug = guests[index].slug;
   if (req.body.slug && typeof req.body.slug === 'string' && req.body.slug.trim()) {
-    const cleanSlug = req.body.slug.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-|-$/g, '');
+    const cleanSlug = slugifyString(req.body.slug);
+    if (cleanSlug && !guests.some(g => g.id !== req.params.id && g.slug === cleanSlug)) {
+      updatedSlug = cleanSlug;
+    }
+  } else if (req.body.name_en && (!updatedSlug || updatedSlug.startsWith('g-') || updatedSlug.startsWith('guest-'))) {
+    const cleanSlug = slugifyString(req.body.name_en);
     if (cleanSlug && !guests.some(g => g.id !== req.params.id && g.slug === cleanSlug)) {
       updatedSlug = cleanSlug;
     }
