@@ -192,18 +192,60 @@
 
             <input type="hidden" id="selected-theme-id" value="khmer-traditional">
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
               <!-- Khmer Traditional -->
               <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-sm hover:shadow-md transition relative" data-theme="khmer-traditional">
                 <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#8C1D2F] to-[#5A0F1D] flex items-center justify-center text-white mb-2 shadow-inner">
                   <img src="/images/components/romduol-flower.svg" alt="Romduol" class="h-8 filter drop-shadow-sm">
                 </div>
-                <h4 class="font-khmer-title text-sm font-bold text-[#8C1D2F]">ខ្មែរ</h4>
-                <p class="text-[10px] text-[#7A6F68] mt-0.5">ផ្ការំដួល & មាសអង្គរ</p>
+                <h4 class="font-khmer-title text-sm font-bold text-[#8C1D2F]">ខ្មែរប្រពៃណី</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">ផ្ការំដួល & មាសអង្គរ (Traditional)</p>
                 <div class="flex gap-1.5 mt-2">
                   <span class="w-4 h-4 rounded-full bg-[#8C1D2F] inline-block border border-white shadow-2xs" title="Deep Burgundy"></span>
                   <span class="w-4 h-4 rounded-full bg-[#D4AF37] inline-block border border-white shadow-2xs" title="Antique Gold"></span>
                   <span class="w-4 h-4 rounded-full bg-[#FAF6ED] inline-block border border-gray-300 shadow-2xs" title="Warm Ivory"></span>
+                </div>
+              </div>
+
+              <!-- Emerald Botanical (Template 20) -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="emerald-botanical">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#1E3526] to-[#0F1E15] flex items-center justify-center text-[#C5A059] mb-2 shadow-inner">
+                  <img src="/images/components/emerald-botanical-crest.svg" alt="Emerald Crest" class="h-9 filter drop-shadow-sm">
+                </div>
+                <h4 class="font-khmer-title text-sm font-bold text-[#1E3526]">🌿 ព្រៃមរកត (Template 20)</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">ទ្វារ 3D & ផាត់ពណ៌មរកត</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#1E3526] inline-block border border-white shadow-2xs" title="Emerald Green"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#C5A059] inline-block border border-white shadow-2xs" title="Champagne Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FAF8F5] inline-block border border-gray-300 shadow-2xs" title="Natural Canvas"></span>
+                </div>
+              </div>
+
+              <!-- Royal Palace (Template 11) -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="royal-palace">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#593E1A] to-[#2B1B0A] flex items-center justify-center text-[#F0C474] mb-2 shadow-inner">
+                  <img src="/images/components/palace-gate-arch.svg" alt="Palace Arch" class="h-9 filter drop-shadow-sm">
+                </div>
+                <h4 class="font-khmer-title text-sm font-bold text-[#785424]">👑 វាំងមាស (Template 11)</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">ក្លោងទ្វាររាជវាំង & សូត្រមាស</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#785424] inline-block border border-white shadow-2xs" title="Royal Amber Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#F0C474] inline-block border border-white shadow-2xs" title="Palace Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FAF5EE] inline-block border border-gray-300 shadow-2xs" title="Champagne Silk"></span>
+                </div>
+              </div>
+
+              <!-- Midnight Sapphire (Template 3) -->
+              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="midnight-sapphire">
+                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#071426] to-[#030914] flex items-center justify-center text-[#E2BD73] mb-2 shadow-inner">
+                  <img src="/images/components/celestial-constellation.svg" alt="Celestial Stars" class="h-9 filter drop-shadow-sm">
+                </div>
+                <h4 class="font-khmer-title text-sm font-bold text-[#071426]">🌌 រាត្រីតារា (Template 3)</h4>
+                <p class="text-[10px] text-[#7A6F68] mt-0.5">មេឃខៀវរាត្រី & ពន្លឺផ្កាយ</p>
+                <div class="flex gap-1.5 mt-2">
+                  <span class="w-4 h-4 rounded-full bg-[#071426] inline-block border border-white shadow-2xs" title="Midnight Navy"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#E2BD73] inline-block border border-white shadow-2xs" title="Starlight Gold"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#0B1B34] inline-block border border-gray-300 shadow-2xs" title="Sapphire Slate"></span>
                 </div>
               </div>
 
@@ -212,7 +254,7 @@
                 <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#FAF8F5] to-[#F0EDE6] border border-[#E5DFD5] flex items-center justify-center text-[#2D2D2D] mb-2 shadow-inner">
                   <img src="/images/components/botanical-olive.svg" alt="Botanical Olive" class="h-7">
                 </div>
-                <h4 class="font-khmer-title text-sm font-bold text-[#1B4332]">សម័យថ្មី</h4>
+                <h4 class="font-khmer-title text-sm font-bold text-[#1B4332]">សម័យថ្មី (Modern)</h4>
                 <p class="text-[10px] text-[#7A6F68] mt-0.5">Western Modern Luxury</p>
                 <div class="flex gap-1.5 mt-2">
                   <span class="w-4 h-4 rounded-full bg-[#FAF8F5] inline-block border border-gray-300 shadow-2xs" title="Warm Ivory Cotton"></span>
@@ -226,7 +268,7 @@
                 <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#A81822] to-[#60080F] flex items-center justify-center text-[#FFD700] mb-2 shadow-inner font-bold text-2xl">
                   <img src="/images/components/chinese-double-happiness.svg" alt="Double Happiness" class="h-9">
                 </div>
-                <h4 class="font-khmer-title text-sm font-bold text-[#A81822]">ចិន</h4>
+                <h4 class="font-khmer-title text-sm font-bold text-[#A81822]">ចិនប្រពៃណី (Chinese)</h4>
                 <p class="text-[10px] text-[#7A6F68] mt-0.5">囍 ក្រហម & មង្គលទ្វេ</p>
                 <div class="flex gap-1.5 mt-2">
                   <span class="w-4 h-4 rounded-full bg-[#A81822] inline-block border border-white shadow-2xs" title="Vermilion Red"></span>

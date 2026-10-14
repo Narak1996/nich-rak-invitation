@@ -990,6 +990,269 @@ body.theme-chinese-traditional .toast-notice {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
 }
 
+/* ==========================================================================
+   THEME: EMERALD BOTANICAL (TEMPLATE 20 CLONE & LUXURY ENHANCEMENT)
+   ========================================================================== */
+body.theme-emerald-botanical,
+body.theme-template20 {
+  background-color: #122419 !important;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(36, 68, 48, 0.45) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(197, 160, 89, 0.15) 0%, transparent 45%),
+    url('/images/components/western-luxury-bg.svg') !important;
+  color: #24382C !important;
+}
+
+body.theme-emerald-botanical .ornate-border-box,
+body.theme-template20 .ornate-border-box {
+  background: #FFFDFB !important;
+  border: 1.5px solid #C5A059 !important;
+  box-shadow: 0 12px 35px rgba(18, 36, 25, 0.25) !important;
+}
+
+body.theme-emerald-botanical h1,
+body.theme-emerald-botanical h2,
+body.theme-emerald-botanical h3,
+body.theme-emerald-botanical h4,
+body.theme-template20 h1,
+body.theme-template20 h2,
+body.theme-template20 h3,
+body.theme-template20 h4 {
+  color: #1E3526 !important;
+}
+
+body.theme-emerald-botanical #main-couple-kh,
+body.theme-template20 #main-couple-kh {
+  color: #1E3526 !important;
+  text-shadow: 0 2px 8px rgba(197, 160, 89, 0.3) !important;
+}
+
+body.theme-emerald-botanical .countdown-box,
+body.theme-template20 .countdown-box {
+  background: #FFFDFB !important;
+  border: 1.5px solid #C5A059 !important;
+  box-shadow: 0 4px 15px rgba(30, 53, 38, 0.1) !important;
+}
+
+body.theme-emerald-botanical .countdown-box span:first-child,
+body.theme-template20 .countdown-box span:first-child {
+  color: #1E3526 !important;
+}
+
+body.theme-emerald-botanical .countdown-box span:last-child,
+body.theme-template20 .countdown-box span:last-child {
+  color: #C5A059 !important;
+}
+
+body.theme-emerald-botanical button[type="submit"],
+body.theme-emerald-botanical #btn-google-maps,
+body.theme-template20 button[type="submit"],
+body.theme-template20 #btn-google-maps {
+  background: linear-gradient(135deg, #1E3526 0%, #2A4B37 100%) !important;
+  color: #FAF8F5 !important;
+  box-shadow: 0 6px 20px rgba(30, 53, 38, 0.3) !important;
+}
+
+body.theme-emerald-botanical .floating-music-btn,
+body.theme-template20 .floating-music-btn {
+  background: linear-gradient(135deg, #1E3526 0%, #254430 100%) !important;
+  border: 2px solid #C5A059 !important;
+  color: #FFFDFB !important;
+  box-shadow: 0 4px 15px rgba(30, 53, 38, 0.4) !important;
+}
+
+body.theme-emerald-botanical .wax-seal-btn,
+body.theme-template20 .wax-seal-btn {
+  background: radial-gradient(circle at 35% 35%, #F5E6C8 0%, #C5A059 50%, #7A570C 100%) !important;
+  border: 2px dashed #FFF6D6 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ==========================================================================
+   THEME: ROYAL PALACE GOLD (TEMPLATE 11 CLONE & LUXURY ENHANCEMENT)
+   ========================================================================== */
+body.theme-royal-palace,
+body.theme-template11 {
+  background-color: #FAF5EE !important;
+  background-image: 
+    radial-gradient(circle at 50% 15%, rgba(240, 196, 116, 0.22) 0%, transparent 60%),
+    url('/images/components/khmer-silk-bg.jpg') !important;
+  background-blend-mode: overlay;
+  color: #4D2A0D !important;
+}
+
+body.theme-royal-palace .ornate-border-box,
+body.theme-template11 .ornate-border-box {
+  background: #FFFDF9 !important;
+  border: 2px solid #D4AF37 !important;
+  box-shadow: 0 10px 30px rgba(120, 84, 36, 0.12), inset 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+}
+
+body.theme-royal-palace h1,
+body.theme-royal-palace h2,
+body.theme-royal-palace h3,
+body.theme-royal-palace h4,
+body.theme-template11 h1,
+body.theme-template11 h2,
+body.theme-template11 h3,
+body.theme-template11 h4 {
+  color: #785424 !important;
+}
+
+body.theme-royal-palace #main-couple-kh,
+body.theme-template11 #main-couple-kh {
+  color: #785424 !important;
+  text-shadow: 0 2px 10px rgba(212, 175, 55, 0.4) !important;
+}
+
+body.theme-royal-palace .countdown-box,
+body.theme-template11 .countdown-box {
+  background: #FFFDF9 !important;
+  border: 1.5px solid #D4AF37 !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15) !important;
+}
+
+body.theme-royal-palace .countdown-box span:first-child,
+body.theme-template11 .countdown-box span:first-child {
+  color: #785424 !important;
+}
+
+body.theme-royal-palace .countdown-box span:last-child,
+body.theme-template11 .countdown-box span:last-child {
+  color: #9B621D !important;
+}
+
+body.theme-royal-palace button[type="submit"],
+body.theme-royal-palace #btn-google-maps,
+body.theme-template11 button[type="submit"],
+body.theme-template11 #btn-google-maps {
+  background: linear-gradient(135deg, #8C1D2F 0%, #785424 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px rgba(140, 29, 47, 0.3) !important;
+}
+
+body.theme-royal-palace .wax-seal-btn,
+body.theme-template11 .wax-seal-btn {
+  background: radial-gradient(circle at 35% 35%, #FFF2CC 0%, #D4AF37 40%, #8C5F1A 100%) !important;
+  border: 2px dashed #FFF8E6 !important;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.6) !important;
+}
+
+/* ==========================================================================
+   THEME: MIDNIGHT SAPPHIRE (TEMPLATE 3 CLONE & LUXURY ENHANCEMENT)
+   ========================================================================== */
+body.theme-midnight-sapphire,
+body.theme-template3 {
+  background-color: #050E1A !important;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(22, 44, 78, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(226, 189, 115, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(11, 27, 52, 0.9) 0%, #050E1A 100%) !important;
+  color: #F5EFE5 !important;
+}
+
+body.theme-midnight-sapphire .ornate-border-box,
+body.theme-template3 .ornate-border-box {
+  background: #0B1B34 !important;
+  border: 1.5px solid #E2BD73 !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(226, 189, 115, 0.15) !important;
+}
+
+body.theme-midnight-sapphire h1,
+body.theme-midnight-sapphire h2,
+body.theme-midnight-sapphire h3,
+body.theme-midnight-sapphire h4,
+body.theme-midnight-sapphire h5,
+body.theme-template3 h1,
+body.theme-template3 h2,
+body.theme-template3 h3,
+body.theme-template3 h4,
+body.theme-template3 h5 {
+  color: #E2BD73 !important;
+}
+
+body.theme-midnight-sapphire p,
+body.theme-midnight-sapphire span:not(.gold-gradient-text),
+body.theme-template3 p,
+body.theme-template3 span:not(.gold-gradient-text) {
+  color: #D8DCE4;
+}
+
+body.theme-midnight-sapphire #main-couple-kh,
+body.theme-template3 #main-couple-kh {
+  color: #FFE494 !important;
+  text-shadow: 0 0 15px rgba(255, 228, 148, 0.6) !important;
+}
+
+body.theme-midnight-sapphire .countdown-box,
+body.theme-template3 .countdown-box {
+  background: #0E2342 !important;
+  border: 1.5px solid #E2BD73 !important;
+  box-shadow: 0 0 15px rgba(226, 189, 115, 0.25) !important;
+}
+
+body.theme-midnight-sapphire .countdown-box span:first-child,
+body.theme-template3 .countdown-box span:first-child {
+  color: #FFE494 !important;
+}
+
+body.theme-midnight-sapphire .countdown-box span:last-child,
+body.theme-template3 .countdown-box span:last-child {
+  color: #C8B28A !important;
+}
+
+body.theme-midnight-sapphire .bg-\[\#FAF7F2\],
+body.theme-midnight-sapphire .bg-white,
+body.theme-template3 .bg-\[\#FAF7F2\],
+body.theme-template3 .bg-white {
+  background: #0E2342 !important;
+  border-color: #24406B !important;
+  color: #F5EFE5 !important;
+}
+
+body.theme-midnight-sapphire input,
+body.theme-midnight-sapphire select,
+body.theme-midnight-sapphire textarea,
+body.theme-template3 input,
+body.theme-template3 select,
+body.theme-template3 textarea {
+  background: #0E2342 !important;
+  color: #FFFFFF !important;
+  border-color: #315386 !important;
+}
+
+body.theme-midnight-sapphire button[type="submit"],
+body.theme-midnight-sapphire #btn-google-maps,
+body.theme-template3 button[type="submit"],
+body.theme-template3 #btn-google-maps {
+  background: linear-gradient(135deg, #D4AC61 0%, #9A7528 100%) !important;
+  color: #071426 !important;
+  font-weight: bold !important;
+  box-shadow: 0 6px 20px rgba(212, 172, 97, 0.4) !important;
+}
+
+body.theme-midnight-sapphire .floating-music-btn,
+body.theme-template3 .floating-music-btn {
+  background: #0E2342 !important;
+  border: 2px solid #E2BD73 !important;
+  box-shadow: 0 0 15px rgba(226, 189, 115, 0.5) !important;
+  color: #FFE494 !important;
+}
+
+body.theme-midnight-sapphire .envelope-card,
+body.theme-template3 .envelope-card {
+  background: #0B1B34 !important;
+  border: 2px solid #E2BD73 !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 30px rgba(226, 189, 115, 0.3) !important;
+}
+
+body.theme-midnight-sapphire .wax-seal-btn,
+body.theme-template3 .wax-seal-btn {
+  background: radial-gradient(circle at 35% 35%, #FFF6D6 0%, #E2BD73 50%, #8C6A1E 100%) !important;
+  border: 2px dashed #FFF6D6 !important;
+  box-shadow: 0 0 25px rgba(226, 189, 115, 0.8) !important;
+}
+
 /* Typography Classes */
 .font-khmer-title {
   font-family: var(--font-khmer-title), 'Moul', 'Moulpali', cursive !important;
@@ -1241,6 +1504,266 @@ h4.font-khmer-title {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+/* ================= 3D DOUBLE DOORS (TEMPLATE 20 / EMERALD BOTANICAL) ================= */
+.double-doors-container {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  perspective: 1200px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+body.theme-emerald-botanical #envelope-screen .double-doors-container,
+body.theme-template20 #envelope-screen .double-doors-container {
+  display: flex;
+}
+
+.door-panel {
+  width: 50%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.door-left {
+  transform-origin: left center;
+}
+
+.door-right {
+  transform-origin: right center;
+}
+
+.door-inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #183321 0%, #0F1E15 100%);
+  border: 3px solid #C5A059;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.door-left .door-inner {
+  border-right: 1.5px solid #D4AF37;
+}
+
+.door-right .door-inner {
+  border-left: 1.5px solid #D4AF37;
+}
+
+.door-gold-frame {
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(197, 160, 89, 0.5);
+  pointer-events: none;
+}
+
+.door-botanical-ornament {
+  position: absolute;
+  top: 25%;
+  pointer-events: none;
+}
+
+.door-handle {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 48px;
+  background: linear-gradient(135deg, #FFF3D4 0%, #C5A059 50%, #7A570C 100%);
+  border-radius: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.door-handle-left {
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.door-handle-right {
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.handle-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #FFF3D4;
+  margin-top: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Door Opening 3D Swing */
+#envelope-screen.opening .door-left {
+  transform: perspective(1200px) rotateY(-110deg);
+  opacity: 0.1;
+}
+
+#envelope-screen.opening .door-right {
+  transform: perspective(1200px) rotateY(110deg);
+  opacity: 0.1;
+}
+
+/* ================= PALACE ARCHWAY (TEMPLATE 11 / ROYAL PALACE) ================= */
+.palace-arch-container {
+  display: none;
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  pointer-events: none;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+body.theme-royal-palace #envelope-screen .palace-arch-container,
+body.theme-template11 #envelope-screen .palace-arch-container {
+  display: block;
+}
+
+#envelope-screen.opening .palace-arch-container {
+  transform: translateX(-50%) scale(1.15) translateY(-30px);
+  opacity: 0;
+}
+
+/* ================= STARFIELD BACKGROUND (TEMPLATE 3 / MIDNIGHT SAPPHIRE) ================= */
+.envelope-stars-bg {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 20px 30px, #FFE494, transparent),
+    radial-gradient(1.5px 1.5px at 40px 70px, #FFFFFF, transparent),
+    radial-gradient(2px 2px at 90px 40px, #E2BD73, transparent),
+    radial-gradient(1.5px 1.5px at 160px 120px, #FFFFFF, transparent),
+    radial-gradient(2px 2px at 230px 200px, #FFE494, transparent);
+  background-repeat: repeat;
+  background-size: 250px 250px;
+  opacity: 0.8;
+  animation: starfieldTwinkle 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+body.theme-midnight-sapphire #envelope-screen .envelope-stars-bg,
+body.theme-template3 #envelope-screen .envelope-stars-bg {
+  display: block;
+}
+
+@keyframes starfieldTwinkle {
+  0% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 0.9; transform: scale(1.02); }
+}
+
+/* ================= FLOATING BOTTOM NAVIGATION DOCK ================= */
+#bottom-nav-dock {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+
+#bottom-nav-dock.dock-hidden {
+  transform: translate(-50%, 100px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-nav-item {
+  color: #7A6F68;
+  transition: all 0.2s ease;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item.active-nav-tab {
+  color: #8C1D2F;
+  background: #FAF7F2;
+  transform: translateY(-1px);
+}
+
+body.theme-emerald-botanical #bottom-nav-dock,
+body.theme-template20 #bottom-nav-dock {
+  background: rgba(30, 53, 38, 0.94) !important;
+  border-color: #C5A059 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 12px rgba(197, 160, 89, 0.2) !important;
+}
+
+body.theme-emerald-botanical .bottom-nav-item,
+body.theme-template20 .bottom-nav-item {
+  color: #FAF8F5 !important;
+}
+
+body.theme-emerald-botanical .bottom-nav-item:hover,
+body.theme-emerald-botanical .bottom-nav-item.active-nav-tab,
+body.theme-template20 .bottom-nav-item:hover,
+body.theme-template20 .bottom-nav-item.active-nav-tab {
+  color: #D4AF37 !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.theme-royal-palace #bottom-nav-dock,
+body.theme-template11 #bottom-nav-dock {
+  background: rgba(89, 62, 26, 0.94) !important;
+  border-color: #F0C474 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 14px rgba(240, 196, 116, 0.28) !important;
+}
+
+body.theme-royal-palace .bottom-nav-item,
+body.theme-template11 .bottom-nav-item {
+  color: #FAF5EE !important;
+}
+
+body.theme-royal-palace .bottom-nav-item:hover,
+body.theme-royal-palace .bottom-nav-item.active-nav-tab,
+body.theme-template11 .bottom-nav-item:hover,
+body.theme-template11 .bottom-nav-item.active-nav-tab {
+  color: #FFE494 !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.theme-chinese-traditional #bottom-nav-dock {
+  background: rgba(168, 24, 34, 0.94) !important;
+  border-color: #FFD700 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 14px rgba(255, 215, 0, 0.3) !important;
+}
+
+body.theme-chinese-traditional .bottom-nav-item {
+  color: #FFF8F0 !important;
+}
+
+body.theme-chinese-traditional .bottom-nav-item:hover,
+body.theme-chinese-traditional .bottom-nav-item.active-nav-tab {
+  color: #FFD700 !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.theme-midnight-sapphire #bottom-nav-dock,
+body.theme-template3 #bottom-nav-dock {
+  background: rgba(11, 27, 52, 0.94) !important;
+  border-color: #E2BD73 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(226, 189, 115, 0.25) !important;
+}
+
+body.theme-midnight-sapphire .bottom-nav-item,
+body.theme-template3 .bottom-nav-item {
+  color: #D8DCE4 !important;
+}
+
+body.theme-midnight-sapphire .bottom-nav-item:hover,
+body.theme-midnight-sapphire .bottom-nav-item.active-nav-tab,
+body.theme-template3 .bottom-nav-item:hover,
+body.theme-template3 .bottom-nav-item.active-nav-tab {
+  color: #FFE494 !important;
+  background: rgba(226, 189, 115, 0.25) !important;
 }
 
 /* Envelope Card Design */
@@ -1602,6 +2125,74 @@ body.theme-khmer-traditional .khmer-corner-br {
   }
 }
 
+/* ================= COMPREHENSIVE RESPONSIVE ENHANCEMENTS FOR ALL THEMES ================= */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+@media (max-width: 480px) {
+  .envelope-card {
+    max-width: 92vw;
+    padding: 24px 14px 20px;
+    border-radius: 16px;
+  }
+  
+  .door-gold-frame {
+    inset: 8px;
+  }
+
+  .door-handle {
+    width: 18px;
+    height: 40px;
+  }
+
+  .handle-ring {
+    width: 15px;
+    height: 15px;
+    margin-top: 10px;
+  }
+
+  .palace-arch-container img {
+    width: 140px;
+  }
+
+  #bottom-nav-dock {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    padding: 4px 6px;
+    gap: 2px;
+  }
+
+  .bottom-nav-item {
+    padding: 6px 6px;
+  }
+
+  .countdown-box {
+    padding: 8px 2px;
+  }
+  
+  .countdown-box span:first-child {
+    font-size: 1.25rem;
+  }
+
+  #main-couple-kh {
+    font-size: 1.35rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .ornate-border-box {
+    padding: 1.25rem 0.85rem !important;
+  }
+
+  .khmer-corner-tl,
+  .khmer-corner-tr,
+  .khmer-corner-bl,
+  .khmer-corner-br {
+    width: 42px !important;
+    height: 42px !important;
+  }
+}
+
 /* ================= ULTRA-SMOOTH SCROLL REVEAL ANIMATIONS ================= */
 .reveal-on-scroll {
   opacity: 0;
@@ -1638,3 +2229,4 @@ img {
     animation: none !important;
   }
 }
+

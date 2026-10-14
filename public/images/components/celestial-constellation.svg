@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="starlightGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF0" />
+      <stop offset="30%" stop-color="#E2BD73" />
+      <stop offset="70%" stop-color="#D4AC61" />
+      <stop offset="100%" stop-color="#9A7528" />
+    </linearGradient>
+    <filter id="starGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Concentric Celestial Astrolabe Rings -->
+  <circle cx="60" cy="60" r="54" stroke="url(#starlightGold)" stroke-width="0.8" opacity="0.4" stroke-dasharray="2 4"/>
+  <circle cx="60" cy="60" r="48" stroke="url(#starlightGold)" stroke-width="1.4" opacity="0.85"/>
+  <circle cx="60" cy="60" r="42" stroke="url(#starlightGold)" stroke-width="0.6" opacity="0.6"/>
+  <circle cx="60" cy="60" r="30" stroke="url(#starlightGold)" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- 8-Pointed Celestial Star Burst -->
+  <polygon points="60,6 63,45 88,35 68,54 114,60 68,66 88,85 63,75 60,114 57,75 32,85 52,66 6,60 52,54 32,35 57,45" fill="url(#starlightGold)" opacity="0.25" filter="url(#starGlow)"/>
+  
+  <!-- Constellation Nodes & Connecting Rays -->
+  <circle cx="60" cy="18" r="2.5" fill="url(#starlightGold)"/>
+  <circle cx="102" cy="60" r="2.5" fill="url(#starlightGold)"/>
+  <circle cx="60" cy="102" r="2.5" fill="url(#starlightGold)"/>
+  <circle cx="18" cy="60" r="2.5" fill="url(#starlightGold)"/>
+  
+  <circle cx="30" cy="30" r="1.8" fill="url(#starlightGold)"/>
+  <circle cx="90" cy="30" r="1.8" fill="url(#starlightGold)"/>
+  <circle cx="90" cy="90" r="1.8" fill="url(#starlightGold)"/>
+  <circle cx="30" cy="90" r="1.8" fill="url(#starlightGold)"/>
+
+  <!-- Center Monogram -->
+  <circle cx="60" cy="60" r="22" fill="#071426" stroke="url(#starlightGold)" stroke-width="1.8"/>
+  <text x="60" y="65" font-family="'Cinzel Decorative', 'Cinzel', serif" font-size="13" font-weight="bold" fill="url(#starlightGold)" text-anchor="middle" letter-spacing="1">N&amp;S</text>
+  
+  <!-- Tiny Twinkle Crosses -->
+  <path d="M 60 2 Q 60 8 54 8 Q 60 8 60 14 Q 60 8 66 8 Q 60 8 60 2 Z" fill="url(#starlightGold)"/>
+  <path d="M 60 106 Q 60 112 54 112 Q 60 112 60 118 Q 60 112 66 112 Q 60 112 60 106 Z" fill="url(#starlightGold)"/>
+</svg>
