@@ -73,50 +73,144 @@
     <!-- Starfield particles (active in midnight-sapphire theme) -->
     <div id="envelope-starfield" class="envelope-stars-bg"></div>
 
-    <!-- 3D Double Cathedral / Botanical Garden Doors (For Template 20 / Emerald Botanical) -->
-    <div id="envelope-double-doors" class="double-doors-container">
-      <div class="door-panel door-left">
-        <div class="door-inner">
-          <div class="door-wood-grain"></div>
-          <div class="door-gold-frame"></div>
-          <div class="door-botanical-ornament">
-            <img src="/images/components/emerald-botanical-crest.svg" class="w-16 h-16 opacity-80" alt="Crest">
-          </div>
-          <div class="door-handle door-handle-left">
-            <div class="handle-plate"></div>
-            <div class="handle-ring"></div>
-          </div>
+    <!-- ================= 1. TEMPLATE 20: EXACT OPENING SCREEN ================= -->
+    <div id="opening-screen-t20" class="opening-screen-t20-wrap hidden">
+      <main class="opening-screen-t20-shell">
+        <!-- Door Closed Background (Transitions to Aisle on click) -->
+        <img src="/images/templates/door-closed-BpjZscP1.webp" alt="Wedding Entrance" class="door-closed-img" draggable="false">
+        <div class="aisle-open-wrap">
+          <img src="/images/templates/aisle-open-7PyJ0-QD.webp" alt="Wedding Aisle" class="h-full w-full object-cover" draggable="false">
         </div>
-      </div>
-      <div class="door-panel door-right">
-        <div class="door-inner">
-          <div class="door-wood-grain"></div>
-          <div class="door-gold-frame"></div>
-          <div class="door-botanical-ornament">
-            <img src="/images/components/emerald-botanical-crest.svg" class="w-16 h-16 opacity-80" alt="Crest">
+        <!-- Soft Radial Vignette Overlay -->
+        <div class="pointer-events-none absolute inset-0 z-[1]" style="background: radial-gradient(ellipse 65% 75% at 50% 50%, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.5) 60%, rgba(36,56,44,0.4) 100%);"></div>
+
+        <!-- Foreground Content -->
+        <div class="t20-content-wrap relative z-[3] flex min-h-svh w-full shrink-0 flex-col items-center justify-center gap-3 px-6 pb-[max(32px,env(safe-area-inset-bottom))] pt-8">
+          <!-- Crown Icon & Curved Moul Arch Title -->
+          <header class="mx-auto flex w-full shrink-0 flex-col items-center">
+            <svg width="36" height="14" viewBox="0 0 36 14" fill="none" class="mb-1 opacity-85">
+              <path d="M18 1L21 6L26 3L24 10H12L10 3L15 6L18 1Z" fill="#C5A059" stroke="#9A7738" stroke-width="0.5"/>
+              <circle cx="18" cy="1" r="1" fill="#F5E6C8"/>
+              <circle cx="26" cy="3" r="0.8" fill="#F5E6C8"/>
+              <circle cx="10" cy="3" r="0.8" fill="#F5E6C8"/>
+            </svg>
+            <div class="relative flex w-full justify-center pt-2 pb-1">
+              <h1 class="sr-only">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
+              <svg viewBox="0 0 600 120" class="w-full max-w-[500px] overflow-visible drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]" aria-hidden="true">
+                <path id="title-arch-curve" d="M 20,105 A 280 70 0 0 1 580,105" fill="transparent" stroke="none"/>
+                <text class="font-moul royal-gold-title" font-size="36" text-anchor="middle">
+                  <textPath href="#title-arch-curve" xlink:href="#title-arch-curve" startOffset="50%">សិរីមង្គលអាពាហ៍ពិពាហ៍</textPath>
+                </text>
+              </svg>
+            </div>
+          </header>
+
+          <!-- Monogram Wreath (Exact T20) -->
+          <div class="pointer-events-none relative mx-auto my-1 flex h-[clamp(160px,24svh,215px)] w-[68%] max-w-[240px] shrink-0 items-center justify-center">
+            <div class="pointer-events-none absolute -inset-6 -z-10 rounded-full bg-[radial-gradient(circle,rgba(197,160,89,0.28)_0%,rgba(255,255,255,0.45)_40%,transparent_72%)] animate-pulse"></div>
+            <div class="pointer-events-none absolute -inset-2 -z-10 rounded-full border border-[#C5A059]/30 opacity-60"></div>
+            <img src="/images/templates/monogram-20-CAWbkezH.webp" alt="Couple Monogram" class="mx-auto block h-full w-full select-none object-contain drop-shadow-[0_12px_28px_rgba(30,53,38,0.26)]" draggable="false">
           </div>
-          <div class="door-handle door-handle-right">
-            <div class="handle-plate"></div>
-            <div class="handle-ring"></div>
-          </div>
+
+          <!-- Luxury Parchment Guest Card -->
+          <section class="luxury-parchment-card relative mx-auto w-full max-w-[340px] shrink-0 rounded-2xl p-1.5" aria-label="Guest invitation">
+            <div class="inner-gold-frame relative flex flex-col items-center p-3.5 sm:p-4 text-center">
+              <span class="pointer-events-none absolute top-1.5 left-1.5 h-2.5 w-2.5 border-t border-l border-[#C5A059]/70"></span>
+              <span class="pointer-events-none absolute top-1.5 right-1.5 h-2.5 w-2.5 border-t border-r border-[#C5A059]/70"></span>
+              <span class="pointer-events-none absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b border-l border-[#C5A059]/70"></span>
+              <span class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b border-r border-[#C5A059]/70"></span>
+              
+              <div class="flex items-center justify-center gap-2.5 w-full">
+                <span class="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#C5A059]/60"></span>
+                <p class="m-0 font-moulpali text-sm sm:text-[15px] text-[#24382c] tracking-wide">សូមគោរពអញ្ជើញ</p>
+                <span class="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#C5A059]/60"></span>
+              </div>
+
+              <!-- Guest Velvet Ribbon with Light Glint Sweep -->
+              <div class="guest-velvet-ribbon relative mx-auto mt-2 w-full overflow-hidden rounded-xl py-2 px-4 text-white">
+                <div class="light-glint-sweep opacity-75" aria-hidden="true"></div>
+                <h2 class="relative z-10 m-0 font-battambang text-base sm:text-[17px] font-bold tracking-wide [overflow-wrap:anywhere] text-[#FAF8F5] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" id="t20-guest-name">
+                  ភ្ញៀវកិត្តិយស
+                </h2>
+              </div>
+            </div>
+          </section>
+
+          <!-- Luxury Open Button with Glint & Medallion -->
+          <button type="button" onclick="openEnvelope()" class="luxury-open-button luxury-pulse-ring group relative z-[6] mx-auto mt-2.5 flex items-center justify-between gap-3 overflow-hidden rounded-full py-2 pl-7 pr-2.5 text-white transition-transform duration-300 active:scale-95 cursor-pointer min-w-[210px]" aria-label="បើកលិខិតអញ្ជើញ">
+            <div class="light-glint-sweep opacity-80" aria-hidden="true"></div>
+            <span class="relative z-10 font-moulpali text-base sm:text-[17px] text-[#FAF8F5] tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">បើកលិខិតអញ្ជើញ</span>
+            <div class="gold-medallion relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[#F5E6C8]">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </div>
+          </button>
         </div>
-      </div>
+      </main>
     </div>
 
-    <!-- Palace Gate Archway (For Template 11 / Royal Palace Gold) -->
-    <div id="envelope-palace-arch" class="palace-arch-container">
-      <img src="/images/components/palace-gate-arch.svg" class="w-40 sm:w-48 mx-auto filter drop-shadow-xl" alt="Palace Gate">
+    <!-- ================= 2. TEMPLATE 11: EXACT OPENING SCREEN ================= -->
+    <div id="opening-screen-t11" class="opening-screen-t11-wrap hidden">
+      <main class="opening-screen-t11-shell">
+        <img src="/images/templates/opening-background-ecCy2I3B.webp" alt="Royal Palace Opening" class="absolute inset-0 z-0 h-full w-full select-none object-cover object-center" draggable="false">
+        <div class="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(17,8,2,0.34)_0%,rgba(25,12,5,0.05)_34%,rgba(20,9,3,0.08)_61%,rgba(13,6,2,0.48)_100%)]"></div>
+
+        <!-- Arch Title -->
+        <h1 class="wedding-opening-title absolute inset-x-[8%] top-[10.8%] z-[3] m-0 whitespace-nowrap">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
+
+        <!-- Monogram (Exact T11) -->
+        <img src="/images/templates/monogram-DbargaEe.webp" alt="Wedding monogram" class="wedding-opening-monogram" draggable="false">
+
+        <!-- Guest Invitation Badge -->
+        <section class="absolute inset-x-[7%] top-[73%] z-[3] flex flex-col items-center">
+          <p class="wedding-opening-invitation">សូមគោរពអញ្ជើញ</p>
+          <h2 class="wedding-opening-guest-name" id="t11-guest-name">ភ្ញៀវកិត្តិយស</h2>
+        </section>
+
+        <!-- Ornate Button Frame (Exact T11) -->
+        <button type="button" class="wedding-opening-cta absolute bottom-[6%] left-[17%] z-[30] h-[clamp(100px,10.6svh,120px)] w-[66%] outline-0" onclick="openEnvelope()" aria-label="សូមចុចបើកសំបុត្រ">
+          <img src="/images/templates/button-frame-0mOWMTvA.webp" alt="" class="absolute inset-0 z-0 h-full w-full select-none object-fill drop-shadow-[0_8px_13px_rgba(0,0,0,0.55)]" draggable="false">
+          <span class="relative z-[2] flex h-full items-center justify-center whitespace-nowrap px-[17%] text-[clamp(16px,min(4.4vw,2.55svh),22px)] font-semibold leading-[1.4] [text-shadow:0_1px_0_rgba(255,241,188,0.9),0_2px_4px_rgba(91,49,11,0.24)]">សូមចុចបើកសំបុត្រ</span>
+          <i class="pointer-events-none absolute bottom-[23%] left-[13%] top-[23%] z-[1] w-[22%] -skew-x-[18deg] bg-gradient-to-r from-transparent via-white/45 to-transparent"></i>
+        </button>
+      </main>
     </div>
 
-    <!-- Main Envelope / Invitation Presentation Card -->
-    <div class="envelope-card">
-      <!-- Decorative Ornaments -->
+    <!-- ================= 3. TEMPLATE 3: EXACT OPENING SCREEN ================= -->
+    <div id="opening-screen-t3" class="template3-page fixed inset-0 hidden">
+      <main class="template3-shell template3-opening overflow-hidden overscroll-none touch-none">
+        <img class="template3-opening__background" src="/images/templates/opening-background-matched-Benaz2bK.webp" alt="Celestial Starry Background" draggable="false">
+        <div class="template3-opening__wash"></div>
+        <div class="template3-opening__sparkles">
+          <span style="left:15%;top:20%;width:4px;height:4px;animation-delay:0s"></span>
+          <span style="left:82%;top:25%;width:5px;height:5px;animation-delay:0.42s"></span>
+          <span style="left:28%;top:65%;width:3px;height:3px;animation-delay:0.84s"></span>
+          <span style="left:75%;top:70%;width:4px;height:4px;animation-delay:1.26s"></span>
+          <span style="left:50%;top:15%;width:3px;height:3px;animation-delay:1.68s"></span>
+          <span style="left:10%;top:80%;width:4px;height:4px;animation-delay:2.1s"></span>
+        </div>
+        <!-- Couple Lockup (Exact T3) -->
+        <div class="template3-opening__heading">
+          <div class="template3-lockup">
+            <img class="template3-lockup__image" src="/images/templates/couple-lockup-BSFfO8mA.webp" alt="Couple Lockup" draggable="false">
+          </div>
+        </div>
+        <!-- Wax Seal Button (Exact T3) -->
+        <button type="button" class="wedding-opening-cta template3-seal-button" onclick="openEnvelope()" aria-label="Tap to open">
+          <span class="template3-seal-button__glow"></span>
+          <img src="/images/templates/wax-seal-D_bhm8ka.webp" alt="Wax Seal" draggable="false">
+        </button>
+        <button type="button" class="template3-envelope-hit-area" onclick="openEnvelope()" aria-label="Tap to open"></button>
+        <div class="template3-opening__flash"></div>
+      </main>
+    </div>
+
+    <!-- ================= 4. DEFAULT ENVELOPE (TRADITIONAL / MODERN / CHINESE) ================= -->
+    <div id="opening-screen-default" class="envelope-card">
       <div class="khmer-corner-tl"></div>
       <div class="khmer-corner-tr"></div>
       <div class="khmer-corner-bl"></div>
       <div class="khmer-corner-br"></div>
 
-      <!-- Wedding Monogram -->
       <div class="w-16 h-16 mx-auto mb-4 rounded-full border border-[#C5A059] flex items-center justify-center bg-[#FAF7F2] shadow-inner" id="envelope-monogram-wrap">
         <span class="font-en-title text-base sm:text-lg font-bold gold-gradient-text tracking-widest" id="envelope-monogram">L & N</span>
       </div>
@@ -125,12 +219,10 @@
         លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍
       </p>
 
-      <!-- Couple Names on Envelope -->
       <div id="envelope-couple-names" class="my-3">
-        <!-- Rendered dynamically with appropriate font -->
+        <!-- Rendered dynamically -->
       </div>
 
-      <!-- Personalized Guest Badge (Shown if guest link) -->
       <div id="envelope-guest-container" class="my-4 py-3 px-4 bg-[#FAF7F2] rounded-xl border border-[#E5D5BC] inline-block max-w-xs mx-auto hidden">
         <span class="text-xs text-[#7A6F68] block font-khmer-body" id="envelope-invite-text">សូមគោរពអញ្ជើញ</span>
         <span class="text-base font-bold text-[#4E3227] font-khmer-title block mt-1" id="envelope-guest-name">
@@ -142,7 +234,6 @@
         វត្តមានដ៏ខ្ពង់ខ្ពស់របស់លោកអ្នក គឺជាកិត្តិយសដ៏ធំធេងសម្រាប់យើងខ្ញុំទាំងពីរ។
       </p>
 
-      <!-- Wax Seal Open Button -->
       <div class="wax-seal-btn cursor-pointer" id="btn-open-envelope" onclick="openEnvelope()" title="ចុចដើម្បីបើកសំបុត្រ">
         <div class="text-center text-white" id="wax-seal-content">
           <svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">

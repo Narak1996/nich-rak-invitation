@@ -277,6 +277,41 @@ function renderAll() {
   // Language based text rendering
   const isKh = currentLang === 'kh';
 
+  // Toggle Dedicated Opening Screens (100% Exact Clones of Template 20, 11, 3)
+  const oT20 = document.getElementById('opening-screen-t20');
+  const oT11 = document.getElementById('opening-screen-t11');
+  const oT3 = document.getElementById('opening-screen-t3');
+  const oDef = document.getElementById('opening-screen-default');
+
+  if (oT20) oT20.classList.add('hidden');
+  if (oT11) oT11.classList.add('hidden');
+  if (oT3) oT3.classList.add('hidden');
+  if (oDef) oDef.classList.add('hidden');
+
+  const guestDisplayName = currentGuest 
+    ? (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name)) 
+    : (isKh ? 'ភ្ញៀវកិត្តិយស' : 'Honorable Guest');
+
+  if (themeId === 'template20' || themeId === 'emerald-botanical') {
+    if (oT20) {
+      oT20.classList.remove('hidden');
+      const t20Guest = document.getElementById('t20-guest-name');
+      if (t20Guest) t20Guest.textContent = guestDisplayName;
+    }
+  } else if (themeId === 'template11' || themeId === 'royal-palace') {
+    if (oT11) {
+      oT11.classList.remove('hidden');
+      const t11Guest = document.getElementById('t11-guest-name');
+      if (t11Guest) t11Guest.textContent = guestDisplayName;
+    }
+  } else if (themeId === 'template3' || themeId === 'midnight-sapphire') {
+    if (oT3) {
+      oT3.classList.remove('hidden');
+    }
+  } else {
+    if (oDef) oDef.classList.remove('hidden');
+  }
+
   // Groom and Bride initials for monogram
   const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
   const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
@@ -989,7 +1024,7 @@ function openEnvelope() {
     setTimeout(() => {
       triggerVisibleReveals();
     }, 150);
-  }, 750);
+  }, 850);
 }
 window.openEnvelope = openEnvelope;
 window.toggleMusic = toggleMusic;
@@ -1750,17 +1785,40 @@ function renderAttirePalette() {
   const container = document.getElementById('attire-palette');
   if (!container) return;
 
-  const dressData = weddingData?.dress_code;
   const isKh = currentLang === 'kh';
+  const themeId = (weddingData?.theme?.id) || 'khmer-traditional';
 
-  // Fallback default colors if not provided
-  const colors = (dressData && dressData.colors && dressData.colors.length) ? dressData.colors : [
-    { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AF37' },
-    { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
-    { name_kh: 'ក្រែមសូត្រ', name_en: 'Warm Ivory', hex: '#FAF0D7' },
-    { name_kh: 'ផ្កាឈូកទន់', name_en: 'Soft Rose', hex: '#DDA7A5' },
-    { name_kh: 'ខៀវរាត្រី', name_en: 'Midnight Navy', hex: '#0B1B34' }
-  ];
+  let colors;
+  if (themeId === 'template3' || themeId === 'midnight-sapphire') {
+    colors = [
+      { name_kh: 'ខៀវរាត្រី', name_en: 'Midnight Navy', hex: '#0B1B34' },
+      { name_kh: 'ខៀវរាជវាំង', name_en: 'Royal Blue', hex: '#234F91' },
+      { name_kh: 'ខៀវប្រាក់', name_en: 'Silver Blue', hex: '#9DB5D1' },
+      { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AC61' }
+    ];
+  } else if (themeId === 'template20' || themeId === 'emerald-botanical') {
+    colors = [
+      { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
+      { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#C5A059' },
+      { name_kh: 'ក្រែមសូត្រ', name_en: 'Warm Ivory', hex: '#FAF0D7' },
+      { name_kh: 'បៃតងស្រាល', name_en: 'Sage Leaf', hex: '#3A5643' }
+    ];
+  } else if (themeId === 'template11' || themeId === 'royal-palace') {
+    colors = [
+      { name_kh: 'មាសរាជវាំង', name_en: 'Royal Amber', hex: '#785424' },
+      { name_kh: 'មាសភ្លឺ', name_en: 'Palace Gold', hex: '#F0C474' },
+      { name_kh: 'ក្រែមសូត្រ', name_en: 'Champagne Silk', hex: '#FAF5EE' },
+      { name_kh: 'ត្នោតចាស់', name_en: 'Imperial Maroon', hex: '#4D2A0D' }
+    ];
+  } else {
+    colors = [
+      { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AF37' },
+      { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
+      { name_kh: 'ក្រែមសូត្រ', name_en: 'Warm Ivory', hex: '#FAF0D7' },
+      { name_kh: 'ផ្កាឈូកទន់', name_en: 'Soft Rose', hex: '#DDA7A5' },
+      { name_kh: 'ខៀវរាត្រី', name_en: 'Midnight Navy', hex: '#0B1B34' }
+    ];
+  }
 
   container.innerHTML = colors.map(c => `
     <div class="flex flex-col items-center gap-2 group cursor-pointer transition transform hover:-translate-y-1">
