@@ -131,26 +131,6 @@ const THEME_PRESETS = {
     bgColor: '#FAF5E8',
     emblem: 'romduol',
     sealEmblem: 'romduol'
-  },
-  'western-modern': {
-    id: 'western-modern',
-    name: 'សម័យថ្មី',
-    primaryColor: '#1B4332',
-    accentColor: '#C5A059',
-    secondaryColor: '#2D6A4F',
-    bgColor: '#FAF8F5',
-    emblem: '💍',
-    sealEmblem: 'rings'
-  },
-  'chinese-traditional': {
-    id: 'chinese-traditional',
-    name: 'ចិនប្រពៃណី',
-    primaryColor: '#A81822',
-    accentColor: '#FFD700',
-    secondaryColor: '#C72535',
-    bgColor: '#7D0A12',
-    emblem: '囍',
-    sealEmblem: 'shuangxi'
   }
 };
 

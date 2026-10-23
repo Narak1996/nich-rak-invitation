@@ -178,60 +178,37 @@
         <p class="text-xs text-[#7A6F68] mb-6">កែសម្រួលឈ្មោះកូនកំលោះ-កូនក្រមុំ មាតាបិតា កាលបរិច្ឆេទ ទីតាំង និងស្បែកពណ៌ Theme</p>
 
         <form id="wedding-settings-form" class="space-y-6">
-          <!-- Theme Selection Cards (Replaces simple color) -->
+          <!-- Theme Selection Cards (Only ខ្មែរប្រពៃណី) -->
           <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC]">
             <div class="flex items-center justify-between mb-3">
               <div>
-                <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider">ជ្រើសរើសរចនាបថសំបុត្រ (Choose Wedding Theme)</h3>
-                <p class="text-[11px] text-[#7A6F68]">ផ្លាស់ប្តូរស្ទីលសំបុត្រទាំងមូល រួមទាំងក្បាច់ ពណ៌ ត្រា និងផ្ទៃខាងក្រោយ</p>
+                <h3 class="font-bold text-xs text-[#4E3227] uppercase tracking-wider">រចនាបថសំបុត្រ (Wedding Theme)</h3>
+                <p class="text-[11px] text-[#7A6F68]">រចនាបថប្រពៃណីខ្មែរ រួមទាំងក្បាច់ផ្ការំដួល ត្រា 3D Wax Seal និងសូត្រមាសអង្គរ</p>
               </div>
               <span id="current-theme-badge" class="px-3 py-1 bg-white rounded-full text-xs font-bold text-[#8C1D2F] border border-[#E5D5BC]">
-                ខ្មែរ
+                🌺 ខ្មែរប្រពៃណី
               </span>
             </div>
 
             <input type="hidden" id="selected-theme-id" value="khmer-traditional">
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-              <!-- Khmer Traditional -->
-              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-sm hover:shadow-md transition relative" data-theme="khmer-traditional">
+            <div class="max-w-md pt-1">
+              <!-- Khmer Traditional Active Card -->
+              <div class="theme-select-card p-4 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-sm relative" data-theme="khmer-traditional">
                 <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#8C1D2F] to-[#5A0F1D] flex items-center justify-center text-white mb-2 shadow-inner">
                   <img src="/images/components/romduol-flower.svg" alt="Romduol" class="h-8 filter drop-shadow-sm">
                 </div>
-                <h4 class="font-khmer-title text-sm font-bold text-[#8C1D2F]">ខ្មែរប្រពៃណី</h4>
-                <p class="text-[10px] text-[#7A6F68] mt-0.5">ផ្ការំដួល & សូត្រមាសអង្គរ (Khmer Silk & Wax Seal)</p>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="font-khmer-title text-sm font-bold text-[#8C1D2F]">ខ្មែរប្រពៃណី (Khmer Traditional)</h4>
+                    <p class="text-[10px] text-[#7A6F68] mt-0.5">ផ្ការំដួល & សូត្រមាសអង្គរ (Khmer Silk & Wax Seal)</p>
+                  </div>
+                  <span class="px-2 py-0.5 bg-amber-50 text-[#8C1D2F] border border-amber-200 rounded-full text-[10px] font-bold">សកម្ម (Active)</span>
+                </div>
                 <div class="flex gap-1.5 mt-2">
                   <span class="w-4 h-4 rounded-full bg-[#8C1D2F] inline-block border border-white shadow-2xs" title="Deep Burgundy"></span>
                   <span class="w-4 h-4 rounded-full bg-[#D4AF37] inline-block border border-white shadow-2xs" title="Antique Gold"></span>
                   <span class="w-4 h-4 rounded-full bg-[#FAF6ED] inline-block border border-gray-300 shadow-2xs" title="Warm Ivory"></span>
-                </div>
-              </div>
-
-              <!-- Western Modern -->
-              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="western-modern">
-                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#FAF8F5] to-[#EAE6DF] border border-[#D5CEBF] flex items-center justify-center text-[#2D2D2D] mb-2 shadow-inner">
-                  <span class="text-2xl filter drop-shadow-sm">💍</span>
-                </div>
-                <h4 class="font-khmer-title text-sm font-bold text-[#2C3E2D]">សម័យថ្មី (Modern)</h4>
-                <p class="text-[10px] text-[#7A6F68] mt-0.5">Minimalist Editorial Linen & Glass</p>
-                <div class="flex gap-1.5 mt-2">
-                  <span class="w-4 h-4 rounded-full bg-[#FAF8F5] inline-block border border-gray-300 shadow-2xs" title="Warm Ivory Linen"></span>
-                  <span class="w-4 h-4 rounded-full bg-[#C5A059] inline-block border border-white shadow-2xs" title="Champagne Gold"></span>
-                  <span class="w-4 h-4 rounded-full bg-[#1F2421] inline-block border border-white shadow-2xs" title="Charcoal Black"></span>
-                </div>
-              </div>
-
-              <!-- Chinese Traditional -->
-              <div class="theme-select-card cursor-pointer p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-2xs hover:shadow-md transition relative" data-theme="chinese-traditional">
-                <div class="w-full h-16 rounded-xl bg-gradient-to-r from-[#A81822] to-[#60080F] flex items-center justify-center text-[#FFD700] mb-2 shadow-inner font-bold text-2xl">
-                  <img src="/images/components/chinese-double-happiness.svg" alt="Double Happiness" class="h-9">
-                </div>
-                <h4 class="font-khmer-title text-sm font-bold text-[#A81822]">ចិនប្រពៃណី (Chinese)</h4>
-                <p class="text-[10px] text-[#7A6F68] mt-0.5">囍 ក្រហម & ទ្វារទ្វេមង្គល (Double Doors)</p>
-                <div class="flex gap-1.5 mt-2">
-                  <span class="w-4 h-4 rounded-full bg-[#A81822] inline-block border border-white shadow-2xs" title="Vermilion Red"></span>
-                  <span class="w-4 h-4 rounded-full bg-[#FFD700] inline-block border border-white shadow-2xs" title="Imperial Gold"></span>
-                  <span class="w-4 h-4 rounded-full bg-[#FFF8F0] inline-block border border-gray-300 shadow-2xs" title="Ivory Silk"></span>
                 </div>
               </div>
             </div>

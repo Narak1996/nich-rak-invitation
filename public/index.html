@@ -71,7 +71,7 @@
   <!-- ================= ENVELOPE OPENING OVERLAY ================= -->
   <div id="envelope-screen">
 
-    <!-- 1. KHMER TRADITIONAL WELCOME: Royal Cambodian Silk Envelope with 3D Romduol Wax Seal -->
+    <!-- KHMER TRADITIONAL WELCOME: Royal Cambodian Silk Envelope with 3D Romduol Wax Seal -->
     <div id="welcome-khmer" class="theme-welcome-card welcome-khmer-card">
       <div class="khmer-corner-tl"></div>
       <div class="khmer-corner-tr"></div>
@@ -117,97 +117,6 @@
         <p class="text-[11px] text-[#A67C1E] mt-3 font-medium animate-pulse cursor-pointer text-center" onclick="openEnvelope()">
           ចុចត្រាផ្ការំដួល ដើម្បីបើកសំបុត្រ / Tap Seal to Open
         </p>
-      </div>
-    </div>
-
-    <!-- 2. WESTERN MODERN WELCOME: Minimalist Editorial Linen & Frosted Glass Couture Card -->
-    <div id="welcome-modern" class="theme-welcome-card welcome-modern-card hidden">
-      <div class="modern-card-glass">
-        <div class="modern-card-header text-center">
-          <span class="modern-kicker">YOU ARE CORDIALLY INVITED TO CELEBRATE</span>
-          <h2 class="modern-title-editorial">THE WEDDING OF</h2>
-          <div class="modern-monogram-rings my-2">
-            <span class="modern-ring-icon text-2xl">💍</span>
-          </div>
-        </div>
-
-        <div id="modern-envelope-couple-names" class="my-4 text-center">
-          <!-- Populated by JS -->
-        </div>
-
-        <div class="modern-date-badge text-center" id="modern-date-preview">
-          <!-- SATURDAY, OCTOBER 24, 2026 -->
-        </div>
-
-        <div id="modern-envelope-guest-box" class="my-4 py-2 px-5 bg-white/80 backdrop-blur-md rounded-full border border-[#C5A059]/40 inline-flex items-center gap-2 max-w-xs mx-auto shadow-2xs text-center hidden">
-          <span class="text-[10px] uppercase tracking-wider text-[#7A6F68]" id="modern-invite-label">HONORED GUEST</span>
-          <span class="text-xs font-semibold text-[#1F2421]" id="modern-envelope-guest-name">Special Guest</span>
-        </div>
-
-        <p class="text-xs text-[#555] max-w-sm mx-auto mb-6 font-light tracking-wide leading-relaxed text-center" id="modern-welcome-quote">
-          Your presence will add immense joy to our special beginning.
-        </p>
-
-        <!-- Sleek Editorial Button (NOT a red wax seal!) -->
-        <button class="modern-unfold-btn mx-auto" id="btn-open-modern" onclick="openEnvelope()">
-          <span class="modern-btn-shimmer"></span>
-          <span class="modern-btn-text">UNFOLD INVITATION • បើកសំបុត្រ</span>
-          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-        </button>
-        <p class="text-[10px] text-[#888] mt-2.5 tracking-widest uppercase text-center cursor-pointer" onclick="openEnvelope()">
-          Click to view complete invitation details
-        </p>
-      </div>
-    </div>
-
-    <!-- 3. CHINESE TRADITIONAL WELCOME: Authentic Grand Imperial Double-Door Red Wedding Gate (双开大门喜帖) -->
-    <div id="welcome-chinese" class="theme-welcome-card welcome-chinese-gate hidden">
-      <div class="chinese-doors-frame">
-        <!-- Top Arch Header -->
-        <div class="chinese-gate-top">
-          <span class="chinese-gate-top-en">WEDDING CELEBRATION</span>
-          <h2 class="chinese-gate-top-kh font-khmer-title">លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍</h2>
-        </div>
-
-        <!-- Left Door -->
-        <div class="chinese-door chinese-door-left">
-          <div class="chinese-door-ornament-corner tl"></div>
-          <div class="chinese-door-ornament-corner bl"></div>
-          <div class="chinese-door-couplet">
-            <span>百</span><span>年</span><span>好</span><span>合</span>
-          </div>
-        </div>
-
-        <!-- Right Door -->
-        <div class="chinese-door chinese-door-right">
-          <div class="chinese-door-ornament-corner tr"></div>
-          <div class="chinese-door-ornament-corner br"></div>
-          <div class="chinese-door-couplet">
-            <span>永</span><span>结</span><span>同</span><span>心</span>
-          </div>
-        </div>
-
-        <!-- Center Golden 囍 Medallion & Lock Plaque -->
-        <div class="chinese-center-lock-wrap cursor-pointer" id="chinese-gate-lock" onclick="openEnvelope()" title="点击开启喜帖 / ចុចត្រា 囍 ដើម្បីបើកទ្វារមង្គល">
-          <div class="chinese-lock-bracket"></div>
-          <div class="chinese-xi-seal">
-            <span class="chinese-xi-char">囍</span>
-          </div>
-          <div class="chinese-tassel-wrap">
-            <img src="/images/components/chinese-knot.svg" class="chinese-tassel-img" alt="Chinese Knot">
-          </div>
-        </div>
-
-        <!-- Bottom Guest Badge & Prompt -->
-        <div class="chinese-gate-bottom">
-          <div id="chinese-envelope-guest-box" class="py-1 px-4 bg-[#7A0911]/90 rounded-full border border-[#FFD700]/70 inline-flex items-center gap-1.5 shadow-md hidden">
-            <span class="text-[10px] text-[#FFD700] font-bold">សូមគោរពអញ្ជើញ៖</span>
-            <span class="text-xs font-bold text-white font-khmer-title" id="chinese-envelope-guest-name">ភ្ញៀវកិត្តិយស</span>
-          </div>
-          <p class="text-[11px] text-[#FFD700] mt-2 font-bold animate-pulse cursor-pointer" onclick="openEnvelope()">
-            ✦ ចុចលើត្រា 囍 ដើម្បីបើកទ្វារមង្គល ✦
-          </p>
-        </div>
       </div>
     </div>
 
