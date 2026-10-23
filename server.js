@@ -938,7 +938,34 @@ function renderInvitationPage(req, res) {
     ogDesc = `ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការ ${groomKh} ❤️ ${brideKh} — ${dateSolarKh} នៅ ${venueKh}`;
   }
 
-  const indexPath = path.join(__dirname, 'public', 'index.html');
+  // Determine Active Theme and Dedicated HTML Template
+  let themeId = (req.query.theme || req.params.theme || weddingData?.theme?.id || 'khmer-traditional').toString().toLowerCase();
+
+  const originalUrlLower = (req.originalUrl || '').toLowerCase();
+  if (originalUrlLower.includes('template20')) {
+    themeId = 'template20';
+  } else if (originalUrlLower.includes('template11')) {
+    themeId = 'template11';
+  } else if (originalUrlLower.includes('template3')) {
+    themeId = 'template3';
+  }
+
+  let templateFileName = 'index.html';
+  let themeColor = '#4E3227';
+
+  if (themeId === 'template20' || themeId === 'emerald-botanical') {
+    templateFileName = 'template20.html';
+    themeColor = '#24382c';
+  } else if (themeId === 'template11' || themeId === 'royal-palace') {
+    templateFileName = 'template11.html';
+    themeColor = '#81501b';
+  } else if (themeId === 'template3' || themeId === 'midnight-sapphire') {
+    templateFileName = 'template3.html';
+    themeColor = '#071426';
+  }
+
+  const targetPath = path.join(__dirname, 'public', templateFileName);
+  const indexPath = fs.existsSync(targetPath) ? targetPath : path.join(__dirname, 'public', 'index.html');
   try {
     let html = fs.readFileSync(indexPath, 'utf-8');
 
@@ -946,7 +973,7 @@ function renderInvitationPage(req, res) {
       `  <title>${escapeHTML(pageTitle)}</title>`,
       `  <meta name="title" content="${escapeHTML(pageTitle)}">`,
       `  <meta name="description" content="${escapeHTML(ogDesc)}">`,
-      `  <meta name="theme-color" content="#4E3227">`,
+      `  <meta name="theme-color" content="${themeColor}">`,
       ``,
       `  <!-- Open Graph / Facebook / Telegram / WhatsApp -->`,
       `  <meta property="og:type" content="website">`,
@@ -1005,6 +1032,24 @@ app.get('/', renderInvitationPage);
 app.get('/to/:guest', renderInvitationPage);
 app.get('/invite/:guest', renderInvitationPage);
 app.get('/invitation/:slug', renderInvitationPage);
+
+// Dedicated Template 20 Routes
+app.get('/template20', renderInvitationPage);
+app.get('/template20/invitation20', renderInvitationPage);
+app.get('/template20/opening-screen20', renderInvitationPage);
+app.get('/template20/:guest', renderInvitationPage);
+
+// Dedicated Template 11 Routes
+app.get('/template11', renderInvitationPage);
+app.get('/template11/opening-screen11', renderInvitationPage);
+app.get('/template11/invitation11', renderInvitationPage);
+app.get('/template11/:guest', renderInvitationPage);
+
+// Dedicated Template 3 Routes
+app.get('/template3', renderInvitationPage);
+app.get('/template3/invitation3', renderInvitationPage);
+app.get('/template3/opening-screen3', renderInvitationPage);
+app.get('/template3/:guest', renderInvitationPage);
 
 // Fallback for all other GET requests (SPA support)
 app.use((req, res) => {

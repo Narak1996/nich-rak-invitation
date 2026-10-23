@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>សិរីសួស្តី អាពាហ៍ពិពាហ៍ | Royal Palace</title>
+  <meta name="title" content="សិរីសួស្តី អាពាហ៍ពិពាហ៍">
+  <meta name="description" content="លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍ ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស">
+  <meta name="theme-color" content="#81501b">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Template 11 Stylesheet -->
+  <link rel="stylesheet" href="/css/template11.css">
+</head>
+<body>
+
+  <!-- Background Music Toggle -->
+  <button type="button" onclick="toggleMusic()" id="t11-music-btn" aria-label="Toggle background music"
+    class="fixed right-4 top-4 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-[#b87923]/40 bg-[#ffefcce6] text-[#81501b] shadow-md backdrop-blur-md cursor-pointer">
+    <svg id="music-icon-pause" class="w-5 h-5 text-[#b87923] hidden" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/>
+    </svg>
+    <svg id="music-icon-play" class="w-5 h-5 text-[#81501b]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+    </svg>
+  </button>
+
+  <!-- ========================================================================= -->
+  <!-- OPENING SCREEN TEMPLATE 11 (ROYAL PALACE)                                 -->
+  <!-- ========================================================================= -->
+  <div id="t11-opening-screen" class="fixed inset-0 z-[100] flex h-screen w-full items-center justify-center bg-[#d8b87c] transition-opacity duration-700">
+    <div class="relative flex h-screen w-full max-w-[500px] flex-col items-center justify-center px-6 text-center shadow-2xl">
+      <img src="/images/templates/opening-background-ecCy2I3B.webp" alt="" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-60">
+      
+      <!-- Gold Frame Border -->
+      <div class="relative z-10 w-full max-w-[340px] rounded-3xl bg-[#ffefcce6] p-6 border-2 border-[#b87923] shadow-xl text-center">
+        <!-- Monogram -->
+        <div class="mx-auto mb-4 h-24 w-24">
+          <img src="/images/templates/monogram-DbargaEe.webp" alt="Monogram" class="h-full w-full object-contain">
+        </div>
+
+        <h1 class="font-moul text-xl text-[#724414] leading-relaxed">សិរីសួស្តី អាពាហ៍ពិពាហ៍</h1>
+        <p class="mt-2 text-xs text-[#81501b] font-battambang">សូមគោរពអញ្ជើញ</p>
+
+        <!-- Guest Name -->
+        <div class="my-4 rounded-xl bg-[#81501b] px-4 py-2 text-white shadow-sm">
+          <p id="t11-opening-guest-name" class="font-moul text-base tracking-wide">ភ្ញៀវកិត្តិយស</p>
+        </div>
+
+        <!-- Open Button with button-frame -->
+        <button type="button" onclick="openEnvelope()"
+          class="relative mt-2 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#b87923] to-[#81501b] px-6 py-2.5 text-sm font-semibold text-white shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer font-moulpali">
+          បើកសំបុត្រ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN INVITATION PAGE TEMPLATE 11                                          -->
+  <!-- ========================================================================= -->
+  <div class="template11-viewport-container relative min-h-screen w-full">
+    <main class="template11-shell-frame relative z-10 mx-auto min-h-screen w-full max-w-[500px] pb-32">
+      
+      <!-- SECTION: HOME -->
+      <section id="home" class="px-4 pt-12 pb-10 text-center">
+        <div class="t11-card rounded-3xl p-6 relative overflow-hidden">
+          <h1 class="t11-gold-title font-moul text-2xl mb-6">សិរីសួស្តី អាពាហ៍ពិពាហ៍</h1>
+
+          <!-- Parents -->
+          <div class="grid grid-cols-2 gap-3 bg-white/70 p-4 rounded-2xl border border-[#b87923]/25 mb-6 text-xs font-battambang">
+            <div>
+              <span class="block font-bold text-[#81501b] mb-1">ខាងកូនប្រុស</span>
+              <p id="t11-groom-father" class="font-semibold text-[#724414]">លោក សឿន សុខុម</p>
+              <p id="t11-groom-mother" class="text-[#81501b]">អ្នកស្រី ម៉ៅ សុផល</p>
+            </div>
+            <div>
+              <span class="block font-bold text-[#81501b] mb-1">ខាងកូនស្រី</span>
+              <p id="t11-bride-father" class="font-semibold text-[#724414]">លោក សៀម វិបុល</p>
+              <p id="t11-bride-mother" class="text-[#81501b]">អ្នកស្រី ចាន់ ធីតា</p>
+            </div>
+          </div>
+
+          <!-- Quote -->
+          <p id="t11-invitation-body" class="text-xs sm:text-sm leading-relaxed text-[#532f0c] px-2 font-battambang mb-6">
+            មានកិត្តិយសសូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាង កញ្ញា និងប្រិយមិត្ត...
+          </p>
+
+          <!-- Couple -->
+          <div class="my-6 rounded-2xl bg-[#ffefcce6] p-5 border border-[#b87923]/40 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="flex-1 text-center">
+                <span class="text-[11px] font-bold text-[#81501b] font-battambang">កូនប្រុសនាម</span>
+                <p id="t11-groom-name" class="font-moul text-lg text-[#724414] mt-1">ឡេង ចាន់ណារៈ</p>
+              </div>
+              <div class="h-16 w-16 shrink-0">
+                <img src="/images/templates/monogram-DbargaEe.webp" alt="Monogram" class="h-full w-full object-contain">
+              </div>
+              <div class="flex-1 text-center">
+                <span class="text-[11px] font-bold text-[#81501b] font-battambang">កូនស្រីនាម</span>
+                <p id="t11-bride-name" class="font-moul text-lg text-[#724414] mt-1">នាត ស្រីនិច</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event Date & Venue -->
+          <div class="space-y-2 text-xs font-battambang">
+            <div class="rounded-full bg-white/80 py-2 px-4 border border-[#b87923]/30 text-[#724414] font-semibold">
+              <span id="t11-date-text">ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧</span>
+            </div>
+            <div class="rounded-full bg-white/80 py-2 px-4 border border-[#b87923]/30 text-[#81501b]">
+              <span id="t11-venue-text">មជ្ឈមណ្ឌលសន្និបាត និងពិព័រណ៍ ព្រីមៀរ សែនសុខ</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: COUNTDOWN -->
+      <section id="countdown" class="px-4 py-8 text-center">
+        <div class="t11-card rounded-3xl p-6">
+          <span class="t11-eyebrow">Save Our Date</span>
+          <h2 class="t11-gold-title font-moulpali text-xl mt-3 mb-4">រាប់ថយក្រោយថ្ងៃមង្គល</h2>
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <div class="bg-white/80 p-3 rounded-2xl border border-[#b87923]/20">
+              <strong id="t11-cd-days" class="block text-2xl font-bold text-[#724414]">00</strong>
+              <span class="text-[10px] text-[#81501b] font-battambang">ថ្ងៃ</span>
+            </div>
+            <div class="bg-white/80 p-3 rounded-2xl border border-[#b87923]/20">
+              <strong id="t11-cd-hours" class="block text-2xl font-bold text-[#724414]">00</strong>
+              <span class="text-[10px] text-[#81501b] font-battambang">ម៉ោង</span>
+            </div>
+            <div class="bg-white/80 p-3 rounded-2xl border border-[#b87923]/20">
+              <strong id="t11-cd-mins" class="block text-2xl font-bold text-[#724414]">00</strong>
+              <span class="text-[10px] text-[#81501b] font-battambang">នាទី</span>
+            </div>
+            <div class="bg-white/80 p-3 rounded-2xl border border-[#b87923]/20">
+              <strong id="t11-cd-secs" class="block text-2xl font-bold text-[#724414]">00</strong>
+              <span class="text-[10px] text-[#81501b] font-battambang">វិនាទី</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: PROGRAM -->
+      <section id="program" class="px-4 py-8">
+        <div class="t11-card rounded-3xl p-6">
+          <div class="text-center mb-6">
+            <span class="t11-eyebrow">Itinerary</span>
+            <h2 class="t11-gold-title font-moulpali text-xl mt-2">កម្មវិធីមង្គលការ</h2>
+          </div>
+          <div id="t11-timeline-container" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- SECTION: GALLERY -->
+      <section id="gallery" class="px-4 py-8">
+        <div class="t11-card rounded-3xl p-6">
+          <div class="text-center mb-6">
+            <span class="t11-eyebrow">Memories</span>
+            <h2 class="t11-gold-title font-moulpali text-xl mt-2">កម្រងរូបភាព</h2>
+          </div>
+          <div id="t11-gallery-grid" class="grid grid-cols-2 gap-3"></div>
+        </div>
+      </section>
+
+      <!-- SECTION: RSVP -->
+      <section id="rsvp" class="px-4 py-8">
+        <div class="t11-card rounded-3xl p-6">
+          <div class="text-center mb-6">
+            <span class="t11-eyebrow">RSVP</span>
+            <h2 class="t11-gold-title font-moulpali text-xl mt-2">ការឆ្លើយតបការចូលរួម</h2>
+          </div>
+          <form id="t11-rsvp-form" class="space-y-4 font-battambang">
+            <div>
+              <label class="block text-xs font-bold text-[#724414] mb-1">ឈ្មោះភ្ញៀវ</label>
+              <input type="text" id="t11-rsvp-name" required class="w-full rounded-xl border border-[#b87923]/40 bg-white/90 p-2.5 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#724414] mb-1">ទូរស័ព្ទ</label>
+              <input type="tel" id="t11-rsvp-phone" class="w-full rounded-xl border border-[#b87923]/40 bg-white/90 p-2.5 text-sm">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-[#724414] mb-1">វត្តមាន</label>
+                <select id="t11-rsvp-status" class="w-full rounded-xl border border-[#b87923]/40 bg-white/90 p-2 text-sm">
+                  <option value="confirmed">រីករាយនឹងចូលរួម</option>
+                  <option value="declined">មិនអាចចូលរួមបាន</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#724414] mb-1">ចំនួនភ្ញៀវ</label>
+                <select id="t11-rsvp-attendees" class="w-full rounded-xl border border-[#b87923]/40 bg-white/90 p-2 text-sm">
+                  <option value="1">១ នាក់</option>
+                  <option value="2" selected>២ នាក់</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#724414] mb-1">ពាក្យជូនពរ</label>
+              <textarea id="t11-rsvp-wishes" rows="3" class="w-full rounded-xl border border-[#b87923]/40 bg-white/90 p-2.5 text-sm"></textarea>
+            </div>
+            <button type="submit" class="w-full rounded-full bg-gradient-to-r from-[#b87923] to-[#81501b] py-3 text-sm font-bold text-white shadow-md cursor-pointer font-moulpali">
+              បញ្ជាក់ការចូលរួម
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Floating Dock -->
+    <div id="t11-bottom-dock" class="pointer-events-none fixed bottom-4 left-1/2 z-50 w-full max-w-[500px] -translate-x-1/2 px-4 transition-all duration-500 opacity-0 translate-y-10">
+      <nav class="t11-dock pointer-events-auto flex w-full items-center justify-around rounded-full px-4 py-2" aria-label="Template 11 Navigation">
+        <button type="button" data-target="home" class="t11-dock-btn active rounded-full p-2.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></button>
+        <button type="button" data-target="program" class="t11-dock-btn rounded-full p-2.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>
+        <button type="button" data-target="gallery" class="t11-dock-btn rounded-full p-2.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></button>
+        <button type="button" data-target="rsvp" class="t11-dock-btn rounded-full p-2.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>
+      </nav>
+    </div>
+  </div>
+
+  <div id="toast-notice" class="toast-notice-t11 fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#81501b] text-white px-4 py-2 rounded-full text-xs shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50"></div>
+  <script src="/js/template11.js"></script>
+</body>
+</html>
