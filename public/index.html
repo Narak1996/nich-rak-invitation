@@ -70,49 +70,147 @@
 
   <!-- ================= ENVELOPE OPENING OVERLAY ================= -->
   <div id="envelope-screen">
-    <!-- Starfield particles (active in midnight-sapphire theme) -->
-    <div id="envelope-starfield" class="envelope-stars-bg"></div>
 
-    <!-- ================= UNIFIED LUXURY THEME-ADAPTIVE ENVELOPE ================= -->
-    <div id="opening-screen-default" class="envelope-card">
+    <!-- 1. KHMER TRADITIONAL WELCOME: Royal Cambodian Silk Envelope with 3D Romduol Wax Seal -->
+    <div id="welcome-khmer" class="theme-welcome-card welcome-khmer-card">
       <div class="khmer-corner-tl"></div>
       <div class="khmer-corner-tr"></div>
       <div class="khmer-corner-bl"></div>
       <div class="khmer-corner-br"></div>
 
-      <div class="w-16 h-16 mx-auto mb-4 rounded-full border border-[#C5A059] flex items-center justify-center bg-[#FAF7F2] shadow-inner" id="envelope-monogram-wrap">
-        <span class="font-en-title text-base sm:text-lg font-bold gold-gradient-text tracking-widest" id="envelope-monogram">L & N</span>
+      <div class="khmer-envelope-inner">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-full border-2 border-[#D4AF37] flex items-center justify-center bg-[#FAF6ED] shadow-md relative" id="khmer-monogram-wrap">
+          <img src="/images/components/romduol-flower.svg" class="w-9 h-9 object-contain filter drop-shadow" alt="Romduol">
+        </div>
+
+        <p class="font-khmer-title text-[11px] sm:text-xs text-[#C5A059] uppercase tracking-widest mb-1 text-center">
+          សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ
+        </p>
+        <h3 class="font-khmer-title text-base sm:text-lg font-bold text-[#8C1D2F] text-center my-1" id="khmer-envelope-sub">
+          លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍
+        </h3>
+
+        <div id="khmer-envelope-couple-names" class="my-3 text-center">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="khmer-envelope-guest-box" class="my-3 py-2.5 px-4 bg-[#FAF6ED] rounded-xl border border-[#D4AF37]/50 inline-block max-w-xs mx-auto shadow-inner text-center hidden">
+          <span class="text-[11px] text-[#7A6F68] block font-khmer-body" id="khmer-invite-label">សូមគោរពអញ្ជើញ</span>
+          <span class="text-base font-bold text-[#8C1D2F] font-khmer-title block mt-0.5" id="khmer-envelope-guest-name">
+            ភ្ញៀវកិត្តិយស
+          </span>
+        </div>
+
+        <p class="text-xs text-[#6B574B] max-w-xs mx-auto mb-6 font-khmer-body leading-relaxed text-center">
+          វត្តមានដ៏ខ្ពង់ខ្ពស់របស់លោកអ្នក គឺជាកិត្តិយសដ៏ធំធេងសម្រាប់យើងខ្ញុំទាំងពីរ។
+        </p>
+
+        <!-- 3D Romduol Wax Seal Opener -->
+        <div class="khmer-wax-seal-btn cursor-pointer mx-auto" id="btn-open-khmer" onclick="openEnvelope()" title="ចុចត្រាផ្ការំដួលដើម្បីបើកសំបុត្រ">
+          <div class="wax-seal-outer">
+            <div class="wax-seal-inner">
+              <img src="/images/components/romduol-flower.svg" class="w-7 h-7 mx-auto filter drop-shadow brightness-0 invert" alt="Romduol">
+              <span class="text-[9px] font-bold tracking-widest uppercase block mt-1 text-[#FFF8ED]">OPEN</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-[11px] text-[#A67C1E] mt-3 font-medium animate-pulse cursor-pointer text-center" onclick="openEnvelope()">
+          ចុចត្រាផ្ការំដួល ដើម្បីបើកសំបុត្រ / Tap Seal to Open
+        </p>
       </div>
+    </div>
 
-      <p class="font-khmer-title text-xs text-[#C5A059] uppercase tracking-widest mb-1" id="envelope-sub">
-        លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍
-      </p>
+    <!-- 2. WESTERN MODERN WELCOME: Minimalist Editorial Linen & Frosted Glass Couture Card -->
+    <div id="welcome-modern" class="theme-welcome-card welcome-modern-card hidden">
+      <div class="modern-card-glass">
+        <div class="modern-card-header text-center">
+          <span class="modern-kicker">YOU ARE CORDIALLY INVITED TO CELEBRATE</span>
+          <h2 class="modern-title-editorial">THE WEDDING OF</h2>
+          <div class="modern-monogram-rings my-2">
+            <span class="modern-ring-icon text-2xl">💍</span>
+          </div>
+        </div>
 
-      <div id="envelope-couple-names" class="my-3">
-        <!-- Rendered dynamically -->
+        <div id="modern-envelope-couple-names" class="my-4 text-center">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="modern-date-badge text-center" id="modern-date-preview">
+          <!-- SATURDAY, OCTOBER 24, 2026 -->
+        </div>
+
+        <div id="modern-envelope-guest-box" class="my-4 py-2 px-5 bg-white/80 backdrop-blur-md rounded-full border border-[#C5A059]/40 inline-flex items-center gap-2 max-w-xs mx-auto shadow-2xs text-center hidden">
+          <span class="text-[10px] uppercase tracking-wider text-[#7A6F68]" id="modern-invite-label">HONORED GUEST</span>
+          <span class="text-xs font-semibold text-[#1F2421]" id="modern-envelope-guest-name">Special Guest</span>
+        </div>
+
+        <p class="text-xs text-[#555] max-w-sm mx-auto mb-6 font-light tracking-wide leading-relaxed text-center" id="modern-welcome-quote">
+          Your presence will add immense joy to our special beginning.
+        </p>
+
+        <!-- Sleek Editorial Button (NOT a red wax seal!) -->
+        <button class="modern-unfold-btn mx-auto" id="btn-open-modern" onclick="openEnvelope()">
+          <span class="modern-btn-shimmer"></span>
+          <span class="modern-btn-text">UNFOLD INVITATION • បើកសំបុត្រ</span>
+          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </button>
+        <p class="text-[10px] text-[#888] mt-2.5 tracking-widest uppercase text-center cursor-pointer" onclick="openEnvelope()">
+          Click to view complete invitation details
+        </p>
       </div>
+    </div>
 
-      <div id="envelope-guest-container" class="my-4 py-3 px-4 bg-[#FAF7F2] rounded-xl border border-[#E5D5BC] inline-block max-w-xs mx-auto hidden">
-        <span class="text-xs text-[#7A6F68] block font-khmer-body" id="envelope-invite-text">សូមគោរពអញ្ជើញ</span>
-        <span class="text-base font-bold text-[#4E3227] font-khmer-title block mt-1" id="envelope-guest-name">
-          ភ្ញៀវកិត្តិយស
-        </span>
-      </div>
+    <!-- 3. CHINESE TRADITIONAL WELCOME: Authentic Grand Imperial Double-Door Red Wedding Gate (双开大门喜帖) -->
+    <div id="welcome-chinese" class="theme-welcome-card welcome-chinese-gate hidden">
+      <div class="chinese-doors-frame">
+        <!-- Top Arch Header -->
+        <div class="chinese-gate-top">
+          <span class="chinese-gate-top-en">WEDDING CELEBRATION</span>
+          <h2 class="chinese-gate-top-kh font-khmer-title">លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍</h2>
+        </div>
 
-      <p class="text-xs text-[#7A6F68] max-w-xs mx-auto mb-8 font-khmer-body leading-relaxed">
-        វត្តមានដ៏ខ្ពង់ខ្ពស់របស់លោកអ្នក គឺជាកិត្តិយសដ៏ធំធេងសម្រាប់យើងខ្ញុំទាំងពីរ។
-      </p>
+        <!-- Left Door -->
+        <div class="chinese-door chinese-door-left">
+          <div class="chinese-door-ornament-corner tl"></div>
+          <div class="chinese-door-ornament-corner bl"></div>
+          <div class="chinese-door-couplet">
+            <span>百</span><span>年</span><span>好</span><span>合</span>
+          </div>
+        </div>
 
-      <div class="wax-seal-btn cursor-pointer" id="btn-open-envelope" onclick="openEnvelope()" title="ចុចដើម្បីបើកសំបុត្រ">
-        <div class="text-center text-white" id="wax-seal-content">
-          <svg class="w-6 h-6 mx-auto text-amber-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-          </svg>
-          <span class="text-[9px] font-bold tracking-wider uppercase block mt-0.5" id="wax-seal-text">OPEN</span>
+        <!-- Right Door -->
+        <div class="chinese-door chinese-door-right">
+          <div class="chinese-door-ornament-corner tr"></div>
+          <div class="chinese-door-ornament-corner br"></div>
+          <div class="chinese-door-couplet">
+            <span>永</span><span>结</span><span>同</span><span>心</span>
+          </div>
+        </div>
+
+        <!-- Center Golden 囍 Medallion & Lock Plaque -->
+        <div class="chinese-center-lock-wrap cursor-pointer" id="chinese-gate-lock" onclick="openEnvelope()" title="点击开启喜帖 / ចុចត្រា 囍 ដើម្បីបើកទ្វារមង្គល">
+          <div class="chinese-lock-bracket"></div>
+          <div class="chinese-xi-seal">
+            <span class="chinese-xi-char">囍</span>
+          </div>
+          <div class="chinese-tassel-wrap">
+            <img src="/images/components/chinese-knot.svg" class="chinese-tassel-img" alt="Chinese Knot">
+          </div>
+        </div>
+
+        <!-- Bottom Guest Badge & Prompt -->
+        <div class="chinese-gate-bottom">
+          <div id="chinese-envelope-guest-box" class="py-1 px-4 bg-[#7A0911]/90 rounded-full border border-[#FFD700]/70 inline-flex items-center gap-1.5 shadow-md hidden">
+            <span class="text-[10px] text-[#FFD700] font-bold">សូមគោរពអញ្ជើញ៖</span>
+            <span class="text-xs font-bold text-white font-khmer-title" id="chinese-envelope-guest-name">ភ្ញៀវកិត្តិយស</span>
+          </div>
+          <p class="text-[11px] text-[#FFD700] mt-2 font-bold animate-pulse cursor-pointer" onclick="openEnvelope()">
+            ✦ ចុចលើត្រា 囍 ដើម្បីបើកទ្វារមង្គល ✦
+          </p>
         </div>
       </div>
-      <p class="text-[11px] text-[#A67C1E] mt-3 font-medium animate-pulse cursor-pointer" onclick="openEnvelope()" id="envelope-open-hint">ចុចត្រាដើម្បីបើកសំបុត្រ / Tap to Open</p>
     </div>
+
   </div>
 
   <!-- ================= TOP FLOATING NAVIGATION BAR ================= -->
@@ -124,24 +222,15 @@
         <span id="active-theme-label" class="hidden sm:inline">ខ្មែរ</span>
         <svg class="w-3 h-3 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
       </button>
-      <div id="theme-menu-dropdown" class="absolute left-0 mt-1 hidden flex-col bg-white rounded-2xl shadow-xl border border-[#E5D5BC] p-1.5 w-48 z-50 max-h-80 overflow-y-auto">
+      <div id="theme-menu-dropdown" class="absolute left-0 mt-1 hidden flex-col bg-white rounded-2xl shadow-xl border border-[#E5D5BC] p-1.5 w-48 z-50">
         <button onclick="window.switchThemeLive('khmer-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#8C1D2F] hover:bg-[#FAF7F2] transition text-left">
           <img src="/images/components/romduol-flower.svg" class="w-4 h-4 object-contain inline-block" alt="Khmer"> <span>🌺 ខ្មែរប្រពៃណី</span>
         </button>
-        <button onclick="window.switchThemeLive('emerald-botanical')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#1E3526] hover:bg-emerald-50 transition text-left">
-          <span class="text-sm">🌿</span> <span>ព្រៃមរកត</span>
-        </button>
-        <button onclick="window.switchThemeLive('royal-palace')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#785424] hover:bg-amber-50 transition text-left">
-          <span class="text-sm">👑</span> <span>វាំងមាស</span>
-        </button>
-        <button onclick="window.switchThemeLive('midnight-sapphire')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#0B1B34] hover:bg-slate-100 transition text-left">
-          <span class="text-sm">🌌</span> <span>រាត្រីតារា</span>
-        </button>
-        <button onclick="window.switchThemeLive('western-modern')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
-          <span class="text-sm">💍</span> <span>សម័យថ្មី</span>
+        <button onclick="window.switchThemeLive('western-modern')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#2D2D2D] hover:bg-stone-100 transition text-left">
+          <span class="text-sm">💍</span> <span>សម័យថ្មី (Modern)</span>
         </button>
         <button onclick="window.switchThemeLive('chinese-traditional')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#A81822] hover:bg-red-50 transition text-left">
-          <span class="text-sm font-bold text-[#A81822]">囍</span> <span>ចិនប្រពៃណី</span>
+          <span class="text-sm font-bold text-[#FFD700] bg-[#A81822] px-1 py-0.5 rounded leading-none">囍</span> <span>ចិនប្រពៃណី</span>
         </button>
       </div>
     </div>

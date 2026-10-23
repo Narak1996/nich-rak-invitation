@@ -128,39 +128,9 @@ const THEME_PRESETS = {
     primaryColor: '#8C1D2F',
     accentColor: '#D4AF37',
     secondaryColor: '#B22B42',
-    bgColor: '#FAF6ED',
+    bgColor: '#FAF5E8',
     emblem: 'romduol',
     sealEmblem: 'romduol'
-  },
-  'emerald-botanical': {
-    id: 'emerald-botanical',
-    name: 'ព្រៃមរកត (Emerald Botanical)',
-    primaryColor: '#1E3526',
-    accentColor: '#C5A059',
-    secondaryColor: '#254430',
-    bgColor: '#FAF8F5',
-    emblem: 'emerald',
-    sealEmblem: 'emerald'
-  },
-  'royal-palace': {
-    id: 'royal-palace',
-    name: 'វាំងមាស (Royal Palace)',
-    primaryColor: '#785424',
-    accentColor: '#F0C474',
-    secondaryColor: '#9B621D',
-    bgColor: '#FAF5EE',
-    emblem: 'palace',
-    sealEmblem: 'palace'
-  },
-  'midnight-sapphire': {
-    id: 'midnight-sapphire',
-    name: 'រាត្រីតារា (Midnight Sapphire)',
-    primaryColor: '#071426',
-    accentColor: '#E2BD73',
-    secondaryColor: '#0B1B34',
-    bgColor: '#071426',
-    emblem: 'celestial',
-    sealEmblem: 'celestial'
   },
   'western-modern': {
     id: 'western-modern',
@@ -178,15 +148,11 @@ const THEME_PRESETS = {
     primaryColor: '#A81822',
     accentColor: '#FFD700',
     secondaryColor: '#C72535',
-    bgColor: '#FFF7F7',
+    bgColor: '#7D0A12',
     emblem: '囍',
     sealEmblem: 'shuangxi'
   }
 };
-
-THEME_PRESETS['template20'] = THEME_PRESETS['emerald-botanical'];
-THEME_PRESETS['template11'] = THEME_PRESETS['royal-palace'];
-THEME_PRESETS['template3'] = THEME_PRESETS['midnight-sapphire'];
 
 // Load wedding details & populate form
 async function loadWeddingData() {

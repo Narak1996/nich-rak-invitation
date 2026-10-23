@@ -242,15 +242,7 @@ function renderAll() {
   // Update top bar theme switcher display
   const themeIconEl = document.getElementById('active-theme-icon');
   if (themeIconEl) {
-    if (themeId === 'khmer-traditional') {
-      themeIconEl.innerHTML = '<img src="/images/components/romduol-flower.svg" class="w-3.5 h-3.5 object-contain" alt="Romduol">';
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      themeIconEl.textContent = '🌿';
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      themeIconEl.textContent = '👑';
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      themeIconEl.textContent = '🌌';
-    } else if (themeId === 'western-modern') {
+    if (themeId === 'western-modern') {
       themeIconEl.textContent = '💍';
     } else if (themeId === 'chinese-traditional') {
       themeIconEl.textContent = '囍';
@@ -262,10 +254,7 @@ function renderAll() {
   if (themeLabelEl) {
     const labelMap = { 
       'khmer-traditional': 'ខ្មែរ', 
-      'emerald-botanical': 'ព្រៃមរកត', 
-            'royal-palace': 'វាំងមាស', 
-            'midnight-sapphire': 'រាត្រីតារា', 
-            'western-modern': 'សម័យថ្មី', 
+      'western-modern': 'សម័យថ្មី', 
       'chinese-traditional': 'ចិន' 
     };
     themeLabelEl.textContent = labelMap[themeId] || 'ខ្មែរ';
@@ -274,246 +263,8 @@ function renderAll() {
   // Language based text rendering
   const isKh = currentLang === 'kh';
 
-  // Guest display name on unified envelope
-  const guestDisplayName = currentGuest 
-    ? (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name)) 
-    : (isKh ? 'ភ្ញៀវកិត្តិយស' : 'Honorable Guest');
-
-  const envGuestNameEl = document.getElementById('envelope-guest-name');
-  if (envGuestNameEl) {
-    envGuestNameEl.textContent = guestDisplayName;
-    const envGuestContainer = document.getElementById('envelope-guest-container');
-    if (envGuestContainer) envGuestContainer.classList.remove('hidden');
-  }
-
-  // Groom and Bride initials for monogram
-  const groomInitial = (w.groom.name_en || w.groom.name_kh || 'G').trim().charAt(0).toUpperCase();
-  const brideInitial = (w.bride.name_en || w.bride.name_kh || 'B').trim().charAt(0).toUpperCase();
-
-  // Inject Theme Small Component Emblem (Romduol / Monogram / 囍 / Emerald / Palace / Celestial)
-  const heroEmblemEl = document.getElementById('hero-theme-emblem');
-  if (heroEmblemEl) {
-    if (themeId === 'chinese-traditional') {
-      heroEmblemEl.innerHTML = `<img src="/images/components/chinese-double-happiness.svg" alt="囍" class="h-14 filter drop-shadow-md">`;
-    } else if (themeId === 'western-modern') {
-      heroEmblemEl.innerHTML = `
-        <div class="w-16 h-16 rounded-full border-2 border-[#C5A059] flex items-center justify-center font-serif text-lg tracking-widest text-[#1B4332] bg-white shadow-xs">
-          ${groomInitial} & ${brideInitial}
-        </div>
-      `;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      heroEmblemEl.innerHTML = `<img src="/images/components/emerald-botanical-crest.svg" alt="Emerald Crest" class="h-16 filter drop-shadow-md">`;
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      heroEmblemEl.innerHTML = `<img src="/images/components/palace-gate-arch.svg" alt="Royal Palace" class="h-16 filter drop-shadow-md">`;
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      heroEmblemEl.innerHTML = `<img src="/images/components/celestial-constellation.svg" alt="Constellation" class="h-16 filter drop-shadow-[0_0_15px_rgba(226,189,115,0.7)]">`;
-    } else {
-      // Default: Khmer Traditional - Authentic ផ្ការំដួល (Romduol Flower)
-      heroEmblemEl.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="h-16 filter drop-shadow-md transition-transform hover:scale-105">`;
-    }
-  }
-
-  // Inject Theme Small Component Divider
-  const heroDividerEl = document.getElementById('hero-theme-divider');
-  if (heroDividerEl) {
-    if (themeId === 'chinese-traditional') {
-      heroDividerEl.innerHTML = `
-        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
-          <img src="/images/components/chinese-divider.svg" alt="囍" class="h-8 w-full filter drop-shadow-sm">
-          <span class="text-[11px] text-[#FFD700] font-bold tracking-widest">百年好合 • 喜结良缘 • 永结同心</span>
-        </div>
-      `;
-    } else if (themeId === 'western-modern') {
-      heroDividerEl.innerHTML = `
-        <div class="flex items-center gap-3">
-          <span class="h-px w-10 bg-[#C5A059]/40"></span>
-          <img src="/images/components/botanical-olive.svg" alt="Olive Branch" class="h-7">
-          <span class="h-px w-10 bg-[#C5A059]/40"></span>
-        </div>
-      `;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      heroDividerEl.innerHTML = `
-        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
-          <div class="flex items-center gap-3 w-full justify-center">
-            <span class="h-px w-12 bg-[#C5A059]/50"></span>
-            <img src="/images/components/botanical-olive.svg" alt="Botanical Olive" class="h-7 filter drop-shadow-xs">
-            <span class="h-px w-12 bg-[#C5A059]/50"></span>
-          </div>
-          <span class="text-[11px] text-[#C5A059] font-bold tracking-widest font-khmer-body">សេចក្ដីស្រឡាញ់ដ៏បរិសុទ្ធ និងស្ថិតស្ថេរជានិរន្តរ៍</span>
-        </div>
-      `;
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      heroDividerEl.innerHTML = `
-        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
-          <img src="/images/components/romduol-divider.svg" alt="Royal Divider" class="h-7 w-full filter drop-shadow-xs">
-          <span class="text-[11px] text-[#D4AF37] font-bold tracking-widest font-khmer-body">សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ</span>
-        </div>
-      `;
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      heroDividerEl.innerHTML = `
-        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
-          <div class="flex items-center gap-3 w-full justify-center">
-            <span class="h-px w-12 bg-[#E2BD73]/60 shadow-[0_0_8px_#E2BD73]"></span>
-            <span class="text-sm text-[#FFE494] animate-pulse">✦ ✨ ✦</span>
-            <span class="h-px w-12 bg-[#E2BD73]/60 shadow-[0_0_8px_#E2BD73]"></span>
-          </div>
-          <span class="text-[11px] text-[#FFE494] font-bold tracking-widest font-khmer-body">រាត្រីតារាដ៏រុងរឿង • CELESTIAL LOVE</span>
-        </div>
-      `;
-    } else {
-      // Khmer Traditional - ផ្ការំដួល Divider
-      heroDividerEl.innerHTML = `
-        <div class="flex flex-col items-center gap-1.5 w-full max-w-sm mx-auto">
-          <img src="/images/components/romduol-divider.svg" alt="ផ្ការំដួល" class="h-7 w-full">
-          <span class="text-[11px] text-[#D4AF37] font-bold tracking-widest font-khmer-body">សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ</span>
-        </div>
-      `;
-    }
-  }
-
-  // 1. Transform Wax Seal based on Theme
-  const sealContentEl = document.getElementById('wax-seal-content');
-  if (sealContentEl) {
-    if (themeId === 'chinese-traditional') {
-      sealContentEl.innerHTML = `
-        <div class="flex flex-col items-center justify-center">
-          <span class="text-3xl text-[#FFE866] font-bold block leading-none drop-shadow-md">囍</span>
-          <span class="text-[8px] tracking-wider uppercase block mt-1 font-bold text-[#FFF9E6]">开 • OPEN</span>
-        </div>
-      `;
-    } else if (themeId === 'western-modern') {
-      sealContentEl.innerHTML = `<span class="text-2xl block leading-none">💍</span><span class="text-[8px] tracking-wider uppercase block mt-1 font-bold">OPEN</span>`;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      sealContentEl.innerHTML = `
-        <img src="/images/components/emerald-botanical-crest.svg" alt="Botanical" class="w-8 h-8 mx-auto filter drop-shadow-xs">
-        <span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold text-[#F5E6C8]">បើកលិខិត</span>
-      `;
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      sealContentEl.innerHTML = `
-        <img src="/images/components/palace-gate-arch.svg" alt="Royal Arch" class="w-8 h-8 mx-auto filter drop-shadow-xs">
-        <span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold text-[#FFF2BF]">បើកសំបុត្រ</span>
-      `;
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      sealContentEl.innerHTML = `
-        <img src="/images/components/celestial-constellation.svg" alt="Starlight" class="w-8 h-8 mx-auto filter drop-shadow-[0_0_10px_rgba(226,189,115,0.9)]">
-        <span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold text-[#FFFDF0]">OPEN</span>
-      `;
-    } else {
-      // Default: Khmer Traditional - ផ្ការំដួល Wax Seal
-      sealContentEl.innerHTML = `
-        <img src="/images/components/romduol-flower.svg" alt="រំដួល" class="w-8 h-8 mx-auto filter drop-shadow-xs">
-        <span class="text-[8px] tracking-wider uppercase block mt-0.5 font-bold text-[#FFF2BF]">បើកសំបុត្រ</span>
-      `;
-    }
-  }
-
-  // 2. Transform Hero Motif Ribbon
-  const heroMotifEl = document.getElementById('hero-motif-text');
-  if (heroMotifEl) {
-    if (themeId === 'chinese-traditional') {
-      heroMotifEl.innerHTML = isKh ? '囍 喜结良缘 • 百年好合 • 鸾凤和鸣 囍' : '囍 Double Happiness • A Celebration of Love 囍';
-    } else if (themeId === 'western-modern') {
-      heroMotifEl.innerHTML = isKh ? 'TOGETHER WITH THEIR FAMILIES' : 'TOGETHER WITH THEIR FAMILIES';
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      heroMotifEl.innerHTML = isKh ? '🌿 អាពាហ៍ពិពាហ៍បែបធម្មជាតិមាសបៃតង 🌿' : '🌿 Royal Emerald & Botanical Wedding Celebration 🌿';
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      heroMotifEl.innerHTML = isKh ? '👑 សិរីមង្គលអាពាហ៍ពិពាហ៍រាជវាំងមាស 👑' : '👑 Royal Palace Golden Wedding Celebration 👑';
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      heroMotifEl.innerHTML = isKh ? '🌌 អាពាហ៍ពិពាហ៍រាត្រីតារាដ៏រុងរឿង 🌌' : '🌌 Celestial Midnight Sapphire Wedding 🌌';
-    } else {
-      heroMotifEl.innerHTML = isKh ? 'សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ' : 'Traditional Khmer Wedding Celebration';
-    }
-  }
-
-  // 3. Transform Footer Stamp Icon
-  const footerStampEl = document.getElementById('footer-stamp-icon');
-  if (footerStampEl) {
-    if (themeId === 'chinese-traditional') {
-      footerStampEl.innerHTML = `<span class="text-2xl font-bold text-[#FFD700]">囍</span>`;
-    } else if (themeId === 'western-modern') {
-      footerStampEl.innerHTML = `<span class="text-xl">💍</span>`;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      footerStampEl.innerHTML = `<img src="/images/components/emerald-botanical-crest.svg" alt="Crest" class="w-7 h-7 mx-auto">`;
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      footerStampEl.innerHTML = `<img src="/images/components/palace-gate-arch.svg" alt="Palace" class="w-7 h-7 mx-auto">`;
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      footerStampEl.innerHTML = `<img src="/images/components/celestial-constellation.svg" alt="Constellation" class="w-7 h-7 mx-auto">`;
-    } else {
-      footerStampEl.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="w-7 h-7 mx-auto inline-block">`;
-    }
-  }
-
-  // Guest name on envelope
-  const guestBadgeName = document.getElementById('envelope-guest-name');
-  const envelopeInviteText = document.getElementById('envelope-invite-text');
-  if (currentGuest) {
-    guestBadgeName.textContent = isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name);
-    envelopeInviteText.textContent = isKh ? 'សូមគោរពអញ្ជើញ' : 'Cordially Invited:';
-    document.getElementById('envelope-guest-container').classList.remove('hidden');
-  }
-
-  // Monogram initials on Envelope
-  const monogramEl = document.getElementById('envelope-monogram');
-  if (monogramEl) {
-    if (themeId === 'chinese-traditional') {
-      monogramEl.innerHTML = `<span class="text-3xl text-[#FFD700] font-bold">囍</span>`;
-    } else if (themeId === 'western-modern') {
-      monogramEl.innerHTML = `<span class="font-serif text-2xl tracking-widest text-[#1B4332] font-bold">${groomInitial} & ${brideInitial}</span>`;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      monogramEl.innerHTML = `<img src="/images/components/emerald-botanical-crest.svg" alt="Crest" class="w-10 h-10 mx-auto">`;
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      monogramEl.innerHTML = `<img src="/images/components/palace-gate-arch.svg" alt="Palace" class="w-10 h-10 mx-auto">`;
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      monogramEl.innerHTML = `<img src="/images/components/celestial-constellation.svg" alt="Constellation" class="w-10 h-10 mx-auto">`;
-    } else {
-      monogramEl.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="រំដួល" class="w-8 h-8 mx-auto">`;
-    }
-  }
-
-  // Couple names on Envelope
-  const envelopeCoupleEl = document.getElementById('envelope-couple-names');
-  if (envelopeCoupleEl) {
-    let connectorHtml = '<span>និង</span>';
-    if (themeId === 'western-modern') {
-      connectorHtml = '<span class="italic font-serif text-base text-[var(--accent)]">&</span>';
-    } else if (themeId === 'chinese-traditional') {
-      connectorHtml = '<span class="font-bold text-[#FFD700] text-sm">囍</span>';
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      connectorHtml = '<span class="text-sm text-[#C5A059] font-bold font-khmer-body">និង</span>';
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      connectorHtml = '<span class="text-sm text-[#D4AF37] font-bold font-khmer-body">និង</span>';
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      connectorHtml = '<span class="text-sm text-[#FFE494] font-bold font-khmer-body">✦ និង ✦</span>';
-    } else if (themeId === 'khmer-traditional') {
-      connectorHtml = '<span class="text-sm text-[#D4AF37] font-bold font-khmer-body">និង</span>';
-    }
-
-    // In Khmer, Chinese, Emerald, Royal, Midnight: display Khmer name
-    const coupleNameColor = (themeId === 'chinese-traditional' || themeId === 'midnight-sapphire' || themeId === 'template3') ? 'text-[#FFD700]' : 'text-[var(--primary)]';
-    if (themeId !== 'western-modern' || isKh) {
-      envelopeCoupleEl.innerHTML = `
-        <div class="flex flex-col items-center justify-center">
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal ${coupleNameColor}">
-            ${escapeHTML(w.groom.name_kh)}
-          </div>
-          <div class="couple-connector my-1">
-            ${connectorHtml}
-          </div>
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold tracking-normal ${coupleNameColor}">
-            ${escapeHTML(w.bride.name_kh)}
-          </div>
-        </div>
-      `;
-    } else {
-      envelopeCoupleEl.innerHTML = `
-        <div class="font-en-script text-3xl sm:text-4xl ${coupleNameColor} leading-tight">
-          <div>${escapeHTML(w.groom.name_en)}</div>
-          <div class="text-xl text-[var(--accent)] my-0.5">&</div>
-          <div>${escapeHTML(w.bride.name_en)}</div>
-        </div>
-      `;
-    }
-  }
+  // ------------------ RENDER THEME WELCOME CARDS ------------------
+  renderThemeWelcome(themeId, w, isKh);
 
   // Main Page Header Titles - Theme Tailored
   const mainTitleEl = document.getElementById('main-wedding-title');
@@ -522,14 +273,8 @@ function renderAll() {
       mainTitleEl.innerHTML = isKh
         ? `<span class="kh-title-line">សិរីសួស្តី អាពាហ៍ពិពាហ៍</span><span class="cn-title-line">囍 喜结良缘 囍</span>`
         : `<span class="kh-title-line">WEDDING CELEBRATION</span><span class="cn-title-line">囍 DOUBLE HAPPINESS 囍</span>`;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍') : (w.title_en || 'Royal Emerald Wedding');
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីមង្គលអាពាហ៍ពិពាហ៍') : (w.title_en || 'Royal Palace Golden Wedding');
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍') : (w.title_en || 'Celestial Sapphire Wedding');
     } else if (themeId === 'western-modern') {
-      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍') : (w.title_en || 'WEDDING CELEBRATION');
+      mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍') : (w.title_en || 'THE WEDDING CELEBRATION');
     } else {
       mainTitleEl.textContent = isKh ? (w.title_kh || 'សិរីសួស្តី អាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ') : (w.title_en || 'Traditional Khmer Wedding');
     }
@@ -537,19 +282,11 @@ function renderAll() {
   
   const mainCoupleKhEl = document.getElementById('main-couple-kh');
   if (mainCoupleKhEl) {
-    let mainConnector = `<span class="inline-block mx-2 text-[var(--accent)] font-normal text-sm font-khmer-body">និង</span>`;
+    let mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-normal text-sm font-khmer-body">និង</span>`;
     if (themeId === 'chinese-traditional') {
       mainConnector = `<span class="inline-block mx-2 text-[#FFD700] font-bold text-base">囍</span>`;
     } else if (themeId === 'western-modern') {
       mainConnector = `<span class="inline-block mx-2 text-[#C5A059] font-serif italic text-lg">&</span>`;
-    } else if (themeId === 'emerald-botanical' || themeId === 'template20') {
-      mainConnector = `<span class="inline-block mx-2 text-[#C5A059] font-bold text-base font-khmer-body">និង</span>`;
-    } else if (themeId === 'royal-palace' || themeId === 'template11') {
-      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-base font-khmer-body">និង</span>`;
-    } else if (themeId === 'midnight-sapphire' || themeId === 'template3') {
-      mainConnector = `<span class="inline-block mx-2 text-[#FFE494] font-bold text-base font-khmer-body">✦ និង ✦</span>`;
-    } else if (themeId === 'khmer-traditional') {
-      mainConnector = `<span class="inline-block mx-2 text-[#D4AF37] font-bold text-base font-khmer-body">និង</span>`;
     }
 
     mainCoupleKhEl.innerHTML = `
@@ -872,47 +609,24 @@ function closeLightbox() {
 
 // Event Listeners
 function initEventListeners() {
-  // Wax seal envelope open
-  const waxBtn = document.getElementById('btn-open-envelope');
-  if (waxBtn) {
-    waxBtn.addEventListener('click', () => {
-      openEnvelope();
-    });
-  }
+  // Theme-specific envelope openers
+  ['btn-open-envelope', 'btn-open-khmer', 'btn-open-modern', 'chinese-gate-lock'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', () => {
+        openEnvelope();
+      });
+    }
+  });
 
-  // Music toggle
-  const musicBtn = document.getElementById('floating-music-btn');
-  if (musicBtn) {
-    musicBtn.addEventListener('click', () => {
-      toggleMusic();
-    });
-  }
-
-  // Language toggle
-  const langBtn = document.getElementById('lang-toggle-btn');
-  if (langBtn) {
-    langBtn.addEventListener('click', () => {
-      currentLang = currentLang === 'kh' ? 'en' : 'kh';
-      const label = document.getElementById('current-lang-label');
-      if (label) label.textContent = currentLang === 'kh' ? 'ខ្មែរ' : 'EN';
-      renderAll();
-    });
-  }
-
-  // Theme dropdown toggle on click (open when click, not hover)
+  // Top Bar Theme Dropdown Toggle
   const themeBtn = document.getElementById('theme-menu-btn');
   const themeDropdown = document.getElementById('theme-menu-dropdown');
   if (themeBtn && themeDropdown) {
     themeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isHidden = themeDropdown.classList.contains('hidden');
-      if (isHidden) {
-        themeDropdown.classList.remove('hidden');
-        themeDropdown.classList.add('flex');
-      } else {
-        themeDropdown.classList.add('hidden');
-        themeDropdown.classList.remove('flex');
-      }
+      themeDropdown.classList.toggle('hidden');
+      themeDropdown.classList.toggle('flex');
     });
 
     // Close when clicking anywhere outside
@@ -929,6 +643,14 @@ function initEventListeners() {
         themeDropdown.classList.add('hidden');
         themeDropdown.classList.remove('flex');
       });
+    });
+  }
+
+  // Music toggle
+  const musicBtn = document.getElementById('floating-music-btn');
+  if (musicBtn) {
+    musicBtn.addEventListener('click', () => {
+      toggleMusic();
     });
   }
 
@@ -979,13 +701,17 @@ function openEnvelope() {
   const screen = document.getElementById('envelope-screen');
   if (!screen || screen.classList.contains('opened')) return;
 
-  // Add opening animation class for wax seal burst, 3D doors & card lift
+  const themeId = (weddingData && weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
+
+  // Add theme-specific opening class
   screen.classList.add('opening');
+  screen.classList.add(`opening-${themeId}`);
 
   // Play music on first interaction
   playMusic();
 
   // Smoothly finish envelope opening transition
+  const transitionTime = themeId === 'chinese-traditional' ? 1000 : 850;
   setTimeout(() => {
     screen.classList.add('opened');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -998,7 +724,7 @@ function openEnvelope() {
     setTimeout(() => {
       triggerVisibleReveals();
     }, 150);
-  }, 850);
+  }, transitionTime);
 }
 window.openEnvelope = openEnvelope;
 window.toggleMusic = toggleMusic;
@@ -1133,9 +859,7 @@ const THEME_FALLING_GENERATORS = {
       const size = Math.floor(Math.random() * 10 + 24); // 24-34px
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
-      el.innerHTML = `
-        <img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="w-full h-full object-contain filter drop-shadow-md select-none">
-      `;
+      el.innerHTML = `<img src="/images/components/romduol-flower.svg" alt="ផ្ការំដួល" class="w-full h-full object-contain filter drop-shadow-md select-none">`;
       return el;
     },
     // 2. Khmer Sacred Golden Lotus (ផ្កាឈូកមាសអង្គរ)
@@ -1145,63 +869,34 @@ const THEME_FALLING_GENERATORS = {
       const size = Math.floor(Math.random() * 8 + 22); // 22-30px
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
-      el.innerHTML = `
-        <img src="/images/components/lotus-ornament.svg" alt="ផ្កាឈូក" class="w-full h-full object-contain filter drop-shadow-sm select-none">
-      `;
+      el.innerHTML = `<img src="/images/components/lotus-ornament.svg" alt="ផ្កាឈូក" class="w-full h-full object-contain filter drop-shadow-sm select-none">`;
       return el;
     },
-    // 3. Khmer Sacred Wedding Pka Sla (ផ្កាស្លាពន្លកមង្គល - Areca Palm Blossom Spikes)
+    // 3. Khmer Sacred Wedding Pka Sla (ផ្កាស្លាពន្លកមង្គល)
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 5 + 16); // 16-21px
+      const w = Math.floor(Math.random() * 5 + 16);
       const h = Math.floor(w * 1.6);
       el.style.width = `${w}px`;
       el.style.height = `${h}px`;
       el.innerHTML = `
         <svg viewBox="0 0 20 32" width="${w}" height="${h}" class="filter drop-shadow-xs">
-          <!-- Pka Sla Golden Stem -->
           <path d="M10 2 Q11 16 10 30" stroke="#C29424" stroke-width="1.3" fill="none"/>
-          <!-- Sacred Golden Palm Blossom Beads -->
           <circle cx="10" cy="4" r="2.8" fill="#FFF2BF" stroke="#A67817" stroke-width="0.7"/>
           <circle cx="6" cy="10" r="2.5" fill="#FFE07A" stroke="#A67817" stroke-width="0.7"/>
           <circle cx="14" cy="10" r="2.5" fill="#FFE07A" stroke="#A67817" stroke-width="0.7"/>
           <circle cx="5" cy="17" r="2.3" fill="#DFB342" stroke="#A67817" stroke-width="0.7"/>
           <circle cx="15" cy="17" r="2.3" fill="#DFB342" stroke="#A67817" stroke-width="0.7"/>
-          <circle cx="7" cy="24" r="2" fill="#C29424" stroke="#8C630D" stroke-width="0.6"/>
-          <circle cx="13" cy="24" r="2" fill="#C29424" stroke="#8C630D" stroke-width="0.6"/>
         </svg>
       `;
       return el;
     },
-    // 4. Golden Romduol Petal (ត្របកផ្ការំដួលមាស)
+    // 4. Fragrant White Jasmine Blossom (ផ្កាម្លិះ)
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 6 + 16); // 16-22px
-      const h = Math.floor(w * 1.4);
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.innerHTML = `
-        <svg viewBox="0 0 24 34" width="${w}" height="${h}" class="filter drop-shadow-xs">
-          <defs>
-            <linearGradient id="romPetalG" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#FFF2BF"/>
-              <stop offset="45%" stop-color="#E5BE53"/>
-              <stop offset="90%" stop-color="#C29424"/>
-            </linearGradient>
-          </defs>
-          <path d="M12 2 C3 10, 2 24, 12 32 C22 24, 21 10, 12 2 Z" fill="url(#romPetalG)" stroke="#A67817" stroke-width="0.8"/>
-          <path d="M12 4 Q12 18 12 30" stroke="#FFF7CC" stroke-width="1.1" fill="none" opacity="0.9"/>
-        </svg>
-      `;
-      return el;
-    },
-    // 5. Fragrant White Jasmine Blossom (ផ្កាម្លិះពន្លកសួស្តី)
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 6 + 16); // 16-22px
+      const size = Math.floor(Math.random() * 6 + 16);
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
       el.innerHTML = `
@@ -1234,24 +929,35 @@ const THEME_FALLING_GENERATORS = {
       el.style.boxShadow = '0 3px 8px rgba(78, 50, 39, 0.08)';
       return el;
     },
-    // 2. Tuscan Olive / Eucalyptus Branch (Botanical SVG Component)
+    // 2. Translucent Champagne Light Bokeh Orb
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 8 + 26); // 26-34px
+      const size = Math.floor(Math.random() * 12 + 10);
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.style.background = 'radial-gradient(circle, rgba(255, 248, 220, 0.8) 0%, rgba(197, 160, 89, 0.3) 60%, transparent 100%)';
+      el.style.borderRadius = '50%';
+      el.style.filter = 'blur(1px)';
+      el.style.boxShadow = '0 0 10px rgba(197, 160, 89, 0.4)';
+      return el;
+    },
+    // 3. Tuscan Olive / Eucalyptus Branch (Botanical SVG Component)
+    () => {
+      const el = document.createElement('div');
+      el.className = 'falling-object-wrap';
+      const w = Math.floor(Math.random() * 8 + 26);
       const h = Math.floor(w * 0.35);
       el.style.width = `${w}px`;
       el.style.height = `${h}px`;
-      el.innerHTML = `
-        <img src="/images/components/botanical-olive.svg" alt="Olive Branch" class="w-full h-full object-contain filter drop-shadow-sm select-none opacity-85">
-      `;
+      el.innerHTML = `<img src="/images/components/botanical-olive.svg" alt="Olive Branch" class="w-full h-full object-contain filter drop-shadow-sm select-none opacity-85">`;
       return el;
     },
-    // 3. Champagne Gold Sparkle Star (✦ Diamond Light)
+    // 4. Diamond Starlet Sparkle
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 6 + 15);
+      const size = Math.floor(Math.random() * 6 + 14);
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
       el.innerHTML = `
@@ -1260,91 +966,44 @@ const THEME_FALLING_GENERATORS = {
         </svg>
       `;
       return el;
-    },
-    // 4. Tuscan Botanical Olive & Eucalyptus Single Leaf
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 5 + 11);
-      const h = Math.floor(w * 2.2);
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.innerHTML = `
-        <svg viewBox="0 0 16 34" width="${w}" height="${h}" fill="none">
-          <path d="M8 0 C0 10, 0 24, 8 34 C16 24, 16 10, 8 0 Z" fill="#3D5A47" opacity="0.65"/>
-          <path d="M8 3 L8 31" stroke="#A3B18A" stroke-width="0.8" opacity="0.8"/>
-        </svg>
-      `;
-      return el;
-    },
-    // 5. Luxury Champagne Gold Confetti
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 5 + 7);
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.background = 'linear-gradient(135deg, #FFF2D6 0%, #C5A059 100%)';
-      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      el.style.boxShadow = '0 2px 6px rgba(197, 160, 89, 0.35)';
-      return el;
     }
   ],
 
   'chinese-traditional': [
-    // 1. Auspicious Double Happiness Medallion (囍 Medallion SVG Component)
+    // 1. Auspicious Double Happiness Medallion
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 8 + 22); // 22-30px
+      const size = Math.floor(Math.random() * 8 + 22);
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
-      el.innerHTML = `
-        <img src="/images/components/chinese-double-happiness.svg" alt="囍" class="w-full h-full object-contain filter drop-shadow-md select-none">
-      `;
+      el.innerHTML = `<img src="/images/components/chinese-double-happiness.svg" alt="囍" class="w-full h-full object-contain filter drop-shadow-md select-none">`;
       return el;
     },
-    // 2. Auspicious Peony Flower (Peony SVG Component)
+    // 2. Auspicious Peony Flower
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 8 + 20); // 20-28px
+      const size = Math.floor(Math.random() * 8 + 20);
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
-      el.innerHTML = `
-        <img src="/images/components/chinese-peony.svg" alt="牡丹" class="w-full h-full object-contain filter drop-shadow-sm select-none">
-      `;
+      el.innerHTML = `<img src="/images/components/chinese-peony.svg" alt="牡丹" class="w-full h-full object-contain filter drop-shadow-sm select-none">`;
       return el;
     },
-    // 3. Imperial Ruby Peony Petal (牡丹花瓣)
+    // 3. Pink Cherry / Peach Blossom Petal (桃花瓣)
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 8 + 16);
-      const h = Math.floor(w * 1.4);
+      const w = Math.floor(Math.random() * 6 + 14);
+      const h = Math.floor(w * 1.3);
       el.style.width = `${w}px`;
       el.style.height = `${h}px`;
-      el.style.background = 'linear-gradient(145deg, #FF334B 0%, #D41428 50%, #7D0A14 100%)';
-      el.style.borderRadius = '50% 50% 60% 0 / 40% 50% 60% 0';
-      el.style.boxShadow = '0 3px 12px rgba(168, 24, 34, 0.45)';
+      el.style.background = 'linear-gradient(135deg, #FFB7C5 0%, #FF69B4 70%, #C71585 100%)';
+      el.style.borderRadius = '50% 50% 50% 0 / 50% 50% 50% 0';
+      el.style.boxShadow = '0 2px 8px rgba(255, 105, 180, 0.4)';
       return el;
     },
-    // 4. Auspicious Gold Coin / Sycee (金钱/元宝)
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 5 + 15);
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.innerHTML = `
-        <svg viewBox="0 0 20 20" width="${size}" height="${size}">
-          <circle cx="10" cy="10" r="9" fill="#FFD700" stroke="#B8860B" stroke-width="1.2" filter="drop-shadow(0 1px 3px rgba(0,0,0,0.4))"/>
-          <rect x="7.5" y="7.5" width="5" height="5" fill="#800B13" stroke="#B8860B" stroke-width="0.8"/>
-        </svg>
-      `;
-      return el;
-    },
-    // 5. Shimmering Gold Flake (金箔飞金)
+    // 4. Shimmering Gold Flake (金箔飞金)
     () => {
       const el = document.createElement('div');
       el.className = 'falling-object-wrap';
@@ -1354,114 +1013,6 @@ const THEME_FALLING_GENERATORS = {
       el.style.background = 'linear-gradient(135deg, #FFF6BD 0%, #FFD700 60%, #FFA500 100%)';
       el.style.clipPath = 'polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%)';
       el.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
-      return el;
-    }
-  ],
-
-  'emerald-botanical': [
-    // 1. Emerald Olive Leaf
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 6 + 12);
-      const h = Math.floor(w * 1.8);
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.style.background = 'linear-gradient(135deg, #4A7A57 0%, #1E3526 60%, #112216 100%)';
-      el.style.borderRadius = '60% 0 60% 0';
-      el.style.boxShadow = '0 2px 8px rgba(30, 53, 38, 0.4)';
-      return el;
-    },
-    // 2. Champagne Gold Leaf Flake
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 5 + 10);
-      const h = Math.floor(w * 1.5);
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.style.background = 'linear-gradient(135deg, #FFF3D4 0%, #C5A059 70%, #9A7738 100%)';
-      el.style.borderRadius = '0 60% 0 60%';
-      el.style.boxShadow = '0 0 6px rgba(197, 160, 89, 0.5)';
-      return el;
-    },
-    // 3. Botanical Olive Branch Mini
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const w = Math.floor(Math.random() * 6 + 22);
-      const h = Math.floor(w * 0.4);
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.innerHTML = `<img src="/images/components/botanical-olive.svg" alt="leaf" class="w-full h-full object-contain filter drop-shadow-xs select-none opacity-80">`;
-      return el;
-    }
-  ],
-
-  'royal-palace': [
-    // 1. Shimmering Royal Gold Orb
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 6 + 10);
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.background = 'linear-gradient(135deg, #FFF7D6 0%, #F0C474 50%, #B9863D 100%)';
-      el.style.borderRadius = '50%';
-      el.style.boxShadow = '0 0 10px rgba(240, 196, 116, 0.8)';
-      return el;
-    },
-    // 2. Palace Jasmine Petal
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 6 + 14);
-      el.style.width = `${size}px`;
-      el.style.height = `${size * 1.2}px`;
-      el.style.background = 'linear-gradient(135deg, #FFFFFF 0%, #FAF0D7 60%, #E5C384 100%)';
-      el.style.borderRadius = '50% 50% 60% 60% / 60% 60% 40% 40%';
-      el.style.boxShadow = '0 2px 8px rgba(120, 84, 36, 0.2)';
-      return el;
-    },
-    // 3. Royal Gold Spangle
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 4 + 8);
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.background = '#D4AF37';
-      el.style.clipPath = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
-      el.style.boxShadow = '0 0 8px rgba(212, 175, 55, 0.7)';
-      return el;
-    }
-  ],
-
-  'midnight-sapphire': [
-    // 1. Twinkling 4-Point Golden Star
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 6 + 14);
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.innerHTML = `
-        <svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="#FFE494" filter="drop-shadow(0 0 6px #FFE494)">
-          <path d="M12 0 L14 9 L23 12 L14 15 L12 24 L10 15 L1 12 L10 9 Z"/>
-        </svg>
-      `;
-      return el;
-    },
-    // 2. Luminous Stardust Orb
-    () => {
-      const el = document.createElement('div');
-      el.className = 'falling-object-wrap';
-      const size = Math.floor(Math.random() * 4 + 6);
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.background = 'radial-gradient(circle, #FFFFFF 0%, #E2BD73 70%, transparent 100%)';
-      el.style.borderRadius = '50%';
-      el.style.boxShadow = '0 0 12px rgba(226, 189, 115, 0.9)';
       return el;
     }
   ]
@@ -1665,36 +1216,6 @@ const THEME_DATA_MAP = {
     emblem: 'romduol',
     sealEmblem: 'romduol'
   },
-  'emerald-botanical': {
-    id: 'emerald-botanical',
-    name: 'ព្រៃមរកត (Template 20)',
-    primaryColor: '#1E3526',
-    accentColor: '#C5A059',
-    secondaryColor: '#254430',
-    bgColor: '#FAF8F5',
-    emblem: 'emerald',
-    sealEmblem: 'emerald'
-  },
-  'royal-palace': {
-    id: 'royal-palace',
-    name: 'វាំងមាស (Template 11)',
-    primaryColor: '#785424',
-    accentColor: '#F0C474',
-    secondaryColor: '#9B621D',
-    bgColor: '#FAF5EE',
-    emblem: 'palace',
-    sealEmblem: 'palace'
-  },
-  'midnight-sapphire': {
-    id: 'midnight-sapphire',
-    name: 'រាត្រីតារា (Template 3)',
-    primaryColor: '#071426',
-    accentColor: '#E2BD73',
-    secondaryColor: '#0B1B34',
-    bgColor: '#071426',
-    emblem: 'celestial',
-    sealEmblem: 'celestial'
-  },
   'western-modern': {
     id: 'western-modern',
     name: 'សម័យថ្មី',
@@ -1757,26 +1278,12 @@ function renderAttirePalette() {
   const themeId = (weddingData?.theme?.id) || 'khmer-traditional';
 
   let colors;
-  if (themeId === 'midnight-sapphire') {
+  if (themeId === 'chinese-traditional') {
     colors = [
-      { name_kh: 'ខៀវរាត្រី', name_en: 'Midnight Navy', hex: '#0B1B34' },
-      { name_kh: 'ខៀវរាជវាំង', name_en: 'Royal Blue', hex: '#234F91' },
-      { name_kh: 'ខៀវប្រាក់', name_en: 'Silver Blue', hex: '#9DB5D1' },
-      { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AC61' }
-    ];
-  } else if (themeId === 'emerald-botanical') {
-    colors = [
-      { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
-      { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#C5A059' },
-      { name_kh: 'ក្រែមសូត្រ', name_en: 'Warm Ivory', hex: '#FAF0D7' },
-      { name_kh: 'បៃតងស្រាល', name_en: 'Sage Leaf', hex: '#3A5643' }
-    ];
-  } else if (themeId === 'royal-palace') {
-    colors = [
-      { name_kh: 'មាសរាជវាំង', name_en: 'Royal Amber', hex: '#785424' },
-      { name_kh: 'មាសភ្លឺ', name_en: 'Palace Gold', hex: '#F0C474' },
-      { name_kh: 'ក្រែមសូត្រ', name_en: 'Champagne Silk', hex: '#FAF5EE' },
-      { name_kh: 'ត្នោតចាស់', name_en: 'Imperial Maroon', hex: '#4D2A0D' }
+      { name_kh: 'ក្រហមមង្គល', name_en: 'Auspicious Crimson', hex: '#A81822' },
+      { name_kh: 'មាសអធិរាជ', name_en: 'Imperial Gold', hex: '#FFD700' },
+      { name_kh: 'មាសបុរាណ', name_en: 'Heritage Gold', hex: '#D4AF37' },
+      { name_kh: 'ក្រហមទំពាំងបាយជូរ', name_en: 'Burgundy Wine', hex: '#60080F' }
     ];
   } else if (themeId === 'western-modern') {
     colors = [
@@ -1785,21 +1292,13 @@ function renderAttirePalette() {
       { name_kh: 'ក្រែមទំនើប', name_en: 'Modern Alabaster', hex: '#FAF8F5' },
       { name_kh: 'ប្រផេះទន់', name_en: 'Soft Slate', hex: '#6B7280' }
     ];
-  } else if (themeId === 'chinese-traditional') {
-    colors = [
-      { name_kh: 'ក្រហមមង្គល', name_en: 'Auspicious Crimson', hex: '#A81822' },
-      { name_kh: 'មាសអធិរាជ', name_en: 'Imperial Gold', hex: '#FFD700' },
-      { name_kh: 'មាសបុរាណ', name_en: 'Heritage Gold', hex: '#D4AF37' },
-      { name_kh: 'ក្រហមទំពាំងបាយជូរ', name_en: 'Burgundy Wine', hex: '#60080F' }
-    ];
   } else {
     // Default: Khmer Traditional (ប្រពៃណីខ្មែរ)
     colors = [
       { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AF37' },
-      { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
+      { name_kh: 'ក្រហមទុំ', name_en: 'Burgundy Silk', hex: '#8C1D2F' },
       { name_kh: 'ក្រែមសូត្រ', name_en: 'Warm Ivory', hex: '#FAF0D7' },
-      { name_kh: 'ផ្កាឈូកទន់', name_en: 'Soft Rose', hex: '#DDA7A5' },
-      { name_kh: 'ខៀវរាត្រី', name_en: 'Midnight Navy', hex: '#0B1B34' }
+      { name_kh: 'ទង់ដែងសូត្រ', name_en: 'Copper Bronze', hex: '#B37D4E' }
     ];
   }
 
@@ -2000,3 +1499,92 @@ window.closeQrModal = function() {
   const modal = document.getElementById('qr-lightbox-modal');
   if (modal) modal.classList.add('hidden');
 };
+
+
+function renderThemeWelcome(themeId, w, isKh) {
+  const guestDisplayName = currentGuest 
+    ? (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name)) 
+    : (isKh ? 'ភ្ញៀវកិត្តិយស' : 'Honorable Guest');
+
+  const groomInit = (w.groom.name_en || 'G').trim().charAt(0).toUpperCase();
+  const brideInit = (w.bride.name_en || 'B').trim().charAt(0).toUpperCase();
+
+  // Hide all welcome screens first
+  const wKhmer = document.getElementById('welcome-khmer');
+  const wModern = document.getElementById('welcome-modern');
+  const wChinese = document.getElementById('welcome-chinese');
+
+  if (wKhmer) wKhmer.classList.add('hidden');
+  if (wModern) wModern.classList.add('hidden');
+  if (wChinese) wChinese.classList.add('hidden');
+
+  if (themeId === 'western-modern') {
+    // Show Western Modern
+    if (wModern) {
+      wModern.classList.remove('hidden');
+      const modernCouple = document.getElementById('modern-envelope-couple-names');
+      if (modernCouple) {
+        modernCouple.innerHTML = `
+          <div class="font-serif text-2xl sm:text-3xl text-[#1F2421] tracking-wide leading-tight">
+            <span class="font-bold">${escapeHTML(w.groom.name_en)}</span>
+            <span class="text-[#C5A059] italic mx-1.5">&</span>
+            <span class="font-bold">${escapeHTML(w.bride.name_en)}</span>
+          </div>
+          <div class="font-khmer-title text-sm text-[#7A6F68] mt-1">
+            ${escapeHTML(w.groom.name_kh)} & ${escapeHTML(w.bride.name_kh)}
+          </div>
+        `;
+      }
+      const modernDate = document.getElementById('modern-date-preview');
+      if (modernDate && w.event_date) {
+        const d = new Date(w.event_date);
+        const dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        modernDate.innerHTML = `<span class="text-[11px] uppercase tracking-widest text-[#A67C1E] font-medium">${dateStr}</span>`;
+      }
+      const guestBox = document.getElementById('modern-envelope-guest-box');
+      const guestName = document.getElementById('modern-envelope-guest-name');
+      if (guestBox && guestName) {
+        guestName.textContent = guestDisplayName;
+        guestBox.classList.remove('hidden');
+      }
+    }
+  } else if (themeId === 'chinese-traditional') {
+    // Show Chinese Traditional
+    if (wChinese) {
+      wChinese.classList.remove('hidden');
+      const guestBox = document.getElementById('chinese-envelope-guest-box');
+      const guestName = document.getElementById('chinese-envelope-guest-name');
+      if (guestBox && guestName) {
+        guestName.textContent = guestDisplayName;
+        guestBox.classList.remove('hidden');
+      }
+    }
+  } else {
+    // Show Khmer Traditional (Default)
+    if (wKhmer) {
+      wKhmer.classList.remove('hidden');
+      const khmerCouple = document.getElementById('khmer-envelope-couple-names');
+      if (khmerCouple) {
+        khmerCouple.innerHTML = `
+          <div class="flex flex-col items-center justify-center">
+            <div class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#8C1D2F]">
+              ${escapeHTML(w.groom.name_kh)}
+            </div>
+            <div class="couple-connector my-1">
+              <span class="text-xs text-[#D4AF37] font-bold font-khmer-body">និង</span>
+            </div>
+            <div class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#8C1D2F]">
+              ${escapeHTML(w.bride.name_kh)}
+            </div>
+          </div>
+        `;
+      }
+      const guestBox = document.getElementById('khmer-envelope-guest-box');
+      const guestName = document.getElementById('khmer-envelope-guest-name');
+      if (guestBox && guestName) {
+        guestName.textContent = guestDisplayName;
+        guestBox.classList.remove('hidden');
+      }
+    }
+  }
+}
