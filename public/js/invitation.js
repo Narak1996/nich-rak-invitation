@@ -263,12 +263,9 @@ function renderAll() {
     const labelMap = { 
       'khmer-traditional': 'ខ្មែរ', 
       'emerald-botanical': 'ព្រៃមរកត', 
-      'template20': 'ព្រៃមរកត',
-      'royal-palace': 'វាំងមាស', 
-      'template11': 'វាំងមាស',
-      'midnight-sapphire': 'រាត្រីតារា', 
-      'template3': 'រាត្រីតារា',
-      'western-modern': 'សម័យថ្មី', 
+            'royal-palace': 'វាំងមាស', 
+            'midnight-sapphire': 'រាត្រីតារា', 
+            'western-modern': 'សម័យថ្មី', 
       'chinese-traditional': 'ចិន' 
     };
     themeLabelEl.textContent = labelMap[themeId] || 'ខ្មែរ';
@@ -277,39 +274,16 @@ function renderAll() {
   // Language based text rendering
   const isKh = currentLang === 'kh';
 
-  // Toggle Dedicated Opening Screens (100% Exact Clones of Template 20, 11, 3)
-  const oT20 = document.getElementById('opening-screen-t20');
-  const oT11 = document.getElementById('opening-screen-t11');
-  const oT3 = document.getElementById('opening-screen-t3');
-  const oDef = document.getElementById('opening-screen-default');
-
-  if (oT20) oT20.classList.add('hidden');
-  if (oT11) oT11.classList.add('hidden');
-  if (oT3) oT3.classList.add('hidden');
-  if (oDef) oDef.classList.add('hidden');
-
+  // Guest display name on unified envelope
   const guestDisplayName = currentGuest 
     ? (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name)) 
     : (isKh ? 'ភ្ញៀវកិត្តិយស' : 'Honorable Guest');
 
-  if (themeId === 'template20' || themeId === 'emerald-botanical') {
-    if (oT20) {
-      oT20.classList.remove('hidden');
-      const t20Guest = document.getElementById('t20-guest-name');
-      if (t20Guest) t20Guest.textContent = guestDisplayName;
-    }
-  } else if (themeId === 'template11' || themeId === 'royal-palace') {
-    if (oT11) {
-      oT11.classList.remove('hidden');
-      const t11Guest = document.getElementById('t11-guest-name');
-      if (t11Guest) t11Guest.textContent = guestDisplayName;
-    }
-  } else if (themeId === 'template3' || themeId === 'midnight-sapphire') {
-    if (oT3) {
-      oT3.classList.remove('hidden');
-    }
-  } else {
-    if (oDef) oDef.classList.remove('hidden');
+  const envGuestNameEl = document.getElementById('envelope-guest-name');
+  if (envGuestNameEl) {
+    envGuestNameEl.textContent = guestDisplayName;
+    const envGuestContainer = document.getElementById('envelope-guest-container');
+    if (envGuestContainer) envGuestContainer.classList.remove('hidden');
   }
 
   // Groom and Bride initials for monogram
@@ -1494,9 +1468,6 @@ const THEME_FALLING_GENERATORS = {
 };
 
 // Aliases for falling generators
-THEME_FALLING_GENERATORS['template20'] = THEME_FALLING_GENERATORS['emerald-botanical'];
-THEME_FALLING_GENERATORS['template11'] = THEME_FALLING_GENERATORS['royal-palace'];
-THEME_FALLING_GENERATORS['template3'] = THEME_FALLING_GENERATORS['midnight-sapphire'];
 
 function initPetals() {
   const container = document.body;
@@ -1747,9 +1718,6 @@ const THEME_DATA_MAP = {
 };
 
 // Aliases for quick links and direct template references
-THEME_DATA_MAP['template20'] = THEME_DATA_MAP['emerald-botanical'];
-THEME_DATA_MAP['template11'] = THEME_DATA_MAP['royal-palace'];
-THEME_DATA_MAP['template3'] = THEME_DATA_MAP['midnight-sapphire'];
 
 window.switchThemeLive = async function(themeId) {
   const themeObj = THEME_DATA_MAP[themeId];
@@ -1789,28 +1757,43 @@ function renderAttirePalette() {
   const themeId = (weddingData?.theme?.id) || 'khmer-traditional';
 
   let colors;
-  if (themeId === 'template3' || themeId === 'midnight-sapphire') {
+  if (themeId === 'midnight-sapphire') {
     colors = [
       { name_kh: 'ខៀវរាត្រី', name_en: 'Midnight Navy', hex: '#0B1B34' },
       { name_kh: 'ខៀវរាជវាំង', name_en: 'Royal Blue', hex: '#234F91' },
       { name_kh: 'ខៀវប្រាក់', name_en: 'Silver Blue', hex: '#9DB5D1' },
       { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AC61' }
     ];
-  } else if (themeId === 'template20' || themeId === 'emerald-botanical') {
+  } else if (themeId === 'emerald-botanical') {
     colors = [
       { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
       { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#C5A059' },
       { name_kh: 'ក្រែមសូត្រ', name_en: 'Warm Ivory', hex: '#FAF0D7' },
       { name_kh: 'បៃតងស្រាល', name_en: 'Sage Leaf', hex: '#3A5643' }
     ];
-  } else if (themeId === 'template11' || themeId === 'royal-palace') {
+  } else if (themeId === 'royal-palace') {
     colors = [
       { name_kh: 'មាសរាជវាំង', name_en: 'Royal Amber', hex: '#785424' },
       { name_kh: 'មាសភ្លឺ', name_en: 'Palace Gold', hex: '#F0C474' },
       { name_kh: 'ក្រែមសូត្រ', name_en: 'Champagne Silk', hex: '#FAF5EE' },
       { name_kh: 'ត្នោតចាស់', name_en: 'Imperial Maroon', hex: '#4D2A0D' }
     ];
+  } else if (themeId === 'western-modern') {
+    colors = [
+      { name_kh: 'បៃតងស្រល់', name_en: 'Forest Pine', hex: '#1B4332' },
+      { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#C5A059' },
+      { name_kh: 'ក្រែមទំនើប', name_en: 'Modern Alabaster', hex: '#FAF8F5' },
+      { name_kh: 'ប្រផេះទន់', name_en: 'Soft Slate', hex: '#6B7280' }
+    ];
+  } else if (themeId === 'chinese-traditional') {
+    colors = [
+      { name_kh: 'ក្រហមមង្គល', name_en: 'Auspicious Crimson', hex: '#A81822' },
+      { name_kh: 'មាសអធិរាជ', name_en: 'Imperial Gold', hex: '#FFD700' },
+      { name_kh: 'មាសបុរាណ', name_en: 'Heritage Gold', hex: '#D4AF37' },
+      { name_kh: 'ក្រហមទំពាំងបាយជូរ', name_en: 'Burgundy Wine', hex: '#60080F' }
+    ];
   } else {
+    // Default: Khmer Traditional (ប្រពៃណីខ្មែរ)
     colors = [
       { name_kh: 'មាសស្រាល', name_en: 'Champagne Gold', hex: '#D4AF37' },
       { name_kh: 'បៃតងមរកត', name_en: 'Emerald Green', hex: '#1E3526' },
@@ -1821,12 +1804,13 @@ function renderAttirePalette() {
   }
 
   container.innerHTML = colors.map(c => `
-    <div class="flex flex-col items-center gap-2 group cursor-pointer transition transform hover:-translate-y-1">
-      <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-white/80 shadow-md flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg" style="background-color: ${c.hex};">
-        <div class="w-4 h-4 rounded-full bg-white/20"></div>
+    <button type="button" onclick="copyAttireHex('${c.hex}')" class="attire-swatch-btn group" title="ចុចដើម្បីចម្លងកូដពណ៌ ${c.hex}">
+      <div class="attire-color-circle" style="background-color: ${c.hex};">
+        <span class="opacity-0 group-hover:opacity-100 text-white text-[10px] font-bold transition">Copy</span>
       </div>
       <span class="text-[11px] sm:text-xs font-semibold text-[#4E3227] font-khmer-body text-center">${isKh ? c.name_kh : c.name_en}</span>
-    </div>
+      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono bg-white/80 border border-[#C5A059]/40 text-[#4E3227] shadow-2xs">${c.hex}</span>
+    </button>
   `).join('');
 }
 
@@ -1926,3 +1910,93 @@ function triggerVisibleReveals() {
   });
 }
 
+
+
+// ================= MODERN PLATFORM UTILITIES =================
+
+window.addToGoogleCalendar = function() {
+  if (!weddingData?.wedding) return;
+  const w = weddingData.wedding;
+  const startDate = new Date(w.event_date || '2027-01-24T16:30:00+07:00');
+  const endDate = new Date(startDate.getTime() + 5 * 60 * 60 * 1000);
+  const formatTime = (d) => d.toISOString().replace(/-|:|.\d\d\d/g, '');
+  const title = encodeURIComponent(`${w.groom?.name_en || 'Channarak'} & ${w.bride?.name_en || 'SreyNich'} Wedding Celebration`);
+  const details = encodeURIComponent(`We cordially invite you to celebrate our wedding.\nVenue: ${w.venue_name_kh || ''}, ${w.venue_address_kh || ''}`);
+  const location = encodeURIComponent(`${w.venue_name_kh || ''}, ${w.venue_address_kh || ''}`);
+  const dates = `${formatTime(startDate)}/${formatTime(endDate)}`;
+  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+  window.open(googleUrl, '_blank');
+};
+
+window.downloadIcsCalendar = function() {
+  if (!weddingData?.wedding) return;
+  const w = weddingData.wedding;
+  const startDate = new Date(w.event_date || '2027-01-24T16:30:00+07:00');
+  const endDate = new Date(startDate.getTime() + 5 * 60 * 60 * 1000);
+  const formatIcsTime = (d) => d.toISOString().replace(/-|:|.\d\d\d/g, '');
+  const title = `${w.groom?.name_en || 'Channarak'} & ${w.bride?.name_en || 'SreyNich'} Wedding Celebration`;
+  const desc = `We cordially invite you to celebrate our wedding.\\nVenue: ${w.venue_name_kh || ''}, ${w.venue_address_kh || ''}`;
+  const loc = `${w.venue_name_kh || ''}, ${w.venue_address_kh || ''}`;
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//E-Invitation//KH',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:wedding-${startDate.getTime()}@rak-nich.com`,
+    `DTSTAMP:${formatIcsTime(new Date())}`,
+    `DTSTART:${formatIcsTime(startDate)}`,
+    `DTEND:${formatIcsTime(endDate)}`,
+    `SUMMARY:${title}`,
+    `DESCRIPTION:${desc}`,
+    `LOCATION:${loc}`,
+    'STATUS:CONFIRMED',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.setAttribute('download', 'wedding-invitation.ics');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast(currentLang === 'kh' ? 'បានទាញយកឯកសារប្រតិទិន (.ics)!' : 'Calendar event (.ics) downloaded!');
+};
+
+window.copyVenueAddress = function() {
+  const w = weddingData?.wedding || {};
+  const addr = w.venue_address_kh || w.venue_address_en || w.venue_name_kh || 'មជ្ឈមណ្ឌលសន្និបាត និងពិព័រណ៍ ព្រីមៀរ សែនសុខ';
+  navigator.clipboard.writeText(addr);
+  showToast(currentLang === 'kh' ? 'បានចម្លងអាសយដ្ឋានទីតាំងជោគជ័យ!' : 'Venue address copied!');
+};
+
+window.copyAttireHex = function(hex) {
+  navigator.clipboard.writeText(hex);
+  showToast(currentLang === 'kh' ? `បានចម្លងកូដពណ៌ ${hex}!` : `Color ${hex} copied!`);
+};
+
+window.openQrModal = function(type) {
+  const dg = weddingData?.digital_gift;
+  if (!dg) return;
+  const modal = document.getElementById('qr-lightbox-modal');
+  const title = document.getElementById('qr-modal-title');
+  const acc = document.getElementById('qr-modal-acc');
+  const img = document.getElementById('qr-modal-img');
+  if (!modal || !img) return;
+
+  const isGroom = type === 'groom';
+  const accData = isGroom ? dg.groom_account : dg.bride_account;
+  if (title) title.textContent = `${accData.bank_name} (${isGroom ? 'ខាងកូនប្រុស' : 'ខាងកូនស្រី'})`;
+  if (acc) acc.textContent = `${accData.account_name} — ${accData.account_number}`;
+  img.src = accData.qr_image;
+  modal.classList.remove('hidden');
+};
+
+window.closeQrModal = function() {
+  const modal = document.getElementById('qr-lightbox-modal');
+  if (modal) modal.classList.add('hidden');
+};

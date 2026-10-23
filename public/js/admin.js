@@ -134,7 +134,7 @@ const THEME_PRESETS = {
   },
   'emerald-botanical': {
     id: 'emerald-botanical',
-    name: 'ព្រៃមរកត (Template 20)',
+    name: 'ព្រៃមរកត (Emerald Botanical)',
     primaryColor: '#1E3526',
     accentColor: '#C5A059',
     secondaryColor: '#254430',
@@ -144,7 +144,7 @@ const THEME_PRESETS = {
   },
   'royal-palace': {
     id: 'royal-palace',
-    name: 'វាំងមាស (Template 11)',
+    name: 'វាំងមាស (Royal Palace)',
     primaryColor: '#785424',
     accentColor: '#F0C474',
     secondaryColor: '#9B621D',
@@ -154,7 +154,7 @@ const THEME_PRESETS = {
   },
   'midnight-sapphire': {
     id: 'midnight-sapphire',
-    name: 'រាត្រីតារា (Template 3)',
+    name: 'រាត្រីតារា (Midnight Sapphire)',
     primaryColor: '#071426',
     accentColor: '#E2BD73',
     secondaryColor: '#0B1B34',

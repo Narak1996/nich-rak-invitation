@@ -73,138 +73,7 @@
     <!-- Starfield particles (active in midnight-sapphire theme) -->
     <div id="envelope-starfield" class="envelope-stars-bg"></div>
 
-    <!-- ================= 1. TEMPLATE 20: EXACT OPENING SCREEN ================= -->
-    <div id="opening-screen-t20" class="opening-screen-t20-wrap hidden">
-      <main class="opening-screen-t20-shell">
-        <!-- Door Closed Background (Transitions to Aisle on click) -->
-        <img src="/images/templates/door-closed-BpjZscP1.webp" alt="Wedding Entrance" class="door-closed-img" draggable="false">
-        <div class="aisle-open-wrap">
-          <img src="/images/templates/aisle-open-7PyJ0-QD.webp" alt="Wedding Aisle" class="h-full w-full object-cover" draggable="false">
-        </div>
-        <!-- Soft Radial Vignette Overlay -->
-        <div class="pointer-events-none absolute inset-0 z-[1]" style="background: radial-gradient(ellipse 65% 75% at 50% 50%, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.5) 60%, rgba(36,56,44,0.4) 100%);"></div>
-
-        <!-- Foreground Content -->
-        <div class="t20-content-wrap relative z-[3] flex min-h-svh w-full shrink-0 flex-col items-center justify-center gap-3 px-6 pb-[max(32px,env(safe-area-inset-bottom))] pt-8">
-          <!-- Crown Icon & Curved Moul Arch Title -->
-          <header class="mx-auto flex w-full shrink-0 flex-col items-center">
-            <svg width="36" height="14" viewBox="0 0 36 14" fill="none" class="mb-1 opacity-85">
-              <path d="M18 1L21 6L26 3L24 10H12L10 3L15 6L18 1Z" fill="#C5A059" stroke="#9A7738" stroke-width="0.5"/>
-              <circle cx="18" cy="1" r="1" fill="#F5E6C8"/>
-              <circle cx="26" cy="3" r="0.8" fill="#F5E6C8"/>
-              <circle cx="10" cy="3" r="0.8" fill="#F5E6C8"/>
-            </svg>
-            <div class="relative flex w-full justify-center pt-2 pb-1">
-              <h1 class="sr-only">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
-              <svg viewBox="0 0 600 120" class="w-full max-w-[500px] overflow-visible drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]" aria-hidden="true">
-                <path id="title-arch-curve" d="M 20,105 A 280 70 0 0 1 580,105" fill="transparent" stroke="none"/>
-                <text class="font-moul royal-gold-title" font-size="36" text-anchor="middle">
-                  <textPath href="#title-arch-curve" xlink:href="#title-arch-curve" startOffset="50%">សិរីមង្គលអាពាហ៍ពិពាហ៍</textPath>
-                </text>
-              </svg>
-            </div>
-          </header>
-
-          <!-- Monogram Wreath (Exact T20) -->
-          <div class="pointer-events-none relative mx-auto my-1 flex h-[clamp(160px,24svh,215px)] w-[68%] max-w-[240px] shrink-0 items-center justify-center">
-            <div class="pointer-events-none absolute -inset-6 -z-10 rounded-full bg-[radial-gradient(circle,rgba(197,160,89,0.28)_0%,rgba(255,255,255,0.45)_40%,transparent_72%)] animate-pulse"></div>
-            <div class="pointer-events-none absolute -inset-2 -z-10 rounded-full border border-[#C5A059]/30 opacity-60"></div>
-            <img src="/images/templates/monogram-20-CAWbkezH.webp" alt="Couple Monogram" class="mx-auto block h-full w-full select-none object-contain drop-shadow-[0_12px_28px_rgba(30,53,38,0.26)]" draggable="false">
-          </div>
-
-          <!-- Luxury Parchment Guest Card -->
-          <section class="luxury-parchment-card relative mx-auto w-full max-w-[340px] shrink-0 rounded-2xl p-1.5" aria-label="Guest invitation">
-            <div class="inner-gold-frame relative flex flex-col items-center p-3.5 sm:p-4 text-center">
-              <span class="pointer-events-none absolute top-1.5 left-1.5 h-2.5 w-2.5 border-t border-l border-[#C5A059]/70"></span>
-              <span class="pointer-events-none absolute top-1.5 right-1.5 h-2.5 w-2.5 border-t border-r border-[#C5A059]/70"></span>
-              <span class="pointer-events-none absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b border-l border-[#C5A059]/70"></span>
-              <span class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b border-r border-[#C5A059]/70"></span>
-              
-              <div class="flex items-center justify-center gap-2.5 w-full">
-                <span class="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#C5A059]/60"></span>
-                <p class="m-0 font-moulpali text-sm sm:text-[15px] text-[#24382c] tracking-wide">សូមគោរពអញ្ជើញ</p>
-                <span class="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#C5A059]/60"></span>
-              </div>
-
-              <!-- Guest Velvet Ribbon with Light Glint Sweep -->
-              <div class="guest-velvet-ribbon relative mx-auto mt-2 w-full overflow-hidden rounded-xl py-2 px-4 text-white">
-                <div class="light-glint-sweep opacity-75" aria-hidden="true"></div>
-                <h2 class="relative z-10 m-0 font-battambang text-base sm:text-[17px] font-bold tracking-wide [overflow-wrap:anywhere] text-[#FAF8F5] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" id="t20-guest-name">
-                  ភ្ញៀវកិត្តិយស
-                </h2>
-              </div>
-            </div>
-          </section>
-
-          <!-- Luxury Open Button with Glint & Medallion -->
-          <button type="button" onclick="openEnvelope()" class="luxury-open-button luxury-pulse-ring group relative z-[6] mx-auto mt-2.5 flex items-center justify-between gap-3 overflow-hidden rounded-full py-2 pl-7 pr-2.5 text-white transition-transform duration-300 active:scale-95 cursor-pointer min-w-[210px]" aria-label="បើកលិខិតអញ្ជើញ">
-            <div class="light-glint-sweep opacity-80" aria-hidden="true"></div>
-            <span class="relative z-10 font-moulpali text-base sm:text-[17px] text-[#FAF8F5] tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">បើកលិខិតអញ្ជើញ</span>
-            <div class="gold-medallion relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[#F5E6C8]">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-            </div>
-          </button>
-        </div>
-      </main>
-    </div>
-
-    <!-- ================= 2. TEMPLATE 11: EXACT OPENING SCREEN ================= -->
-    <div id="opening-screen-t11" class="opening-screen-t11-wrap hidden">
-      <main class="opening-screen-t11-shell">
-        <img src="/images/templates/opening-background-ecCy2I3B.webp" alt="Royal Palace Opening" class="absolute inset-0 z-0 h-full w-full select-none object-cover object-center" draggable="false">
-        <div class="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(17,8,2,0.34)_0%,rgba(25,12,5,0.05)_34%,rgba(20,9,3,0.08)_61%,rgba(13,6,2,0.48)_100%)]"></div>
-
-        <!-- Arch Title -->
-        <h1 class="wedding-opening-title absolute inset-x-[8%] top-[10.8%] z-[3] m-0 whitespace-nowrap">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
-
-        <!-- Monogram (Exact T11) -->
-        <img src="/images/templates/monogram-DbargaEe.webp" alt="Wedding monogram" class="wedding-opening-monogram" draggable="false">
-
-        <!-- Guest Invitation Badge -->
-        <section class="absolute inset-x-[7%] top-[73%] z-[3] flex flex-col items-center">
-          <p class="wedding-opening-invitation">សូមគោរពអញ្ជើញ</p>
-          <h2 class="wedding-opening-guest-name" id="t11-guest-name">ភ្ញៀវកិត្តិយស</h2>
-        </section>
-
-        <!-- Ornate Button Frame (Exact T11) -->
-        <button type="button" class="wedding-opening-cta absolute bottom-[6%] left-[17%] z-[30] h-[clamp(100px,10.6svh,120px)] w-[66%] outline-0" onclick="openEnvelope()" aria-label="សូមចុចបើកសំបុត្រ">
-          <img src="/images/templates/button-frame-0mOWMTvA.webp" alt="" class="absolute inset-0 z-0 h-full w-full select-none object-fill drop-shadow-[0_8px_13px_rgba(0,0,0,0.55)]" draggable="false">
-          <span class="relative z-[2] flex h-full items-center justify-center whitespace-nowrap px-[17%] text-[clamp(16px,min(4.4vw,2.55svh),22px)] font-semibold leading-[1.4] [text-shadow:0_1px_0_rgba(255,241,188,0.9),0_2px_4px_rgba(91,49,11,0.24)]">សូមចុចបើកសំបុត្រ</span>
-          <i class="pointer-events-none absolute bottom-[23%] left-[13%] top-[23%] z-[1] w-[22%] -skew-x-[18deg] bg-gradient-to-r from-transparent via-white/45 to-transparent"></i>
-        </button>
-      </main>
-    </div>
-
-    <!-- ================= 3. TEMPLATE 3: EXACT OPENING SCREEN ================= -->
-    <div id="opening-screen-t3" class="template3-page fixed inset-0 hidden">
-      <main class="template3-shell template3-opening overflow-hidden overscroll-none touch-none">
-        <img class="template3-opening__background" src="/images/templates/opening-background-matched-Benaz2bK.webp" alt="Celestial Starry Background" draggable="false">
-        <div class="template3-opening__wash"></div>
-        <div class="template3-opening__sparkles">
-          <span style="left:15%;top:20%;width:4px;height:4px;animation-delay:0s"></span>
-          <span style="left:82%;top:25%;width:5px;height:5px;animation-delay:0.42s"></span>
-          <span style="left:28%;top:65%;width:3px;height:3px;animation-delay:0.84s"></span>
-          <span style="left:75%;top:70%;width:4px;height:4px;animation-delay:1.26s"></span>
-          <span style="left:50%;top:15%;width:3px;height:3px;animation-delay:1.68s"></span>
-          <span style="left:10%;top:80%;width:4px;height:4px;animation-delay:2.1s"></span>
-        </div>
-        <!-- Couple Lockup (Exact T3) -->
-        <div class="template3-opening__heading">
-          <div class="template3-lockup">
-            <img class="template3-lockup__image" src="/images/templates/couple-lockup-BSFfO8mA.webp" alt="Couple Lockup" draggable="false">
-          </div>
-        </div>
-        <!-- Wax Seal Button (Exact T3) -->
-        <button type="button" class="wedding-opening-cta template3-seal-button" onclick="openEnvelope()" aria-label="Tap to open">
-          <span class="template3-seal-button__glow"></span>
-          <img src="/images/templates/wax-seal-D_bhm8ka.webp" alt="Wax Seal" draggable="false">
-        </button>
-        <button type="button" class="template3-envelope-hit-area" onclick="openEnvelope()" aria-label="Tap to open"></button>
-        <div class="template3-opening__flash"></div>
-      </main>
-    </div>
-
-    <!-- ================= 4. DEFAULT ENVELOPE (TRADITIONAL / MODERN / CHINESE) ================= -->
+    <!-- ================= UNIFIED LUXURY THEME-ADAPTIVE ENVELOPE ================= -->
     <div id="opening-screen-default" class="envelope-card">
       <div class="khmer-corner-tl"></div>
       <div class="khmer-corner-tr"></div>
@@ -260,13 +129,13 @@
           <img src="/images/components/romduol-flower.svg" class="w-4 h-4 object-contain inline-block" alt="Khmer"> <span>🌺 ខ្មែរប្រពៃណី</span>
         </button>
         <button onclick="window.switchThemeLive('emerald-botanical')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#1E3526] hover:bg-emerald-50 transition text-left">
-          <span class="text-sm">🌿</span> <span>ព្រៃមរកត (T20)</span>
+          <span class="text-sm">🌿</span> <span>ព្រៃមរកត</span>
         </button>
         <button onclick="window.switchThemeLive('royal-palace')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#785424] hover:bg-amber-50 transition text-left">
-          <span class="text-sm">👑</span> <span>វាំងមាស (T11)</span>
+          <span class="text-sm">👑</span> <span>វាំងមាស</span>
         </button>
         <button onclick="window.switchThemeLive('midnight-sapphire')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#0B1B34] hover:bg-slate-100 transition text-left">
-          <span class="text-sm">🌌</span> <span>រាត្រីតារា (T3)</span>
+          <span class="text-sm">🌌</span> <span>រាត្រីតារា</span>
         </button>
         <button onclick="window.switchThemeLive('western-modern')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#4E3227] hover:bg-[#FAF7F2] transition text-left">
           <span class="text-sm">💍</span> <span>សម័យថ្មី</span>
@@ -304,7 +173,10 @@
   </header>
 
   <!-- ================= FLOATING MUSIC PLAYER BUTTON ================= -->
-  <button id="floating-music-btn" class="floating-music-btn" title="តន្ត្រីមង្គលការ / Background Music">
+  <button id="floating-music-btn" class="floating-music-btn flex items-center justify-center" title="តន្ត្រីមង្គលការ / Background Music">
+    <div id="music-wave-bars" class="audio-wave hidden">
+      <span></span><span></span><span></span><span></span>
+    </div>
     <svg id="music-icon-play" class="w-6 h-6 text-amber-200" fill="currentColor" viewBox="0 0 24 24">
       <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
     </svg>
@@ -473,10 +345,17 @@
       </div>
 
       <!-- Add to Calendar Button -->
-      <button id="btn-add-calendar" class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] rounded-full text-xs font-semibold shadow-2xs transition mb-6">
-        <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-        <span data-kh="កត់ត្រាក្នុងប្រតិទិន (Add to Calendar)" data-en="Add to Google Calendar">កត់ត្រាក្នុងប្រតិទិន (Add to Calendar)</span>
-      </button>
+      <!-- Add to Calendar Button Group (Google & Apple/iCal) -->
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <button type="button" onclick="addToGoogleCalendar()" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] rounded-full text-xs font-semibold shadow-2xs transition hover:scale-105 active:scale-95 cursor-pointer">
+          <svg class="w-4 h-4 text-[#C5A059]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+          <span data-kh="Google Calendar" data-en="Google Calendar">Google Calendar</span>
+        </button>
+        <button type="button" onclick="downloadIcsCalendar()" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] rounded-full text-xs font-semibold shadow-2xs transition hover:scale-105 active:scale-95 cursor-pointer">
+          <svg class="w-4 h-4 text-[#C5A059]" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.84c.62-.75 1.04-1.8 0.93-2.84-.9.04-1.99.6-2.64 1.35-.57.65-1.07 1.72-.94 2.73 1 .08 2.03-.5 2.65-1.24z"/></svg>
+          <span data-kh="Apple / iCal" data-en="Apple / iCal">Apple / iCal</span>
+        </button>
+      </div>
 
       <div class="h-px w-3/4 bg-[#E5D5BC] mx-auto my-4"></div>
 
@@ -496,10 +375,16 @@
       </div>
 
       <!-- Open in Google Maps Button -->
-      <a id="btn-google-maps" href="#" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white rounded-full text-xs font-bold shadow-md transition">
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a id="btn-google-maps" href="#" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white rounded-full text-xs font-bold shadow-md transition">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         <span data-kh="បើកមើលក្នុង Google Maps" data-en="Open in Google Maps">បើកមើលក្នុង Google Maps</span>
       </a>
+        <button type="button" onclick="copyVenueAddress()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] rounded-full text-xs font-bold shadow-xs transition hover:scale-105 active:scale-95 cursor-pointer">
+          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span data-kh="ចម្លងទីតាំង" data-en="Copy Address">ចម្លងទីតាំង</span>
+        </button>
+      </div>
     </section>
 
     <!-- AGENDA & CEREMONY SCHEDULE -->
@@ -603,7 +488,7 @@
         <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC] shadow-xs text-center">
           <span class="text-xs font-bold text-[#C5A059] uppercase block mb-2" data-kh="ខាងកូនប្រុស" data-en="Groom's Side">ខាងកូនប្រុស</span>
           <div class="bg-white p-3 rounded-xl border border-[#E5D5BC] inline-block shadow-inner mb-3">
-            <img id="groom-qr-img" src="" alt="Groom QR" class="w-36 h-36 object-contain mx-auto">
+            <img id="groom-qr-img" src="" alt="Groom QR" onclick="openQrModal('groom')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
           </div>
           <h5 id="groom-bank-name" class="text-xs font-bold text-[#4E3227]">ABA Bank / KHQR</h5>
           <p id="groom-acc-name" class="text-xs font-semibold text-[#7A6F68] uppercase mt-0.5">CHAN NARAK</p>
@@ -618,7 +503,7 @@
         <div class="p-5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC] shadow-xs text-center">
           <span class="text-xs font-bold text-[#C5A059] uppercase block mb-2" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</span>
           <div class="bg-white p-3 rounded-xl border border-[#E5D5BC] inline-block shadow-inner mb-3">
-            <img id="bride-qr-img" src="" alt="Bride QR" class="w-36 h-36 object-contain mx-auto">
+            <img id="bride-qr-img" src="" alt="Bride QR" onclick="openQrModal('bride')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
           </div>
           <h5 id="bride-bank-name" class="text-xs font-bold text-[#4E3227]">Bakong / ACLEDA</h5>
           <p id="bride-acc-name" class="text-xs font-semibold text-[#7A6F68] uppercase mt-0.5">LY SREYMECH</p>
@@ -795,6 +680,19 @@
 
   <!-- Hidden YouTube Background Music Player Container -->
   <div id="yt-bg-audio-container" style="position:fixed;bottom:-500px;left:-500px;width:1px;height:1px;opacity:0.001;pointer-events:none;overflow:hidden;"></div>
+
+    <!-- ================= QR CODE ZOOM MODAL ================= -->
+  <div id="qr-lightbox-modal" class="qr-modal-overlay hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onclick="closeQrModal()">
+    <div class="relative bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-[#D4AF37]" onclick="event.stopPropagation()">
+      <button type="button" onclick="closeQrModal()" class="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+      <h4 id="qr-modal-title" class="font-khmer-title text-base font-bold text-[#4E3227] mb-1">ABA Bank (KHQR)</h4>
+      <p id="qr-modal-acc" class="text-xs text-[#7A6F68] font-mono mb-4">001 888 999 (USD)</p>
+      <div class="p-2 bg-white rounded-2xl border border-gray-200 inline-block shadow-inner mb-4">
+        <img id="qr-modal-img" src="" alt="KHQR Code" class="w-60 h-60 object-contain mx-auto">
+      </div>
+      <p class="text-xs text-[#7A6F68] font-khmer-body">ស្កេនជាមួយកម្មវិធីធនាគារណាមួយតាមរយៈ KHQR</p>
+    </div>
+  </div>
 
   <!-- JavaScript -->
   <script src="/js/invitation.js"></script>
