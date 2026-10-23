@@ -382,9 +382,6 @@ function renderAll() {
   // Render Agenda / Schedule
   renderAgenda();
 
-  // Render Attire Palette (Dress Code)
-  renderAttirePalette();
-
   // Render Gallery
   renderGallery();
 
@@ -1205,7 +1202,6 @@ function initBottomNavScrollSpy() {
   const sections = [
     { id: 'hero-section', nav: dock.querySelector('a[href="#hero-section"]') },
     { id: 'ceremony-section', nav: dock.querySelector('a[href="#ceremony-section"]') },
-    { id: 'attire-section', nav: dock.querySelector('a[href="#attire-section"]') },
     { id: 'venue-section', nav: dock.querySelector('a[href="#venue-section"]') },
     { id: 'gallery-section', nav: dock.querySelector('a[href="#gallery-section"]') },
     { id: 'digital-gift-section', nav: dock.querySelector('a[href="#digital-gift-section"]') },

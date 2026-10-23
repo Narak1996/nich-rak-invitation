@@ -150,17 +150,37 @@
     }
   ],
   "dress_code": {
-    "enabled": true,
+    "enabled": false,
     "title_kh": "ពណ៌សម្លៀកបំពាក់",
     "title_en": "Dress Code & Theme Colors",
     "description_kh": "ដើម្បីភាពស្រស់ស្អាត និងការចងចាំដ៏រុងរឿង ភ្ញៀវកិត្តិយសអាចជ្រើសរើសពណ៌សម្លៀកបំពាក់ដូចខាងក្រោម៖",
     "description_en": "To create beautiful photos and lasting memories, guests are warmly invited to celebrate in these attire tones:",
     "colors": [
-      { "name_kh": "មាសស្រាល", "name_en": "Champagne Gold", "hex": "#D4AF37" },
-      { "name_kh": "បៃតងមរកត", "name_en": "Emerald Green", "hex": "#1E3526" },
-      { "name_kh": "ក្រែមសូត្រ", "name_en": "Warm Ivory", "hex": "#FAF0D7" },
-      { "name_kh": "ផ្កាឈូកទន់", "name_en": "Soft Rose", "hex": "#DDA7A5" },
-      { "name_kh": "ខៀវរាត្រី", "name_en": "Midnight Navy", "hex": "#0B1B34" }
+      {
+        "name_kh": "មាសស្រាល",
+        "name_en": "Champagne Gold",
+        "hex": "#D4AF37"
+      },
+      {
+        "name_kh": "បៃតងមរកត",
+        "name_en": "Emerald Green",
+        "hex": "#1E3526"
+      },
+      {
+        "name_kh": "ក្រែមសូត្រ",
+        "name_en": "Warm Ivory",
+        "hex": "#FAF0D7"
+      },
+      {
+        "name_kh": "ផ្កាឈូកទន់",
+        "name_en": "Soft Rose",
+        "hex": "#DDA7A5"
+      },
+      {
+        "name_kh": "ខៀវរាត្រី",
+        "name_en": "Midnight Navy",
+        "hex": "#0B1B34"
+      }
     ]
   },
   "digital_gift": {
