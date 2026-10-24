@@ -55,7 +55,7 @@ body.theme-khmer-traditional {
   background-color: #FAF5E8;
   background-image: 
     linear-gradient(rgba(250, 245, 232, 0.88), rgba(250, 245, 232, 0.88)),
-    url('/images/components/khmer-silk-bg.jpg');
+    url('/images/components/banteay-srei-bg.jpg');
   background-size: auto, 380px 380px;
   background-repeat: repeat, repeat;
   background-attachment: fixed;
@@ -65,7 +65,7 @@ body.theme-khmer-traditional.wedding-bg-pattern {
   background-color: #FAF5E8 !important;
   background-image: 
     linear-gradient(rgba(250, 245, 232, 0.88), rgba(250, 245, 232, 0.88)),
-    url('/images/components/khmer-silk-bg.jpg') !important;
+    url('/images/components/banteay-srei-bg.jpg') !important;
   background-size: auto, 380px 380px !important;
   background-repeat: repeat, repeat !important;
   background-attachment: fixed !important;
@@ -95,9 +95,9 @@ body.theme-khmer-traditional .bg-white.rounded-3xl,
 body.theme-khmer-traditional .rounded-3xl.p-6,
 body.theme-khmer-traditional #wish-form-card,
 body.theme-khmer-traditional .bg-white.rounded-2xl {
-  background: rgba(255, 253, 248, 0.30) !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  background: rgba(255, 254, 250, 0.94) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
   border: 2px solid #D4AF37 !important;
   border-radius: 20px !important;
   box-shadow: 0 12px 35px rgba(140, 29, 47, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.85) !important;
@@ -121,7 +121,7 @@ body.theme-khmer-traditional .khmer-corner-br {
   border: none !important;
   width: 76px !important;
   height: 76px !important;
-  background-image: url('/images/components/khmer-corner.png') !important;
+  background-image: url('/images/components/banteay-srei-corner.png') !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
@@ -611,7 +611,7 @@ body.theme-khmer-traditional .bottom-nav-item.active-nav-tab {
   position: absolute;
   width: 76px;
   height: 76px;
-  background-image: url('/images/components/khmer-corner.png');
+  background-image: url('/images/components/banteay-srei-corner.png');
   background-size: contain;
   background-repeat: no-repeat;
   border: none;
@@ -1189,4 +1189,66 @@ body.theme-khmer-traditional #envelope-screen {
 .attire-swatch-btn:hover .attire-color-circle {
   transform: scale(1.08);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================================================
+   BANTEAY SREI CLASSICAL RELIEF CARVINGS (ចម្លាក់ក្បាច់ប្រាសាទបន្ទាយស្រី)
+   ========================================================================== */
+.banteay-srei-arch-container {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto 0.75rem auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.banteay-srei-arch-img {
+  width: 100%;
+  height: auto;
+  max-height: 190px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 8px 16px rgba(140, 29, 47, 0.22));
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.banteay-srei-arch-container:hover .banteay-srei-arch-img {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 12px 20px rgba(140, 29, 47, 0.28));
+}
+
+.banteay-srei-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2.25rem auto;
+  padding: 0 1rem;
+  width: 100%;
+  max-width: 520px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.banteay-srei-divider img {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.94;
+  filter: drop-shadow(0 3px 6px rgba(140, 29, 47, 0.16));
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .banteay-srei-arch-img {
+    max-height: 140px;
+  }
+  .banteay-srei-divider {
+    margin: 1.75rem auto;
+  }
+  .banteay-srei-divider img {
+    max-width: 280px;
+  }
 }

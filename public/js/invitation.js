@@ -1292,6 +1292,8 @@ function triggerVisibleReveals() {
 
 // ================= MODERN PLATFORM UTILITIES =================
 
+window.addToCalendar = function(type) { if (type === "ics") window.downloadIcsCalendar(); else window.addToGoogleCalendar(); };
+
 window.addToGoogleCalendar = function() {
   if (!weddingData?.wedding) return;
   const w = weddingData.wedding;
