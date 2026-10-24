@@ -71,53 +71,114 @@
   <!-- ================= ENVELOPE OPENING OVERLAY ================= -->
   <div id="envelope-screen">
 
-    <!-- KHMER TRADITIONAL WELCOME: Royal Cambodian Silk Envelope with 3D Romduol Wax Seal -->
-    <div id="welcome-khmer" class="theme-welcome-card welcome-khmer-card">
-      <div class="khmer-corner-tl"></div>
-      <div class="khmer-corner-tr"></div>
-      <div class="khmer-corner-bl"></div>
-      <div class="khmer-corner-br"></div>
+    <!-- KHMER TRADITIONAL POSTER OPENING: Inspired by Pinterest Reference -->
+    <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none">
+      
+      <!-- Ambient Floating Elements (Butterflies, Gold Glitters, Jasmine Petals) -->
+      <div class="opening-ambient-layer pointer-events-none absolute inset-0 z-20 overflow-hidden">
+        <div class="opening-butterfly opening-butterfly-1">🦋</div>
+        <div class="opening-butterfly opening-butterfly-2">🦋</div>
+        <div class="opening-sparkle opening-sparkle-1">✦</div>
+        <div class="opening-sparkle opening-sparkle-2">✦</div>
+        <div class="opening-sparkle opening-sparkle-3">✦</div>
+        <div class="opening-petal opening-petal-1">🌸</div>
+        <div class="opening-petal opening-petal-2">🌸</div>
+      </div>
 
-      <div class="khmer-envelope-inner">
-        <div class="w-16 h-16 mx-auto mb-3 rounded-full border-2 border-[#D4AF37] flex items-center justify-center bg-[#FAF6ED] shadow-md relative" id="khmer-monogram-wrap">
-          <img src="/images/components/romduol-flower.svg" class="w-9 h-9 object-contain filter drop-shadow" alt="Romduol">
-        </div>
+      <!-- Top Botanical White Rose & Eucalyptus Garland -->
+      <div class="opening-botanical-top absolute -top-4 sm:-top-3 left-0 right-0 z-10 pointer-events-none flex justify-center">
+        <img src="/images/opening/botanical-arch.png" alt="Botanical Garland" class="w-full max-w-[420px] h-auto object-contain opening-garland-sway">
+      </div>
 
-        <p class="font-khmer-title text-[11px] sm:text-xs text-[#C5A059] uppercase tracking-widest mb-1 text-center">
-          សិរីសួស្តី ជ័យមង្គល វិបុលសុខ មហាប្រសើរ
-        </p>
-        <h3 class="font-khmer-title text-base sm:text-lg font-bold text-[#8C1D2F] text-center my-1" id="khmer-envelope-sub">
-          លិខិតអញ្ជើញអាពាហ៍ពិពាហ៍
-        </h3>
+      <!-- Poster Main Content Body -->
+      <div class="relative z-15 pt-12 sm:pt-14 px-4 pb-4 flex flex-col items-center justify-between min-h-[580px] sm:min-h-[620px]">
+        
+        <!-- Header: 3D Intertwined Gold Rings & Titles -->
+        <div class="text-center w-full mt-2 relative">
+          <!-- 3D Intertwined Gold Rings with Float & Sparkle Animation -->
+          <div class="opening-rings-wrapper mx-auto mb-1 relative cursor-pointer" onclick="openEnvelope()" title="ចុចដើម្បីបើកសំបុត្រ (Tap to Open)">
+            <img src="/images/opening/gold-rings-3d.png" alt="Gold Wedding Rings" class="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-auto opening-rings-float">
+            <span class="opening-ring-glint">✦</span>
+          </div>
 
-        <div id="khmer-envelope-couple-names" class="my-3 text-center">
-          <!-- Populated by JS -->
-        </div>
+          <!-- Ceremony Title (Gilded Gold) -->
+          <h2 class="opening-gold-title font-khmer-title text-base sm:text-lg text-[#9B7126] tracking-wide my-0.5">
+            សិរីសួស្តី អាពាហ៍ពិពាហ៍
+          </h2>
+          <div class="flex items-center justify-center gap-2 mt-0.5 mb-1.5">
+            <div class="h-px w-6 sm:w-8 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
+            <span class="text-[9px] sm:text-[10px] font-serif uppercase tracking-[0.22em] text-[#C5A059] font-bold">
+              THE WEDDING DAY
+            </span>
+            <div class="h-px w-6 sm:w-8 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
+          </div>
 
-        <div id="khmer-envelope-guest-box" class="my-3 py-2.5 px-4 bg-[#FAF6ED] rounded-xl border border-[#D4AF37]/50 inline-block max-w-xs mx-auto shadow-inner text-center hidden">
-          <span class="text-[11px] text-[#7A6F68] block font-khmer-body" id="khmer-invite-label">សូមគោរពអញ្ជើញ</span>
-          <span class="text-base font-bold text-[#8C1D2F] font-khmer-title block mt-0.5" id="khmer-envelope-guest-name">
-            ភ្ញៀវកិត្តិយស
-          </span>
-        </div>
-
-        <p class="text-xs text-[#6B574B] max-w-xs mx-auto mb-6 font-khmer-body leading-relaxed text-center">
-          វត្តមានដ៏ខ្ពង់ខ្ពស់របស់លោកអ្នក គឺជាកិត្តិយសដ៏ធំធេងសម្រាប់យើងខ្ញុំទាំងពីរ។
-        </p>
-
-        <!-- 3D Romduol Wax Seal Opener -->
-        <div class="khmer-wax-seal-btn cursor-pointer mx-auto" id="btn-open-khmer" onclick="openEnvelope()" title="ចុចត្រាផ្ការំដួលដើម្បីបើកសំបុត្រ">
-          <div class="wax-seal-outer">
-            <div class="wax-seal-inner">
-              <img src="/images/components/romduol-flower.svg" class="w-7 h-7 mx-auto filter drop-shadow brightness-0 invert" alt="Romduol">
-              <span class="text-[9px] font-bold tracking-widest uppercase block mt-1 text-[#FFF8ED]">OPEN</span>
+          <!-- Stylized Calligraphic Couple Names (Emerald Green with Gold Accent) -->
+          <div id="khmer-envelope-couple-names" class="opening-calligraphy-names my-1 sm:my-2">
+            <div class="couple-names-khmer font-khmer-title text-2xl sm:text-3xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+              <span>ឡេង ចាន់ណារៈ & នាត ស្រីនិច</span>
             </div>
+            <p class="text-[10px] sm:text-[11px] font-serif uppercase tracking-widest text-[#7A6F68] mt-0.5">
+              CHANNARAK & SREYNICH
+            </p>
+          </div>
+
+          <!-- Personalized Guest Pill (shown if guest link opened) -->
+          <div id="khmer-envelope-guest-box" class="my-1 py-1 px-3 bg-white/95 rounded-full border border-[#D4AF37]/60 shadow-xs inline-flex items-center gap-1.5 hidden">
+            <span class="text-[10px] text-[#C5A059] font-bold font-khmer-body" id="khmer-invite-label">សូមគោរពអញ្ជើញ៖</span>
+            <span class="text-xs font-bold text-[#1E4833] font-khmer-title" id="khmer-envelope-guest-name">
+              ភ្ញៀវកិត្តិយស
+            </span>
           </div>
         </div>
-        <p class="text-[11px] text-[#A67C1E] mt-3 font-medium animate-pulse cursor-pointer text-center" onclick="openEnvelope()">
-          ចុចត្រាផ្ការំដួល ដើម្បីបើកសំបុត្រ / Tap Seal to Open
-        </p>
+
+        <!-- Middle Section: Date & Location (Left) + Standing Couple with Umbrella (Right) -->
+        <div class="w-full relative mt-1 mb-1 flex items-end justify-between min-h-[220px] sm:min-h-[240px]">
+          
+          <!-- Event Date & Ceremony Info (Left Column) -->
+          <div class="opening-info-left text-left z-10 pl-1 max-w-[170px] sm:max-w-[190px] mb-1">
+            <div class="bg-white/85 backdrop-blur-xs p-2 rounded-xl border border-[#E5D5BC]/60 shadow-2xs">
+              <p class="text-[11px] sm:text-xs font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
+                ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧
+              </p>
+              <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-1 leading-tight" id="opening-venue-snippet">
+                វេលាម៉ោង ០៧:០០ ព្រឹក<br>
+                នៅគេហដ្ឋានខាងស្រី<br>
+                <span class="text-[#8C6A18] font-semibold">ដោយមេត្រីភាព</span>
+              </p>
+            </div>
+
+            <!-- Lower Romantic Kiss Pose (Floating smoothly on the lower-left) -->
+            <div class="w-24 sm:w-28 mt-2 relative -ml-1 opening-kiss-float pointer-events-none">
+              <img src="/images/opening/couple-kiss.png" alt="Romantic Kiss" class="w-full h-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.12)]">
+            </div>
+          </div>
+
+          <!-- Standing Couple with Golden Umbrella & Jasmine Garland (Right Side) -->
+          <div class="opening-couple-right z-10 w-44 sm:w-52 -mr-3 sm:-mr-2 relative opening-couple-float pointer-events-none">
+            <img src="/images/opening/couple-umbrella.png" alt="Khmer Wedding Couple" class="w-full h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.18)]">
+          </div>
+        </div>
+
+        <!-- Bottom Action Button: Tap to Open with Ripple Aura & Audio Initiation -->
+        <div class="w-full text-center z-20 mt-1 mb-1">
+          <button type="button" onclick="openEnvelope()" class="opening-action-btn relative inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white font-khmer-title text-xs sm:text-sm font-bold shadow-lg transition active:scale-95 cursor-pointer">
+            <span class="opening-btn-pulse-ring"></span>
+            <span class="text-amber-200 text-sm">💌</span>
+            <span id="opening-btn-text">បើកលិខិតអញ្ជើញ (Open)</span>
+          </button>
+          <p class="text-[10px] text-[#8C6A18] mt-1 font-khmer-body opacity-85 animate-pulse">
+            ចុចដើម្បីបើកមើល និងស្តាប់តន្ត្រីមង្គលការ
+          </p>
+        </div>
+
       </div>
+
+      <!-- Bottom Botanical Roses Spray -->
+      <div class="opening-botanical-bottom absolute -bottom-8 left-0 right-0 z-5 pointer-events-none flex justify-center opacity-70">
+        <img src="/images/opening/botanical-arch.png" alt="Botanical Footer" class="w-full max-w-[420px] h-auto object-contain transform rotate-180">
+      </div>
+
     </div>
 
   </div>

@@ -1390,27 +1390,46 @@ function renderThemeWelcome(themeId, w, isKh) {
   const wKhmer = document.getElementById('welcome-khmer');
   if (wKhmer) {
     wKhmer.classList.remove('hidden');
+
+    // 1. Couple Calligraphic Names
     const khmerCouple = document.getElementById('khmer-envelope-couple-names');
     if (khmerCouple) {
       khmerCouple.innerHTML = `
-        <div class="flex flex-col items-center justify-center">
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#8C1D2F]">
-            ${escapeHTML(w.groom.name_kh)}
-          </div>
-          <div class="couple-connector my-1">
-            <span class="text-xs text-[#D4AF37] font-bold font-khmer-body">និង</span>
-          </div>
-          <div class="couple-names-khmer text-xl sm:text-2xl font-bold text-[#8C1D2F]">
-            ${escapeHTML(w.bride.name_kh)}
-          </div>
+        <div class="couple-names-khmer font-khmer-title text-2xl sm:text-3xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+          <span>${escapeHTML(w.groom.name_kh)}</span>
+          <span class="opening-ampersand inline-block mx-1.5 text-[#C5A059] font-serif italic text-xl sm:text-2xl">&</span>
+          <span>${escapeHTML(w.bride.name_kh)}</span>
         </div>
+        <p class="text-[10px] sm:text-[11px] font-serif uppercase tracking-widest text-[#7A6F68] mt-0.5">
+          ${escapeHTML(w.groom.name_en)} & ${escapeHTML(w.bride.name_en)}
+        </p>
       `;
     }
+
+    // 2. Personalized Guest Pill
     const guestBox = document.getElementById('khmer-envelope-guest-box');
     const guestName = document.getElementById('khmer-envelope-guest-name');
     if (guestBox && guestName) {
       guestName.textContent = guestDisplayName;
       guestBox.classList.remove('hidden');
+    }
+
+    // 3. Opening Event Date & Venue snippet
+    const openDateEl = document.getElementById('opening-date-solar');
+    if (openDateEl) {
+      openDateEl.textContent = isKh ? toKhmerNumber(w.date_solar_kh) : w.date_solar_en;
+    }
+    const openVenueEl = document.getElementById('opening-venue-snippet');
+    if (openVenueEl) {
+      const timeStr = isKh ? 'វេលាម៉ោង ០៧:០០ ព្រឹក' : 'Time: 7:00 AM';
+      const venueStr = isKh ? (w.venue_name_kh || 'នៅគេហដ្ឋានខាងស្រី') : (w.venue_name_en || "Bride's Residence");
+      openVenueEl.innerHTML = `${timeStr}<br>${escapeHTML(venueStr)}<br><span class="text-[#8C6A18] font-semibold">${isKh ? 'ដោយមេត្រីភាព' : 'With Compliments'}</span>`;
+    }
+
+    // 4. Opening Button text
+    const openBtnText = document.getElementById('opening-btn-text');
+    if (openBtnText) {
+      openBtnText.textContent = isKh ? 'បើកលិខិតអញ្ជើញ (Open)' : 'Open Invitation';
     }
   }
 }
