@@ -1452,35 +1452,69 @@ body.theme-khmer-traditional #envelope-screen {
    CUTE ROMANTIC FAIRYTALE TEMPLATE SUITE (NEW FULL-PAGE EXPERIENCE)
    ========================================================================== */
 
-/* Modern Botanical Nature Background */
+/* Modern Minimalist Luxury Canvas Background */
 .cute-wedding-canvas {
   background-color: #FAF8F5;
   background-image: 
-    radial-gradient(circle at 10% 15%, rgba(78, 125, 99, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 90% 25%, rgba(197, 160, 89, 0.10) 0%, transparent 48%),
-    radial-gradient(circle at 50% 65%, rgba(30, 72, 51, 0.05) 0%, transparent 50%),
-    linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 30%, #F5F1EB 70%, #FAF8F5 100%);
+    radial-gradient(circle at 15% 10%, rgba(78, 125, 99, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 18%, rgba(212, 175, 55, 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255, 238, 242, 0.30) 0%, transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(78, 125, 99, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 80% 90%, rgba(212, 175, 55, 0.09) 0%, transparent 45%),
+    linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 15%, #F7F4EE 50%, #FAF8F5 85%, #FFFFFF 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
 }
 
-/* Khmer Temple Line Art Dreamy Blurred Page Background Layer */
-.khmer-temple-backdrop-layer {
+/* Ambient Luminous Light Orbs for Frosted Glass Depth & Refraction */
+.ambient-glow-orb {
   position: fixed;
-  inset: 0;
+  border-radius: 9999px;
+  filter: blur(65px);
+  -webkit-filter: blur(65px);
   pointer-events: none;
   z-index: 0;
-  background-image: 
-    radial-gradient(circle at 50% 25%, rgba(250, 248, 245, 0.40) 0%, rgba(250, 248, 245, 0.82) 100%),
-    url('/images/templates/khmer-temple-line-blurred-bg.jpg');
-  background-position: center 15%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  opacity: 0.65;
-  filter: blur(3.5px);
-  transform: scale(1.04);
-  will-change: transform, opacity;
+  opacity: 0.55;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.ambient-orb-1 {
+  width: 360px;
+  height: 360px;
+  top: 4%;
+  left: -80px;
+  background: radial-gradient(circle, rgba(78, 125, 99, 0.22) 0%, transparent 70%);
+  animation: orbDrift1 22s ease-in-out infinite alternate;
+}
+
+.ambient-orb-2 {
+  width: 400px;
+  height: 400px;
+  top: 28%;
+  right: -90px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.24) 0%, transparent 70%);
+  animation: orbDrift2 26s ease-in-out infinite alternate;
+}
+
+.ambient-orb-3 {
+  width: 340px;
+  height: 340px;
+  bottom: 12%;
+  left: 8%;
+  background: radial-gradient(circle, rgba(78, 125, 99, 0.16) 0%, transparent 70%);
+  animation: orbDrift1 28s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes orbDrift1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(35px, 50px, 0) scale(1.12); }
+}
+
+@keyframes orbDrift2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-45px, 40px, 0) scale(1.10); }
 }
 
 /* Cute Floating Canvas Atmospheric Particles */
