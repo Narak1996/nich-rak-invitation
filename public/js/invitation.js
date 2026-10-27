@@ -921,14 +921,14 @@ function updateMusicBtn() {
   }
 }
 
-// Cute Heart Burst Animation Effect
+// Modern Botanical Love Burst Animation Effect
 window.burstHearts = function(originX, originY) {
-  const hearts = ['❤️', '💖', '💕', '🌸', '✨', '💗', '💝'];
-  const count = 14;
+  const natureGems = ['🌿', '💚', '✨', '🌸', '💕', '🍃', '💍'];
+  const count = 16;
   for (let i = 0; i < count; i++) {
     const el = document.createElement('div');
     el.className = 'floating-heart-particle';
-    el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    el.textContent = natureGems[Math.floor(Math.random() * natureGems.length)];
     
     const x = (originX || (window.innerWidth / 2)) + (Math.random() - 0.5) * 80;
     const y = (originY || (window.innerHeight / 2)) + (Math.random() - 0.5) * 40;
@@ -965,7 +965,7 @@ window.sendLoveReaction = function(e) {
     setTimeout(() => badge.classList.remove('scale-125'), 300);
   }
 
-  showToast('អរគុណសម្រាប់ក្តីស្រឡាញ់ដ៏កក់ក្តៅ! 💕');
+  showToast('🌿 អរគុណសម្រាប់ក្តីស្រឡាញ់ដ៏កក់ក្តៅ! 💕');
 };
 
 // Video Aspect Ratio Toggle (Cinema Wide vs Portrait Tall)

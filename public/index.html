@@ -51,24 +51,24 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_ring_fixed">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_modern_nature">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
-  <!-- ================= AMBIENT FAIRYTALE FLOATING PARTICLES ================= -->
+  <!-- ================= AMBIENT BOTANICAL NATURE FLOATING PARTICLES ================= -->
   <div class="cute-ambient-bg pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-    <div class="cute-particle-petal cute-petal-1">🌸</div>
-    <div class="cute-particle-petal cute-petal-2">🌸</div>
+    <div class="cute-particle-petal cute-petal-1">🌿</div>
+    <div class="cute-particle-petal cute-petal-2">🍃</div>
     <div class="cute-particle-petal cute-petal-3">✨</div>
-    <div class="cute-particle-petal cute-petal-4">💕</div>
-    <div class="cute-particle-petal cute-petal-5">🌸</div>
+    <div class="cute-particle-petal cute-petal-4">🌸</div>
+    <div class="cute-particle-petal cute-petal-5">🌿</div>
     <div class="cute-particle-petal cute-petal-6">✨</div>
   </div>
 
-  <!-- ================= CUTE PRELOADER ================= -->
-  <div id="app-preloader" class="fixed inset-0 z-[2000] flex flex-col items-center justify-center bg-[#FFF8FA] transition-all duration-700">
+  <!-- ================= MODERN NATURE PRELOADER ================= -->
+  <div id="app-preloader" class="fixed inset-0 z-[2000] flex flex-col items-center justify-center bg-[#FAF8F5] transition-all duration-700">
     <div class="relative flex items-center justify-center mb-5">
-      <div class="w-20 h-20 rounded-full border-3 border-[#FF8BA7]/25 border-t-[#FF8BA7] animate-spin"></div>
+      <div class="w-20 h-20 rounded-full border-3 border-[#4E7D63]/25 border-t-[#4E7D63] animate-spin"></div>
       <div class="absolute inset-0 flex items-center justify-center">
         <span class="text-3xl animate-bounce">💍</span>
       </div>
@@ -77,14 +77,14 @@
       ឡេង ចាន់ណារៈ & នាត ស្រីនិច
     </h2>
     <p class="text-xs text-[#C5A059] font-khmer-body tracking-wider uppercase text-center px-4 mt-0.5" id="preloader-text">
-      កំពុងរៀបចំសំបុត្រអញ្ជើញដ៏ស្រស់ស្អាត...
+      កំពុងរៀបចំសំបុត្រអញ្ជើញ...
     </p>
-    <div class="w-36 h-1.5 bg-[#FF8BA7]/20 rounded-full overflow-hidden mt-4">
-      <div class="h-full w-full bg-gradient-to-r from-[#FF8BA7] via-[#FFD166] to-[#06D6A0] rounded-full animate-pulse"></div>
+    <div class="w-36 h-1.5 bg-[#4E7D63]/20 rounded-full overflow-hidden mt-4">
+      <div class="h-full w-full bg-gradient-to-r from-[#1E4833] via-[#C5A059] to-[#4E7D63] rounded-full animate-pulse"></div>
     </div>
   </div>
 
-  <!-- ================= TOP-RIGHT CUTE SPINNING VINYL MUSIC PLAYER ================= -->
+  <!-- ================= TOP-RIGHT MODERN SPINNING VINYL MUSIC PLAYER ================= -->
   <button id="cute-vinyl-music-btn" class="cute-floating-music" title="តន្ត្រីមង្គលការ / Wedding Music" onclick="toggleMusic()">
     <div class="cute-vinyl-disc">
       <span class="text-[11px]">🎵</span>
@@ -105,18 +105,18 @@
   <!-- ================= MAIN INVITATION CARD CONTENT ================= -->
   <main class="relative z-10 max-w-2xl mx-auto px-4 pt-4 sm:pt-8 pb-32">
 
-    <!-- ================= 1. CUTE FAIRYTALE GRAND OPENING COVER ================= -->
+    <!-- ================= 1. MODERN BOTANICAL GRAND OPENING COVER ================= -->
     <section id="opening-cover-section" class="flex justify-center mb-8 sm:mb-12 reveal-on-scroll">
-      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full max-w-lg rounded-3xl shadow-xl border-2 border-[#D4AF37]/45 bg-gradient-to-b from-[#FFFDF9] via-[#FFF8F3] to-[#FFF3F5]">
+      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full max-w-lg rounded-3xl shadow-xl border border-[#C5A059]/40 bg-gradient-to-b from-[#FFFDF9] via-[#FAF8F5] to-[#F5F1EB]">
         
-        <!-- Ambient Floating Butterflies & Sparkles -->
+        <!-- Ambient Floating Foliage & Sparkles -->
         <div class="opening-ambient-layer pointer-events-none absolute inset-0 z-20 overflow-hidden">
           <div class="opening-butterfly opening-butterfly-1">🦋</div>
           <div class="opening-butterfly opening-butterfly-2">🦋</div>
           <div class="opening-sparkle opening-sparkle-1">✦</div>
           <div class="opening-sparkle opening-sparkle-2">✨</div>
           <div class="opening-sparkle opening-sparkle-3">✦</div>
-          <div class="opening-petal opening-petal-1">🌸</div>
+          <div class="opening-petal opening-petal-1">🌿</div>
           <div class="opening-petal opening-petal-2">🌸</div>
         </div>
 
@@ -148,7 +148,7 @@
               <div class="h-px w-6 sm:w-8 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
             </div>
 
-            <!-- Stylized Couple Names (Sage Emerald & Gold) -->
+            <!-- Stylized Couple Names (Forest Emerald & Gold) -->
             <div id="khmer-envelope-couple-names" class="opening-calligraphy-names my-1">
               <div class="couple-names-khmer font-khmer-title text-base sm:text-lg md:text-xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
                 <span>ឡេង ចាន់ណារៈ & នាត ស្រីនិច</span>
@@ -159,8 +159,8 @@
             </div>
 
             <!-- Personalized Guest Pill (shown if guest link opened) -->
-            <div id="khmer-envelope-guest-box" class="my-1 py-1 px-4 bg-white/95 rounded-full border border-[#FF8BA7]/45 shadow-xs inline-flex items-center gap-1.5 hidden">
-              <span class="text-[10px] text-[#C5A059] font-bold font-khmer-body" id="khmer-invite-label">សូមគោរពអញ្ជើញ៖</span>
+            <div id="khmer-envelope-guest-box" class="my-1 py-1 px-4 bg-white/95 rounded-full border border-[#4E7D63]/30 shadow-xs inline-flex items-center gap-1.5 hidden">
+              <span class="text-[10px] text-[#4E7D63] font-bold font-khmer-body" id="khmer-invite-label">🌿 សូមគោរពអញ្ជើញ៖</span>
               <span class="text-xs font-bold text-[#1E4833] font-khmer-title" id="khmer-envelope-guest-name">
                 ភ្ញៀវកិត្តិយស
               </span>
@@ -179,7 +179,7 @@
                   <img src="/uploads/groom-real-portrait.jpg" alt="Groom Chan Narak" class="cover-portrait-img">
                   <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
                   <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/92 backdrop-blur-xs text-[10px] font-khmer-title font-bold text-[#1E4833] whitespace-nowrap shadow-xs">
-                    កូនប្រុស • ចាន់ណារៈ
+                    🌿 កូនប្រុស • ចាន់ណារៈ
                   </div>
                 </div>
               </div>
@@ -194,8 +194,8 @@
                 <div class="cover-portrait-img-wrap">
                   <img src="/uploads/bride-real-portrait.jpg" alt="Bride Neat SreyNich" class="cover-portrait-img">
                   <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
-                  <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/92 backdrop-blur-xs text-[10px] font-khmer-title font-bold text-[#E73360] whitespace-nowrap shadow-xs">
-                    កូនស្រី • ស្រីនិច
+                  <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/92 backdrop-blur-xs text-[10px] font-khmer-title font-bold text-[#2D5A43] whitespace-nowrap shadow-xs">
+                    🌸 កូនស្រី • ស្រីនិច
                   </div>
                 </div>
               </div>
@@ -204,7 +204,7 @@
 
             <!-- Event Date & Ceremony Snippet Card Below Portraits -->
             <div class="w-full max-w-sm mx-auto mt-1 px-1 text-center">
-              <div class="bg-white/92 backdrop-blur-xs py-2 px-3 rounded-2xl border border-[#FF8BA7]/35 shadow-xs">
+              <div class="bg-white/94 backdrop-blur-xs py-2 px-3.5 rounded-2xl border border-[#4E7D63]/25 shadow-xs">
                 <p class="text-xs sm:text-sm font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
                   ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧
                 </p>
@@ -218,11 +218,11 @@
 
           <!-- Bottom Action: 3D Wax Seal Open Button -->
           <div class="w-full text-center z-20 mt-1 mb-1 flex flex-col items-center">
-            <button type="button" onclick="scrollToTicketContent()" class="group relative inline-flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#1E4833] via-[#2A5C41] to-[#1E4833] hover:from-[#163626] hover:to-[#224835] text-white font-khmer-title text-xs sm:text-sm font-bold shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-[#D4AF37]/60">
+            <button type="button" onclick="scrollToTicketContent()" class="group relative inline-flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#1E4833] via-[#2A5C41] to-[#1E4833] hover:from-[#163626] hover:to-[#224835] text-white font-khmer-title text-xs sm:text-sm font-bold shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-[#C5A059]/60">
               <img src="/images/templates/wax-seal-D_bhm8ka.webp" alt="Wax Seal" class="w-6 h-6 object-contain group-hover:rotate-12 transition-transform">
-              <span id="opening-btn-text">បើកមើលសំបុត្រមង្គលការ (Open Invitation) 💕</span>
+              <span id="opening-btn-text">បើកមើលសំបុត្រមង្គលការ (Open Invitation) 🌿</span>
             </button>
-            <p class="text-[10px] text-[#8C6A18] mt-1.5 font-khmer-body opacity-90 animate-pulse">
+            <p class="text-[10px] text-[#4E7D63] mt-1.5 font-khmer-body opacity-90 animate-pulse">
               👇 អូសចុះក្រោម ឬចុចដើម្បីទស្សនាកម្មវិធី & តន្ត្រីមង្គលការ
             </p>
           </div>
@@ -237,7 +237,7 @@
       </div>
     </section>
 
-    <!-- ================= 2. CUTE LIVE LOVE COUNTDOWN PILL ================= -->
+    <!-- ================= 2. MODERN NATURE COUNTDOWN PILL ================= -->
     <section id="countdown-section" class="mb-10 text-center reveal-on-scroll">
       <div class="cute-live-countdown">
         <span class="text-sm">⏳</span>
@@ -246,23 +246,23 @@
           <span id="cd-days" class="cute-cd-num">00</span>
           <span class="cute-cd-lbl" data-kh="ថ្ងៃ" data-en="Days">ថ្ងៃ</span>
         </div>
-        <span class="cute-cd-dot">💕</span>
+        <span class="cute-cd-dot">🌿</span>
 
         <div class="cute-cd-unit">
           <span id="cd-hours" class="cute-cd-num">00</span>
           <span class="cute-cd-lbl" data-kh="ម៉ោង" data-en="Hours">ម៉ោង</span>
         </div>
-        <span class="cute-cd-dot">💕</span>
+        <span class="cute-cd-dot">🌿</span>
 
         <div class="cute-cd-unit">
           <span id="cd-minutes" class="cute-cd-num">00</span>
           <span class="cute-cd-lbl" data-kh="នាទី" data-en="Mins">នាទី</span>
         </div>
-        <span class="cute-cd-dot">💕</span>
+        <span class="cute-cd-dot">🌿</span>
 
         <div class="cute-cd-unit">
-          <span id="cd-seconds" class="cute-cd-num text-[#FF6B8B]">00</span>
-          <span class="cute-cd-lbl text-[#FF6B8B]" data-kh="វិនាទី" data-en="Secs">វិនាទី</span>
+          <span id="cd-seconds" class="cute-cd-num text-[#4E7D63]">00</span>
+          <span class="cute-cd-lbl text-[#4E7D63]" data-kh="វិនាទី" data-en="Secs">វិនាទី</span>
         </div>
       </div>
     </section>
@@ -270,8 +270,8 @@
     <!-- ================= 3. POLAROID SCRAPBOOK COUPLE STORY ================= -->
     <section id="hero-section" class="text-center mb-12 reveal-on-scroll">
       <!-- Section Header Pill -->
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-[#FF8BA7]/40 shadow-xs text-[11px] font-bold text-[#1E4833] uppercase tracking-wider mb-2">
-        <span>💖</span>
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-[#4E7D63]/30 shadow-xs text-[11px] font-bold text-[#1E4833] uppercase tracking-wider mb-2">
+        <span>🌿</span>
         <span id="hero-motif-text" data-kh="ដំណើរនៃសេចក្តីស្រឡាញ់" data-en="Our Love Story">ដំណើរនៃសេចក្តីស្រឡាញ់ • OUR LOVE STORY</span>
       </div>
 
@@ -293,7 +293,7 @@
           <div class="washi-tape-sticker tape-top-right"></div>
 
           <!-- Photo Canvas -->
-          <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF6ED] shadow-inner relative group">
+          <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF8F5] shadow-inner relative group">
             <img id="main-couple-img" src="/uploads/upload-1790497247828-901277914.jpg" alt="Couple" onclick="openLightbox(this.src, 'រូបថតគូស្នេហ៍ចម្បង / Couple Portrait')" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 cursor-pointer" title="ចុចដើម្បីមើលរូបធំ (Click to zoom)">
             <div class="absolute inset-0 pointer-events-none ring-1 ring-inset ring-black/5 rounded-2xl"></div>
           </div>
@@ -301,7 +301,7 @@
           <!-- Polaroid Handwritten Caption -->
           <div class="polaroid-caption mt-3 flex items-center justify-between px-1">
             <span class="font-en-script text-xl sm:text-2xl text-[#1E4833]">Chan Narak & Neat Sreynich</span>
-            <span class="text-xs text-[#FF6B8B] font-khmer-body font-semibold">Forever & Always 💍</span>
+            <span class="text-xs text-[#4E7D63] font-khmer-body font-semibold">Forever & Always 💍</span>
           </div>
         </div>
       </div>
@@ -309,19 +309,19 @@
       <!-- Interactive Send Love Button -->
       <div class="my-5 flex flex-col items-center">
         <button id="btn-send-love" type="button" onclick="sendLoveReaction(event)" class="btn-send-love-heart group">
-          <span class="text-lg group-hover:scale-125 transition-transform">❤️</span>
+          <span class="text-lg group-hover:scale-125 transition-transform">💚</span>
           <span class="font-khmer-title text-xs">ផ្ញើក្តីស្រឡាញ់ (Send Love)</span>
-          <span id="love-counter-badge" class="px-2.5 py-0.5 rounded-full bg-white/30 text-[11px] font-bold text-white shadow-inner">
+          <span id="love-counter-badge" class="px-2.5 py-0.5 rounded-full bg-white/25 text-[11px] font-bold text-white shadow-inner">
             ❤️ 1,280
           </span>
         </button>
-        <span class="text-[10px] text-[#8C6A18] mt-1.5 font-khmer-body opacity-80">
-          ចុចបេះដូងដើម្បីផ្ញើពរជ័យ និងក្តីស្រឡាញ់ជូនគូស្នេហ៍ថ្មី 💕
+        <span class="text-[10px] text-[#4E7D63] mt-1.5 font-khmer-body opacity-85">
+          ចុចបេះដូងដើម្បីផ្ញើពរជ័យ និងក្តីស្រឡាញ់ជូនគូស្នេហ៍ថ្មី 🌿
         </span>
       </div>
 
       <!-- Couple Quote Encased in Frosted Pill -->
-      <div class="inline-block px-6 py-3 rounded-2xl bg-white/92 backdrop-blur-xs border border-[#FF8BA7]/30 shadow-xs max-w-md mx-auto">
+      <div class="inline-block px-6 py-3 rounded-2xl bg-white/94 backdrop-blur-xs border border-[#4E7D63]/25 shadow-xs max-w-md mx-auto">
         <p id="couple-quote" class="text-xs sm:text-sm italic text-[#5D4E46] leading-relaxed font-khmer-body">
           «សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»
         </p>
@@ -527,16 +527,16 @@
         </div>
 
         <!-- Bride KHQR Card -->
-        <div class="p-5 bg-white/95 rounded-3xl border border-[#FFD6DE] shadow-sm text-center transition hover:shadow-md">
-          <span class="text-xs font-bold text-white bg-[#E73360] px-3.5 py-1 rounded-full inline-block mb-3" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</span>
-          <div class="bg-[#FFF5F7] p-3 rounded-2xl border border-[#FFD6DE] inline-block shadow-inner mb-3">
+        <div class="p-5 bg-white/95 rounded-3xl border border-[#C5A059]/40 shadow-sm text-center transition hover:shadow-md">
+          <span class="text-xs font-bold text-white bg-[#2D5A43] px-3.5 py-1 rounded-full inline-block mb-3" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</span>
+          <div class="bg-[#FAF8F5] p-3 rounded-2xl border border-[#C5A059]/30 inline-block shadow-inner mb-3">
             <img id="bride-qr-img" src="" alt="Bride QR" onclick="openQrModal('bride')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
           </div>
-          <h5 id="bride-bank-name" class="text-xs font-bold text-[#E73360]">Bakong / ACLEDA</h5>
+          <h5 id="bride-bank-name" class="text-xs font-bold text-[#1E4833]">Bakong / ACLEDA</h5>
           <p id="bride-acc-name" class="text-xs font-semibold text-[#8C6A18] uppercase mt-0.5">LY SREYMECH</p>
-          <p id="bride-acc-num" class="text-base font-khmer-num font-bold text-[#E73360] my-1 tracking-wider">012 345 678 (USD)</p>
-          <button id="btn-copy-bride-acc" class="mt-2 text-xs px-3.5 py-1.5 bg-white hover:bg-[#FFF0F3] border border-[#FFD6DE] rounded-full text-[#E73360] font-medium shadow-2xs inline-flex items-center gap-1.5 transition active:scale-95 cursor-pointer">
-            <svg class="w-3.5 h-3.5 text-[#E73360]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <p id="bride-acc-num" class="text-base font-khmer-num font-bold text-[#1E4833] my-1 tracking-wider">012 345 678 (USD)</p>
+          <button id="btn-copy-bride-acc" class="mt-2 text-xs px-3.5 py-1.5 bg-white hover:bg-[#F0FDF4] border border-[#C5A059]/60 rounded-full text-[#1E4833] font-medium shadow-2xs inline-flex items-center gap-1.5 transition active:scale-95 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-[#1E4833]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             <span data-kh="ចម្លងលេខគណនី" data-en="Copy Number">ចម្លងលេខគណនី</span>
           </button>
         </div>
@@ -547,8 +547,8 @@
     <section id="rsvp-section" class="cute-pastel-card mb-10 reveal-on-scroll">
 
       <div class="text-center mb-6">
-        <span class="text-xs uppercase tracking-widest text-[#FF6B8B] font-bold block mb-1" data-kh="ការឆ្លើយតប" data-en="RSVP">
-          💌 ការឆ្លើយតប 💌
+        <span class="text-xs uppercase tracking-widest text-[#4E7D63] font-bold block mb-1" data-kh="ការឆ្លើយតប" data-en="RSVP">
+          🌿 ការឆ្លើយតបវត្តមាន 🌿
         </span>
         <h3 class="font-khmer-title text-2xl text-[#1E4833]" data-kh="ឆ្លើយតបការចូលរួម" data-en="Confirm Your Attendance">
           ឆ្លើយតបការចូលរួម
@@ -562,20 +562,20 @@
         <!-- Guest Name -->
         <div>
           <label class="block text-xs font-bold text-[#1E4833] mb-1 font-khmer-title" data-kh="ឈ្មោះភ្ញៀវកិត្តិយស *" data-en="Guest Name *">ឈ្មោះភ្ញៀវកិត្តិយស *</label>
-          <input type="text" id="rsvp-name" required readonly class="w-full px-4 py-2.5 text-sm rounded-2xl border border-[#FF8BA7]/40 bg-[#FFFDFE] text-[#1E4833] font-semibold focus:outline-none cursor-default shadow-2xs" placeholder="ឧ. លោក សុខ ដារ៉ា">
+          <input type="text" id="rsvp-name" required readonly class="w-full px-4 py-2.5 text-sm rounded-2xl border border-[#4E7D63]/30 bg-[#FAF8F5] text-[#1E4833] font-semibold focus:outline-none cursor-default shadow-2xs" placeholder="ឧ. លោក សុខ ដារ៉ា">
         </div>
 
         <!-- Phone / Telegram -->
         <div>
           <label class="block text-xs font-bold text-[#1E4833] mb-1" data-kh="លេខទូរស័ព្ទ / Telegram" data-en="Phone / Telegram">លេខទូរស័ព្ទ / Telegram</label>
-          <input type="tel" id="rsvp-phone" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-[#FFD6DE] bg-white text-[#2C2420] focus:outline-none focus:border-[#FF8BA7] focus:ring-2 focus:ring-[#FF8BA7]/20 transition" placeholder="012 345 678">
+          <input type="tel" id="rsvp-phone" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-[#E5D5BC] bg-white text-[#2C2420] focus:outline-none focus:border-[#4E7D63] focus:ring-2 focus:ring-[#4E7D63]/15 transition" placeholder="012 345 678">
         </div>
 
         <!-- Attendance -->
         <div>
           <label class="block text-xs font-bold text-[#1E4833] mb-1" data-kh="ស្ថានភាពចូលរួម" data-en="Attendance">ស្ថានភាពចូលរួម</label>
-          <select id="rsvp-status" class="w-full px-3.5 py-2.5 text-sm rounded-2xl border border-[#FFD6DE] bg-white text-[#2C2420] focus:outline-none focus:border-[#FF8BA7] focus:ring-2 focus:ring-[#FF8BA7]/20 transition">
-            <option value="confirmed" data-kh="🎉 ចូលរួមដោយរីករាយ" data-en="Joyfully Attend">🎉 ចូលរួមដោយរីករាយ</option>
+          <select id="rsvp-status" class="w-full px-3.5 py-2.5 text-sm rounded-2xl border border-[#E5D5BC] bg-white text-[#2C2420] focus:outline-none focus:border-[#4E7D63] focus:ring-2 focus:ring-[#4E7D63]/15 transition">
+            <option value="confirmed" data-kh="🌿 ចូលរួមដោយរីករាយ" data-en="Joyfully Attend">🌿 ចូលរួមដោយរីករាយ</option>
             <option value="declined" data-kh="💌 ជូនពរពីចម្ងាយ (មិនអាចចូលរួម)" data-en="Send Blessings from Afar">💌 ជូនពរពីចម្ងាយ (មិនអាចចូលរួម)</option>
             <option value="pending" data-kh="⏳ មិនទាន់ច្បាស់" data-en="Not Sure Yet">⏳ មិនទាន់ច្បាស់</option>
           </select>
@@ -585,9 +585,9 @@
         <div>
           <div class="flex items-center justify-between mb-1">
             <label class="text-xs font-bold text-[#1E4833]" data-kh="ចំនួនអ្នកចូលរួម" data-en="Number of Guests">ចំនួនអ្នកចូលរួម</label>
-            <span id="rsvp-pax-hint" class="text-[11px] text-[#FF6B8B] font-medium"></span>
+            <span id="rsvp-pax-hint" class="text-[11px] text-[#4E7D63] font-medium"></span>
           </div>
-          <select id="rsvp-attendees" class="w-full px-3.5 py-2.5 text-sm rounded-2xl border border-[#FFD6DE] bg-white text-[#2C2420] focus:outline-none focus:border-[#FF8BA7] focus:ring-2 focus:ring-[#FF8BA7]/20 transition">
+          <select id="rsvp-attendees" class="w-full px-3.5 py-2.5 text-sm rounded-2xl border border-[#E5D5BC] bg-white text-[#2C2420] focus:outline-none focus:border-[#4E7D63] focus:ring-2 focus:ring-[#4E7D63]/15 transition">
             <option value="1">១ នាក់ (1 person)</option>
             <option value="2" selected>២ នាក់ (2 persons)</option>
             <option value="3">៣ នាក់ (3 persons)</option>
@@ -599,12 +599,12 @@
         <!-- Wishes Message -->
         <div>
           <label class="block text-xs font-bold text-[#1E4833] mb-1" data-kh="សារជូនពរដល់គូស្នេហ៍ថ្មី" data-en="Wishes / Blessings">សារជូនពរដល់គូស្នេហ៍ថ្មី</label>
-          <textarea id="rsvp-wishes" rows="3" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-[#FFD6DE] bg-white text-[#2C2420] focus:outline-none focus:border-[#FF8BA7] focus:ring-2 focus:ring-[#FF8BA7]/20 transition" placeholder="សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី..."></textarea>
+          <textarea id="rsvp-wishes" rows="3" class="w-full px-4 py-2.5 text-sm rounded-2xl border border-[#E5D5BC] bg-white text-[#2C2420] focus:outline-none focus:border-[#4E7D63] focus:ring-2 focus:ring-[#4E7D63]/15 transition" placeholder="សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី..."></textarea>
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-[#FF8BA7] via-[#FF6B8B] to-[#E73360] hover:from-[#FF6B8B] hover:to-[#C81E48] text-white rounded-2xl text-sm font-bold shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
-          <span class="text-base">💖</span>
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-[#1E4833] via-[#2D5A43] to-[#1E4833] hover:from-[#163626] hover:to-[#224835] text-white border border-[#C5A059]/50 rounded-2xl text-sm font-bold shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+          <span class="text-base">🌿</span>
           <span data-kh="បញ្ជាក់ការចូលរួម (Submit RSVP)" data-en="Submit RSVP">បញ្ជាក់ការចូលរួម (Submit RSVP)</span>
         </button>
       </form>
@@ -613,7 +613,7 @@
     <!-- ================= 10. WISHES GUESTBOOK WALL ================= -->
     <section id="guestbook-section" class="mb-12 reveal-on-scroll">
       <div class="text-center mb-6">
-        <span class="text-xs uppercase tracking-widest text-[#FF6B8B] font-bold block mb-1" data-kh="ពាក្យជូនពរ" data-en="Guest Wishes">
+        <span class="text-xs uppercase tracking-widest text-[#4E7D63] font-bold block mb-1" data-kh="ពាក្យជូនពរ" data-en="Guest Wishes">
           ✍️ ពាក្យជូនពរពីភ្ញៀវកិត្តិយស ✍️
         </span>
         <h3 class="font-khmer-title text-2xl text-[#1E4833]" data-kh="សៀវភៅជូនពរឌីជីថល" data-en="Wishes Guestbook">
@@ -622,13 +622,13 @@
       </div>
 
       <!-- Quick Wish Submission Form -->
-      <div id="wish-form-card" class="bg-white/95 p-5 rounded-3xl border border-[#FF8BA7]/40 shadow-xs mb-6 max-w-md mx-auto">
+      <div id="wish-form-card" class="bg-white/95 p-5 rounded-3xl border border-[#4E7D63]/30 shadow-xs mb-6 max-w-md mx-auto">
         <form id="wish-form" class="space-y-3">
           <div>
-            <input type="text" id="wish-sender-name" required readonly placeholder="ឈ្មោះរបស់អ្នក *" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-[#FF8BA7]/40 bg-[#FFFDFE] text-[#1E4833] font-semibold focus:outline-none cursor-default">
+            <input type="text" id="wish-sender-name" required readonly placeholder="ឈ្មោះរបស់អ្នក *" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-[#4E7D63]/30 bg-[#FAF8F5] text-[#1E4833] font-semibold focus:outline-none cursor-default">
           </div>
-          <textarea id="wish-message" rows="2" required placeholder="សរសេរសារជូនពរនៅទីនេះ..." class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-[#FFD6DE] bg-white text-[#2C2420] focus:outline-none focus:border-[#FF8BA7] focus:ring-2 focus:ring-[#FF8BA7]/20"></textarea>
-          <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-[#1E4833] to-[#2D5A43] hover:from-[#163626] text-white rounded-2xl text-xs font-bold shadow-md transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5">
+          <textarea id="wish-message" rows="2" required placeholder="សរសេរសារជូនពរនៅទីនេះ..." class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-[#E5D5BC] bg-white text-[#2C2420] focus:outline-none focus:border-[#4E7D63] focus:ring-2 focus:ring-[#4E7D63]/15"></textarea>
+          <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-[#1E4833] to-[#2D5A43] hover:from-[#163626] text-white border border-[#C5A059]/40 rounded-2xl text-xs font-bold shadow-md transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5">
             <span>💌</span>
             <span>ផ្ញើសារជូនពរ (Send Wish)</span>
           </button>
@@ -642,9 +642,9 @@
     </section>
 
     <!-- ================= 11. FOOTER ================= -->
-    <footer class="text-center pt-8 border-t border-[#FF8BA7]/30 reveal-on-scroll">
-      <div id="footer-stamp-icon" class="w-14 h-14 rounded-full border-2 border-[#FF8BA7] flex items-center justify-center mx-auto mb-3 bg-white shadow-sm ring-4 ring-[#FF8BA7]/15">
-        <span class="font-en-title text-sm font-bold text-[#FF8BA7]">N&S</span>
+    <footer class="text-center pt-8 border-t border-[#4E7D63]/20 reveal-on-scroll">
+      <div id="footer-stamp-icon" class="w-14 h-14 rounded-full border-2 border-[#4E7D63] flex items-center justify-center mx-auto mb-3 bg-white shadow-sm ring-4 ring-[#4E7D63]/15">
+        <span class="font-en-title text-sm font-bold text-[#1E4833]">N&S</span>
       </div>
       <p class="font-khmer-title text-sm text-[#1E4833] mb-1">
         សូមអរព្រះគុណ និងអរគុណយ៉ាងជ្រាលជ្រៅ
@@ -652,41 +652,41 @@
       <p class="text-xs text-[#5D4E46] font-khmer-body">
         ចំពោះវត្តមានដ៏មានតម្លៃរបស់ភ្ញៀវកិត្តិយសទាំងអស់គ្នា!
       </p>
-      <div class="mt-4 text-[11px] text-[#8C6A18] font-medium">
+      <div class="mt-4 text-[11px] text-[#C5A059] font-medium">
         © 2026 Digital Wedding E-Invitation Platform
       </div>
     </footer>
   </main>
 
-  <!-- ================= CUTE FLOATING BOTTOM NAVIGATION DOCK ================= -->
-  <nav id="bottom-nav-dock" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] bg-white/92 backdrop-blur-md border border-[#FF8BA7]/45 shadow-2xl rounded-full py-2 px-3 sm:px-4 flex items-center gap-2 sm:gap-3 transition-all duration-300 pointer-events-auto">
-    <a href="#opening-cover-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#685D56] hover:text-[#1E4833] transition px-1.5 py-1" title="គម្រប (Cover)">
+  <!-- ================= MODERN NATURE FLOATING BOTTOM NAVIGATION DOCK ================= -->
+  <nav id="bottom-nav-dock" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-[100] bg-white/94 backdrop-blur-md border border-[#4E7D63]/35 shadow-2xl rounded-full py-1.5 px-3 sm:px-4 flex items-center gap-1.5 sm:gap-2.5 transition-all duration-300 pointer-events-auto">
+    <a href="#opening-cover-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="គម្រប (Cover)">
       <span class="text-sm">💌</span>
       <span class="text-[9px] leading-tight">គម្រប</span>
     </a>
-    <a href="#hero-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#685D56] hover:text-[#1E4833] transition px-1.5 py-1" title="គូស្នេហ៍">
+    <a href="#hero-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="គូស្នេហ៍">
       <span class="text-sm">💑</span>
       <span class="text-[9px] leading-tight">គូស្នេហ៍</span>
     </a>
-    <a href="#ceremony-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#685D56] hover:text-[#1E4833] transition px-1.5 py-1" title="កម្មវិធី">
+    <a href="#ceremony-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="កម្មវិធី">
       <span class="text-sm">📅</span>
       <span class="text-[9px] leading-tight">កម្មវិធី</span>
     </a>
-    <a href="#venue-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#685D56] hover:text-[#1E4833] transition px-1.5 py-1" title="ទីតាំង">
+    <a href="#venue-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="ទីតាំង">
       <span class="text-sm">📍</span>
       <span class="text-[9px] leading-tight">ទីតាំង</span>
     </a>
-    <a href="#gallery-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#685D56] hover:text-[#1E4833] transition px-1.5 py-1" title="រូបភាព">
+    <a href="#gallery-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="រូបភាព">
       <span class="text-sm">📷</span>
       <span class="text-[9px] leading-tight">រូបភាព</span>
     </a>
-    <a href="#digital-gift-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#685D56] hover:text-[#1E4833] transition px-1.5 py-1" title="ចងដៃ">
+    <a href="#digital-gift-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="ចងដៃ">
       <span class="text-sm">🎁</span>
       <span class="text-[9px] leading-tight">ចងដៃ</span>
     </a>
     <a href="#rsvp-section" class="bottom-nav-item nav-rsvp-btn flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-bold text-white transition shadow-sm px-2.5 py-1" title="RSVP">
-      <span class="text-sm">✍️</span>
-      <span class="text-[9px] leading-tight">RSVP</span>
+      <span class="text-sm">🌿</span>
+      <span class="text-[9px] leading-tight font-bold">RSVP</span>
     </a>
   </nav>
 
@@ -738,6 +738,6 @@
   </div>
 
   <!-- JavaScript (with cache-busting version query) -->
-  <script src="/js/invitation.js?v=20261027_ring_fixed"></script>
+  <script src="/js/invitation.js?v=20261027_modern_nature"></script>
 </body>
 </html>
