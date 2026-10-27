@@ -235,8 +235,8 @@ function renderAll() {
   document.body.className = `wedding-bg-pattern min-h-screen relative text-[#2C2420] theme-${themeId} ${currentLang === 'en' ? 'lang-en' : 'lang-kh'}`;
 
   if (weddingData.theme) {
-    document.documentElement.style.setProperty('--primary', weddingData.theme.primaryColor || '#8C1D2F');
-    document.documentElement.style.setProperty('--accent', weddingData.theme.accentColor || '#D4AF37');
+    document.documentElement.style.setProperty('--primary', weddingData.theme.primaryColor || '#1E4833');
+    document.documentElement.style.setProperty('--accent', weddingData.theme.accentColor || '#C5A059');
   }
 
   // Update top bar theme switcher display
@@ -509,19 +509,20 @@ function renderAgenda() {
   weddingData.agenda.forEach(item => {
     const iconHtml = iconsMap[item.icon] || iconsMap['gift'];
     const el = document.createElement('div');
-    el.className = 'relative flex items-start gap-4 mb-8 group';
+    el.className = 'relative flex items-start gap-4 mb-7 group';
     el.innerHTML = `
-      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#C5A059] shadow-md shrink-0">
+      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#C5A059] shadow-md shrink-0 ring-4 ring-[#1E4833]/10">
         ${iconHtml}
       </div>
-      <div class="bg-white/80 backdrop-blur-xs p-5 rounded-2xl border border-[#E5D5BC] shadow-xs flex-1 transition hover:shadow-md hover:border-[#C5A059]">
-        <div class="inline-block px-3 py-1 bg-[#FAF7F2] text-[#4E3227] text-xs font-bold rounded-full mb-2 border border-[#E5D5BC]">
-          ${isKh ? toKhmerNumber(item.time) : item.time}
+      <div class="bg-white/92 backdrop-blur-md p-5 rounded-2xl border border-[#C5A059]/35 shadow-xs flex-1 transition-all duration-300 hover:shadow-lg hover:border-[#C5A059]">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1E4833] text-amber-200 text-xs font-bold rounded-full mb-2 border border-[#C5A059]/40 shadow-2xs">
+          <span>🕒</span>
+          <span>${isKh ? toKhmerNumber(item.time) : item.time}</span>
         </div>
-        <h4 class="text-base font-bold text-[#4E3227] mb-1 font-khmer-title">
+        <h4 class="text-base font-bold text-[#1E4833] mb-1 font-khmer-title">
           ${isKh ? item.title_kh : item.title_en}
         </h4>
-        <p class="text-sm text-[#7A6F68] font-khmer-body">
+        <p class="text-sm text-[#5D4E46] font-khmer-body leading-relaxed">
           ${isKh ? item.desc_kh : item.desc_en}
         </p>
       </div>
@@ -540,11 +541,11 @@ function renderGallery() {
 
   weddingData.gallery.forEach(img => {
     const el = document.createElement('div');
-    el.className = 'relative overflow-hidden rounded-2xl shadow-sm border border-[#E5D5BC] group cursor-pointer aspect-4/5';
+    el.className = 'relative overflow-hidden rounded-2xl shadow-sm border border-[#C5A059]/35 hover:border-[#C5A059] group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-xl';
     el.innerHTML = `
-      <img src="${img.url}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
-      <div class="absolute inset-0 bg-gradient-to-t from-[#4E3227]/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-        <span class="text-white text-sm font-medium">
+      <img src="${img.url}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
+      <div class="absolute inset-0 bg-gradient-to-t from-[#1E4833]/90 via-[#1E4833]/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+        <span class="text-white text-xs sm:text-sm font-medium font-khmer-body leading-snug drop-shadow-md">
           ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
         </span>
       </div>
@@ -1057,13 +1058,13 @@ async function loadWishes() {
 
     wishes.slice(0, 10).forEach(w => {
       const el = document.createElement('div');
-      el.className = 'p-4 rounded-xl bg-[#FAF7F2] border border-[#E5D5BC] shadow-2xs mb-3';
+      el.className = 'p-4 rounded-2xl bg-white/92 backdrop-blur-xs border border-[#C5A059]/35 shadow-2xs mb-3 transition hover:border-[#C5A059] hover:shadow-sm';
       el.innerHTML = `
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-bold text-[#4E3227] text-sm">${escapeHTML(w.guestName)}</span>
-          <span class="text-[11px] text-[#C5A059] px-2 py-0.5 bg-white rounded-full border border-[#E5D5BC]">${escapeHTML(w.relationship || '')}</span>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-bold text-[#1E4833] text-sm font-khmer-title">${escapeHTML(w.guestName)}</span>
+          <span class="text-[11px] text-[#8C6A18] px-2.5 py-0.5 bg-[#FAF6ED] rounded-full border border-[#C5A059]/40 font-medium">${escapeHTML(w.relationship || '')}</span>
         </div>
-        <p class="text-xs text-[#2C2420] mt-1 leading-relaxed font-khmer-body">${escapeHTML(w.message)}</p>
+        <p class="text-xs sm:text-sm text-[#2C2420] mt-1 leading-relaxed font-khmer-body">${escapeHTML(w.message)}</p>
       `;
       container.appendChild(el);
     });
@@ -1106,10 +1107,10 @@ const THEME_DATA_MAP = {
   'khmer-traditional': {
     id: 'khmer-traditional',
     name: 'ខ្មែរប្រពៃណី',
-    primaryColor: '#8C1D2F',
-    accentColor: '#D4AF37',
-    secondaryColor: '#B22B42',
-    bgColor: '#FAF5E8',
+    primaryColor: '#1E4833',
+    accentColor: '#C5A059',
+    secondaryColor: '#2D5A43',
+    bgColor: '#FAF6ED',
     emblem: 'romduol',
     sealEmblem: 'romduol'
   }

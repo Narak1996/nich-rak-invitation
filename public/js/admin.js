@@ -125,10 +125,10 @@ const THEME_PRESETS = {
   'khmer-traditional': {
     id: 'khmer-traditional',
     name: 'ខ្មែរប្រពៃណី',
-    primaryColor: '#8C1D2F',
-    accentColor: '#D4AF37',
-    secondaryColor: '#B22B42',
-    bgColor: '#FAF5E8',
+    primaryColor: '#1E4833',
+    accentColor: '#C5A059',
+    secondaryColor: '#2D5A43',
+    bgColor: '#FAF6ED',
     emblem: 'romduol',
     sealEmblem: 'romduol'
   }

@@ -950,7 +950,7 @@ function renderInvitationPage(req, res) {
   }
 
   const indexPath = path.join(__dirname, 'public', 'index.html');
-  const themeColor = weddingData?.theme?.primaryColor || '#8C1D2F';
+  const themeColor = weddingData?.theme?.primaryColor || '#1E4833';
   try {
     let html = fs.readFileSync(indexPath, 'utf-8');
 
