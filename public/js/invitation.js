@@ -1428,7 +1428,7 @@ function initBottomNavScrollSpy() {
     { id: 'rsvp-section', nav: dock.querySelector('a[href="#rsvp-section"]') }
   ];
 
-  // Smooth scroll click handler
+  // Smart smooth scroll click handler (centers compact cards to prevent cutting off next section)
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const targetId = link.getAttribute('href');
@@ -1436,14 +1436,66 @@ function initBottomNavScrollSpy() {
         const targetEl = document.querySelector(targetId);
         if (targetEl) {
           e.preventDefault();
-          targetEl.scrollIntoView({ behavior: 'smooth' });
+          const dockHeight = dock ? dock.offsetHeight + 24 : 85;
+          const viewportH = window.innerHeight;
+          const rect = targetEl.getBoundingClientRect();
+          const targetTop = rect.top + window.pageYOffset;
+          const elH = targetEl.offsetHeight;
+
+          let finalScroll;
+          // If section easily fits in viewport, center it to prevent peeking next card
+          if (elH < (viewportH - dockHeight - 30)) {
+            const extra = (viewportH - dockHeight - elH) / 2;
+            finalScroll = targetTop - Math.max(16, extra);
+          } else {
+            finalScroll = targetTop - 20;
+          }
+
+          window.scrollTo({
+            top: Math.max(0, finalScroll),
+            behavior: 'smooth'
+          });
+
+          // Ensure dock remains visible on user tap
+          dock.classList.remove('dock-hidden');
+          dock.classList.remove('nav-dock-hidden');
         }
       }
     });
   });
 
+  // Reveal dock whenever user touches screen
+  document.addEventListener('touchstart', () => {
+    if (dock) {
+      dock.classList.remove('dock-hidden');
+      dock.classList.remove('nav-dock-hidden');
+    }
+  }, { passive: true });
+
+  let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
+  let dockHideTimeout = null;
+
   window.addEventListener('scroll', () => {
-    const scrollPos = window.scrollY + 250;
+    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Mobile dock auto-hide on scroll down, reveal on scroll up
+    if (dock && window.innerWidth <= 640) {
+      const scrollDiff = currentScrollY - lastScrollY;
+      if (scrollDiff > 12 && currentScrollY > 250) {
+        dock.classList.add('dock-hidden');
+      } else if (scrollDiff < -6 || currentScrollY <= 150) {
+        dock.classList.remove('dock-hidden');
+      }
+
+      clearTimeout(dockHideTimeout);
+      dockHideTimeout = setTimeout(() => {
+        dock.classList.remove('dock-hidden');
+      }, 1400);
+    } else if (dock) {
+      dock.classList.remove('dock-hidden');
+    }
+
+    const scrollPos = currentScrollY + 250;
     let currentId = 'hero-section';
     sections.forEach(s => {
       const el = document.getElementById(s.id);
@@ -1460,6 +1512,8 @@ function initBottomNavScrollSpy() {
         s.nav.classList.remove('active-nav-tab');
       }
     });
+
+    lastScrollY = currentScrollY;
   }, { passive: true });
 }
 
