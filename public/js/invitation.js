@@ -1395,12 +1395,12 @@ function renderThemeWelcome(themeId, w, isKh) {
     const khmerCouple = document.getElementById('khmer-envelope-couple-names');
     if (khmerCouple) {
       khmerCouple.innerHTML = `
-        <div class="couple-names-khmer font-khmer-title text-2xl sm:text-3xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+        <div class="couple-names-khmer font-khmer-title text-base sm:text-lg md:text-xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
           <span>${escapeHTML(w.groom.name_kh)}</span>
-          <span class="opening-ampersand inline-block mx-1.5 text-[#C5A059] font-serif italic text-xl sm:text-2xl">&</span>
+          <span class="opening-ampersand inline-block mx-1 text-[#C5A059] font-serif italic text-base sm:text-lg">&</span>
           <span>${escapeHTML(w.bride.name_kh)}</span>
         </div>
-        <p class="text-[10px] sm:text-[11px] font-serif uppercase tracking-widest text-[#7A6F68] mt-0.5">
+        <p class="opening-names-en text-[9px] sm:text-[10px] font-serif uppercase tracking-widest text-[#7A6F68] mt-0.5">
           ${escapeHTML(w.groom.name_en)} & ${escapeHTML(w.bride.name_en)}
         </p>
       `;
