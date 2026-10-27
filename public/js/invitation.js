@@ -27,6 +27,18 @@ function formatYouTubeEmbedUrl(url) {
   return String(url).trim();
 }
 
+// Convert any Google Drive share link into high-speed permanent CDN image URL
+function resolveGoogleDriveUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const trimmed = url.trim();
+  const driveRegex = /(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=|uc\?(?:export=download&)?id=|thumbnail\?id=)|lh3\.googleusercontent\.com\/d\/)([a-zA-Z0-9_-]+)/;
+  const match = trimmed.match(driveRegex);
+  if (match && match[1]) {
+    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  }
+  return trimmed;
+}
+
 // Initialize Background Music (Supports standard MP3 audio file OR YouTube video link)
 function initMusic(musicUrl) {
   if (!musicUrl) musicUrl = '/audio/wedding-music.mp3';
@@ -540,10 +552,11 @@ function renderGallery() {
   if (!weddingData.gallery || !weddingData.gallery.length) return;
 
   weddingData.gallery.forEach((img, index) => {
+    const directUrl = resolveGoogleDriveUrl(img.url);
     const el = document.createElement('div');
     el.className = 'relative overflow-hidden rounded-2xl shadow-sm border border-[#C5A059]/35 hover:border-[#C5A059] group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-xl';
     el.innerHTML = `
-      <img src="${img.url}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
+      <img src="${directUrl}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
       <div class="absolute inset-0 bg-gradient-to-t from-[#1E4833]/90 via-[#1E4833]/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
         <span class="text-white text-xs sm:text-sm font-medium font-khmer-body leading-snug drop-shadow-md">
           ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
@@ -637,7 +650,7 @@ function updateLightboxDisplay() {
 
   if (img) {
     img.style.opacity = '0.4';
-    img.src = item.url;
+    img.src = resolveGoogleDriveUrl(item.url);
     img.alt = caption || 'Photo';
     img.onload = () => { img.style.opacity = '1'; };
   }

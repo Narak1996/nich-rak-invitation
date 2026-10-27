@@ -49,6 +49,15 @@
             <span id="user-role-badge" class="text-[10px] text-[#C5A059] uppercase tracking-wider block font-semibold">Superadmin</span>
           </div>
         </div>
+        <button type="button" onclick="exportBackupData()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1E4833] bg-[#FAF7F2] hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/60 transition shadow-2xs cursor-pointer" title="ទាញយកឯកសារ Backup រក្សាទុកក្នុងកុំព្យូទ័រ (Export JSON Backup)">
+          <span>💾</span>
+          <span>Backup</span>
+        </button>
+        <label class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1E4833] bg-[#FAF7F2] hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/60 transition shadow-2xs cursor-pointer" title="បញ្ចូលឯកសារ Backup មកវិញ (Restore JSON Backup)">
+          <span>📥</span>
+          <span>Restore</span>
+          <input type="file" accept=".json" onchange="importBackupData(this)" class="hidden">
+        </label>
         <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#4E3227] bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-xl border border-[#E5D5BC] transition">
           <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
           <span>មើលសំបុត្រ (View Invitation)</span>
@@ -403,17 +412,30 @@
             </p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="openGoogleDriveModal()" class="px-3.5 py-2 bg-[#1E4833] hover:bg-[#163626] text-white text-xs font-bold rounded-xl transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer" title="បន្ថែមរូបថតពី Google Drive (Permanent Storage)">
+              <span>📁</span>
+              <span>បន្ថែមពី Google Drive</span>
+            </button>
             <button type="button" onclick="reverseGalleryOrder()" class="px-3 py-2 bg-white hover:bg-[#FAF6ED] text-[#1E4833] border border-[#C5A059]/60 text-xs font-bold rounded-xl transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="ត្រឡប់លំដាប់រូបថតទាំងអស់">
               <span>🔄</span>
               <span>ត្រឡប់លំដាប់ (Reverse)</span>
             </button>
-            <label class="cursor-pointer px-4 py-2 bg-[#1E4833] hover:bg-[#163626] text-white text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5 shadow-xs">
+            <label class="cursor-pointer px-4 py-2 bg-[#FAF6ED] hover:bg-[#E5D5BC]/60 text-[#1E4833] border border-[#C5A059]/60 text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5 shadow-2xs">
               <span>📷 ជ្រើសរើសរូបថត Upload</span>
               <input type="file" accept="image/*" multiple onchange="uploadGalleryFiles(this)" class="hidden">
             </label>
             <button id="btn-add-gallery-item" class="px-3 py-2 bg-[#FAF6ED] hover:bg-[#E5D5BC]/50 text-[#1E4833] border border-[#E5D5BC] text-xs font-bold rounded-xl transition cursor-pointer">
               + URL
             </button>
+          </div>
+        </div>
+
+        <!-- Google Drive Recommendation Notice -->
+        <div class="mb-5 p-3.5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 text-xs text-[#1E4833] flex items-start gap-2.5">
+          <span class="text-base">💡</span>
+          <div class="leading-relaxed">
+            <strong class="font-bold">គន្លឹះរក្សាទុករូបថតមិនឱ្យបាត់ជារៀងរហូត (Permanent Storage):</strong> 
+            សូមផ្ទុករូបថតរបស់អ្នកនៅក្នុង <strong>Google Drive</strong> រួចចុចប៊ូតុង <strong>«📁 បន្ថែមពី Google Drive»</strong>។ រូបថតដែលស្ថិតនៅលើ Google Drive នឹងនៅមានជានិច្ច មិនបាត់បង់ទោះបីជា Server មានការ Restart ឬ Redeploy ក៏ដោយ។
           </div>
         </div>
 
@@ -809,6 +831,63 @@
           រក្សាទុកពាក្យសម្ងាត់ថ្មី (Save New Password)
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- ================= GOOGLE DRIVE IMPORT MODAL ================= -->
+  <div id="modal-google-drive" class="lightbox-modal">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full border border-[#E5D5BC] shadow-2xl relative text-left" onclick="event.stopPropagation()">
+      <button type="button" onclick="closeGoogleDriveModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold cursor-pointer">✕</button>
+      
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-2xl shadow-2xs">
+          📁
+        </div>
+        <div>
+          <h3 class="font-khmer-title text-base font-bold text-[#1E4833]">នាំចូលរូបថតពី Google Drive (Permanent)</h3>
+          <p class="text-[11px] text-[#7A6F68]">រូបភាពរក្សាទុកលើ Google Drive មិនបាត់បង់ពេល Server Restart/Redeploy</p>
+        </div>
+      </div>
+
+      <!-- Step-by-step instructions -->
+      <div class="mb-4 p-3.5 bg-[#FAF7F2] rounded-2xl border border-[#E5D5BC] text-xs text-[#5D4E46] space-y-1.5 leading-relaxed">
+        <p class="font-bold text-[#1E4833] flex items-center gap-1.5">
+          <span>📋 របៀបយក Link ពី Google Drive៖</span>
+        </p>
+        <p>1. ផ្ទេររូបថតចូលក្នុង <strong>Google Drive</strong> ផ្ទាល់ខ្លួនរបស់អ្នក</p>
+        <p>2. ចុចកណ្ដុរស្ដាំលើរូបភាព ➜ ជ្រើសរើស <strong>Share (ចែករំលែក)</strong> ➜ ប្តូរទៅជា <strong>«Anyone with the link» (អ្នកណាដែលមានតំណភ្ជាប់ក៏អាចមើលបាន)</strong></p>
+        <p>3. ចុច <strong>Copy link</strong> រួចយកមក Paste ក្នុងប្រអប់ខាងក្រោម <span class="text-[#8C6A18] font-semibold">(អាច Paste ច្រើន Link ដោយចុះបន្ទាត់)</span></p>
+      </div>
+
+      <!-- Drive Links Textarea -->
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-[#1E4833] mb-1">
+            Google Drive Link(s) * <span class="text-[11px] text-[#7A6F68] font-normal">(ដាក់ ១ ឬច្រើន Link ចុះបន្ទាត់)</span>
+          </label>
+          <textarea id="gdrive-input-links" rows="4" class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-[#E5D5BC] bg-white focus:outline-none focus:border-[#C5A059]" placeholder="https://drive.google.com/file/d/1BxiMVs0XRA5n.../view?usp=sharing&#10;https://drive.google.com/file/d/2CyiNWt1YSA6o.../view?usp=sharing"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#4E3227] mb-1">ចំណងជើង (ខ្មែរ)</label>
+            <input type="text" id="gdrive-caption-kh" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" value="អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#4E3227] mb-1">Caption (English)</label>
+            <input type="text" id="gdrive-caption-en" class="w-full px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" value="Sweet Memories">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#E5D5BC]">
+          <button type="button" onclick="closeGoogleDriveModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-[#7A6F68] hover:bg-gray-100 transition cursor-pointer">
+            បោះបង់ (Cancel)
+          </button>
+          <button type="button" onclick="submitGoogleDrivePhotos()" class="px-5 py-2.5 bg-[#1E4833] hover:bg-[#163626] text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+            <span>✓ បញ្ចូលទៅក្នុង Gallery</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

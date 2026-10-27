@@ -171,6 +171,18 @@ function saveSessions() {
   writeJSON(SESSIONS_FILE, activeSessions);
 }
 
+// Convert any Google Drive share link into high-speed permanent CDN image URL
+function resolveGoogleDriveUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const trimmed = url.trim();
+  const driveRegex = /(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=|uc\?(?:export=download&)?id=|thumbnail\?id=)|lh3\.googleusercontent\.com\/d\/)([a-zA-Z0-9_-]+)/;
+  const match = trimmed.match(driveRegex);
+  if (match && match[1]) {
+    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  }
+  return trimmed;
+}
+
 function getSession(token) {
   if (!token) return null;
 
@@ -546,6 +558,31 @@ app.put('/api/wedding', requireAdmin, (req, res) => {
   if (req.body.wedding && req.body.wedding.video_embed) {
     req.body.wedding.video_embed = formatYouTubeEmbedUrl(req.body.wedding.video_embed);
   }
+
+  // Sanitize and convert any Google Drive links to high-speed CDN URLs
+  if (req.body.gallery && Array.isArray(req.body.gallery)) {
+    req.body.gallery.forEach(item => {
+      if (item && item.url) item.url = resolveGoogleDriveUrl(item.url);
+    });
+  }
+  if (req.body.couple && req.body.couple.cover_photo) {
+    req.body.couple.cover_photo = resolveGoogleDriveUrl(req.body.couple.cover_photo);
+  }
+  if (req.body.groom && req.body.groom.photo) {
+    req.body.groom.photo = resolveGoogleDriveUrl(req.body.groom.photo);
+  }
+  if (req.body.bride && req.body.bride.photo) {
+    req.body.bride.photo = resolveGoogleDriveUrl(req.body.bride.photo);
+  }
+  if (req.body.digital_gift) {
+    if (req.body.digital_gift.groom_account && req.body.digital_gift.groom_account.qr_image) {
+      req.body.digital_gift.groom_account.qr_image = resolveGoogleDriveUrl(req.body.digital_gift.groom_account.qr_image);
+    }
+    if (req.body.digital_gift.bride_account && req.body.digital_gift.bride_account.qr_image) {
+      req.body.digital_gift.bride_account.qr_image = resolveGoogleDriveUrl(req.body.digital_gift.bride_account.qr_image);
+    }
+  }
+
   const updated = {
     ...current,
     ...req.body,

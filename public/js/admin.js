@@ -1500,3 +1500,177 @@ window.uploadAudio = async function(fileInput, targetInputId) {
     showToast('Failed to upload audio');
   }
 };
+
+// ==========================================================================
+// GOOGLE DRIVE CLOUD STORAGE & BACKUP RESTORE HANDLERS
+// ==========================================================================
+
+// Convert any Google Drive share link into high-speed permanent CDN image URL
+function resolveGoogleDriveUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const trimmed = url.trim();
+  const driveRegex = /(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=|uc\?(?:export=download&)?id=|thumbnail\?id=)|lh3\.googleusercontent\.com\/d\/)([a-zA-Z0-9_-]+)/;
+  const match = trimmed.match(driveRegex);
+  if (match && match[1]) {
+    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  }
+  return trimmed;
+}
+
+window.resolveGoogleDriveUrl = resolveGoogleDriveUrl;
+
+// Open Google Drive Import Modal
+window.openGoogleDriveModal = function() {
+  const modal = document.getElementById('modal-google-drive');
+  if (modal) {
+    modal.classList.add('active');
+    modal.classList.remove('hidden');
+    const input = document.getElementById('gdrive-input-links');
+    if (input) setTimeout(() => input.focus(), 100);
+  }
+};
+
+// Close Google Drive Import Modal
+window.closeGoogleDriveModal = function() {
+  const modal = document.getElementById('modal-google-drive');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.classList.add('hidden');
+  }
+};
+
+// Submit Google Drive photos
+window.submitGoogleDrivePhotos = async function() {
+  const input = document.getElementById('gdrive-input-links');
+  if (!input || !input.value.trim()) {
+    showToast('សូមបញ្ចូល Google Drive Link យ៉ាងហោចណាស់មួយ');
+    return;
+  }
+  const lines = input.value.split('\n').map(l => l.trim()).filter(Boolean);
+  const captionKh = document.getElementById('gdrive-caption-kh')?.value.trim() || 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម';
+  const captionEn = document.getElementById('gdrive-caption-en')?.value.trim() || 'Sweet Memories';
+
+  let addedCount = 0;
+  weddingData.gallery = weddingData.gallery || [];
+
+  for (let rawUrl of lines) {
+    const resolved = resolveGoogleDriveUrl(rawUrl);
+    if (resolved) {
+      weddingData.gallery.push({
+        id: Date.now() + Math.round(Math.random() * 10000) + addedCount,
+        url: resolved,
+        caption_kh: captionKh,
+        caption_en: captionEn
+      });
+      addedCount++;
+    }
+  }
+
+  if (addedCount === 0) {
+    showToast('ពុំមាន Link ត្រឹមត្រូវទេ');
+    return;
+  }
+
+  showToast(`កំពុងរក្សាទុក ${addedCount} រូបភាពពី Google Drive...`);
+
+  try {
+    const res = await fetch('/api/wedding', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...weddingData })
+    });
+    if (res.ok) {
+      input.value = '';
+      closeGoogleDriveModal();
+      showToast(`✓ បានបញ្ចូល ${addedCount} រូបភាពពី Google Drive ជោគជ័យ!`);
+      loadWeddingData();
+    } else {
+      showToast('បរាជ័យក្នុងការរក្សាទុក');
+    }
+  } catch (err) {
+    console.error('Save Google Drive photos error:', err);
+    showToast('មានបញ្ហាក្នុងការរក្សាទុក');
+  }
+};
+
+// Export Wedding Data Backup as JSON file
+window.exportBackupData = function() {
+  if (!weddingData) {
+    showToast('មិនទាន់មានទិន្នន័យសម្រាប់ Backup ទេ');
+    return;
+  }
+  const jsonStr = JSON.stringify(weddingData, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `wedding-backup-${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✓ បានទាញយកឯកសារ Backup ដោយជោគជ័យ!');
+};
+
+// Import Wedding Data Backup from JSON file
+window.importBackupData = function(fileInput) {
+  if (!fileInput.files || !fileInput.files[0]) return;
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed || (!parsed.wedding && !parsed.gallery)) {
+        showToast('ឯកសារ Backup មិនត្រឹមត្រូវ');
+        return;
+      }
+      if (!confirm('តើអ្នកពិតជាចង់ស្តារទិន្នន័យពីឯកសារ Backup នេះមែនទេ? (Restore wedding data?)')) {
+        return;
+      }
+      showToast('កំពុងស្តារទិន្នន័យឡើងវិញ...');
+      const res = await fetch('/api/wedding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsed)
+      });
+      if (res.ok) {
+        showToast('✓ បានស្តារទិន្នន័យ Backup ជោគជ័យ!');
+        loadWeddingData();
+      } else {
+        showToast('មានបញ្ហាក្នុងការស្តារទិន្នន័យ');
+      }
+    } catch (err) {
+      console.error('Import backup error:', err);
+      showToast('ឯកសារមិនមែនជា JSON ត្រឹមត្រូវទេ');
+    } finally {
+      fileInput.value = '';
+    }
+  };
+  reader.readAsText(file);
+};
+
+// Auto-convert Google Drive links on input fields
+document.addEventListener('DOMContentLoaded', () => {
+  const photoInputIds = ['groom-photo', 'bride-photo', 'couple-photo-url', 'dg-groom-qr', 'dg-bride-qr'];
+  photoInputIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', () => {
+        const original = el.value.trim();
+        const converted = resolveGoogleDriveUrl(original);
+        if (converted !== original) {
+          el.value = converted;
+          showToast('✓ បានបម្លែង Google Drive Link ជោគជ័យ!');
+          // Trigger preview
+          const prevId = id === 'couple-photo-url' ? 'couple-photo-preview' : `${id}-preview`;
+          const prevEl = document.getElementById(prevId);
+          if (prevEl) {
+            prevEl.src = converted;
+            prevEl.classList.remove('hidden');
+          }
+        }
+      });
+    }
+  });
+});
