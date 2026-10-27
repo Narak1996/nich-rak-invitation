@@ -1303,76 +1303,7 @@ body.theme-khmer-traditional #envelope-screen {
   50% { transform: translateY(-4px); }
 }
 
-/* Ambient Floating Butterflies */
-.opening-butterfly {
-  position: absolute;
-  font-size: 18px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
-  pointer-events: none;
-  z-index: 25;
-}
 
-.opening-butterfly-1 {
-  top: 18%;
-  right: 16%;
-  animation: butterflyFlight1 7s ease-in-out infinite;
-}
-
-.opening-butterfly-2 {
-  bottom: 30%;
-  left: 12%;
-  font-size: 15px;
-  animation: butterflyFlight2 8.5s ease-in-out infinite 1.2s;
-}
-
-@keyframes butterflyFlight1 {
-  0% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
-  25% { transform: translate(-14px, -18px) rotate(-12deg) scale(1); }
-  50% { transform: translate(-25px, -8px) rotate(8deg) scale(0.95); }
-  75% { transform: translate(-10px, 8px) rotate(-6deg) scale(1.05); }
-  100% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
-}
-
-@keyframes butterflyFlight2 {
-  0% { transform: translate(0, 0) rotate(0deg) scale(0.85); }
-  30% { transform: translate(16px, -14px) rotate(10deg) scale(1); }
-  60% { transform: translate(22px, 6px) rotate(-12deg) scale(0.9); }
-  100% { transform: translate(0, 0) rotate(0deg) scale(0.85); }
-}
-
-/* Ambient Sparkles & Petals */
-.opening-sparkle {
-  position: absolute;
-  color: #D4AF37;
-  font-size: 13px;
-  animation: sparkleAmbient 3.5s ease-in-out infinite;
-  pointer-events: none;
-}
-.opening-sparkle-1 { top: 28%; left: 18%; animation-delay: 0.2s; }
-.opening-sparkle-2 { top: 40%; right: 24%; animation-delay: 1.4s; font-size: 11px; }
-.opening-sparkle-3 { bottom: 25%; right: 38%; animation-delay: 2.1s; font-size: 14px; }
-
-@keyframes sparkleAmbient {
-  0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
-  50% { opacity: 0.9; transform: scale(1.2) rotate(90deg); filter: drop-shadow(0 0 5px #F5D77F); }
-}
-
-.opening-petal {
-  position: absolute;
-  font-size: 12px;
-  opacity: 0.6;
-  pointer-events: none;
-  animation: petalFloat 7s linear infinite;
-}
-.opening-petal-1 { top: 15%; left: 30%; animation-delay: 0.5s; }
-.opening-petal-2 { top: 22%; right: 20%; animation-delay: 3s; font-size: 14px; }
-
-@keyframes petalFloat {
-  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-  20% { opacity: 0.7; }
-  80% { opacity: 0.6; }
-  100% { transform: translateY(140px) rotate(180deg); opacity: 0; }
-}
 
 /* Opening Action Button with Pulse Aura */
 .opening-action-btn {
@@ -1516,35 +1447,6 @@ body.theme-khmer-traditional #envelope-screen {
   0% { transform: translate3d(0, 0, 0) scale(1); }
   100% { transform: translate3d(-45px, 40px, 0) scale(1.10); }
 }
-
-/* Cute Floating Canvas Atmospheric Particles */
-.cute-ambient-bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.cute-floating-particle {
-  position: absolute;
-  user-select: none;
-  pointer-events: none;
-  animation: cuteFloatDrift 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes cuteFloatDrift {
-  0% { transform: translate3d(0, 105vh, 0) rotate(0deg) scale(0.8); opacity: 0; }
-  15% { opacity: 0.9; transform: translate3d(15px, 85vh, 0) rotate(45deg) scale(1); }
-  85% { opacity: 0.85; transform: translate3d(-15px, 15vh, 0) rotate(315deg) scale(1.05); }
-  100% { transform: translate3d(25px, -5vh, 0) rotate(360deg) scale(0.9); opacity: 0; }
-}
-
-.particle-p1 { left: 8%; font-size: 20px; animation-duration: 16s; animation-delay: 0s; }
-.particle-p2 { left: 24%; font-size: 16px; animation-duration: 21s; animation-delay: 4s; }
-.particle-p3 { left: 45%; font-size: 22px; animation-duration: 18s; animation-delay: 1.5s; }
-.particle-p4 { left: 68%; font-size: 18px; animation-duration: 24s; animation-delay: 7s; }
-.particle-p5 { left: 88%; font-size: 24px; animation-duration: 19s; animation-delay: 3s; }
 
 /* Modern Botanical Polaroid Scrapbook Frame (Frosted Glass Blur) */
 .polaroid-scrapbook {

@@ -1,0 +1,323 @@
+{
+  "backedUpAt": "2026-10-27T10:19:54.635Z",
+  "timestamp": "20261027_171954",
+  "wedding": {
+    "theme": {
+      "id": "khmer-traditional",
+      "name": "ខ្មែរ",
+      "primaryColor": "#1E4833",
+      "accentColor": "#C5A059",
+      "secondaryColor": "#2D5A43",
+      "bgColor": "#FAF6ED",
+      "emblem": "romduol",
+      "sealEmblem": "romduol"
+    },
+    "wedding": {
+      "title_kh": "សិរីសួស្តី អាពាហ៍ពិពាហ៍",
+      "title_en": "Happy Wedding Celebration",
+      "groom": {
+        "name_kh": "ឡេង ចាន់ណារៈ",
+        "name_en": "Leng Channarak",
+        "father_kh": "លោក ចាន់ សុខុម",
+        "father_en": "Mr. Chan Sokhom",
+        "mother_kh": "លោកស្រី ម៉ៅ សុផល",
+        "mother_en": "Mrs. Mao Sophal",
+        "photo": "/uploads/groom-real-portrait.jpg",
+        "side": "groom"
+      },
+      "bride": {
+        "name_kh": "នាត ស្រីនិច",
+        "name_en": "Neat SreyNich",
+        "father_kh": "លោក លី ហេង",
+        "father_en": "Mr. Ly Heng",
+        "mother_kh": "លោកស្រី កែវ រតនា",
+        "mother_en": "Mrs. Keo Rathana",
+        "photo": "/uploads/bride-real-portrait.jpg",
+        "side": "bride"
+      },
+      "couple_photo": "/uploads/upload-1790497247828-901277914.jpg",
+      "quote_kh": "«សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»",
+      "quote_en": "\"Two lives, two hearts, joined together in friendship, united forever in love.\"",
+      "event_date": "2027-01-24T07:00",
+      "date_solar_kh": "ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧",
+      "date_solar_en": "Saturday, November 28, 2026",
+      "date_lunar_kh": "ត្រូវនឹងថ្ងៃ ៥រោច ខែកត្តិក ឆ្នាំរោង ឆស័ក ព.ស. ២៥៧០",
+      "date_lunar_en": "Lunar Date: 5th Waning of Kattika, Year of the Dragon, B.E. 2570",
+      "venue_name_kh": "មជ្ឈមណ្ឌលសន្និបាត និងពិព័រណ៍ ព្រីមៀរ សែនសុខ (អគារ A)",
+      "venue_name_en": "The Premier Centre Sen Sok (Building A)",
+      "venue_address_kh": "ផ្លូវ ១០០៣ សង្កាត់ភ្នំពេញថ្មី ខណ្ឌសែនសុខ រាជធានីភ្នំពេញ",
+      "venue_address_en": "Street 1003, Sangkat Phnom Penh Thmey, Khan Sen Sok, Phnom Penh",
+      "map_url": "https://maps.google.com/?q=The+Premier+Centre+Sen+Sok+Phnom+Penh",
+      "map_embed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3908.7753177659546!2d104.88219467586938!3d11.568478444070624!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310951a37c093417%3A0x889dc0d5bfa780d3!2sThe%20Premier%20Centre%20Sen%20Sok!5e0!3m2!1sen!2skh!4v1700000000000!5m2!1sen!2skh",
+      "music_url": "https://www.youtube.com/embed/Mn_qLC7_ueA?enablejsapi=1&rel=0&modestbranding=1",
+      "video_embed": "https://www.youtube.com/embed/Mn_qLC7_ueA?enablejsapi=1&rel=0&modestbranding=1"
+    },
+    "agenda": [
+      {
+        "id": 1,
+        "time": "07:00 AM",
+        "period": "morning",
+        "title_kh": "ពិធីហែជំនូន និងរៀបចំគ្រឿងដង្វាយ",
+        "title_en": "Fruit & Gift Procession (Hai Chomnoun)",
+        "desc_kh": "ជួបជុំភ្ញៀវកិត្តិយស ហែជំនូនចូលគេហដ្ឋានមង្គលកូនក្រមុំ",
+        "desc_en": "Traditional procession of fruits and gifts to the bride's family home",
+        "location_kh": "គេហដ្ឋានមង្គលខាងស្រី",
+        "location_en": "គេហដ្ឋានមង្គលខាងស្រី",
+        "icon": "gift"
+      },
+      {
+        "id": 2,
+        "time": "08:15 AM",
+        "period": "morning",
+        "title_kh": "ពិធីសំពះសែនដូនតា និងពិសាស្លាត្រួយ",
+        "title_en": "Ancestral Offering & Tea Ceremony",
+        "desc_kh": "ថ្វាយបង្គំព្រះ សំពះសែនមាតាបិតា និងបុព្វការីជន",
+        "desc_en": "Homage to ancestors, parents and elderly blessing ceremony",
+        "location_kh": "គេហដ្ឋានមង្គលខាងស្រី",
+        "location_en": "Bride's Residence",
+        "icon": "hands-praying"
+      },
+      {
+        "id": 3,
+        "time": "09:30 AM",
+        "period": "morning",
+        "title_kh": "ពិធីកាត់សក់បង្កក់សិរី",
+        "title_en": "Hair Cutting Ceremony (Gaat Sahk)",
+        "desc_kh": "កាត់សក់ ជម្រះចង្រៃ និងប្រសិទ្ធិពរជ័យមង្គល",
+        "desc_en": "Symbolic haircutting to purify and bring fortune to the bride and groom",
+        "location_kh": "គេហដ្ឋានមង្គលខាងស្រី",
+        "location_en": "Bride's Residence",
+        "icon": "scissors"
+      },
+      {
+        "id": 4,
+        "time": "10:30 AM",
+        "period": "morning",
+        "title_kh": "ពិធីសំពះផ្ទឹម ចងដៃ និងបង្វិលពពិល",
+        "title_en": "Sacred Wrist-Tying & Ring Exchange Ceremony",
+        "desc_kh": "ពិធីចងអំបោះក្រហម ប្រោះព្រំទឹកមន្ត និងប្រសិទ្ធពរជ័យ",
+        "desc_en": "Passing of the candle blessing and red thread wrist-tying ceremony",
+        "location_kh": "គេហដ្ឋានមង្គលខាងស្រី",
+        "location_en": "Bride's Residence",
+        "icon": "ring"
+      },
+      {
+        "id": 5,
+        "time": "05:00 PM",
+        "period": "evening",
+        "title_kh": "ទទួលភ្ញៀវកិត្តិយស និងថតរូបអនុស្សាវរីយ៍",
+        "title_en": "Cocktail Reception & Photo Session",
+        "desc_kh": "ស្វាគមន៍ភ្ញៀវកិត្តិយសទាំងអស់ចូលរួមពិសាភោជនាហារ",
+        "desc_en": "Welcoming honorable guests, cocktail hour and photo booth",
+        "location_kh": "ព្រីមៀរ សែនសុខ (អគារ A)",
+        "location_en": "The Premier Centre Sen Sok (Bldg A)",
+        "icon": "camera"
+      },
+      {
+        "id": 6,
+        "time": "06:30 PM",
+        "period": "evening",
+        "title_kh": "ពិធីពិសាភោជនាហារ និងកាត់នំខេកមង្គល",
+        "title_en": "Wedding Banquet & Cake Celebration",
+        "desc_kh": "ពិសាភោជនាហារជួបជុំគ្នា អមដោយតន្ត្រីកំដររាត្រី",
+        "desc_en": "Grand celebration banquet dinner, champagne toast and live band music",
+        "location_kh": "ព្រីមៀរ សែនសុខ (អគារ A)",
+        "location_en": "The Premier Centre Sen Sok (Bldg A)",
+        "icon": "utensils"
+      }
+    ],
+    "gallery": [
+      {
+        "id": 1790408400217,
+        "url": "/uploads/upload-1790408399864-517093674.jpg",
+        "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+        "caption_en": "Sweet Memories"
+      },
+      {
+        "id": 1790408400612,
+        "url": "/uploads/upload-1790408400317-630676211.jpg",
+        "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+        "caption_en": "Sweet Memories"
+      },
+      {
+        "id": 1790408401878,
+        "url": "/uploads/upload-1790408400736-579379164.jpg",
+        "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+        "caption_en": "Sweet Memories"
+      },
+      {
+        "id": 1790408401869,
+        "url": "/uploads/upload-1790408401318-846378199.jpg",
+        "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+        "caption_en": "Sweet Memories"
+      }
+    ],
+    "dress_code": {
+      "enabled": false,
+      "title_kh": "ពណ៌សម្លៀកបំពាក់",
+      "title_en": "Dress Code & Theme Colors",
+      "description_kh": "ដើម្បីភាពស្រស់ស្អាត និងការចងចាំដ៏រុងរឿង ភ្ញៀវកិត្តិយសអាចជ្រើសរើសពណ៌សម្លៀកបំពាក់ដូចខាងក្រោម៖",
+      "description_en": "To create beautiful photos and lasting memories, guests are warmly invited to celebrate in these attire tones:",
+      "colors": [
+        {
+          "name_kh": "មាសស្រាល",
+          "name_en": "Champagne Gold",
+          "hex": "#D4AF37"
+        },
+        {
+          "name_kh": "បៃតងមរកត",
+          "name_en": "Emerald Green",
+          "hex": "#1E3526"
+        },
+        {
+          "name_kh": "ក្រែមសូត្រ",
+          "name_en": "Warm Ivory",
+          "hex": "#FAF0D7"
+        },
+        {
+          "name_kh": "ផ្កាឈូកទន់",
+          "name_en": "Soft Rose",
+          "hex": "#DDA7A5"
+        },
+        {
+          "name_kh": "ខៀវរាត្រី",
+          "name_en": "Midnight Navy",
+          "hex": "#0B1B34"
+        }
+      ]
+    },
+    "digital_gift": {
+      "enabled": true,
+      "title_kh": "ចងដៃតាមប្រព័ន្ធឌីជីថល (Digital Wedding Blessing)",
+      "title_en": "Digital Wedding Gift / Blessing (Bakong KHQR)",
+      "description_kh": "វត្តមានដ៏ឧត្តុង្គឧត្តមរបស់លោកអ្នកជាកិត្តិយសដ៏ថ្លៃថ្លាបំផុត។ ប្រសិនបើលោកអ្នកមានបំណងជូនពរតាមរយៈការចងដៃឌីជីថល លោកអ្នកអាចស្កេន KHQR ខាងក្រោមបាន។",
+      "description_en": "Your presence is our greatest honor. If you wish to bless the newlyweds with a digital wedding gift, please scan the KHQR below.",
+      "groom_account": {
+        "bank_name": "ABA Bank / KHQR",
+        "account_name": "CHAN NARAK",
+        "account_number": "001 888 999 (USD)",
+        "qr_image": "/images/sample_aba_qr.png"
+      },
+      "bride_account": {
+        "bank_name": "Bakong / ACLEDA",
+        "account_name": "LY SREYMECH",
+        "account_number": "012 345 678 (USD)",
+        "qr_image": "/images/sample_bakong_qr.png"
+      }
+    },
+    "admin": {
+      "username": "admin",
+      "passwordHash": "admin123"
+    }
+  },
+  "guests": [
+    {
+      "id": "g-1",
+      "slug": "sok-dara",
+      "name": "លោក សុខ ដារ៉ា និងភរិយា 11",
+      "name_en": "Mr. Sok Dara & Spouse",
+      "side": "groom",
+      "category": "VIP",
+      "phone": "012888999",
+      "pax_allowed": "2",
+      "status": "confirmed",
+      "attendees": 2,
+      "wishes": "សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី មានសុភមង្គល ស្រឡាញ់គ្នារហូតដល់ចាស់កោងខ្នង!",
+      "updatedAt": "2026-09-20T14:30:00.000Z"
+    },
+    {
+      "id": "g-2",
+      "slug": "vireak-thol",
+      "name": "លោក ថុល វិរៈ",
+      "name_en": "Mr. Thol Vireak",
+      "side": "bride",
+      "category": "Colleague",
+      "phone": "098765432",
+      "pax_allowed": 1,
+      "status": "confirmed",
+      "attendees": 1,
+      "wishes": "Congratulations to Narak & Sreymech! Wishing you lifetime of love and joy!",
+      "updatedAt": "2026-09-21T09:15:00.000Z"
+    },
+    {
+      "id": "g-3",
+      "slug": "chan-pisey",
+      "name": "កញ្ញា ចាន់ ពិសី",
+      "name_en": "Ms. Chan Pisey",
+      "side": "groom",
+      "category": "Family",
+      "phone": "077112233",
+      "pax_allowed": 2,
+      "status": "pending",
+      "attendees": 0,
+      "wishes": "",
+      "updatedAt": null
+    },
+    {
+      "id": "g-4",
+      "slug": "oknha-heng",
+      "name": "ឯកឧត្តម លោកជំទាវ ហេង",
+      "name_en": "H.E. & Lok Chumteav Heng",
+      "side": "bride",
+      "category": "VIP",
+      "phone": "012334455",
+      "pax_allowed": 4,
+      "status": "confirmed",
+      "attendees": 2,
+      "wishes": "សូមប្រសិទ្ធិពរជ័យ សិរីសួស្តី ជោគជ័យគ្រប់ភារកិច្ច និងរកទទួលទានមានបានគ្រប់ប្រការ!",
+      "updatedAt": "2026-09-22T16:00:00.000Z"
+    },
+    {
+      "id": "g-1790578191282",
+      "slug": "yengchannn",
+      "name": "យ៉េង ចាន់",
+      "name_en": "Yeng Channn",
+      "side": "bride",
+      "category": "Colleague",
+      "phone": "",
+      "pax_allowed": 3,
+      "status": "pending",
+      "attendees": 0,
+      "wishes": "",
+      "updatedAt": null
+    }
+  ],
+  "wishes": [
+    {
+      "id": "w-1",
+      "guestName": "លោក សុខ ដារ៉ា និងភរិយា",
+      "relationship": "ភ្ញៀវខាងប្រុស (Groom's Side)",
+      "message": "សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី មានសុភមង្គល ស្រឡាញ់គ្នារហូតដល់ចាស់កោងខ្នង និងឆាប់ទទួលបានចំណងដៃកូនចៅ!",
+      "status": "approved",
+      "createdAt": "2026-09-20T14:30:00.000Z"
+    },
+    {
+      "id": "w-2",
+      "guestName": "Mr. Thol Vireak",
+      "relationship": "ភ្ញៀវខាងស្រី (Bride's Side)",
+      "message": "Congratulations to Narak & Sreymech! Wishing you both a lifetime filled with immense love, prosperity, and happiness!",
+      "status": "approved",
+      "createdAt": "2026-09-21T09:15:00.000Z"
+    },
+    {
+      "id": "w-3",
+      "guestName": "ឯកឧត្តម លោកជំទាវ ហេង",
+      "relationship": "ភ្ញៀវកិត្តិយស (VIP Guest)",
+      "message": "សូមប្រសិទ្ធិពរជ័យ សិរីសួស្តី វិបុលសុខគ្រប់ប្រការដល់ក្មួយទាំងពីរ និងសូមឱ្យចំណងស្នេហ៍ស្ថិតស្ថេរជានិច្ចនិរន្តរ៍!",
+      "status": "approved",
+      "createdAt": "2026-09-22T16:00:00.000Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr_1790502597939",
+      "username": "admin",
+      "displayName": "Admin (Channarak)",
+      "role": "superadmin",
+      "passwordHash": "6695a659dad80293c675b55e7e4d9bc8186acd4b81671e51cf64cd34527e0dcb3a743500a1963232cb2c66745d1d39fdf4371741772312bbaf58ac1168faa430",
+      "salt": "a220e08454dec3f38c086a69b3c13df7",
+      "createdAt": "2026-09-27T09:49:57.939Z",
+      "lastLogin": "2026-10-27T06:16:53.309Z"
+    }
+  ]
+}
