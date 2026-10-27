@@ -51,23 +51,13 @@ body.theme-khmer-traditional {
   color: #2C2420 !important;
 }
 
-.wedding-bg-pattern {
-  background-color: #FAF6ED;
-  background-image: 
-    linear-gradient(rgba(253, 251, 247, 0.92), rgba(250, 246, 237, 0.92)),
-    url('/images/components/banteay-srei-bg.jpg');
-  background-size: auto, 380px 380px;
-  background-repeat: repeat, repeat;
-  background-attachment: fixed;
-}
-
+.wedding-bg-pattern,
 body.theme-khmer-traditional.wedding-bg-pattern {
-  background-color: #FAF6ED !important;
+  background-color: #FAF7F2 !important;
   background-image: 
-    linear-gradient(rgba(253, 251, 247, 0.92), rgba(250, 246, 237, 0.92)),
-    url('/images/components/banteay-srei-bg.jpg') !important;
-  background-size: auto, 380px 380px !important;
-  background-repeat: repeat, repeat !important;
+    radial-gradient(circle at 15% 15%, rgba(197, 160, 89, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(30, 72, 51, 0.06) 0%, transparent 45%),
+    linear-gradient(180deg, #FDFBF7 0%, #FAF7F2 50%, #F5EFEB 100%) !important;
   background-attachment: fixed !important;
 }
 
@@ -119,52 +109,12 @@ body.theme-khmer-traditional .ornate-border-box::before {
 body.theme-khmer-traditional .khmer-corner-tl,
 body.theme-khmer-traditional .khmer-corner-tr,
 body.theme-khmer-traditional .khmer-corner-bl,
-body.theme-khmer-traditional .khmer-corner-br {
-  display: block !important;
-  border: none !important;
-  width: 70px !important;
-  height: 70px !important;
-  background-image: url('/images/components/banteay-srei-corner.png') !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  pointer-events: none !important;
-  filter: drop-shadow(0 1px 3px rgba(197, 160, 89, 0.35)) sepia(0.2) saturate(1.2) !important;
-  z-index: 2 !important;
-}
-body.theme-khmer-traditional .khmer-corner-tl {
-  top: 2px !important;
-  left: 2px !important;
-  transform: none !important;
-}
-body.theme-khmer-traditional .khmer-corner-tr {
-  top: 2px !important;
-  right: 2px !important;
-  left: auto !important;
-  transform: scaleX(-1) !important;
-}
-body.theme-khmer-traditional .khmer-corner-bl {
-  bottom: 2px !important;
-  left: 2px !important;
-  top: auto !important;
-  transform: scaleY(-1) !important;
-}
-body.theme-khmer-traditional .khmer-corner-br {
-  bottom: 2px !important;
-  right: 2px !important;
-  top: auto !important;
-  left: auto !important;
-  transform: scale(-1, -1) !important;
-}
-
-@media (max-width: 640px) {
-  body.theme-khmer-traditional .khmer-corner-tl,
-  body.theme-khmer-traditional .khmer-corner-tr,
-  body.theme-khmer-traditional .khmer-corner-bl,
-  body.theme-khmer-traditional .khmer-corner-br {
-    width: 52px !important;
-    height: 52px !important;
-  }
+body.theme-khmer-traditional .khmer-corner-br,
+.khmer-corner-tl,
+.khmer-corner-tr,
+.khmer-corner-bl,
+.khmer-corner-br {
+  display: none !important;
 }
 
 /* Khmer Inner Cards & Sub-elements */
@@ -593,51 +543,12 @@ body.theme-khmer-traditional .bottom-nav-item.active-nav-tab {
   pointer-events: none;
 }
 
-/* Khmer Floral Corner Motif - Authentic Flat Khmer Kbach PNG with Rounded Outer Corner */
+/* Khmer Floral Corner Motif */
 .khmer-corner-tl,
 .khmer-corner-tr,
 .khmer-corner-bl,
 .khmer-corner-br {
-  position: absolute;
-  width: 76px;
-  height: 76px;
-  background-image: url('/images/components/banteay-srei-corner.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  border: none;
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 1px 2px rgba(197, 160, 89, 0.2));
-}
-.khmer-corner-tl {
-  top: 2px;
-  left: 2px;
-  transform: none;
-}
-.khmer-corner-tr {
-  top: 2px;
-  right: 2px;
-  transform: scaleX(-1);
-}
-.khmer-corner-bl {
-  bottom: 2px;
-  left: 2px;
-  transform: scaleY(-1);
-}
-.khmer-corner-br {
-  bottom: 2px;
-  right: 2px;
-  transform: scale(-1, -1);
-}
-
-@media (max-width: 640px) {
-  .khmer-corner-tl,
-  .khmer-corner-tr,
-  .khmer-corner-bl,
-  .khmer-corner-br {
-    width: 56px;
-    height: 56px;
-  }
+  display: none !important;
 }
 
 /* Khmer Numbers Typography: Modern & Legible Glyphs */
@@ -817,36 +728,7 @@ body.theme-khmer-traditional .bottom-nav-item.active-nav-tab {
   }
 }
 
-body.theme-khmer-traditional .khmer-corner-tl {
-  animation: romduolCornerGleam 4.5s ease-in-out infinite;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-}
-body.theme-khmer-traditional .khmer-corner-tr {
-  animation: romduolCornerGleam 4.5s ease-in-out infinite 0.75s;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-}
-body.theme-khmer-traditional .khmer-corner-bl {
-  animation: romduolCornerGleam 4.5s ease-in-out infinite 1.5s;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-}
-body.theme-khmer-traditional .khmer-corner-br {
-  animation: romduolCornerGleam 4.5s ease-in-out infinite 2.25s;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-}
 
-/* On hover card: interactive gentle expansion */
-.ornate-border-box:hover .khmer-corner-tl {
-  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
-}
-.ornate-border-box:hover .khmer-corner-tr {
-  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
-}
-.ornate-border-box:hover .khmer-corner-bl {
-  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
-}
-.ornate-border-box:hover .khmer-corner-br {
-  filter: drop-shadow(0 3px 10px rgba(212, 175, 55, 0.7)) brightness(1.15) !important;
-}
 
 /* Floating Romduol Flower Emblem */
 @keyframes romduolBloomPulse {
@@ -954,13 +836,6 @@ html, body {
     padding: 1.25rem 0.85rem !important;
   }
 
-  .khmer-corner-tl,
-  .khmer-corner-tr,
-  .khmer-corner-bl,
-  .khmer-corner-br {
-    width: 42px !important;
-    height: 42px !important;
-  }
 }
 
 /* ================= ULTRA-SMOOTH SCROLL REVEAL ANIMATIONS ================= */
@@ -1189,79 +1064,42 @@ body.theme-khmer-traditional #envelope-screen {
 }
 
 /* ==========================================================================
-   BANTEAY SREI CLASSICAL RELIEF CARVINGS (ចម្លាក់ក្បាច់ប្រាសាទបន្ទាយស្រី)
+   BOTANICAL LUXURY GOLD DIVIDERS & FLOURISHES
    ========================================================================== */
-.banteay-srei-arch-container {
-  position: relative;
-  width: 100%;
-  max-width: 460px;
-  margin: 0 auto 0.75rem auto;
-  pointer-events: none;
-  user-select: none;
-}
-
-.banteay-srei-arch-img {
-  width: 100%;
-  height: auto;
-  max-height: 190px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  filter: drop-shadow(0 8px 16px rgba(140, 29, 47, 0.22));
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
-}
-
-.banteay-srei-arch-container:hover .banteay-srei-arch-img {
-  transform: translateY(-2px) scale(1.02);
-  filter: drop-shadow(0 12px 20px rgba(140, 29, 47, 0.28));
-}
-
-.banteay-srei-divider {
+.botanical-gold-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 2.25rem auto;
+  margin: 2.5rem auto;
   padding: 0 1rem;
   width: 100%;
-  max-width: 520px;
+  max-width: 440px;
   pointer-events: none;
   user-select: none;
   position: relative;
 }
 
-.banteay-srei-divider::before,
-.banteay-srei-divider::after {
+.botanical-gold-divider::before,
+.botanical-gold-divider::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(197, 160, 89, 0.45));
-  max-width: 60px;
-}
-.banteay-srei-divider::after {
-  background: linear-gradient(90deg, rgba(197, 160, 89, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(197, 160, 89, 0.55));
 }
 
-.banteay-srei-divider img {
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  object-fit: contain;
-  opacity: 0.95;
-  filter: drop-shadow(0 3px 8px rgba(197, 160, 89, 0.35)) sepia(0.15);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  margin: 0 8px;
+.botanical-gold-divider::after {
+  background: linear-gradient(90deg, rgba(197, 160, 89, 0.55), transparent);
 }
 
-@media (max-width: 640px) {
-  .banteay-srei-arch-img {
-    max-height: 140px;
-  }
-  .banteay-srei-divider {
-    margin: 1.75rem auto;
-  }
-  .banteay-srei-divider img {
-    max-width: 280px;
-  }
+.botanical-gold-divider .divider-leaf {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  color: #C5A059;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-shadow: 0 1px 3px rgba(197, 160, 89, 0.3);
 }
 
 /* ==========================================================================
@@ -1275,15 +1113,13 @@ body.theme-khmer-traditional #envelope-screen {
   min-height: 580px;
   background: #FCFBF7;
   background-image: 
-    radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.95) 0%, rgba(252, 251, 247, 0.92) 100%),
-    url('/images/components/banteay-srei-bg.jpg');
-  background-size: cover, 360px 360px;
+    radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.98) 0%, rgba(250, 246, 237, 0.95) 100%);
   border-radius: 28px;
   border: 1.5px solid rgba(212, 175, 55, 0.5);
   box-shadow: 
-    0 25px 60px -10px rgba(15, 30, 20, 0.55),
+    0 25px 60px -10px rgba(15, 30, 20, 0.25),
     0 0 0 1px rgba(255, 255, 255, 0.9) inset,
-    0 0 30px rgba(212, 175, 55, 0.15) inset;
+    0 0 30px rgba(212, 175, 55, 0.12) inset;
   transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
 }
 
