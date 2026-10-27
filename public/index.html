@@ -51,7 +51,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_nav_bottom_responsive">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_real_couple_cover">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -167,32 +167,53 @@
             </div>
           </div>
 
-          <!-- Middle Section: Date & Location (Left) + Standing Couple (Right) -->
-          <div class="w-full relative mt-1 mb-2 flex items-end justify-between min-h-[220px] sm:min-h-[240px]">
+          <!-- Middle Section: Real Groom & Bride Portrait Showcase -->
+          <div class="w-full relative my-2 flex flex-col items-center">
             
-            <!-- Event Date & Ceremony Info (Left Column) -->
-            <div class="opening-info-left text-left z-10 pl-1 max-w-[170px] sm:max-w-[190px] mb-1">
-              <div class="bg-white/90 backdrop-blur-xs p-2.5 rounded-2xl border border-[#E5D5BC]/80 shadow-xs">
-                <p class="text-[11px] sm:text-xs font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
+            <!-- Dual Portrait Diptych with Interlocking Heart Badge -->
+            <div class="cover-couple-diptych">
+              
+              <!-- Groom Portrait Card (Left) -->
+              <div class="cover-portrait-card groom-card group cursor-pointer" onclick="openLightbox('/uploads/groom-real-portrait.jpg', 'កូនប្រុស • ឡេង ចាន់ណារៈ (Groom)')" title="ចុចដើម្បីមើលរូបធំ (Click to Zoom)">
+                <div class="cover-portrait-img-wrap">
+                  <img src="/uploads/groom-real-portrait.jpg" alt="Groom Chan Narak" class="cover-portrait-img">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/92 backdrop-blur-xs text-[10px] font-khmer-title font-bold text-[#1E4833] whitespace-nowrap shadow-xs">
+                    កូនប្រុស • ចាន់ណារៈ
+                  </div>
+                </div>
+              </div>
+
+              <!-- Center Pulsing Heart / Ring Interlocking Connector -->
+              <div class="cover-couple-connector" title="Forever in Love">
+                <span>💍</span>
+              </div>
+
+              <!-- Bride Portrait Card (Right) -->
+              <div class="cover-portrait-card bride-card group cursor-pointer" onclick="openLightbox('/uploads/bride-real-portrait.jpg', 'កូនស្រី • នាត ស្រីនិច (Bride)')" title="ចុចដើម្បីមើលរូបធំ (Click to Zoom)">
+                <div class="cover-portrait-img-wrap">
+                  <img src="/uploads/bride-real-portrait.jpg" alt="Bride Neat SreyNich" class="cover-portrait-img">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/92 backdrop-blur-xs text-[10px] font-khmer-title font-bold text-[#E73360] whitespace-nowrap shadow-xs">
+                    កូនស្រី • ស្រីនិច
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Event Date & Ceremony Snippet Card Below Portraits -->
+            <div class="w-full max-w-sm mx-auto mt-1 px-1 text-center">
+              <div class="bg-white/92 backdrop-blur-xs py-2 px-3 rounded-2xl border border-[#FF8BA7]/35 shadow-xs">
+                <p class="text-xs sm:text-sm font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
                   ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧
                 </p>
-                <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-1 leading-tight" id="opening-venue-snippet">
-                  វេលាម៉ោង ០៧:០០ ព្រឹក<br>
-                  នៅគេហដ្ឋានខាងស្រី<br>
-                  <span class="text-[#8C6A18] font-semibold">ដោយមេត្រីភាព</span>
+                <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-0.5 leading-tight" id="opening-venue-snippet">
+                  វេលាម៉ោង ០៧:០០ ព្រឹក • នៅគេហដ្ឋានខាងស្រី & ព្រីមៀរ សែនសុខ
                 </p>
               </div>
-
-              <!-- Lower Romantic Kiss Pose -->
-              <div class="w-24 sm:w-28 mt-2 relative -ml-1 opening-kiss-float pointer-events-none">
-                <img src="/images/opening/couple-kiss.png" alt="Romantic Kiss" class="w-full h-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.12)]">
-              </div>
             </div>
 
-            <!-- Standing Couple with Golden Umbrella (Right Side) -->
-            <div class="opening-couple-right z-10 w-44 sm:w-52 -mr-3 sm:-mr-2 relative opening-couple-float pointer-events-none">
-              <img src="/images/opening/couple-umbrella.png" alt="Khmer Wedding Couple" class="w-full h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.18)]">
-            </div>
           </div>
 
           <!-- Bottom Action: 3D Wax Seal Open Button -->
@@ -332,7 +353,7 @@
         <!-- Groom Side -->
         <div class="p-5 bg-gradient-to-b from-[#F0FDF4] to-[#FFFFFF] rounded-3xl border border-[#86EFAC]/50 shadow-xs transition hover:shadow-md">
           <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-3 border-[#1E4833] shadow-md mb-3 ring-4 ring-[#1E4833]/15">
-            <img id="groom-img" src="/uploads/upload-1790407818088-10763556.jpg" alt="Groom" class="w-full h-full object-cover">
+            <img id="groom-img" src="/uploads/groom-real-portrait.jpg" alt="Groom" class="w-full h-full object-cover">
           </div>
           <h3 id="groom-parents-heading" class="text-xs font-bold text-[#1E4833] uppercase tracking-wider mb-2 font-khmer-title">
             លោកឪពុក អ្នកម្តាយ ខាងកូនប្រុស
@@ -347,7 +368,7 @@
         <!-- Bride Side -->
         <div class="p-5 bg-gradient-to-b from-[#FFF0F3] to-[#FFFFFF] rounded-3xl border border-[#FFD6DE]/70 shadow-xs transition hover:shadow-md">
           <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-3 border-[#FF8BA7] shadow-md mb-3 ring-4 ring-[#FF8BA7]/20">
-            <img id="bride-img" src="/uploads/upload-1790407844744-655100443.jpg" alt="Bride" class="w-full h-full object-cover">
+            <img id="bride-img" src="/uploads/bride-real-portrait.jpg" alt="Bride" class="w-full h-full object-cover">
           </div>
           <h3 id="bride-parents-heading" class="text-xs font-bold text-[#E73360] uppercase tracking-wider mb-2 font-khmer-title">
             លោកឪពុក អ្នកម្តាយ ខាងកូនស្រី
@@ -717,6 +738,6 @@
   </div>
 
   <!-- JavaScript (with cache-busting version query) -->
-  <script src="/js/invitation.js?v=20261027_nav_bottom_responsive"></script>
+  <script src="/js/invitation.js?v=20261027_real_couple_cover"></script>
 </body>
 </html>

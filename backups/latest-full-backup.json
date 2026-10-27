@@ -1,6 +1,6 @@
 {
-  "backedUpAt": "2026-10-27T07:51:37.214Z",
-  "timestamp": "20261027_145137",
+  "backedUpAt": "2026-10-27T08:07:28.515Z",
+  "timestamp": "20261027_150728",
   "wedding": {
     "theme": {
       "id": "khmer-traditional",
@@ -22,7 +22,7 @@
         "father_en": "Mr. Chan Sokhom",
         "mother_kh": "លោកស្រី ម៉ៅ សុផល",
         "mother_en": "Mrs. Mao Sophal",
-        "photo": "/uploads/upload-1790407818088-10763556.jpg",
+        "photo": "/uploads/groom-real-portrait.jpg",
         "side": "groom"
       },
       "bride": {
@@ -32,7 +32,7 @@
         "father_en": "Mr. Ly Heng",
         "mother_kh": "លោកស្រី កែវ រតនា",
         "mother_en": "Mrs. Keo Rathana",
-        "photo": "/uploads/upload-1790407844744-655100443.jpg",
+        "photo": "/uploads/bride-real-portrait.jpg",
         "side": "bride"
       },
       "couple_photo": "/uploads/upload-1790497247828-901277914.jpg",
