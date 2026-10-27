@@ -51,7 +51,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_clean_cover">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_tight_top">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -92,21 +92,23 @@
       </div>
     </div>
   </button>
-  <!-- Hidden legacy button ID compatibility -->
-  <button id="floating-music-btn" class="hidden" style="display:none;"></button>
-  <div id="music-wave-bars" class="hidden"></div>
-  <svg id="music-icon-play" class="hidden"></svg>
-  <svg id="music-icon-pause" class="hidden"></svg>
+  <!-- Hidden legacy button ID compatibility (isolated with zero layout footprint) -->
+  <div style="display:none !important; position:absolute; width:0; height:0; overflow:hidden; visibility:hidden; pointer-events:none;" aria-hidden="true">
+    <button id="floating-music-btn" style="display:none;"></button>
+    <div id="music-wave-bars" style="display:none;"></div>
+    <svg id="music-icon-play" style="display:none;"></svg>
+    <svg id="music-icon-pause" style="display:none;"></svg>
+  </div>
 
   <!-- ================= MAIN INVITATION CARD CONTENT ================= -->
-  <main class="relative z-10 w-full max-w-[480px] sm:max-w-[500px] mx-auto px-3.5 sm:px-4 pt-2 sm:pt-4 pb-32">
+  <main class="relative z-10 w-full max-w-[480px] sm:max-w-[500px] mx-auto px-3.5 sm:px-4 pt-1 sm:pt-2 pb-32">
 
     <!-- ================= 1. MODERN BOTANICAL GRAND OPENING COVER ================= -->
-    <section id="opening-cover-section" class="w-full flex justify-center mb-8 sm:mb-12 reveal-on-scroll">
+    <section id="opening-cover-section" class="w-full flex justify-center mb-8 sm:mb-12">
       <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full rounded-3xl shadow-2xl">
 
         <!-- Poster Main Content Body -->
-        <div class="relative z-15 pt-6 px-4 pb-6 flex flex-col items-center">
+        <div class="relative z-15 pt-4 sm:pt-5 px-4 pb-6 flex flex-col items-center">
           
           <!-- Header: 3D Gold Rings & Titles -->
           <div class="text-center w-full mt-0 relative">

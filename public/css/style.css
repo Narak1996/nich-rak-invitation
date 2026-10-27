@@ -25,6 +25,24 @@
   padding: 0;
 }
 
+/* Universal Hidden Utility & Zero-Layout Elements */
+.hidden,
+[hidden],
+#floating-music-btn,
+#music-wave-bars,
+#music-icon-play,
+#music-icon-pause {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  position: absolute !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
 body {
   background-color: var(--bg-cream);
   color: var(--text-dark);

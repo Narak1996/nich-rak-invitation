@@ -909,13 +909,13 @@ function updateMusicBtn() {
   const vinylBtn = document.getElementById('cute-vinyl-music-btn');
 
   if (isAudioPlaying) {
-    if (iconPlay) iconPlay.classList.add('hidden');
-    if (iconPause) iconPause.classList.remove('hidden');
+    if (iconPlay) { iconPlay.classList.add('hidden'); iconPlay.style.display = 'none'; }
+    if (iconPause) { iconPause.classList.add('hidden'); iconPause.style.display = 'none'; }
     if (btn) btn.classList.add('spin-record');
     if (vinylBtn) vinylBtn.classList.add('playing');
   } else {
-    if (iconPlay) iconPlay.classList.remove('hidden');
-    if (iconPause) iconPause.classList.add('hidden');
+    if (iconPlay) { iconPlay.classList.add('hidden'); iconPlay.style.display = 'none'; }
+    if (iconPause) { iconPause.classList.add('hidden'); iconPause.style.display = 'none'; }
     if (btn) btn.classList.remove('spin-record');
     if (vinylBtn) vinylBtn.classList.remove('playing');
   }
