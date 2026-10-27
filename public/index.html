@@ -51,7 +51,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_blossom_fx">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_center_ring_grid">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -153,7 +153,7 @@
           <div class="w-full relative my-2 flex flex-col items-center">
             
             <!-- Dual Portrait Diptych with Interlocking Heart Badge -->
-            <div class="cover-couple-diptych">
+            <div class="cover-couple-diptych w-full max-w-[360px] mx-auto relative">
               
               <!-- Groom Portrait Card (Left) -->
               <div class="cover-portrait-card groom-card group cursor-pointer" onclick="openLightbox('/uploads/groom-real-portrait.jpg', 'កូនប្រុស • ឡេង ចាន់ណារៈ (Groom)')" title="ចុចដើម្បីមើលរូបធំ (Click to Zoom)">
@@ -177,8 +177,8 @@
                 </div>
               </div>
 
-              <!-- Center Pulsing Heart / Ring Interlocking Connector (Positioned at exact center) -->
-              <div class="cover-couple-connector" title="Forever in Love">
+              <!-- Center Pulsing Heart / Ring Interlocking Connector (Positioned at exact mathematical center) -->
+              <div class="cover-couple-connector" style="position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; -webkit-transform: translate(-50%, -50%) !important;" title="Forever in Love">
                 <span>💍</span>
               </div>
 
@@ -198,10 +198,15 @@
 
           </div>
 
-          <!-- Subtle Modern Scroll Indicator -->
-          <div class="mt-4 flex flex-col items-center opacity-70 hover:opacity-100 transition cursor-pointer" onclick="scrollToTicketContent()" title="អូសចុះក្រោម">
-            <span class="text-[9px] uppercase tracking-[0.22em] text-[#C5A059] font-serif font-bold">Scroll Down</span>
-            <svg class="w-4 h-4 text-[#C5A059] mt-1 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Subtle Modern Scroll Indicator (Bilingual / Khmer Translated) -->
+          <div class="mt-4 flex flex-col items-center opacity-75 hover:opacity-100 transition cursor-pointer select-none" onclick="scrollToTicketContent()" title="សូមអូសចុះក្រោម • Scroll Down">
+            <span class="text-[10px] sm:text-[11px] font-khmer-title tracking-wider text-[#9B7126] font-semibold" id="cover-scroll-indicator-text" data-kh="សូមអូសចុះក្រោម" data-en="Scroll Down">
+              សូមអូសចុះក្រោម
+            </span>
+            <span class="text-[8px] uppercase tracking-[0.25em] text-[#C5A059] font-serif font-bold mt-0.5">
+              SCROLL DOWN
+            </span>
+            <svg class="w-4 h-4 text-[#C5A059] mt-0.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </div>

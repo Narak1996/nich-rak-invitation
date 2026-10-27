@@ -1639,10 +1639,10 @@ function renderThemeWelcome(themeId, w, isKh) {
       openVenueEl.innerHTML = `<span>${timeStr}</span> • <span>${escapeHTML(venueStr)}</span>`;
     }
 
-    // 4. Opening Button text
-    const openBtnText = document.getElementById('opening-btn-text');
-    if (openBtnText) {
-      openBtnText.textContent = isKh ? 'បើកលិខិតអញ្ជើញ (Open)' : 'Open Invitation';
+    // 4. Opening Scroll Indicator text
+    const scrollTextEl = document.getElementById('cover-scroll-indicator-text');
+    if (scrollTextEl) {
+      scrollTextEl.textContent = isKh ? 'សូមអូសចុះក្រោម' : 'Scroll Down';
     }
   }
 }
