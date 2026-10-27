@@ -1579,6 +1579,33 @@ window.copyAttireHex = function(hex) {
   showToast(currentLang === 'kh' ? `បានចម្លងកូដពណ៌ ${hex}!` : `Color ${hex} copied!`);
 };
 
+window.switchQrTab = function(side) {
+  const groomCard = document.getElementById('qr-card-groom');
+  const brideCard = document.getElementById('qr-card-bride');
+  const groomBtn = document.getElementById('qr-tab-btn-groom');
+  const brideBtn = document.getElementById('qr-tab-btn-bride');
+
+  if (side === 'groom') {
+    if (groomCard) groomCard.classList.remove('hidden-mobile');
+    if (brideCard) brideCard.classList.add('hidden-mobile');
+    if (groomBtn) {
+      groomBtn.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-300 bg-[#1E4833] text-white shadow-xs';
+    }
+    if (brideBtn) {
+      brideBtn.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-300 text-[#5D544E] hover:text-[#1E4833]';
+    }
+  } else {
+    if (groomCard) groomCard.classList.add('hidden-mobile');
+    if (brideCard) brideCard.classList.remove('hidden-mobile');
+    if (groomBtn) {
+      groomBtn.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-300 text-[#5D544E] hover:text-[#1E4833]';
+    }
+    if (brideBtn) {
+      brideBtn.className = 'flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-300 bg-[#2D5A43] text-white shadow-xs';
+    }
+  }
+};
+
 window.openQrModal = function(type) {
   const dg = weddingData?.digital_gift;
   if (!dg) return;

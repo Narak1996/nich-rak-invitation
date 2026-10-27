@@ -51,7 +51,142 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_cover_photos_dynamic">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_responsive_v2">
+
+  <!-- Critical Responsive Styles (Bypasses mobile browser cache) -->
+  <style id="critical-responsive-overrides">
+    /* Bottom Navigation Dock - Truly Enlarged, Touch-Friendly */
+    #bottom-nav-dock {
+      position: fixed !important;
+      bottom: 14px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 4px !important;
+      padding: 7px 14px !important;
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(28px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+      border-radius: 999px !important;
+      box-shadow: 0 16px 45px rgba(27, 67, 50, 0.22), 0 0 0 1px rgba(78, 125, 99, 0.15) inset !important;
+      max-width: calc(100vw - 16px) !important;
+      width: auto !important;
+      box-sizing: border-box !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: none !important;
+    }
+    #bottom-nav-dock::-webkit-scrollbar {
+      display: none !important;
+    }
+    .bottom-nav-item {
+      color: #5D544E !important;
+      text-decoration: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 5px 8px !important;
+      border-radius: 999px !important;
+      min-width: 44px !important;
+      cursor: pointer !important;
+      user-select: none !important;
+      transition: all 0.2s ease !important;
+    }
+    .bottom-nav-item span:first-child {
+      font-size: 21px !important;
+      line-height: 1.1 !important;
+      display: block !important;
+      margin-bottom: 2px !important;
+    }
+    .bottom-nav-item span:last-child {
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+      font-weight: 700 !important;
+      display: block !important;
+      white-space: nowrap !important;
+      letter-spacing: 0.01em !important;
+    }
+    .bottom-nav-item:hover,
+    .bottom-nav-item.active-nav-tab {
+      color: #1E4833 !important;
+      background: #E8F5EE !important;
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 4px 12px rgba(30, 72, 51, 0.18) !important;
+    }
+    .bottom-nav-item.nav-rsvp-btn {
+      background: linear-gradient(135deg, #1E4833 0%, #2D5A43 55%, #163626 100%) !important;
+      color: #FFFFFF !important;
+      border: 1px solid rgba(197, 160, 89, 0.75) !important;
+      box-shadow: 0 4px 14px rgba(30, 72, 51, 0.4) !important;
+      padding: 5px 12px !important;
+    }
+    .bottom-nav-item.nav-rsvp-btn span {
+      color: #FFFFFF !important;
+    }
+
+    @media (max-width: 430px) {
+      #bottom-nav-dock {
+        padding: 5px 8px !important;
+        gap: 2px !important;
+      }
+      .bottom-nav-item {
+        min-width: 42px !important;
+        padding: 4px 5px !important;
+      }
+      .bottom-nav-item span:first-child {
+        font-size: 19px !important;
+      }
+      .bottom-nav-item span:last-child {
+        font-size: 10px !important;
+      }
+      .bottom-nav-item.nav-rsvp-btn {
+        padding: 4px 9px !important;
+      }
+    }
+
+    /* Floating Music Button Responsive Styling */
+    @media (max-width: 640px) {
+      .cute-floating-music {
+        top: 10px !important;
+        right: 10px !important;
+        padding: 3px !important;
+        gap: 0 !important;
+        border-radius: 9999px !important;
+        background: rgba(255, 255, 255, 0.88) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+      }
+      .cute-music-pill-text {
+        display: none !important;
+      }
+      .cute-vinyl-disc {
+        width: 38px !important;
+        height: 38px !important;
+      }
+    }
+
+    /* Scroll Margin & Section Spacing so Bottom Dock Never Covers Content */
+    section[id],
+    .cute-pastel-card {
+      scroll-margin-top: 24px;
+      scroll-margin-bottom: 90px;
+    }
+    main {
+      padding-bottom: 130px !important;
+    }
+
+    /* Mobile QR tab visibility */
+    @media (max-width: 639px) {
+      .hidden-mobile {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -85,7 +220,7 @@
     <div class="cute-vinyl-disc">
       <span class="text-[11px]">🎵</span>
     </div>
-    <div class="flex flex-col text-left pr-1">
+    <div class="cute-music-pill-text flex flex-col text-left pr-1">
       <span class="text-[10px] font-bold text-[#1E4833] leading-none">Wedding Music</span>
       <div class="cute-music-waves mt-1">
         <span></span><span></span><span></span>
@@ -488,10 +623,20 @@
         វត្តមានដ៏ឧត្តុង្គឧត្តមរបស់លោកអ្នកជាកិត្តិយសដ៏ថ្លៃថ្លាបំផុត។ ប្រសិនបើលោកអ្នកមានបំណងជូនពរតាមរយៈការចងដៃឌីជីថល លោកអ្នកអាចស្កេន KHQR ខាងក្រោមបាន។
       </p>
 
+      <!-- Mobile Tab Switcher for Groom & Bride QR -->
+      <div class="sm:hidden flex items-center justify-center p-1 bg-white/80 backdrop-blur-md rounded-full border border-[#4E7D63]/30 max-w-[280px] mx-auto mb-4 shadow-xs">
+        <button id="qr-tab-btn-groom" type="button" onclick="switchQrTab('groom')" class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-300 bg-[#1E4833] text-white shadow-xs">
+          🌿 ខាងកូនប្រុស
+        </button>
+        <button id="qr-tab-btn-bride" type="button" onclick="switchQrTab('bride')" class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all duration-300 text-[#5D544E] hover:text-[#1E4833]">
+          🌸 ខាងកូនស្រី
+        </button>
+      </div>
+
       <!-- Two QR Cards: Groom & Bride -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mx-auto">
         <!-- Groom KHQR Card -->
-        <div class="p-5 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm text-center transition hover:shadow-md hover:bg-white/80 ring-1 ring-[#86EFAC]/30">
+        <div id="qr-card-groom" class="p-5 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm text-center transition hover:shadow-md hover:bg-white/80 ring-1 ring-[#86EFAC]/30">
           <span class="text-xs font-bold text-white bg-[#1E4833] px-3.5 py-1 rounded-full inline-block mb-3" data-kh="ខាងកូនប្រុស" data-en="Groom's Side">ខាងកូនប្រុស</span>
           <div class="bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/80 inline-block shadow-inner mb-3">
             <img id="groom-qr-img" src="" alt="Groom QR" onclick="openQrModal('groom')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
@@ -506,7 +651,7 @@
         </div>
 
         <!-- Bride KHQR Card -->
-        <div class="p-5 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm text-center transition hover:shadow-md hover:bg-white/80 ring-1 ring-[#C5A059]/30">
+        <div id="qr-card-bride" class="p-5 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm text-center transition hover:shadow-md hover:bg-white/80 ring-1 ring-[#C5A059]/30 hidden-mobile sm:block">
           <span class="text-xs font-bold text-white bg-[#2D5A43] px-3.5 py-1 rounded-full inline-block mb-3" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</span>
           <div class="bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/80 inline-block shadow-inner mb-3">
             <img id="bride-qr-img" src="" alt="Bride QR" onclick="openQrModal('bride')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
