@@ -521,20 +521,20 @@ function renderAgenda() {
   weddingData.agenda.forEach(item => {
     const iconHtml = iconsMap[item.icon] || iconsMap['gift'];
     const el = document.createElement('div');
-    el.className = 'relative flex items-start gap-4 mb-7 group';
+    el.className = 'relative flex items-start gap-3.5 mb-6 group';
     el.innerHTML = `
-      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#C5A059] shadow-md shrink-0 ring-4 ring-[#1E4833]/10">
+      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#FF8BA7] shadow-md shrink-0 ring-4 ring-[#FF8BA7]/15">
         ${iconHtml}
       </div>
-      <div class="bg-white/92 backdrop-blur-md p-5 rounded-2xl border border-[#C5A059]/35 shadow-xs flex-1 transition-all duration-300 hover:shadow-lg hover:border-[#C5A059]">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1E4833] text-amber-200 text-xs font-bold rounded-full mb-2 border border-[#C5A059]/40 shadow-2xs">
+      <div class="bg-white/94 backdrop-blur-md p-5 rounded-3xl border border-[#FF8BA7]/35 shadow-xs flex-1 transition-all duration-300 hover:shadow-lg hover:border-[#FF8BA7]">
+        <div class="inline-flex items-center gap-1.5 px-3 py-0.5 bg-gradient-to-r from-[#1E4833] to-[#2D5A43] text-amber-200 text-xs font-bold rounded-full mb-2 shadow-2xs">
           <span>🕒</span>
           <span>${isKh ? toKhmerNumber(item.time) : item.time}</span>
         </div>
         <h4 class="text-base font-bold text-[#1E4833] mb-1 font-khmer-title">
           ${isKh ? item.title_kh : item.title_en}
         </h4>
-        <p class="text-sm text-[#5D4E46] font-khmer-body leading-relaxed">
+        <p class="text-xs sm:text-sm text-[#5D4E46] font-khmer-body leading-relaxed">
           ${isKh ? item.desc_kh : item.desc_en}
         </p>
       </div>
@@ -553,17 +553,20 @@ function renderGallery() {
 
   weddingData.gallery.forEach((img, index) => {
     const directUrl = resolveGoogleDriveUrl(img.url);
+    const tiltClass = index % 2 === 0 ? 'hover:rotate-1' : 'hover:-rotate-1';
     const el = document.createElement('div');
-    el.className = 'relative overflow-hidden rounded-2xl shadow-sm border border-[#C5A059]/35 hover:border-[#C5A059] group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-xl';
+    el.className = `relative overflow-hidden rounded-3xl p-1.5 bg-white shadow-md border border-[#FF8BA7]/35 group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] ${tiltClass}`;
     el.innerHTML = `
-      <img src="${directUrl}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
-      <div class="absolute inset-0 bg-gradient-to-t from-[#1E4833]/90 via-[#1E4833]/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-        <span class="text-white text-xs sm:text-sm font-medium font-khmer-body leading-snug drop-shadow-md">
-          ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
-        </span>
-      </div>
-      <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-[10px] text-white/95 opacity-0 group-hover:opacity-100 transition font-mono border border-white/20">
-        🔍 #${index + 1}
+      <div class="w-full h-full rounded-2xl overflow-hidden relative">
+        <img src="${directUrl}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#1E4833]/90 via-[#1E4833]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+          <span class="text-white text-xs sm:text-sm font-medium font-khmer-body leading-snug drop-shadow-md">
+            ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
+          </span>
+        </div>
+        <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-[10px] text-[#1E4833] font-bold opacity-0 group-hover:opacity-100 transition font-mono border border-[#FF8BA7]/40 shadow-xs">
+          🔍 #${index + 1}
+        </div>
       </div>
     `;
     el.addEventListener('click', () => {
@@ -750,6 +753,13 @@ function initEventListeners() {
     });
   }
 
+  // Cute Love Counter Badge initialization
+  const loveBadge = document.getElementById('love-counter-badge');
+  if (loveBadge) {
+    const savedLoves = parseInt(localStorage.getItem('wedding_love_count') || '1280', 10);
+    loveBadge.textContent = `❤️ ${savedLoves.toLocaleString()}`;
+  }
+
   // Lightbox close & touch swipe
   const lbClose = document.getElementById('lightbox-close');
   if (lbClose) lbClose.addEventListener('click', closeLightbox);
@@ -896,17 +906,67 @@ function updateMusicBtn() {
   const iconPlay = document.getElementById('music-icon-play');
   const iconPause = document.getElementById('music-icon-pause');
   const btn = document.getElementById('floating-music-btn');
+  const vinylBtn = document.getElementById('cute-vinyl-music-btn');
 
   if (isAudioPlaying) {
-    iconPlay.classList.add('hidden');
-    iconPause.classList.remove('hidden');
-    btn.classList.add('spin-record');
+    if (iconPlay) iconPlay.classList.add('hidden');
+    if (iconPause) iconPause.classList.remove('hidden');
+    if (btn) btn.classList.add('spin-record');
+    if (vinylBtn) vinylBtn.classList.add('playing');
   } else {
-    iconPlay.classList.remove('hidden');
-    iconPause.classList.add('hidden');
-    btn.classList.remove('spin-record');
+    if (iconPlay) iconPlay.classList.remove('hidden');
+    if (iconPause) iconPause.classList.add('hidden');
+    if (btn) btn.classList.remove('spin-record');
+    if (vinylBtn) vinylBtn.classList.remove('playing');
   }
 }
+
+// Cute Heart Burst Animation Effect
+window.burstHearts = function(originX, originY) {
+  const hearts = ['❤️', '💖', '💕', '🌸', '✨', '💗', '💝'];
+  const count = 14;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'floating-heart-particle';
+    el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    
+    const x = (originX || (window.innerWidth / 2)) + (Math.random() - 0.5) * 80;
+    const y = (originY || (window.innerHeight / 2)) + (Math.random() - 0.5) * 40;
+    
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.fontSize = `${Math.floor(Math.random() * 14 + 18)}px`;
+    el.style.animationDuration = `${(Math.random() * 0.8 + 1.2).toFixed(2)}s`;
+    
+    document.body.appendChild(el);
+    setTimeout(() => {
+      try { el.remove(); } catch (e) {}
+    }, 2000);
+  }
+};
+
+// Interactive Send Love Reaction
+window.sendLoveReaction = function(e) {
+  const rect = e ? e.currentTarget.getBoundingClientRect() : null;
+  const x = rect ? (rect.left + rect.width / 2) : (window.innerWidth / 2);
+  const y = rect ? (rect.top + rect.height / 2) : (window.innerHeight / 2);
+  
+  window.burstHearts(x, y);
+
+  // Increment local love counter
+  let loveCount = parseInt(localStorage.getItem('wedding_love_count') || '1280', 10);
+  loveCount += 1;
+  localStorage.setItem('wedding_love_count', String(loveCount));
+  
+  const badge = document.getElementById('love-counter-badge');
+  if (badge) {
+    badge.textContent = `❤️ ${loveCount.toLocaleString()}`;
+    badge.classList.add('scale-125');
+    setTimeout(() => badge.classList.remove('scale-125'), 300);
+  }
+
+  showToast('អរគុណសម្រាប់ក្តីស្រឡាញ់ដ៏កក់ក្តៅ! 💕');
+};
 
 // Video Aspect Ratio Toggle (Cinema Wide vs Portrait Tall)
 let currentVideoAspect = 'cinema';
@@ -1133,7 +1193,13 @@ async function handleRSVPSubmit(e) {
 
     const data = await res.json();
     if (res.ok) {
-      showToast(isKh ? 'សូមអរគុណ! ការឆ្លើយតបរបស់អ្នកត្រូវបានកត់ត្រា។' : 'Thank you! Your RSVP has been submitted.');
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      }
+      if (typeof window.burstHearts === 'function') {
+        window.burstHearts();
+      }
+      showToast(isKh ? '🎉 សូមអរគុណ! ការឆ្លើយតបរបស់អ្នកត្រូវបានកត់ត្រា។' : '🎉 Thank you! Your RSVP has been submitted.');
       document.getElementById('rsvp-wishes').value = '';
       loadWishes();
     } else {
@@ -1172,7 +1238,13 @@ async function handleWishSubmit(e) {
       body: JSON.stringify({ guestName: name, relationship, message })
     });
     if (res.ok) {
-      showToast(isKh ? 'សូមអរគុណសម្រាប់ពាក្យជូនពរដ៏មានអត្ថន័យ!' : 'Thank you for your lovely wish!');
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      }
+      if (typeof window.burstHearts === 'function') {
+        window.burstHearts();
+      }
+      showToast(isKh ? '💌 សូមអរគុណសម្រាប់ពាក្យជូនពរដ៏មានអត្ថន័យ!' : '💌 Thank you for your lovely wish!');
       document.getElementById('wish-message').value = '';
       loadWishes();
     }
@@ -1181,7 +1253,7 @@ async function handleWishSubmit(e) {
   }
 }
 
-// Load and Render Wishes
+// Load and Render Wishes as Cute Pastel Sticky Notes
 async function loadWishes() {
   const container = document.getElementById('wishes-list');
   try {
@@ -1190,19 +1262,34 @@ async function loadWishes() {
     container.innerHTML = '';
 
     if (wishes.length === 0) {
-      container.innerHTML = `<p class="text-center text-sm text-[#7A6F68] py-4">សូមផ្ញើសារជូនពរដំបូងគេដល់គូស្វាមីភរិយាថ្មី!</p>`;
+      container.innerHTML = `<p class="text-center text-sm text-[#7A6F68] py-4 font-khmer-body">សូមផ្ញើសារជូនពរដំបូងគេដល់គូស្វាមីភរិយាថ្មី! 💕</p>`;
       return;
     }
 
-    wishes.slice(0, 10).forEach(w => {
+    const noteThemes = ['note-pink', 'note-mint', 'note-yellow', 'note-purple'];
+    const emojiAvatars = ['🌸', '✨', '💖', '🍀', '🌼', '🎀'];
+
+    wishes.slice(0, 12).forEach((w, idx) => {
+      const themeClass = noteThemes[idx % noteThemes.length];
+      const avatarEmoji = emojiAvatars[idx % emojiAvatars.length];
+      const guestName = escapeHTML(w.guestName || 'ភ្ញៀវកិត្តិយស');
+      const firstLetter = guestName.charAt(0) || '🌸';
+      
       const el = document.createElement('div');
-      el.className = 'p-4 rounded-2xl bg-white/92 backdrop-blur-xs border border-[#C5A059]/35 shadow-2xs mb-3 transition hover:border-[#C5A059] hover:shadow-sm';
+      el.className = `cute-wish-note ${themeClass}`;
       el.innerHTML = `
-        <div class="flex items-center justify-between mb-1.5">
-          <span class="font-bold text-[#1E4833] text-sm font-khmer-title">${escapeHTML(w.guestName)}</span>
-          <span class="text-[11px] text-[#8C6A18] px-2.5 py-0.5 bg-[#FAF6ED] rounded-full border border-[#C5A059]/40 font-medium">${escapeHTML(w.relationship || '')}</span>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-white/90 border border-black/10 flex items-center justify-center text-xs font-bold shadow-xs">
+              ${avatarEmoji}
+            </div>
+            <span class="font-bold text-[#1E4833] text-xs sm:text-sm font-khmer-title">${guestName}</span>
+          </div>
+          <span class="text-[10px] text-[#685D56] px-2.5 py-0.5 bg-white/80 rounded-full border border-black/5 font-medium shadow-2xs">
+            ${escapeHTML(w.relationship || 'ភ្ញៀវកិត្តិយស')}
+          </span>
         </div>
-        <p class="text-xs sm:text-sm text-[#2C2420] mt-1 leading-relaxed font-khmer-body">${escapeHTML(w.message)}</p>
+        <p class="text-xs sm:text-sm text-[#2C2420] mt-1 pl-9 leading-relaxed font-khmer-body">${escapeHTML(w.message)}</p>
       `;
       container.appendChild(el);
     });

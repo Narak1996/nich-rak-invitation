@@ -1336,3 +1336,291 @@ body.theme-khmer-traditional #envelope-screen {
 
 /* Merged 1-Page Layout: Disable fixed overlay */
 #envelope-screen { display: none !important; }
+
+/* ==========================================================================
+   CUTE ROMANTIC FAIRYTALE TEMPLATE SUITE (NEW FULL-PAGE EXPERIENCE)
+   ========================================================================== */
+
+/* Dreamy Fairytale Background */
+.cute-wedding-canvas {
+  background-color: #FDFBF9;
+  background-image: 
+    radial-gradient(circle at 10% 15%, rgba(255, 225, 235, 0.7) 0%, transparent 45%),
+    radial-gradient(circle at 90% 25%, rgba(255, 240, 215, 0.6) 0%, transparent 50%),
+    radial-gradient(circle at 50% 65%, rgba(230, 248, 238, 0.5) 0%, transparent 50%),
+    linear-gradient(180deg, #FFFFFF 0%, #FDFBF9 30%, #FFF5F7 65%, #FAF7F2 100%);
+  background-attachment: fixed;
+}
+
+/* Cute Floating Canvas Atmospheric Particles */
+.cute-ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.cute-floating-particle {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+  animation: cuteFloatDrift 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes cuteFloatDrift {
+  0% { transform: translate3d(0, 105vh, 0) rotate(0deg) scale(0.8); opacity: 0; }
+  15% { opacity: 0.9; transform: translate3d(15px, 85vh, 0) rotate(45deg) scale(1); }
+  85% { opacity: 0.85; transform: translate3d(-15px, 15vh, 0) rotate(315deg) scale(1.05); }
+  100% { transform: translate3d(25px, -5vh, 0) rotate(360deg) scale(0.9); opacity: 0; }
+}
+
+.particle-p1 { left: 8%; font-size: 20px; animation-duration: 16s; animation-delay: 0s; }
+.particle-p2 { left: 24%; font-size: 16px; animation-duration: 21s; animation-delay: 4s; }
+.particle-p3 { left: 45%; font-size: 22px; animation-duration: 18s; animation-delay: 1.5s; }
+.particle-p4 { left: 68%; font-size: 18px; animation-duration: 24s; animation-delay: 7s; }
+.particle-p5 { left: 88%; font-size: 24px; animation-duration: 19s; animation-delay: 3s; }
+
+/* Cute Polaroid Scrapbook Frame */
+.polaroid-scrapbook {
+  background: #FFFFFF;
+  padding: 12px 12px 24px 12px;
+  border-radius: 28px;
+  box-shadow: 
+    0 20px 45px -10px rgba(220, 140, 165, 0.22),
+    0 2px 10px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(212, 175, 55, 0.3);
+  position: relative;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+}
+
+.polaroid-scrapbook:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 
+    0 28px 60px -10px rgba(220, 140, 165, 0.32),
+    0 0 0 1.5px rgba(212, 175, 55, 0.55);
+}
+
+/* Washi Tape Ribbon Sticker */
+.washi-tape-sticker {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 90px;
+  height: 24px;
+  background: linear-gradient(135deg, rgba(255, 235, 190, 0.85) 0%, rgba(255, 220, 170, 0.75) 100%);
+  backdrop-filter: blur(4px);
+  border-left: 3px dashed rgba(200, 160, 100, 0.5);
+  border-right: 3px dashed rgba(200, 160, 100, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Cute Heart Tap Button */
+.btn-send-love-heart {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #FF6B8B 0%, #FF8E53 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(255, 107, 139, 0.38);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  cursor: pointer;
+  user-select: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-send-love-heart:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 12px 30px rgba(255, 107, 139, 0.5);
+}
+
+.btn-send-love-heart:active {
+  transform: scale(0.94);
+}
+
+/* Flying Hearts Explosion Animation */
+.floating-heart-particle {
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  user-select: none;
+  font-size: 26px;
+  animation: floatHeartUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes floatHeartUp {
+  0% { transform: scale(0.3) translate(0, 0); opacity: 1; }
+  50% { transform: scale(1.25) translate(var(--tx), var(--ty)); opacity: 0.95; }
+  100% { transform: scale(0.8) translate(var(--tx), calc(var(--ty) - 60px)); opacity: 0; }
+}
+
+/* Cute Floating Live Love Countdown Pill */
+.cute-live-countdown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border-radius: 999px;
+  box-shadow: 
+    0 14px 35px -5px rgba(235, 150, 175, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+}
+
+.cute-cd-segment,
+.cute-cd-unit {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.cute-cd-num {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1E4833;
+  line-height: 1;
+}
+
+.cute-cd-label,
+.cute-cd-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8C6A18;
+  text-transform: uppercase;
+}
+
+.cute-cd-dot {
+  color: #FF6B8B;
+  animation: heartPulse 1.6s ease-in-out infinite;
+  font-size: 11px;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.25); opacity: 1; }
+}
+
+/* Cute Frosted Pastel Card */
+.cute-pastel-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 32px;
+  border: 1.5px solid rgba(212, 175, 55, 0.38);
+  box-shadow: 
+    0 18px 50px -10px rgba(230, 160, 180, 0.20),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  padding: 30px 24px;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.cute-pastel-card:hover {
+  box-shadow: 
+    0 24px 60px -10px rgba(230, 160, 180, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.95) inset;
+}
+
+/* Cute Wishes Pastel Sticky Notes */
+.cute-wish-note {
+  border-radius: 24px;
+  padding: 16px 20px;
+  position: relative;
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.05);
+  border: 1.5px solid rgba(0, 0, 0, 0.04);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.cute-wish-note:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 16px 35px -6px rgba(0, 0, 0, 0.08);
+}
+
+.cute-wish-note.note-pink { background: #FFF0F3; border-color: #FFD6DE; }
+.cute-wish-note.note-mint { background: #F0FFF4; border-color: #C6F6D5; }
+.cute-wish-note.note-yellow { background: #FEFCBF; border-color: #FAF089; }
+.cute-wish-note.note-purple { background: #FAF5FF; border-color: #E9D8FD; }
+
+/* Cute Vinyl Spinning Music Player (Top Right) */
+.cute-floating-music {
+  position: fixed;
+  top: 18px;
+  right: 16px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(230, 140, 165, 0.28);
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+  user-select: none;
+}
+
+.cute-floating-music:hover {
+  transform: scale(1.06);
+}
+
+.cute-vinyl-disc {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2C2420 35%, #181818 70%, #000 100%);
+  border: 2px solid #D4AF37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spinVinylDisc 4.5s linear infinite paused;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.cute-floating-music.playing .cute-vinyl-disc {
+  animation-play-state: running;
+}
+
+@keyframes spinVinylDisc {
+  100% { transform: rotate(360deg); }
+}
+
+.cute-music-waves {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 14px;
+}
+
+.cute-music-waves span {
+  width: 3px;
+  height: 4px;
+  background: #1E4833;
+  border-radius: 999px;
+  transition: height 0.2s ease;
+}
+
+.cute-floating-music.playing .cute-music-waves span:nth-child(1) { animation: waveBar 0.9s ease-in-out infinite alternate; }
+.cute-floating-music.playing .cute-music-waves span:nth-child(2) { animation: waveBar 1.2s ease-in-out infinite alternate 0.2s; }
+.cute-floating-music.playing .cute-music-waves span:nth-child(3) { animation: waveBar 0.8s ease-in-out infinite alternate 0.4s; }
+
+@keyframes waveBar {
+  0% { height: 3px; }
+  100% { height: 14px; }
+}
