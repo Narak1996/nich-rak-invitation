@@ -1633,7 +1633,7 @@ function renderThemeWelcome(themeId, w, isKh) {
     if (openVenueEl) {
       const timeStr = isKh ? 'វេលាម៉ោង ០៧:០០ ព្រឹក' : 'Time: 7:00 AM';
       const venueStr = isKh ? (w.venue_name_kh || 'នៅគេហដ្ឋានខាងស្រី') : (w.venue_name_en || "Bride's Residence");
-      openVenueEl.innerHTML = `${timeStr}<br>${escapeHTML(venueStr)}<br><span class="text-[#8C6A18] font-semibold">${isKh ? 'ដោយមេត្រីភាព' : 'With Compliments'}</span>`;
+      openVenueEl.innerHTML = `<span>${timeStr}</span> • <span>${escapeHTML(venueStr)}</span>`;
     }
 
     // 4. Opening Button text
