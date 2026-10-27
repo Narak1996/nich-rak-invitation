@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "backup": "node scripts/backup.js",
+    "predeploy": "node scripts/backup.js"
   },
   "keywords": [],
   "author": "",

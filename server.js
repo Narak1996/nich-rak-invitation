@@ -627,6 +627,59 @@ app.post('/api/upload', requireAdmin, upload.single('file'), (req, res) => {
   }
 });
 
+// Admin: Export Full Database Backup (Wedding settings, Guests, Wishes)
+app.get('/api/backup/export', requireAdmin, (req, res) => {
+  const wedding = readJSON(WEDDING_FILE);
+  const guests = readJSON(GUESTS_FILE, []);
+  const wishes = readJSON(WISHES_FILE, []);
+  const users = readJSON(USERS_FILE, []);
+
+  const safeWedding = { ...wedding };
+  delete safeWedding.admin;
+
+  const backupData = {
+    backedUpAt: new Date().toISOString(),
+    version: '1.0',
+    wedding: safeWedding,
+    guests,
+    wishes,
+    usersCount: users.length
+  };
+
+  const filename = `wedding-full-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.send(JSON.stringify(backupData, null, 2));
+});
+
+// Admin: Import Full Database Backup
+app.post('/api/backup/import', requireAdmin, (req, res) => {
+  const data = req.body;
+  if (!data || typeof data !== 'object') {
+    return res.status(400).json({ error: 'Invalid backup payload' });
+  }
+
+  if (data.wedding) {
+    const current = readJSON(WEDDING_FILE);
+    const updated = {
+      ...current,
+      ...data.wedding,
+      admin: current.admin
+    };
+    writeJSON(WEDDING_FILE, updated);
+  }
+
+  if (Array.isArray(data.guests)) {
+    writeJSON(GUESTS_FILE, data.guests);
+  }
+
+  if (Array.isArray(data.wishes)) {
+    writeJSON(WISHES_FILE, data.wishes);
+  }
+
+  res.json({ success: true, message: 'Full database restored successfully!' });
+});
+
 // Public: Get guest by slug or name (handles /to/:slug, /api/guest/:slug, spaces and hyphens)
 app.get('/api/guest/:slug', (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);

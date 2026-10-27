@@ -1,0 +1,26 @@
+[
+  {
+    "id": "w-1",
+    "guestName": "លោក សុខ ដារ៉ា និងភរិយា",
+    "relationship": "ភ្ញៀវខាងប្រុស (Groom's Side)",
+    "message": "សូមជូនពរឱ្យគូស្វាមីភរិយាថ្មី មានសុភមង្គល ស្រឡាញ់គ្នារហូតដល់ចាស់កោងខ្នង និងឆាប់ទទួលបានចំណងដៃកូនចៅ!",
+    "status": "approved",
+    "createdAt": "2026-09-20T14:30:00.000Z"
+  },
+  {
+    "id": "w-2",
+    "guestName": "Mr. Thol Vireak",
+    "relationship": "ភ្ញៀវខាងស្រី (Bride's Side)",
+    "message": "Congratulations to Narak & Sreymech! Wishing you both a lifetime filled with immense love, prosperity, and happiness!",
+    "status": "approved",
+    "createdAt": "2026-09-21T09:15:00.000Z"
+  },
+  {
+    "id": "w-3",
+    "guestName": "ឯកឧត្តម លោកជំទាវ ហេង",
+    "relationship": "ភ្ញៀវកិត្តិយស (VIP Guest)",
+    "message": "សូមប្រសិទ្ធិពរជ័យ សិរីសួស្តី វិបុលសុខគ្រប់ប្រការដល់ក្មួយទាំងពីរ និងសូមឱ្យចំណងស្នេហ៍ស្ថិតស្ថេរជានិច្ចនិរន្តរ៍!",
+    "status": "approved",
+    "createdAt": "2026-09-22T16:00:00.000Z"
+  }
+]

@@ -1593,27 +1593,41 @@ window.submitGoogleDrivePhotos = async function() {
   }
 };
 
-// Export Wedding Data Backup as JSON file
-window.exportBackupData = function() {
-  if (!weddingData) {
-    showToast('មិនទាន់មានទិន្នន័យសម្រាប់ Backup ទេ');
-    return;
-  }
+// Export Full System Backup (Wedding, Guests, Wishes)
+window.exportBackupData = async function() {
+  showToast('កំពុងបង្កើតឯកសារ Backup ពេញលេញ...');
+  try {
+    const res = await fetch('/api/backup/export');
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `wedding-full-backup-${dateStr}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('✓ បានទាញយកទិន្នន័យ Backup ពេញលេញជោគជ័យ!');
+      return;
+    }
+  } catch (e) {}
+
+  // Fallback to client-side weddingData export
   const jsonStr = JSON.stringify(weddingData, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const dateStr = new Date().toISOString().slice(0, 10);
   a.href = url;
-  a.download = `wedding-backup-${dateStr}.json`;
+  a.download = `wedding-backup-${new Date().toISOString().slice(0, 10)}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
   showToast('✓ បានទាញយកឯកសារ Backup ដោយជោគជ័យ!');
 };
 
-// Import Wedding Data Backup from JSON file
+// Import Full System Backup (Wedding, Guests, Wishes)
 window.importBackupData = function(fileInput) {
   if (!fileInput.files || !fileInput.files[0]) return;
   const file = fileInput.files[0];
@@ -1621,7 +1635,7 @@ window.importBackupData = function(fileInput) {
   reader.onload = async (e) => {
     try {
       const parsed = JSON.parse(e.target.result);
-      if (!parsed || (!parsed.wedding && !parsed.gallery)) {
+      if (!parsed || typeof parsed !== 'object') {
         showToast('ឯកសារ Backup មិនត្រឹមត្រូវ');
         return;
       }
@@ -1629,17 +1643,24 @@ window.importBackupData = function(fileInput) {
         return;
       }
       showToast('កំពុងស្តារទិន្នន័យឡើងវិញ...');
-      const res = await fetch('/api/wedding', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parsed)
-      });
-      if (res.ok) {
-        showToast('✓ បានស្តារទិន្នន័យ Backup ជោគជ័យ!');
-        loadWeddingData();
+      
+      if (parsed.guests || parsed.wishes) {
+        await fetch('/api/backup/import', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed)
+        });
       } else {
-        showToast('មានបញ្ហាក្នុងការស្តារទិន្នន័យ');
+        await fetch('/api/wedding', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed)
+        });
       }
+
+      showToast('✓ បានស្តារទិន្នន័យ Backup ជោគជ័យ!');
+      loadWeddingData();
+      if (typeof loadGuests === 'function') loadGuests();
     } catch (err) {
       console.error('Import backup error:', err);
       showToast('ឯកសារមិនមែនជា JSON ត្រឹមត្រូវទេ');
