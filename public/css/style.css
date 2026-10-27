@@ -758,13 +758,20 @@ body.theme-khmer-traditional .bottom-nav-item.active-nav-tab {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(10, 20, 15, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   align-items: center;
   justify-content: center;
   padding: 16px;
+  animation: lbFadeIn 0.25s ease-out;
 }
 .lightbox-modal.active {
   display: flex;
+}
+@keyframes lbFadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* Toast Notification Banner (Floating Top Center, High Visibility) */

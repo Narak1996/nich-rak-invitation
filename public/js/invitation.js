@@ -537,9 +537,9 @@ function renderGallery() {
   container.innerHTML = '';
   const isKh = currentLang === 'kh';
 
-  if (!weddingData.gallery) return;
+  if (!weddingData.gallery || !weddingData.gallery.length) return;
 
-  weddingData.gallery.forEach(img => {
+  weddingData.gallery.forEach((img, index) => {
     const el = document.createElement('div');
     el.className = 'relative overflow-hidden rounded-2xl shadow-sm border border-[#C5A059]/35 hover:border-[#C5A059] group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-xl';
     el.innerHTML = `
@@ -549,9 +549,12 @@ function renderGallery() {
           ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
         </span>
       </div>
+      <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-[10px] text-white/95 opacity-0 group-hover:opacity-100 transition font-mono border border-white/20">
+        🔍 #${index + 1}
+      </div>
     `;
     el.addEventListener('click', () => {
-      openLightbox(img.url, isKh ? img.caption_kh : img.caption_en);
+      openLightboxByIndex(index);
     });
     container.appendChild(el);
   });
@@ -591,19 +594,101 @@ function renderDigitalGift() {
   document.getElementById('bride-qr-img').src = dg.bride_account.qr_image;
 }
 
-// Lightbox
-function openLightbox(url, caption) {
+// Lightbox with Next & Previous Photo Navigation
+let currentLightboxIndex = -1;
+let currentLightboxList = [];
+
+function openLightboxByIndex(index) {
+  if (!weddingData.gallery || !weddingData.gallery.length) return;
+  currentLightboxList = weddingData.gallery;
+  currentLightboxIndex = (index + currentLightboxList.length) % currentLightboxList.length;
+  updateLightboxDisplay();
   const modal = document.getElementById('lightbox-modal');
+  if (modal) modal.classList.add('active');
+}
+
+function openLightbox(url, caption) {
+  if (weddingData.gallery && weddingData.gallery.length) {
+    const foundIdx = weddingData.gallery.findIndex(g => g.url === url);
+    if (foundIdx !== -1) {
+      openLightboxByIndex(foundIdx);
+      return;
+    }
+  }
+  // Single image fallback
+  currentLightboxList = [{ url, caption_kh: caption, caption_en: caption }];
+  currentLightboxIndex = 0;
+  updateLightboxDisplay();
+  const modal = document.getElementById('lightbox-modal');
+  if (modal) modal.classList.add('active');
+}
+
+function updateLightboxDisplay() {
+  if (!currentLightboxList || currentLightboxList.length === 0 || currentLightboxIndex < 0) return;
+  const item = currentLightboxList[currentLightboxIndex];
+  const isKh = currentLang === 'kh';
+  const caption = isKh ? (item.caption_kh || item.caption_en || '') : (item.caption_en || item.caption_kh || '');
+
   const img = document.getElementById('lightbox-img');
   const cap = document.getElementById('lightbox-caption');
-  img.src = url;
-  cap.textContent = caption || '';
-  modal.classList.add('active');
+  const counter = document.getElementById('lightbox-counter');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+
+  if (img) {
+    img.style.opacity = '0.4';
+    img.src = item.url;
+    img.alt = caption || 'Photo';
+    img.onload = () => { img.style.opacity = '1'; };
+  }
+  if (cap) {
+    cap.textContent = caption;
+    cap.style.display = caption ? 'block' : 'none';
+  }
+  if (counter) {
+    if (currentLightboxList.length > 1) {
+      counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxList.length}`;
+      counter.style.display = 'inline-block';
+    } else {
+      counter.style.display = 'none';
+    }
+  }
+  if (prevBtn && nextBtn) {
+    if (currentLightboxList.length <= 1) {
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    } else {
+      prevBtn.style.display = 'flex';
+      nextBtn.style.display = 'flex';
+    }
+  }
+}
+
+function nextLightboxImage(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  if (!currentLightboxList || currentLightboxList.length <= 1) return;
+  currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxList.length;
+  updateLightboxDisplay();
+}
+
+function prevLightboxImage(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  if (!currentLightboxList || currentLightboxList.length <= 1) return;
+  currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxList.length) % currentLightboxList.length;
+  updateLightboxDisplay();
 }
 
 function closeLightbox() {
-  document.getElementById('lightbox-modal').classList.remove('active');
+  const modal = document.getElementById('lightbox-modal');
+  if (modal) modal.classList.remove('active');
 }
+
+// Expose globally for inline DOM event listeners
+window.openLightboxByIndex = openLightboxByIndex;
+window.openLightbox = openLightbox;
+window.nextLightboxImage = nextLightboxImage;
+window.prevLightboxImage = prevLightboxImage;
+window.closeLightbox = closeLightbox;
 
 // Event Listeners
 function initEventListeners() {
@@ -652,7 +737,7 @@ function initEventListeners() {
     });
   }
 
-  // Lightbox close
+  // Lightbox close & touch swipe
   const lbClose = document.getElementById('lightbox-close');
   if (lbClose) lbClose.addEventListener('click', closeLightbox);
   const lbModal = document.getElementById('lightbox-modal');
@@ -660,7 +745,47 @@ function initEventListeners() {
     lbModal.addEventListener('click', (e) => {
       if (e.target.id === 'lightbox-modal') closeLightbox();
     });
+
+    // Mobile touch swipe gesture (swipe left -> next, swipe right -> prev)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    lbModal.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length === 1) {
+        touchStartX = e.touches[0].screenX;
+        touchStartY = e.touches[0].screenY;
+      }
+    }, { passive: true });
+
+    lbModal.addEventListener('touchend', (e) => {
+      if (e.changedTouches && e.changedTouches.length === 1) {
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        // Check horizontal swipe vs vertical scroll
+        if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+          if (diffX < 0) {
+            nextLightboxImage(e);
+          } else {
+            prevLightboxImage(e);
+          }
+        }
+      }
+    }, { passive: true });
   }
+
+  // Keyboard navigation for Lightbox (Left / Right / Escape)
+  document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('lightbox-modal');
+    if (!modal || !modal.classList.contains('active')) return;
+    if (e.key === 'ArrowRight') {
+      nextLightboxImage(e);
+    } else if (e.key === 'ArrowLeft') {
+      prevLightboxImage(e);
+    } else if (e.key === 'Escape') {
+      closeLightbox();
+    }
+  });
 
   // Copy account buttons
   const groomCopyBtn = document.getElementById('btn-copy-groom-acc');

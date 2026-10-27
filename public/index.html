@@ -45,8 +45,8 @@
     }
   </script>
 
-  <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="/css/style.css">
+  <!-- Custom Stylesheet (with cache-busting version query) -->
+  <link rel="stylesheet" href="/css/style.css?v=20261027d">
 </head>
 <body class="wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -203,29 +203,28 @@
       <img src="/images/components/banteay-srei-divider.png" alt="ក្បាច់ផ្តែរបន្ទាយស្រី">
     </div>
 
-    <!-- HERO SECTION -->
+    <!-- HERO SECTION (REDESIGNED: BOTANICAL WHITE ROSE & 3D GOLD RINGS MOTIF) -->
     <section id="hero-section" class="text-center mb-10 reveal-on-scroll">
-      <!-- Theme Component Emblem (Banteay Srei Arch with Golden Halo) -->
-      <div id="hero-theme-emblem" class="flex justify-center mb-4 transition-all duration-300">
-        <div class="banteay-srei-arch-container">
-          <img src="/images/components/banteay-srei-arch.png" alt="ហោជាងប្រាសាទបន្ទាយស្រី" class="banteay-srei-arch-img">
-        </div>
+      <!-- 3D Intertwined Gold Wedding Rings (Opening Poster Echo) -->
+      <div class="mx-auto mb-1 relative inline-block">
+        <img src="/images/opening/gold-rings-3d.png" alt="Gold Wedding Rings" class="w-14 h-14 sm:w-16 sm:h-16 object-contain mx-auto opening-rings-float">
+        <span class="opening-ring-glint">✦</span>
       </div>
 
       <!-- Traditional Botanical Header Motif -->
-      <div class="flex items-center justify-center gap-3 mb-3">
-        <div class="h-px w-12 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <div class="h-px w-10 sm:w-14 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
         <span id="hero-motif-text" class="text-xs font-khmer-title whitespace-nowrap text-[#C5A059] font-semibold" data-kh="សិរីសួស្តី អាពាហ៍ពិពាហ៍" data-en="Wedding Celebration">
           សិរីសួស្តី អាពាហ៍ពិពាហ៍
         </span>
-        <div class="h-px w-12 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
+        <div class="h-px w-10 sm:w-14 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
       </div>
 
-      <h2 id="main-wedding-title" class="font-khmer-title text-2xl md:text-3xl text-[#1E4833] mb-2 leading-tight whitespace-nowrap">
+      <h2 id="main-wedding-title" class="font-khmer-title text-2xl md:text-3xl text-[#1E4833] mb-1 leading-tight whitespace-nowrap">
         សិរីសួស្តី អាពាហ៍ពិពាហ៍
       </h2>
 
-      <p class="font-en-script text-3xl sm:text-4xl md:text-5xl text-[#C5A059] my-2 whitespace-nowrap" id="main-couple-en">
+      <p class="font-en-script text-3xl sm:text-4xl md:text-5xl text-[#C5A059] my-1.5 whitespace-nowrap" id="main-couple-en">
         Chan Narak & Neat Sreynich
       </p>
 
@@ -233,8 +232,13 @@
         ឡេង ចាន់ណារៈ & នាត ស្រីនិច
       </p>
 
-      <!-- Main Couple Portrait with Luxury Botanical Frame -->
-      <div class="relative w-full max-w-2xl mx-auto mb-8 px-1">
+      <!-- Main Couple Portrait Framed by Botanical White Rose & Eucalyptus Arch -->
+      <div class="relative w-full max-w-2xl mx-auto my-9 px-1">
+        <!-- Top Botanical White Rose & Eucalyptus Crown -->
+        <div class="absolute -top-7 sm:-top-9 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-[420px] flex justify-center">
+          <img src="/images/opening/botanical-arch.png" alt="Botanical Garland Crown" class="w-full h-auto object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)]">
+        </div>
+
         <div id="couple-cover-box" class="couple-cover-box overflow-hidden rounded-3xl shadow-2xl relative group">
           <div class="khmer-corner-tl"></div>
           <div class="khmer-corner-tr"></div>
@@ -252,6 +256,11 @@
             </div>
           </div>
         </div>
+
+        <!-- Bottom Inverted Botanical White Rose Spray -->
+        <div class="absolute -bottom-7 sm:-bottom-9 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-full max-w-[340px] flex justify-center opacity-85">
+          <img src="/images/opening/botanical-arch.png" alt="Botanical Garland Base" class="w-full h-auto object-contain transform rotate-180 filter drop-shadow-xs">
+        </div>
       </div>
 
       <!-- Couple Quote Encased in Ivory Pill Badge -->
@@ -268,11 +277,16 @@
     </section>
 
     <!-- PARENTS & COUPLE PRESENTATION -->
-    <section id="presentation-section" class="ornate-border-box p-6 md:p-8 mb-10 text-center reveal-on-scroll">
+    <section id="presentation-section" class="ornate-border-box p-6 md:p-8 mb-10 text-center reveal-on-scroll relative">
       <div class="khmer-corner-tl"></div>
       <div class="khmer-corner-tr"></div>
       <div class="khmer-corner-bl"></div>
       <div class="khmer-corner-br"></div>
+
+      <!-- Subtle Botanical Rose Header Garland -->
+      <div class="flex justify-center -mt-2 mb-3 pointer-events-none">
+        <img src="/images/opening/botanical-arch.png" alt="Botanical Motif" class="h-8 sm:h-10 w-auto object-contain opacity-85">
+      </div>
 
       <!-- Personalized Guest Banner (shown when guest link opened) -->
       <div id="main-guest-invitation-banner" class="mb-5 py-3 px-4 rounded-2xl bg-[#FDFBF7] border border-[#C5A059]/40 shadow-xs hidden">
@@ -457,7 +471,11 @@
 
     <!-- PRE-WEDDING PHOTO GALLERY -->
     <section id="gallery-section" class="mb-10 reveal-on-scroll">
-      <div class="text-center mb-8">
+      <div class="text-center mb-6">
+        <!-- Subtle Botanical Rose Header Garland -->
+        <div class="flex justify-center mb-2 pointer-events-none">
+          <img src="/images/opening/botanical-arch.png" alt="Botanical Motif" class="h-8 sm:h-9 w-auto object-contain opacity-80">
+        </div>
         <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold block mb-1" data-kh="អនុស្សាវរីយ៍" data-en="Sweet Memories">
           អនុស្សាវរីយ៍
         </span>
@@ -705,12 +723,31 @@
     </a>
   </nav>
 
-  <!-- ================= LIGHTBOX MODAL ================= -->
-  <div id="lightbox-modal" class="lightbox-modal">
-    <div class="relative max-w-2xl w-full p-2 text-center">
-      <button id="lightbox-close" class="absolute -top-10 right-2 text-white hover:text-amber-300 text-2xl font-bold">✕</button>
-      <img id="lightbox-img" src="" alt="Zoom" class="max-h-[80vh] w-auto mx-auto rounded-xl shadow-2xl object-contain">
-      <p id="lightbox-caption" class="text-white text-xs mt-3 font-khmer-body"></p>
+  <!-- ================= LIGHTBOX MODAL WITH NEXT / PREV NAVIGATION ================= -->
+  <div id="lightbox-modal" class="lightbox-modal" onclick="closeLightbox()">
+    <div class="relative max-w-2xl w-full p-2 text-center" onclick="event.stopPropagation()">
+      <button id="lightbox-close" onclick="closeLightbox()" class="absolute -top-10 right-2 text-white hover:text-amber-300 text-2xl font-bold cursor-pointer transition" title="បិទ (Close)">✕</button>
+      
+      <!-- Previous Photo Button (Left Arrow) -->
+      <button id="lightbox-prev" type="button" onclick="prevLightboxImage(event)" class="absolute left-2 sm:-left-14 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/65 hover:bg-[#1E4833] text-white flex items-center justify-center text-xl font-bold border border-white/30 shadow-2xl transition-all hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-xs" title="រូបថតមុន (Previous Photo)" aria-label="Previous Photo">
+        ❮
+      </button>
+
+      <!-- Next Photo Button (Right Arrow) -->
+      <button id="lightbox-next" type="button" onclick="nextLightboxImage(event)" class="absolute right-2 sm:-right-14 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/65 hover:bg-[#1E4833] text-white flex items-center justify-center text-xl font-bold border border-white/30 shadow-2xl transition-all hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-xs" title="រូបថតបន្ទាប់ (Next Photo)" aria-label="Next Photo">
+        ❯
+      </button>
+
+      <!-- Main Lightbox Image Frame -->
+      <div class="relative inline-block rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 bg-black/20">
+        <img id="lightbox-img" src="" alt="Zoom" class="max-h-[75vh] w-auto mx-auto object-contain transition-opacity duration-300">
+      </div>
+      
+      <!-- Caption & Counter Bar -->
+      <div class="mt-3 flex flex-col items-center gap-1.5">
+        <p id="lightbox-caption" class="text-white text-xs sm:text-sm font-khmer-body font-medium drop-shadow-md max-w-md mx-auto"></p>
+        <span id="lightbox-counter" class="text-[11px] text-amber-200/90 px-3 py-0.5 rounded-full bg-black/60 border border-white/20 font-mono shadow-xs"></span>
+      </div>
     </div>
   </div>
 
@@ -733,7 +770,7 @@
     </div>
   </div>
 
-  <!-- JavaScript -->
-  <script src="/js/invitation.js"></script>
+  <!-- JavaScript (with cache-busting version query) -->
+  <script src="/js/invitation.js?v=20261027d"></script>
 </body>
 </html>
