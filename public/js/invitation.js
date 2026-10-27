@@ -1120,28 +1120,8 @@ const THEME_FALLING_GENERATORS = {
 // Aliases for falling generators
 
 function initPetals() {
-  const container = document.body;
-  const animations = ['fallSwayLeft', 'fallSwayRight', 'fallFlutter'];
-
-  function createFallingItem() {
-    if (document.hidden) return;
-    const themeId = (weddingData && weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
-    const generatorList = THEME_FALLING_GENERATORS[themeId] || THEME_FALLING_GENERATORS['khmer-traditional'];
-    const randomGen = generatorList[Math.floor(Math.random() * generatorList.length)];
-    const el = randomGen();
-
-    const animName = animations[Math.floor(Math.random() * animations.length)];
-    const duration = Math.random() * 5 + 8; // 8s - 13s graceful descent
-    el.style.animationName = animName;
-    el.style.animationDuration = `${duration}s`;
-    el.style.left = `${Math.random() * 94 + 3}vw`;
-    el.style.opacity = (Math.random() * 0.3 + 0.65).toString();
-
-    container.appendChild(el);
-    setTimeout(() => el.remove(), (duration + 1) * 1000);
-  }
-
-  setInterval(createFallingItem, 900);
+  // Falling objects disabled per user preference for a clean, peaceful layout
+  document.querySelectorAll('.falling-object-wrap').forEach(el => el.remove());
 }
 
 // Add to Calendar

@@ -51,7 +51,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_center_ring_grid">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_menu_order_resp">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -361,7 +361,24 @@
       </div>
     </section>
 
-    <!-- ================= 5. EVENT DATE & VENUE SHOWCASE ================= -->
+    <!-- ================= 5. AGENDA & CEREMONY SCHEDULE ================= -->
+    <section id="ceremony-section" class="cute-pastel-card mb-10 text-center reveal-on-scroll">
+      <div class="text-center mb-7">
+        <span class="text-xs uppercase tracking-widest text-[#4E7D63] font-bold block mb-1" data-kh="លំដាប់លំដោយ" data-en="Program Schedule">
+          🌸 កម្មវិធីសិរីមង្គល 🌸
+        </span>
+        <h3 class="font-khmer-title text-2xl text-[#1E4833]" data-kh="កម្មវិធីមង្គលការ" data-en="Wedding Agenda">
+          កម្មវិធីមង្គលការ
+        </h3>
+      </div>
+
+      <!-- Timeline Container -->
+      <div id="agenda-container" class="timeline-stem w-full mx-auto">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ================= 6. EVENT DATE & VENUE SHOWCASE ================= -->
     <section id="venue-section" class="cute-pastel-card mb-10 text-center reveal-on-scroll">
 
       <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#FFF0F3] to-[#FFE4E9] border-2 border-[#FF8BA7] flex items-center justify-center mx-auto mb-3 shadow-sm ring-4 ring-[#FF8BA7]/15">
@@ -421,23 +438,6 @@
           <svg class="w-4 h-4 text-[#FF8BA7]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
           <span data-kh="ចម្លងទីតាំង" data-en="Copy Address">ចម្លងទីតាំង</span>
         </button>
-      </div>
-    </section>
-
-    <!-- ================= 6. AGENDA & CEREMONY SCHEDULE ================= -->
-    <section id="ceremony-section" class="cute-pastel-card mb-10 text-center reveal-on-scroll">
-      <div class="text-center mb-7">
-        <span class="text-xs uppercase tracking-widest text-[#4E7D63] font-bold block mb-1" data-kh="លំដាប់លំដោយ" data-en="Program Schedule">
-          🌸 កម្មវិធីសិរីមង្គល 🌸
-        </span>
-        <h3 class="font-khmer-title text-2xl text-[#1E4833]" data-kh="កម្មវិធីមង្គលការ" data-en="Wedding Agenda">
-          កម្មវិធីមង្គលការ
-        </h3>
-      </div>
-
-      <!-- Timeline Container -->
-      <div id="agenda-container" class="timeline-stem w-full mx-auto">
-        <!-- Rendered dynamically -->
       </div>
     </section>
 
@@ -638,34 +638,34 @@
   </main>
 
   <!-- ================= MODERN NATURE FLOATING BOTTOM NAVIGATION DOCK ================= -->
-  <nav id="bottom-nav-dock" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-[100] bg-white/94 backdrop-blur-md border border-[#4E7D63]/35 shadow-2xl rounded-full py-1.5 px-3 sm:px-4 flex items-center gap-1.5 sm:gap-2.5 transition-all duration-300 pointer-events-auto">
-    <a href="#opening-cover-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="គម្រប (Cover)">
-      <span class="text-sm">💌</span>
-      <span class="text-[9px] leading-tight">គម្រប</span>
+  <nav id="bottom-nav-dock" class="fixed bottom-3.5 left-1/2 -translate-x-1/2 z-[100] bg-white/94 backdrop-blur-md border border-[#4E7D63]/35 shadow-2xl rounded-full py-2 px-3 sm:px-4 flex items-center gap-1.5 sm:gap-2.5 transition-all duration-300 pointer-events-auto">
+    <a href="#opening-cover-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-[#5D544E] hover:text-[#1E4833] transition px-2 py-1" title="គម្រប (Cover)">
+      <span class="text-base sm:text-lg">💌</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">គម្រប</span>
     </a>
-    <a href="#hero-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="គូស្នេហ៍">
-      <span class="text-sm">💑</span>
-      <span class="text-[9px] leading-tight">គូស្នេហ៍</span>
+    <a href="#hero-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-[#5D544E] hover:text-[#1E4833] transition px-2 py-1" title="គូស្នេហ៍">
+      <span class="text-base sm:text-lg">💑</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">គូស្នេហ៍</span>
     </a>
-    <a href="#ceremony-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="កម្មវិធី">
-      <span class="text-sm">📅</span>
-      <span class="text-[9px] leading-tight">កម្មវិធី</span>
+    <a href="#ceremony-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-[#5D544E] hover:text-[#1E4833] transition px-2 py-1" title="កម្មវិធី">
+      <span class="text-base sm:text-lg">📅</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">កម្មវិធី</span>
     </a>
-    <a href="#venue-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="ទីតាំង">
-      <span class="text-sm">📍</span>
-      <span class="text-[9px] leading-tight">ទីតាំង</span>
+    <a href="#venue-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-[#5D544E] hover:text-[#1E4833] transition px-2 py-1" title="ទីតាំង">
+      <span class="text-base sm:text-lg">📍</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">ទីតាំង</span>
     </a>
-    <a href="#gallery-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="រូបភាព">
-      <span class="text-sm">📷</span>
-      <span class="text-[9px] leading-tight">រូបភាព</span>
+    <a href="#gallery-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-[#5D544E] hover:text-[#1E4833] transition px-2 py-1" title="រូបភាព">
+      <span class="text-base sm:text-lg">📷</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">រូបភាព</span>
     </a>
-    <a href="#digital-gift-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#5D544E] hover:text-[#1E4833] transition px-1.5 py-1" title="ចងដៃ">
-      <span class="text-sm">🎁</span>
-      <span class="text-[9px] leading-tight">ចងដៃ</span>
+    <a href="#digital-gift-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-[#5D544E] hover:text-[#1E4833] transition px-2 py-1" title="ចងដៃ">
+      <span class="text-base sm:text-lg">🎁</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">ចងដៃ</span>
     </a>
-    <a href="#rsvp-section" class="bottom-nav-item nav-rsvp-btn flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-bold text-white transition shadow-sm px-2.5 py-1" title="RSVP">
-      <span class="text-sm">🌿</span>
-      <span class="text-[9px] leading-tight font-bold">RSVP</span>
+    <a href="#rsvp-section" class="bottom-nav-item nav-rsvp-btn flex flex-col items-center justify-center rounded-full text-[10px] sm:text-xs font-bold text-white transition shadow-sm px-3 py-1" title="RSVP">
+      <span class="text-base sm:text-lg">🌿</span>
+      <span class="text-[10px] sm:text-[11px] leading-tight font-bold">RSVP</span>
     </a>
   </nav>
 

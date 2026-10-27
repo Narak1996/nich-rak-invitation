@@ -308,62 +308,7 @@
     }
   }, { passive: true });
 
-  // B. Scroll trail (breeze of floating petals & sparkles as page scrolls)
-  let lastScrollY = window.scrollY || window.pageYOffset;
-  let lastScrollTime = 0;
-
-  window.addEventListener('scroll', () => {
-    const currentScrollY = window.scrollY || window.pageYOffset;
-    const scrollDelta = currentScrollY - lastScrollY;
-    lastScrollY = currentScrollY;
-
-    const now = performance.now();
-    if (Math.abs(scrollDelta) > 5 && now - lastScrollTime > 65) {
-      lastScrollTime = now;
-
-      // Spawn 1-2 floating petals drifting with scroll breeze
-      const spawnX = Math.random() * (width * 0.84) + (width * 0.08);
-      const spawnY = scrollDelta > 0 ? (height * 0.85 + Math.random() * 30) : (height * 0.15 - Math.random() * 30);
-      const color = BLOSSOM_PALETTES[Math.floor(Math.random() * BLOSSOM_PALETTES.length)];
-
-      particles.push({
-        type: 'scroll_petal',
-        x: spawnX,
-        y: spawnY,
-        vx: (Math.random() - 0.5) * 1.5,
-        vy: scrollDelta > 0 ? -(Math.random() * 1.8 + 1.2) : (Math.random() * 1.8 + 1.2),
-        size: Math.random() * 7 + 9,
-        scale: 0.3,
-        maxScale: 1.0,
-        rotation: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.04,
-        wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: 0.045,
-        alpha: 0.80,
-        decay: 0.016,
-        color: color
-      });
-
-      // Subtle golden fairy spark alongside scroll
-      particles.push({
-        type: 'star',
-        x: spawnX + (Math.random() - 0.5) * 24,
-        y: spawnY,
-        vx: (Math.random() - 0.5) * 1.0,
-        vy: (Math.random() - 0.5) * 1.0,
-        radius: Math.random() * 2.0 + 1.8,
-        alpha: 0.85,
-        decay: 0.025,
-        drag: 0.94,
-        gravity: 0,
-        rotation: Math.random() * Math.PI,
-        rotSpeed: 0.05,
-        color: GOLD_PALETTES[0]
-      });
-
-      startLoop();
-    }
-  }, { passive: true });
+  // B. Scroll trail removed per user request to eliminate falling/scrolling objects
 
 
   // ================= MAIN CANVAS RENDER LOOP (60FPS) =================
