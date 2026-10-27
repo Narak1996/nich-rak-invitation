@@ -28,6 +28,28 @@ if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 // Cloud Database (MongoDB Atlas) Adapter with File Fallback
 const db = require('./db');
 
+// Ensure DB initialization works on both local server and Vercel serverless
+let dbInitPromise = null;
+function ensureDB() {
+  if (!dbInitPromise) {
+    dbInitPromise = db.initDB();
+  }
+  return dbInitPromise;
+}
+
+// Auto-initialize DB on cold start
+ensureDB().catch(e => console.warn('[DB] Cold-start connection:', e.message));
+
+// Middleware to ensure DB connection is ready before servicing API requests
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    try {
+      await ensureDB();
+    } catch (e) {}
+  }
+  next();
+});
+
 // Helper functions for reading/writing JSON (backed by MongoDB / Cache / Files)
 function readJSON(file, fallback = {}) {
   if (file === GUESTS_FILE) return db.getGuests();
@@ -97,7 +119,45 @@ function getOrInitUsers() {
   return users;
 }
 
-// In-memory sessions synchronized with sessions.json
+// Secret key for signing stateless session tokens (immune to serverless restarts & redeployments)
+const AUTH_SECRET = process.env.SESSION_SECRET || 'e-invitation-wedding-secret-auth-key-2026';
+
+function signSessionToken(payload) {
+  const jsonStr = JSON.stringify(payload);
+  const dataB64 = Buffer.from(jsonStr, 'utf8').toString('base64url');
+  const hmac = crypto.createHmac('sha256', AUTH_SECRET).update(dataB64).digest('base64url');
+  return `${dataB64}.${hmac}`;
+}
+
+function verifySessionToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+
+  const [dataB64, providedHmac] = parts;
+  const expectedHmac = crypto.createHmac('sha256', AUTH_SECRET).update(dataB64).digest('base64url');
+
+  if (providedHmac.length !== expectedHmac.length) return null;
+  try {
+    if (!crypto.timingSafeEqual(Buffer.from(providedHmac), Buffer.from(expectedHmac))) {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+
+  try {
+    const payload = JSON.parse(Buffer.from(dataB64, 'base64url').toString('utf8'));
+    if (!payload || !payload.expiresAt || payload.expiresAt < Date.now()) {
+      return null;
+    }
+    return payload;
+  } catch (err) {
+    return null;
+  }
+}
+
+// In-memory sessions synchronized with sessions.json (fallback for legacy tokens)
 let activeSessions = readJSON(SESSIONS_FILE, {});
 function saveSessions() {
   const now = Date.now();
@@ -113,6 +173,12 @@ function saveSessions() {
 
 function getSession(token) {
   if (!token) return null;
+
+  // 1. Check stateless signed token (100% resilient across Vercel redeploys and cold starts)
+  const verified = verifySessionToken(token);
+  if (verified) return verified;
+
+  // 2. Check legacy in-memory session table
   const sess = activeSessions[token];
   if (!sess) return null;
   if (sess.expiresAt < Date.now()) {
@@ -199,11 +265,9 @@ app.post('/api/auth/login', (req, res) => {
   user.lastLogin = new Date().toISOString();
   writeJSON(USERS_FILE, users);
 
-  // Generate 32-byte secure random token
-  const token = crypto.randomBytes(32).toString('hex');
+  // Generate 7-day secure stateless signed token
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
-
-  activeSessions[token] = {
+  const sessionPayload = {
     userId: user.id,
     username: user.username,
     displayName: user.displayName || user.username,
@@ -211,6 +275,9 @@ app.post('/api/auth/login', (req, res) => {
     createdAt: Date.now(),
     expiresAt
   };
+
+  const token = signSessionToken(sessionPayload);
+  activeSessions[token] = sessionPayload;
   saveSessions();
 
   res.cookie('admin_token', token, {
@@ -235,7 +302,7 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 app.post('/api/auth/logout', (req, res) => {
-  const token = req.cookies.admin_token;
+  const token = getTokenFromReq(req);
   if (token && activeSessions[token]) {
     delete activeSessions[token];
     saveSessions();
@@ -245,7 +312,7 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 app.get('/api/auth/check', (req, res) => {
-  const token = req.cookies.admin_token;
+  const token = getTokenFromReq(req);
   const sess = getSession(token);
   res.json({
     authenticated: !!sess,
