@@ -393,23 +393,205 @@ function renderAdminAgenda() {
   });
 }
 
+// Drag and drop state for gallery reordering
+let draggedGalleryIndex = null;
+
+// Save gallery order to API
+async function saveGalleryOrder(customMsg) {
+  try {
+    const res = await fetch('/api/wedding', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...weddingData, gallery: weddingData.gallery })
+    });
+    if (res.ok) {
+      showToast(customMsg || 'បានប្តូរលំដាប់រូបថតជោគជ័យ! (Photo order updated!)');
+    } else {
+      showToast('មានបញ្ហាក្នុងការរក្សាទុក (Failed to save order)', 'error');
+    }
+  } catch (err) {
+    console.error('Failed to save gallery order:', err);
+    showToast('Error saving order', 'error');
+  }
+}
+
+// Move gallery item by relative direction (-1 for left/up, +1 for right/down)
+window.moveGalleryItem = async function(fromIndex, direction) {
+  if (!weddingData || !weddingData.gallery) return;
+  const toIndex = fromIndex + direction;
+  if (toIndex < 0 || toIndex >= weddingData.gallery.length) return;
+
+  const item = weddingData.gallery.splice(fromIndex, 1)[0];
+  weddingData.gallery.splice(toIndex, 0, item);
+
+  renderAdminGallery();
+  await saveGalleryOrder(`បានរំកិលរូបថតទៅទីតាំង #${toIndex + 1} ជោគជ័យ!`);
+};
+
+// Move gallery item straight to the first position
+window.moveGalleryItemToTop = async function(fromIndex) {
+  if (!weddingData || !weddingData.gallery || fromIndex <= 0) return;
+
+  const item = weddingData.gallery.splice(fromIndex, 1)[0];
+  weddingData.gallery.unshift(item);
+
+  renderAdminGallery();
+  await saveGalleryOrder('បានដាក់រូបថតទៅដើមគេបង្អស់ (#1) ជោគជ័យ!');
+};
+
+// Handle Drag & Drop reorder
+window.handleGalleryDrop = async function(fromIndex, toIndex) {
+  if (fromIndex === undefined || fromIndex === null || fromIndex === toIndex) return;
+  if (!weddingData || !weddingData.gallery) return;
+  if (fromIndex < 0 || fromIndex >= weddingData.gallery.length) return;
+  if (toIndex < 0 || toIndex >= weddingData.gallery.length) return;
+
+  const item = weddingData.gallery.splice(fromIndex, 1)[0];
+  weddingData.gallery.splice(toIndex, 0, item);
+
+  renderAdminGallery();
+  await saveGalleryOrder(`បានផ្លាស់ប្តូរទីតាំងរូបថតពី #${fromIndex + 1} ទៅ #${toIndex + 1} ជោគជ័យ!`);
+};
+
+// Reverse the entire gallery order
+window.reverseGalleryOrder = async function() {
+  if (!weddingData || !weddingData.gallery || weddingData.gallery.length <= 1) return;
+  if (!confirm('តើអ្នកពិតជាចង់ត្រឡប់លំដាប់រូបថតទាំងអស់មែនទេ? (Reverse order of all photos?)')) return;
+
+  weddingData.gallery.reverse();
+  renderAdminGallery();
+  await saveGalleryOrder('បានត្រឡប់លំដាប់រូបថតទាំងអស់ជោគជ័យ!');
+};
+
+// Edit gallery caption (Khmer & English)
+window.editGalleryCaption = async function(index) {
+  if (!weddingData || !weddingData.gallery || !weddingData.gallery[index]) return;
+  const img = weddingData.gallery[index];
+  const newKh = prompt('ចំណងជើងរូបថតជាភាសាខ្មែរ (Caption KH):', img.caption_kh || 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម');
+  if (newKh === null) return;
+  const newEn = prompt('ចំណងជើងរូបថតជាភាសាអង់គ្លេស (Caption EN):', img.caption_en || 'Sweet Memories') || newKh;
+
+  img.caption_kh = newKh.trim();
+  img.caption_en = newEn.trim();
+
+  renderAdminGallery();
+  await saveGalleryOrder('បានកែប្រែចំណងជើងរូបថតជោគជ័យ!');
+};
+
 // Render Gallery in Admin
 function renderAdminGallery() {
   const container = document.getElementById('admin-gallery-grid');
+  if (!container) return;
   container.innerHTML = '';
-  if (!weddingData || !weddingData.gallery) return;
-
-  weddingData.gallery.forEach((img, index) => {
-    const el = document.createElement('div');
-    el.className = 'relative rounded-2xl overflow-hidden border border-[#E5D5BC] group aspect-4/5';
-    el.innerHTML = `
-      <img src="${img.url}" class="w-full h-full object-cover">
-      <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
-        <button onclick="deleteGalleryItem(${index})" class="p-2 bg-red-600 hover:bg-red-700 text-white rounded-full">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-        </button>
+  if (!weddingData || !weddingData.gallery || weddingData.gallery.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-2 md:col-span-4 p-8 text-center bg-[#FAF6ED] rounded-2xl border-2 border-dashed border-[#E5D5BC]">
+        <p class="text-sm font-semibold text-[#1E4833] mb-1">មិនទាន់មានរូបថតក្នុង Gallery នៅឡើយទេ</p>
+        <p class="text-xs text-[#7A6F68]">សូមចុចប៊ូតុង "📷 ជ្រើសរើសរូបថត Upload" ខាងលើដើម្បីចាប់ផ្តើម</p>
       </div>
     `;
+    return;
+  }
+
+  const total = weddingData.gallery.length;
+
+  weddingData.gallery.forEach((img, index) => {
+    const isFirst = index === 0;
+    const isLast = index === total - 1;
+
+    const el = document.createElement('div');
+    el.className = 'gallery-admin-card relative rounded-2xl overflow-hidden border-2 border-[#E5D5BC] hover:border-[#1E4833] group aspect-4/5 shadow-xs transition-all duration-200 select-none cursor-grab active:cursor-grabbing bg-gray-100 flex flex-col justify-between';
+    el.setAttribute('draggable', 'true');
+    el.setAttribute('data-index', index);
+
+    el.innerHTML = `
+      <!-- Thumbnail Image -->
+      <img src="${escapeHTML(img.url)}" alt="${escapeHTML(img.caption_kh || 'Gallery')}" class="w-full h-full object-cover pointer-events-none absolute inset-0" loading="lazy">
+
+      <!-- Top Bar: Order Badge and Drag Grip -->
+      <div class="relative z-10 p-2 flex items-center justify-between pointer-events-none">
+        <span class="px-2.5 py-1 bg-black/75 backdrop-blur-xs text-white text-[11px] font-bold rounded-lg shadow-md border border-white/20 flex items-center gap-1.5">
+          <span class="text-amber-300 font-mono">⋮⋮ #${index + 1}</span>
+        </span>
+        <span class="text-[10px] text-white/90 bg-[#1E4833]/90 px-2 py-0.5 rounded-md font-khmer-body shadow-xs opacity-0 group-hover:opacity-100 transition-opacity">
+          អូសប្តូរទីតាំង
+        </span>
+      </div>
+
+      <!-- Bottom Controls Bar -->
+      <div class="relative z-10 bg-gradient-to-t from-black/90 via-black/70 to-transparent pt-6 pb-2 px-2 flex flex-col gap-1.5">
+        <!-- Caption Preview -->
+        <p class="text-white text-[11px] font-medium truncate px-1 drop-shadow-xs" title="${escapeHTML(img.caption_kh || '')}">
+          ${escapeHTML(img.caption_kh || '(គ្មានចំណងជើង)')}
+        </p>
+
+        <!-- Action Buttons Row -->
+        <div class="flex items-center justify-between gap-1 pt-1 border-t border-white/20">
+          <!-- Direction Buttons -->
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="moveGalleryItem(${index}, -1)" ${isFirst ? 'disabled class="opacity-25 cursor-not-allowed text-gray-400 p-1.5 rounded-lg bg-black/40 text-xs"' : 'class="p-1.5 bg-white/95 hover:bg-white text-[#1E4833] rounded-lg text-xs font-bold shadow-xs transition hover:scale-110 active:scale-95 cursor-pointer" title="រំកិលទៅមុខ (Move Left)"'} aria-label="Move Left">
+              ◀
+            </button>
+            <button type="button" onclick="moveGalleryItem(${index}, 1)" ${isLast ? 'disabled class="opacity-25 cursor-not-allowed text-gray-400 p-1.5 rounded-lg bg-black/40 text-xs"' : 'class="p-1.5 bg-white/95 hover:bg-white text-[#1E4833] rounded-lg text-xs font-bold shadow-xs transition hover:scale-110 active:scale-95 cursor-pointer" title="រំកិលទៅក្រោយ (Move Right)"'} aria-label="Move Right">
+              ▶
+            </button>
+            ${!isFirst ? `
+              <button type="button" onclick="moveGalleryItemToTop(${index})" class="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold shadow-xs transition hover:scale-105 active:scale-95 cursor-pointer" title="រំកិលទៅមុខគេបង្អស់ (Move to #1)">
+                ⏮ ដើម
+              </button>
+            ` : ''}
+          </div>
+
+          <!-- Edit & Delete -->
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="editGalleryCaption(${index})" class="p-1.5 bg-white/95 hover:bg-white text-[#1E4833] rounded-lg shadow-xs transition hover:scale-110 active:scale-95 cursor-pointer" title="កែប្រែចំណងជើង (Edit Caption)">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            </button>
+            <button type="button" onclick="deleteGalleryItem(${index})" class="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-xs transition hover:scale-110 active:scale-95 cursor-pointer" title="លុបរូបថត (Delete Photo)">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Drag and Drop Events
+    el.addEventListener('dragstart', (e) => {
+      draggedGalleryIndex = index;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(index));
+      setTimeout(() => el.classList.add('opacity-40', 'scale-95', 'ring-4', 'ring-[#1E4833]'), 0);
+    });
+
+    el.addEventListener('dragend', () => {
+      el.classList.remove('opacity-40', 'scale-95', 'ring-4', 'ring-[#1E4833]');
+      document.querySelectorAll('.gallery-admin-card').forEach(card => {
+        card.classList.remove('border-[#1E4833]', 'scale-[1.03]', 'ring-4', 'ring-amber-400');
+      });
+      draggedGalleryIndex = null;
+    });
+
+    el.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (draggedGalleryIndex !== null && draggedGalleryIndex !== index) {
+        el.classList.add('border-[#1E4833]', 'scale-[1.03]', 'ring-4', 'ring-amber-400');
+      }
+    });
+
+    el.addEventListener('dragleave', () => {
+      el.classList.remove('border-[#1E4833]', 'scale-[1.03]', 'ring-4', 'ring-amber-400');
+    });
+
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      el.classList.remove('border-[#1E4833]', 'scale-[1.03]', 'ring-4', 'ring-amber-400');
+      const fromIdx = draggedGalleryIndex !== null ? draggedGalleryIndex : parseInt(e.dataTransfer.getData('text/plain'), 10);
+      if (!isNaN(fromIdx) && fromIdx !== index) {
+        handleGalleryDrop(fromIdx, index);
+      }
+    });
+
     container.appendChild(el);
   });
 }
@@ -1274,6 +1456,7 @@ window.uploadGalleryFiles = async function(fileInput) {
     body: JSON.stringify({ ...weddingData })
   });
 
+  try { fileInput.value = ''; } catch (e) {}
   showToast('បាន Upload រូបថតចូលកម្រងរូបភាពជោគជ័យ!');
   loadWeddingData();
 };

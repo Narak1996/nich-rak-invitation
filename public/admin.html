@@ -397,15 +397,21 @@
       <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h2 class="font-khmer-title text-lg text-[#4E3227]">កម្រងរូបភាពអនុស្សាវរីយ៍ (Pre-Wedding Photos)</h2>
-            <p class="text-xs text-[#7A6F68]">បន្ថែមរូបថត Pre-wedding ដើម្បីបង្ហាញលើទំព័រសំបុត្រ</p>
+            <h2 class="font-khmer-title text-lg text-[#1E4833]">កម្រងរូបភាពអនុស្សាវរីយ៍ (Pre-Wedding Photos)</h2>
+            <p class="text-xs text-[#7A6F68] mt-0.5">
+              បន្ថែមរូបថត Pre-wedding ដើម្បីបង្ហាញលើទំព័រសំបុត្រ • <span class="text-[#1E4833] font-semibold">អាចអូសទាញ (Drag & Drop) ឬចុចប៊ូតុង ◀ ▶ ដើម្បីប្តូរលំដាប់រូបថត</span>
+            </p>
           </div>
-          <div class="flex items-center gap-2">
-            <label class="cursor-pointer px-4 py-2 bg-[#8C1D2F] hover:bg-[#63111E] text-white text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5 shadow-xs">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="reverseGalleryOrder()" class="px-3 py-2 bg-white hover:bg-[#FAF6ED] text-[#1E4833] border border-[#C5A059]/60 text-xs font-bold rounded-xl transition shadow-2xs inline-flex items-center gap-1 cursor-pointer" title="ត្រឡប់លំដាប់រូបថតទាំងអស់">
+              <span>🔄</span>
+              <span>ត្រឡប់លំដាប់ (Reverse)</span>
+            </button>
+            <label class="cursor-pointer px-4 py-2 bg-[#1E4833] hover:bg-[#163626] text-white text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5 shadow-xs">
               <span>📷 ជ្រើសរើសរូបថត Upload</span>
               <input type="file" accept="image/*" multiple onchange="uploadGalleryFiles(this)" class="hidden">
             </label>
-            <button id="btn-add-gallery-item" class="px-3 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition">
+            <button id="btn-add-gallery-item" class="px-3 py-2 bg-[#FAF6ED] hover:bg-[#E5D5BC]/50 text-[#1E4833] border border-[#E5D5BC] text-xs font-bold rounded-xl transition cursor-pointer">
               + URL
             </button>
           </div>
