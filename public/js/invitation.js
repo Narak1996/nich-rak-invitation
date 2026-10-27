@@ -359,9 +359,22 @@ function renderAll() {
   document.getElementById('bride-name-card').textContent = useKhmerNames ? w.bride.name_kh : w.bride.name_en;
 
   // Photos
-  if (w.couple_photo) document.getElementById('main-couple-img').src = w.couple_photo;
-  if (w.groom.photo) document.getElementById('groom-img').src = w.groom.photo;
-  if (w.bride.photo) document.getElementById('bride-img').src = w.bride.photo;
+  if (w.couple_photo) {
+    const coupleEl = document.getElementById('main-couple-img');
+    if (coupleEl) coupleEl.src = resolveGoogleDriveUrl(w.couple_photo);
+  }
+  if (w.groom && w.groom.photo) {
+    const groomEl = document.getElementById('groom-img');
+    if (groomEl) groomEl.src = resolveGoogleDriveUrl(w.groom.photo);
+    const coverGroomEl = document.getElementById('cover-groom-img');
+    if (coverGroomEl) coverGroomEl.src = resolveGoogleDriveUrl(w.groom.photo);
+  }
+  if (w.bride && w.bride.photo) {
+    const brideEl = document.getElementById('bride-img');
+    if (brideEl) brideEl.src = resolveGoogleDriveUrl(w.bride.photo);
+    const coverBrideEl = document.getElementById('cover-bride-img');
+    if (coverBrideEl) coverBrideEl.src = resolveGoogleDriveUrl(w.bride.photo);
+  }
 
   // Date and Venue with Khmer Numerals
   document.getElementById('event-date-solar').textContent = isKh ? toKhmerNumber(w.date_solar_kh) : w.date_solar_en;
@@ -638,6 +651,20 @@ function openLightbox(url, caption) {
   const modal = document.getElementById('lightbox-modal');
   if (modal) modal.classList.add('active');
 }
+
+window.openCoverGroomLightbox = function() {
+  const w = weddingData?.wedding || {};
+  const url = resolveGoogleDriveUrl(w.groom?.photo || '/uploads/groom-real-portrait.jpg');
+  const caption = currentLang === 'kh' ? `កូនប្រុស • ${w.groom?.name_kh || ''} (Groom)` : `Groom • ${w.groom?.name_en || ''}`;
+  openLightbox(url, caption);
+};
+
+window.openCoverBrideLightbox = function() {
+  const w = weddingData?.wedding || {};
+  const url = resolveGoogleDriveUrl(w.bride?.photo || '/uploads/bride-real-portrait.jpg');
+  const caption = currentLang === 'kh' ? `កូនស្រី • ${w.bride?.name_kh || ''} (Bride)` : `Bride • ${w.bride?.name_en || ''}`;
+  openLightbox(url, caption);
+};
 
 function updateLightboxDisplay() {
   if (!currentLightboxList || currentLightboxList.length === 0 || currentLightboxIndex < 0) return;
