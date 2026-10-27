@@ -51,9 +51,12 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_modern_nature">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_glass_temple">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
+
+  <!-- ================= KHMER TEMPLE LINE ART DREAMY BLURRED BACKDROP ================= -->
+  <div class="khmer-temple-backdrop-layer pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true"></div>
 
   <!-- ================= AMBIENT BOTANICAL NATURE FLOATING PARTICLES ================= -->
   <div class="cute-ambient-bg pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
@@ -107,7 +110,7 @@
 
     <!-- ================= 1. MODERN BOTANICAL GRAND OPENING COVER ================= -->
     <section id="opening-cover-section" class="flex justify-center mb-8 sm:mb-12 reveal-on-scroll">
-      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full max-w-lg rounded-3xl shadow-xl border border-[#C5A059]/40 bg-gradient-to-b from-[#FFFDF9] via-[#FAF8F5] to-[#F5F1EB]">
+      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full max-w-lg rounded-3xl shadow-2xl">
         
         <!-- Ambient Floating Foliage & Sparkles -->
         <div class="opening-ambient-layer pointer-events-none absolute inset-0 z-20 overflow-hidden">
@@ -159,7 +162,7 @@
             </div>
 
             <!-- Personalized Guest Pill (shown if guest link opened) -->
-            <div id="khmer-envelope-guest-box" class="my-1 py-1 px-4 bg-white/95 rounded-full border border-[#4E7D63]/30 shadow-xs inline-flex items-center gap-1.5 hidden">
+            <div id="khmer-envelope-guest-box" class="my-1 py-1 px-4 bg-white/75 backdrop-blur-md rounded-full border border-white/85 shadow-xs inline-flex items-center gap-1.5 hidden">
               <span class="text-[10px] text-[#4E7D63] font-bold font-khmer-body" id="khmer-invite-label">🌿 សូមគោរពអញ្ជើញ៖</span>
               <span class="text-xs font-bold text-[#1E4833] font-khmer-title" id="khmer-envelope-guest-name">
                 ភ្ញៀវកិត្តិយស
@@ -270,7 +273,7 @@
     <!-- ================= 3. POLAROID SCRAPBOOK COUPLE STORY ================= -->
     <section id="hero-section" class="text-center mb-12 reveal-on-scroll">
       <!-- Section Header Pill -->
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-[#4E7D63]/30 shadow-xs text-[11px] font-bold text-[#1E4833] uppercase tracking-wider mb-2">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/75 backdrop-blur-md border border-white/85 shadow-xs text-[11px] font-bold text-[#1E4833] uppercase tracking-wider mb-2">
         <span>🌿</span>
         <span id="hero-motif-text" data-kh="ដំណើរនៃសេចក្តីស្រឡាញ់" data-en="Our Love Story">ដំណើរនៃសេចក្តីស្រឡាញ់ • OUR LOVE STORY</span>
       </div>
@@ -321,7 +324,7 @@
       </div>
 
       <!-- Couple Quote Encased in Frosted Pill -->
-      <div class="inline-block px-6 py-3 rounded-2xl bg-white/94 backdrop-blur-xs border border-[#4E7D63]/25 shadow-xs max-w-md mx-auto">
+      <div class="inline-block px-6 py-3 rounded-2xl bg-white/70 backdrop-blur-xl border border-white/85 shadow-sm max-w-md mx-auto">
         <p id="couple-quote" class="text-xs sm:text-sm italic text-[#5D4E46] leading-relaxed font-khmer-body">
           «សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»
         </p>
@@ -332,8 +335,8 @@
     <section id="presentation-section" class="cute-pastel-card mb-10 text-center reveal-on-scroll">
 
       <!-- Personalized Guest Banner (shown when guest link opened) -->
-      <div id="main-guest-invitation-banner" class="mb-5 py-3 px-4 rounded-2xl bg-[#FFF9FA] border border-[#FF8BA7]/40 shadow-xs hidden">
-        <span class="text-xs text-[#FF6B8B] font-bold block uppercase tracking-wider mb-0.5">✨ សូមគោរពអញ្ជើញ ✨</span>
+      <div id="main-guest-invitation-banner" class="mb-5 py-3 px-4 rounded-2xl bg-white/75 backdrop-blur-md border border-[#C5A059]/40 shadow-xs hidden">
+        <span class="text-xs text-[#C5A059] font-bold block uppercase tracking-wider mb-0.5">✨ សូមគោរពអញ្ជើញ ✨</span>
         <h3 id="main-guest-invitation-name" class="font-khmer-title text-lg sm:text-xl text-[#1E4833] font-bold"></h3>
       </div>
 
@@ -351,7 +354,7 @@
       <!-- Two Columns: Groom Side & Bride Side (Pastel Medallion Cards) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
         <!-- Groom Side -->
-        <div class="p-5 bg-gradient-to-b from-[#F0FDF4] to-[#FFFFFF] rounded-3xl border border-[#86EFAC]/50 shadow-xs transition hover:shadow-md">
+        <div class="p-5 bg-white/65 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm ring-1 ring-[#1E4833]/15 transition hover:shadow-md hover:bg-white/75">
           <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-3 border-[#1E4833] shadow-md mb-3 ring-4 ring-[#1E4833]/15">
             <img id="groom-img" src="/uploads/groom-real-portrait.jpg" alt="Groom" class="w-full h-full object-cover">
           </div>
@@ -366,7 +369,7 @@
         </div>
 
         <!-- Bride Side -->
-        <div class="p-5 bg-gradient-to-b from-[#FFF0F3] to-[#FFFFFF] rounded-3xl border border-[#FFD6DE]/70 shadow-xs transition hover:shadow-md">
+        <div class="p-5 bg-white/65 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm ring-1 ring-[#C5A059]/20 transition hover:shadow-md hover:bg-white/75">
           <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-3 border-[#FF8BA7] shadow-md mb-3 ring-4 ring-[#FF8BA7]/20">
             <img id="bride-img" src="/uploads/bride-real-portrait.jpg" alt="Bride" class="w-full h-full object-cover">
           </div>
@@ -512,30 +515,30 @@
       <!-- Two QR Cards: Groom & Bride -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-lg mx-auto">
         <!-- Groom KHQR Card -->
-        <div class="p-5 bg-white/95 rounded-3xl border border-[#86EFAC]/60 shadow-sm text-center transition hover:shadow-md">
+        <div class="p-5 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm text-center transition hover:shadow-md hover:bg-white/80 ring-1 ring-[#86EFAC]/30">
           <span class="text-xs font-bold text-white bg-[#1E4833] px-3.5 py-1 rounded-full inline-block mb-3" data-kh="ខាងកូនប្រុស" data-en="Groom's Side">ខាងកូនប្រុស</span>
-          <div class="bg-[#F8FAF9] p-3 rounded-2xl border border-[#86EFAC]/40 inline-block shadow-inner mb-3">
+          <div class="bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/80 inline-block shadow-inner mb-3">
             <img id="groom-qr-img" src="" alt="Groom QR" onclick="openQrModal('groom')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
           </div>
           <h5 id="groom-bank-name" class="text-xs font-bold text-[#1E4833]">ABA Bank / KHQR</h5>
           <p id="groom-acc-name" class="text-xs font-semibold text-[#8C6A18] uppercase mt-0.5">CHAN NARAK</p>
           <p id="groom-acc-num" class="text-base font-khmer-num font-bold text-[#1E4833] my-1 tracking-wider">001 888 999 (USD)</p>
-          <button id="btn-copy-groom-acc" class="mt-2 text-xs px-3.5 py-1.5 bg-white hover:bg-[#F0FDF4] border border-[#86EFAC] rounded-full text-[#1E4833] font-medium shadow-2xs inline-flex items-center gap-1.5 transition active:scale-95 cursor-pointer">
+          <button id="btn-copy-groom-acc" class="mt-2 text-xs px-3.5 py-1.5 bg-white/90 hover:bg-[#F0FDF4] border border-[#86EFAC] rounded-full text-[#1E4833] font-medium shadow-2xs inline-flex items-center gap-1.5 transition active:scale-95 cursor-pointer">
             <svg class="w-3.5 h-3.5 text-[#1E4833]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             <span data-kh="ចម្លងលេខគណនី" data-en="Copy Number">ចម្លងលេខគណនី</span>
           </button>
         </div>
 
         <!-- Bride KHQR Card -->
-        <div class="p-5 bg-white/95 rounded-3xl border border-[#C5A059]/40 shadow-sm text-center transition hover:shadow-md">
+        <div class="p-5 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm text-center transition hover:shadow-md hover:bg-white/80 ring-1 ring-[#C5A059]/30">
           <span class="text-xs font-bold text-white bg-[#2D5A43] px-3.5 py-1 rounded-full inline-block mb-3" data-kh="ខាងកូនស្រី" data-en="Bride's Side">ខាងកូនស្រី</span>
-          <div class="bg-[#FAF8F5] p-3 rounded-2xl border border-[#C5A059]/30 inline-block shadow-inner mb-3">
+          <div class="bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/80 inline-block shadow-inner mb-3">
             <img id="bride-qr-img" src="" alt="Bride QR" onclick="openQrModal('bride')" class="w-36 h-36 object-contain mx-auto cursor-pointer hover:scale-105 transition" title="ចុចដើម្បីពង្រីក QR Code">
           </div>
           <h5 id="bride-bank-name" class="text-xs font-bold text-[#1E4833]">Bakong / ACLEDA</h5>
           <p id="bride-acc-name" class="text-xs font-semibold text-[#8C6A18] uppercase mt-0.5">LY SREYMECH</p>
           <p id="bride-acc-num" class="text-base font-khmer-num font-bold text-[#1E4833] my-1 tracking-wider">012 345 678 (USD)</p>
-          <button id="btn-copy-bride-acc" class="mt-2 text-xs px-3.5 py-1.5 bg-white hover:bg-[#F0FDF4] border border-[#C5A059]/60 rounded-full text-[#1E4833] font-medium shadow-2xs inline-flex items-center gap-1.5 transition active:scale-95 cursor-pointer">
+          <button id="btn-copy-bride-acc" class="mt-2 text-xs px-3.5 py-1.5 bg-white/90 hover:bg-[#F0FDF4] border border-[#C5A059]/60 rounded-full text-[#1E4833] font-medium shadow-2xs inline-flex items-center gap-1.5 transition active:scale-95 cursor-pointer">
             <svg class="w-3.5 h-3.5 text-[#1E4833]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             <span data-kh="ចម្លងលេខគណនី" data-en="Copy Number">ចម្លងលេខគណនី</span>
           </button>
@@ -622,7 +625,7 @@
       </div>
 
       <!-- Quick Wish Submission Form -->
-      <div id="wish-form-card" class="bg-white/95 p-5 rounded-3xl border border-[#4E7D63]/30 shadow-xs mb-6 max-w-md mx-auto">
+      <div id="wish-form-card" class="bg-white/70 backdrop-blur-xl p-5 rounded-3xl border border-white/85 shadow-sm ring-1 ring-[#4E7D63]/20 mb-6 max-w-md mx-auto">
         <form id="wish-form" class="space-y-3">
           <div>
             <input type="text" id="wish-sender-name" required readonly placeholder="ឈ្មោះរបស់អ្នក *" class="w-full px-3.5 py-2.5 text-xs rounded-2xl border border-[#4E7D63]/30 bg-[#FAF8F5] text-[#1E4833] font-semibold focus:outline-none cursor-default">
@@ -726,11 +729,11 @@
 
   <!-- ================= QR CODE ZOOM MODAL ================= -->
   <div id="qr-lightbox-modal" class="qr-modal-overlay hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onclick="closeQrModal()">
-    <div class="relative bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border-2 border-[#FF8BA7]/60" onclick="event.stopPropagation()">
+    <div class="relative bg-white/85 backdrop-blur-2xl rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-white/85 ring-1 ring-[#1E4833]/20" onclick="event.stopPropagation()">
       <button type="button" onclick="closeQrModal()" class="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
       <h4 id="qr-modal-title" class="font-khmer-title text-base font-bold text-[#1E4833] mb-1">ABA Bank (KHQR)</h4>
       <p id="qr-modal-acc" class="text-xs text-[#8C6A18] font-mono font-semibold mb-4">001 888 999 (USD)</p>
-      <div class="p-2.5 bg-[#FFF8FA] rounded-2xl border border-[#FF8BA7]/30 inline-block shadow-inner mb-4 ring-2 ring-[#FF8BA7]/10">
+      <div class="p-2.5 bg-white/60 backdrop-blur-md rounded-2xl border border-white/80 inline-block shadow-inner mb-4 ring-2 ring-[#4E7D63]/15">
         <img id="qr-modal-img" src="" alt="KHQR Code" class="w-60 h-60 object-contain mx-auto">
       </div>
       <p class="text-xs text-[#5D4E46] font-khmer-body">ស្កេនជាមួយកម្មវិធីធនាគារណាមួយតាមរយៈ KHQR</p>
@@ -738,6 +741,6 @@
   </div>
 
   <!-- JavaScript (with cache-busting version query) -->
-  <script src="/js/invitation.js?v=20261027_modern_nature"></script>
+  <script src="/js/invitation.js?v=20261027_glass_temple"></script>
 </body>
 </html>

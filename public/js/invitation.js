@@ -523,10 +523,10 @@ function renderAgenda() {
     const el = document.createElement('div');
     el.className = 'relative flex items-start gap-3.5 mb-6 group';
     el.innerHTML = `
-      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white border-2 border-[#FF8BA7] shadow-md shrink-0 ring-4 ring-[#FF8BA7]/15">
+      <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white/80 backdrop-blur-md border-2 border-[#1E4833] shadow-md shrink-0 ring-4 ring-[#1E4833]/15">
         ${iconHtml}
       </div>
-      <div class="bg-white/94 backdrop-blur-md p-5 rounded-3xl border border-[#FF8BA7]/35 shadow-xs flex-1 transition-all duration-300 hover:shadow-lg hover:border-[#FF8BA7]">
+      <div class="bg-white/70 backdrop-blur-xl p-5 rounded-3xl border border-white/85 shadow-sm ring-1 ring-[#4E7D63]/15 flex-1 transition-all duration-300 hover:shadow-lg hover:bg-white/80">
         <div class="inline-flex items-center gap-1.5 px-3 py-0.5 bg-gradient-to-r from-[#1E4833] to-[#2D5A43] text-amber-200 text-xs font-bold rounded-full mb-2 shadow-2xs">
           <span>🕒</span>
           <span>${isKh ? toKhmerNumber(item.time) : item.time}</span>
@@ -555,7 +555,7 @@ function renderGallery() {
     const directUrl = resolveGoogleDriveUrl(img.url);
     const tiltClass = index % 2 === 0 ? 'hover:rotate-1' : 'hover:-rotate-1';
     const el = document.createElement('div');
-    el.className = `relative overflow-hidden rounded-3xl p-1.5 bg-white shadow-md border border-[#FF8BA7]/35 group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] ${tiltClass}`;
+    el.className = `relative overflow-hidden rounded-3xl p-1.5 bg-white/70 backdrop-blur-xl shadow-md border border-white/85 ring-1 ring-[#4E7D63]/15 group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] ${tiltClass}`;
     el.innerHTML = `
       <div class="w-full h-full rounded-2xl overflow-hidden relative">
         <img src="${directUrl}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
@@ -564,7 +564,7 @@ function renderGallery() {
             ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
           </span>
         </div>
-        <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-[10px] text-[#1E4833] font-bold opacity-0 group-hover:opacity-100 transition font-mono border border-[#FF8BA7]/40 shadow-xs">
+        <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/75 backdrop-blur-md text-[10px] text-[#1E4833] font-bold opacity-0 group-hover:opacity-100 transition font-mono border border-white/80 shadow-xs">
           🔍 #${index + 1}
         </div>
       </div>
