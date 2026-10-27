@@ -51,7 +51,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_same_width">
+  <link rel="stylesheet" href="/css/style.css?v=20261027_clean_cover">
 </head>
 <body class="cute-wedding-canvas wedding-bg-pattern min-h-screen relative text-[#2C2420]">
 
@@ -105,13 +105,8 @@
     <section id="opening-cover-section" class="w-full flex justify-center mb-8 sm:mb-12 reveal-on-scroll">
       <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full rounded-3xl shadow-2xl">
 
-        <!-- Top Romantic Botanical Floral Garland -->
-        <div class="absolute -top-5 sm:-top-4 left-0 right-0 z-10 pointer-events-none flex justify-center opacity-85">
-          <img src="/images/opening/botanical-arch.png" alt="Botanical Crown" class="w-full max-w-[280px] sm:max-w-[320px] h-auto object-contain opening-garland-sway filter drop-shadow-xs">
-        </div>
-
         <!-- Poster Main Content Body -->
-        <div class="relative z-15 pt-6 sm:pt-7 px-4 pb-5 flex flex-col items-center justify-between min-h-[520px] sm:min-h-[560px]">
+        <div class="relative z-15 pt-6 px-4 pb-6 flex flex-col items-center">
           
           <!-- Header: 3D Gold Rings & Titles -->
           <div class="text-center w-full mt-0 relative">
@@ -201,22 +196,14 @@
 
           </div>
 
-          <!-- Bottom Action: 3D Wax Seal Open Button -->
-          <div class="w-full text-center z-20 mt-1 mb-1 flex flex-col items-center">
-            <button type="button" onclick="scrollToTicketContent()" class="group relative inline-flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#1E4833] via-[#2A5C41] to-[#1E4833] hover:from-[#163626] hover:to-[#224835] text-white font-khmer-title text-xs sm:text-sm font-bold shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-[#C5A059]/60">
-              <img src="/images/templates/wax-seal-D_bhm8ka.webp" alt="Wax Seal" class="w-6 h-6 object-contain group-hover:rotate-12 transition-transform">
-              <span id="opening-btn-text">បើកមើលសំបុត្រមង្គលការ (Open Invitation) 🌿</span>
-            </button>
-            <p class="text-[10px] text-[#4E7D63] mt-1.5 font-khmer-body opacity-90 animate-pulse">
-              👇 អូសចុះក្រោម ឬចុចដើម្បីទស្សនាកម្មវិធី & តន្ត្រីមង្គលការ
-            </p>
+          <!-- Subtle Modern Scroll Indicator -->
+          <div class="mt-4 flex flex-col items-center opacity-70 hover:opacity-100 transition cursor-pointer" onclick="scrollToTicketContent()" title="អូសចុះក្រោម">
+            <span class="text-[9px] uppercase tracking-[0.22em] text-[#C5A059] font-serif font-bold">Scroll Down</span>
+            <svg class="w-4 h-4 text-[#C5A059] mt-1 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
           </div>
 
-        </div>
-
-        <!-- Bottom Botanical Roses Spray -->
-        <div class="opening-botanical-bottom absolute -bottom-8 left-0 right-0 z-5 pointer-events-none flex justify-center opacity-70">
-          <img src="/images/opening/botanical-arch.png" alt="Botanical Footer" class="w-full max-w-[380px] h-auto object-contain transform rotate-180">
         </div>
 
       </div>
@@ -723,6 +710,6 @@
   </div>
 
   <!-- JavaScript (with cache-busting version query) -->
-  <script src="/js/invitation.js?v=20261027_same_width"></script>
+  <script src="/js/invitation.js?v=20261027_clean_cover"></script>
 </body>
 </html>
