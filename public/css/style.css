@@ -1206,9 +1206,10 @@ body.theme-khmer-traditional #envelope-screen {
    ========================================================================== */
 
 .pinterest-opening-poster {
-  width: 100%;
-  max-width: 420px;
+  width: 100% !important;
+  max-width: 100% !important;
   margin: 0 auto;
+  box-sizing: border-box !important;
   min-height: auto;
   background: rgba(255, 255, 255, 0.68) !important;
   backdrop-filter: blur(24px) saturate(170%) !important;
@@ -1450,6 +1451,9 @@ body.theme-khmer-traditional #envelope-screen {
 
 /* Modern Botanical Polaroid Scrapbook Frame (Frosted Glass Blur) */
 .polaroid-scrapbook {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   background: rgba(255, 255, 255, 0.76) !important;
   backdrop-filter: blur(20px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
@@ -1589,6 +1593,9 @@ body.theme-khmer-traditional #envelope-screen {
 
 /* Modern Botanical Frosted Glass Card */
 .cute-pastel-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   background: rgba(255, 255, 255, 0.68) !important;
   backdrop-filter: blur(24px) saturate(170%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(170%) !important;
@@ -1661,7 +1668,7 @@ body.theme-khmer-traditional #envelope-screen {
   justify-content: center;
   gap: 12px;
   width: 100%;
-  max-width: 420px;
+  max-width: 100%;
   margin: 8px auto 14px;
   position: relative;
 }
