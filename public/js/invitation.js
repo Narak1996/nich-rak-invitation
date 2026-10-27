@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Fetch wedding data from API
 async function fetchWeddingData() {
   try {
-    const res = await fetch('/api/wedding');
+    const res = await fetch('/api/wedding?_t=' + Date.now(), { cache: 'no-store' });
     weddingData = await res.json();
     if (weddingData?.wedding) {
       const preloaderCouple = document.getElementById('preloader-couple');

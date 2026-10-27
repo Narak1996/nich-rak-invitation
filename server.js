@@ -46,16 +46,9 @@ function writeJSON(file, data) {
 }
 
 // Multer storage for uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, 'upload-' + unique + ext);
-  }
-});
+// Multer storage for uploads (memoryStorage enables resilient local disk writing + serverless Base64 fallback)
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 15 * 1024 * 1024 } // 15MB limit
 });
 
@@ -470,6 +463,9 @@ app.delete('/api/users/:id', requireSuperAdmin, (req, res) => {
 
 // Public: Get Wedding Details
 app.get('/api/wedding', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
   const data = readJSON(WEDDING_FILE);
   // Do not expose admin credentials
   const safeData = { ...data };
@@ -508,8 +504,23 @@ app.post('/api/upload', requireAdmin, upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ success: true, url: fileUrl });
+
+  const ext = path.extname(req.file.originalname) || '.jpg';
+  const filename = 'upload-' + Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
+
+  try {
+    if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+    const destPath = path.join(UPLOAD_DIR, filename);
+    fs.writeFileSync(destPath, req.file.buffer);
+    const fileUrl = `/uploads/${filename}`;
+    console.log('[Upload] Saved image to disk:', fileUrl);
+    return res.json({ success: true, url: fileUrl });
+  } catch (err) {
+    console.warn('[Upload] Disk write failed, falling back to Base64 data URL:', err.message);
+    const mime = req.file.mimetype || 'image/jpeg';
+    const dataUrl = `data:${mime};base64,${req.file.buffer.toString('base64')}`;
+    return res.json({ success: true, url: dataUrl });
+  }
 });
 
 // Public: Get guest by slug or name (handles /to/:slug, /api/guest/:slug, spaces and hyphens)

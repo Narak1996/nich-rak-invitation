@@ -237,10 +237,11 @@
               <div class="md:col-span-2">
                 <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនប្រុស (Groom Photo)</label>
                 <div class="flex items-center gap-2">
+                  <img id="groom-photo-preview" src="" alt="Groom" class="w-10 h-10 rounded-full object-cover border border-[#C5A059] hidden shadow-2xs">
                   <input type="text" id="groom-photo" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="URL or Upload">
                   <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
                     📁 Upload Photo
-                    <input type="file" accept="image/*" onchange="uploadImage(this, 'groom-photo')" class="hidden">
+                    <input type="file" accept="image/*" onchange="uploadImage(this, 'groom-photo', 'groom-photo-preview')" class="hidden">
                   </label>
                 </div>
               </div>
@@ -270,10 +271,11 @@
               <div class="md:col-span-2">
                 <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតកូនស្រី (Bride Photo)</label>
                 <div class="flex items-center gap-2">
+                  <img id="bride-photo-preview" src="" alt="Bride" class="w-10 h-10 rounded-full object-cover border border-[#C5A059] hidden shadow-2xs">
                   <input type="text" id="bride-photo" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="URL or Upload">
                   <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
                     📁 Upload Photo
-                    <input type="file" accept="image/*" onchange="uploadImage(this, 'bride-photo')" class="hidden">
+                    <input type="file" accept="image/*" onchange="uploadImage(this, 'bride-photo', 'bride-photo-preview')" class="hidden">
                   </label>
                 </div>
               </div>
@@ -287,10 +289,11 @@
               <div>
                 <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបថតគូស្នេហ៍ចម្បង (Couple Cover Photo)</label>
                 <div class="flex items-center gap-2">
+                  <img id="couple-photo-preview" src="" alt="Couple" class="w-10 h-10 rounded-xl object-cover border border-[#C5A059] hidden shadow-2xs">
                   <input type="text" id="couple-photo-url" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white" placeholder="URL or Upload">
                   <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
                     📁 Upload Photo
-                    <input type="file" accept="image/*" onchange="uploadImage(this, 'couple-photo-url')" class="hidden">
+                    <input type="file" accept="image/*" onchange="uploadImage(this, 'couple-photo-url', 'couple-photo-preview')" class="hidden">
                   </label>
                 </div>
               </div>
@@ -441,10 +444,11 @@
                 <div>
                   <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Upload)</label>
                   <div class="flex items-center gap-2">
+                    <img id="dg-groom-qr-preview" src="" alt="QR" class="w-10 h-10 rounded-lg object-contain border border-[#C5A059] hidden shadow-2xs bg-white">
                     <input type="text" id="dg-groom-qr" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
                     <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
                       📷 Upload QR
-                      <input type="file" accept="image/*" onchange="uploadImage(this, 'dg-groom-qr')" class="hidden">
+                      <input type="file" accept="image/*" onchange="uploadImage(this, 'dg-groom-qr', 'dg-groom-qr-preview')" class="hidden">
                     </label>
                   </div>
                 </div>
@@ -470,10 +474,11 @@
                 <div>
                   <label class="block text-xs font-semibold text-[#4E3227] mb-1">រូបភាព QR Code (Image URL / Upload)</label>
                   <div class="flex items-center gap-2">
+                    <img id="dg-bride-qr-preview" src="" alt="QR" class="w-10 h-10 rounded-lg object-contain border border-[#C5A059] hidden shadow-2xs bg-white">
                     <input type="text" id="dg-bride-qr" class="flex-1 px-3 py-2 text-xs rounded-xl border border-[#E5D5BC] bg-white">
                     <label class="cursor-pointer px-3 py-2 bg-white hover:bg-gray-50 border border-[#E5D5BC] rounded-xl text-xs font-semibold text-[#4E3227] shadow-2xs whitespace-nowrap">
                       📷 Upload QR
-                      <input type="file" accept="image/*" onchange="uploadImage(this, 'dg-bride-qr')" class="hidden">
+                      <input type="file" accept="image/*" onchange="uploadImage(this, 'dg-bride-qr', 'dg-bride-qr-preview')" class="hidden">
                     </label>
                   </div>
                 </div>

@@ -197,6 +197,23 @@ async function loadWeddingData() {
       document.getElementById('dg-bride-qr').value = dg.bride_account.qr_image || '';
     }
 
+    
+    // Populate Image Previews
+    const setPrev = (id, url) => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (url) { el.src = url; el.classList.remove('hidden'); }
+        else { el.classList.add('hidden'); }
+      }
+    };
+    setPrev('groom-photo-preview', w.groom.photo);
+    setPrev('bride-photo-preview', w.bride.photo);
+    setPrev('couple-photo-preview', w.couple_photo);
+    if (weddingData.digital_gift) {
+      setPrev('dg-groom-qr-preview', weddingData.digital_gift.groom_account?.qr_image);
+      setPrev('dg-bride-qr-preview', weddingData.digital_gift.bride_account?.qr_image);
+    }
+
     renderAdminAgenda();
     renderAdminGallery();
   } catch (err) {
@@ -1196,11 +1213,28 @@ window.uploadImage = async function(fileInput, targetInputId, previewImgId) {
           prev.classList.remove('hidden');
         }
       }
-      showToast('Upload ជោគជ័យ! (Upload complete)');
+
+      // AUTO-SAVE IMMEDIATELY SO FRONTEND UPDATES INSTANTLY!
+      if (['groom-photo', 'bride-photo', 'couple-photo-url'].includes(targetInputId)) {
+        showToast('✓ កំពុងរក្សាទុកដោយស្វ័យប្រវត្តិ... (Auto-saving...)');
+        const weddingForm = document.getElementById('wedding-settings-form');
+        if (weddingForm) {
+          weddingForm.requestSubmit();
+        }
+      } else if (['dg-groom-qr', 'dg-bride-qr'].includes(targetInputId)) {
+        showToast('✓ កំពុងរក្សាទុក QR ដោយស្វ័យប្រវត្តិ... (Auto-saving QR...)');
+        const dgForm = document.getElementById('digital-gift-form');
+        if (dgForm) {
+          dgForm.requestSubmit();
+        }
+      } else {
+        showToast('✓ Upload ជោគជ័យ! (Upload complete)');
+      }
     } else {
       showToast(data.error || 'Upload failed');
     }
   } catch (err) {
+    console.error('Upload error:', err);
     showToast('Failed to upload image');
   }
 };
