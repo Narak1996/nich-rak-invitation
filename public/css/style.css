@@ -1223,11 +1223,23 @@ body.theme-khmer-traditional #envelope-screen {
 
 /* Material Animations: 3D Gold Rings */
 .opening-rings-wrapper {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   perspective: 600px;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto;
 }
 
+.opening-rings-wrapper img,
 .opening-rings-float {
+  width: 54px !important;
+  height: 54px !important;
+  max-width: 54px !important;
+  max-height: 54px !important;
+  object-fit: contain !important;
+  display: block !important;
   animation: floatRings 3.6s ease-in-out infinite;
   transform-origin: center center;
 }
