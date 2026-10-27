@@ -694,33 +694,16 @@ function initEventListeners() {
 }
 
 // Open Envelope
-function openEnvelope() {
-  const screen = document.getElementById('envelope-screen');
-  if (!screen || screen.classList.contains('opened')) return;
-
-  // Add opening animation class for Khmer Romduol Wax Seal burst & card lift
-  screen.classList.add('opening');
-  screen.classList.add('opening-khmer');
-
-  // Play music on first interaction
+// Scroll to Ticket Content (Merged 1-Page Layout)
+function scrollToTicketContent() {
   playMusic();
-
-  // Smoothly finish envelope opening transition
-  setTimeout(() => {
-    screen.classList.add('opened');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Reveal floating bottom nav dock
-    const dock = document.getElementById('bottom-nav-dock');
-    if (dock) dock.classList.remove('dock-hidden');
-
-    // Trigger visible reveals for hero / initial viewport content
-    setTimeout(() => {
-      triggerVisibleReveals();
-    }, 150);
-  }, 850);
+  const hero = document.getElementById('hero-section');
+  if (hero) {
+    hero.scrollIntoView({ behavior: 'smooth' });
+  }
 }
-window.openEnvelope = openEnvelope;
+window.scrollToTicketContent = scrollToTicketContent;
+window.openEnvelope = scrollToTicketContent;
 window.toggleMusic = toggleMusic;
 
 // Audio Control (Supports both HTML5 Audio and YouTube Audio)
@@ -1200,6 +1183,7 @@ function initBottomNavScrollSpy() {
 
   const navLinks = dock.querySelectorAll('.bottom-nav-item');
   const sections = [
+    { id: 'opening-cover-section', nav: dock.querySelector('a[href="#opening-cover-section"]') },
     { id: 'hero-section', nav: dock.querySelector('a[href="#hero-section"]') },
     { id: 'ceremony-section', nav: dock.querySelector('a[href="#ceremony-section"]') },
     { id: 'venue-section', nav: dock.querySelector('a[href="#venue-section"]') },
@@ -1433,3 +1417,12 @@ function renderThemeWelcome(themeId, w, isKh) {
     }
   }
 }
+
+
+// Start background music on user's first touch/click
+document.addEventListener('click', function initMusicOnFirstInteraction() {
+  if (!isAudioPlaying) {
+    playMusic();
+  }
+  document.removeEventListener('click', initMusicOnFirstInteraction);
+}, { once: true });

@@ -68,121 +68,6 @@
     </div>
   </div>
 
-  <!-- ================= ENVELOPE OPENING OVERLAY ================= -->
-  <div id="envelope-screen">
-
-    <!-- KHMER TRADITIONAL POSTER OPENING: Inspired by Pinterest Reference -->
-    <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none">
-      
-      <!-- Ambient Floating Elements (Butterflies, Gold Glitters, Jasmine Petals) -->
-      <div class="opening-ambient-layer pointer-events-none absolute inset-0 z-20 overflow-hidden">
-        <div class="opening-butterfly opening-butterfly-1">🦋</div>
-        <div class="opening-butterfly opening-butterfly-2">🦋</div>
-        <div class="opening-sparkle opening-sparkle-1">✦</div>
-        <div class="opening-sparkle opening-sparkle-2">✦</div>
-        <div class="opening-sparkle opening-sparkle-3">✦</div>
-        <div class="opening-petal opening-petal-1">🌸</div>
-        <div class="opening-petal opening-petal-2">🌸</div>
-      </div>
-
-      <!-- Top Botanical White Rose & Eucalyptus Garland -->
-      <div class="opening-botanical-top absolute -top-4 sm:-top-3 left-0 right-0 z-10 pointer-events-none flex justify-center">
-        <img src="/images/opening/botanical-arch.png" alt="Botanical Garland" class="w-full max-w-[420px] h-auto object-contain opening-garland-sway">
-      </div>
-
-      <!-- Poster Main Content Body -->
-      <div class="relative z-15 pt-12 sm:pt-14 px-4 pb-4 flex flex-col items-center justify-between min-h-[580px] sm:min-h-[620px]">
-        
-        <!-- Header: 3D Intertwined Gold Rings & Titles -->
-        <div class="text-center w-full mt-2 relative">
-          <!-- 3D Intertwined Gold Rings with Float & Sparkle Animation -->
-          <div class="opening-rings-wrapper mx-auto mb-1 relative cursor-pointer" onclick="openEnvelope()" title="ចុចដើម្បីបើកសំបុត្រ (Tap to Open)">
-            <img src="/images/opening/gold-rings-3d.png" alt="Gold Wedding Rings" class="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-auto opening-rings-float">
-            <span class="opening-ring-glint">✦</span>
-          </div>
-
-          <!-- Ceremony Title (Gilded Gold) -->
-          <h2 class="opening-gold-title font-khmer-title text-base sm:text-lg text-[#9B7126] tracking-wide my-0.5">
-            សិរីសួស្តី អាពាហ៍ពិពាហ៍
-          </h2>
-          <div class="flex items-center justify-center gap-2 mt-0.5 mb-1.5">
-            <div class="h-px w-6 sm:w-8 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
-            <span class="text-[9px] sm:text-[10px] font-serif uppercase tracking-[0.22em] text-[#C5A059] font-bold">
-              THE WEDDING DAY
-            </span>
-            <div class="h-px w-6 sm:w-8 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
-          </div>
-
-          <!-- Stylized Calligraphic Couple Names (Emerald Green with Gold Accent) -->
-          <div id="khmer-envelope-couple-names" class="opening-calligraphy-names my-1 sm:my-2">
-            <div class="couple-names-khmer font-khmer-title text-base sm:text-lg md:text-xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
-              <span>ឡេង ចាន់ណារៈ & នាត ស្រីនិច</span>
-            </div>
-            <p class="text-[10px] sm:text-[11px] font-serif uppercase tracking-widest text-[#7A6F68] mt-0.5">
-              CHANNARAK & SREYNICH
-            </p>
-          </div>
-
-          <!-- Personalized Guest Pill (shown if guest link opened) -->
-          <div id="khmer-envelope-guest-box" class="my-1 py-1 px-3 bg-white/95 rounded-full border border-[#D4AF37]/60 shadow-xs inline-flex items-center gap-1.5 hidden">
-            <span class="text-[10px] text-[#C5A059] font-bold font-khmer-body" id="khmer-invite-label">សូមគោរពអញ្ជើញ៖</span>
-            <span class="text-xs font-bold text-[#1E4833] font-khmer-title" id="khmer-envelope-guest-name">
-              ភ្ញៀវកិត្តិយស
-            </span>
-          </div>
-        </div>
-
-        <!-- Middle Section: Date & Location (Left) + Standing Couple with Umbrella (Right) -->
-        <div class="w-full relative mt-1 mb-1 flex items-end justify-between min-h-[220px] sm:min-h-[240px]">
-          
-          <!-- Event Date & Ceremony Info (Left Column) -->
-          <div class="opening-info-left text-left z-10 pl-1 max-w-[170px] sm:max-w-[190px] mb-1">
-            <div class="bg-white/85 backdrop-blur-xs p-2 rounded-xl border border-[#E5D5BC]/60 shadow-2xs">
-              <p class="text-[11px] sm:text-xs font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
-                ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧
-              </p>
-              <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-1 leading-tight" id="opening-venue-snippet">
-                វេលាម៉ោង ០៧:០០ ព្រឹក<br>
-                នៅគេហដ្ឋានខាងស្រី<br>
-                <span class="text-[#8C6A18] font-semibold">ដោយមេត្រីភាព</span>
-              </p>
-            </div>
-
-            <!-- Lower Romantic Kiss Pose (Floating smoothly on the lower-left) -->
-            <div class="w-24 sm:w-28 mt-2 relative -ml-1 opening-kiss-float pointer-events-none">
-              <img src="/images/opening/couple-kiss.png" alt="Romantic Kiss" class="w-full h-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.12)]">
-            </div>
-          </div>
-
-          <!-- Standing Couple with Golden Umbrella & Jasmine Garland (Right Side) -->
-          <div class="opening-couple-right z-10 w-44 sm:w-52 -mr-3 sm:-mr-2 relative opening-couple-float pointer-events-none">
-            <img src="/images/opening/couple-umbrella.png" alt="Khmer Wedding Couple" class="w-full h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.18)]">
-          </div>
-        </div>
-
-        <!-- Bottom Action Button: Tap to Open with Ripple Aura & Audio Initiation -->
-        <div class="w-full text-center z-20 mt-1 mb-1">
-          <button type="button" onclick="openEnvelope()" class="opening-action-btn relative inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white font-khmer-title text-xs sm:text-sm font-bold shadow-lg transition active:scale-95 cursor-pointer">
-            <span class="opening-btn-pulse-ring"></span>
-            <span class="text-amber-200 text-sm">💌</span>
-            <span id="opening-btn-text">បើកលិខិតអញ្ជើញ (Open)</span>
-          </button>
-          <p class="text-[10px] text-[#8C6A18] mt-1 font-khmer-body opacity-85 animate-pulse">
-            ចុចដើម្បីបើកមើល និងស្តាប់តន្ត្រីមង្គលការ
-          </p>
-        </div>
-
-      </div>
-
-      <!-- Bottom Botanical Roses Spray -->
-      <div class="opening-botanical-bottom absolute -bottom-8 left-0 right-0 z-5 pointer-events-none flex justify-center opacity-70">
-        <img src="/images/opening/botanical-arch.png" alt="Botanical Footer" class="w-full max-w-[420px] h-auto object-contain transform rotate-180">
-      </div>
-
-    </div>
-
-  </div>
-
   <!-- ================= FLOATING MUSIC PLAYER BUTTON ================= -->
   <button id="floating-music-btn" class="floating-music-btn flex items-center justify-center" title="តន្ត្រីមង្គលការ / Background Music">
     <div id="music-wave-bars" class="audio-wave hidden">
@@ -197,7 +82,125 @@
   </button>
 
   <!-- ================= MAIN INVITATION CARD CONTENT ================= -->
-  <main class="max-w-2xl mx-auto px-4 pt-8 sm:pt-12 pb-28">
+  <main class="max-w-2xl mx-auto px-4 pt-6 sm:pt-10 pb-28">
+
+    <!-- ================= OPENING COVER POSTER (STACKED ABOVE TICKET CONTENT) ================= -->
+    <section id="opening-cover-section" class="flex justify-center mb-8 sm:mb-10 reveal-on-scroll">
+      <!-- KHMER TRADITIONAL POSTER OPENING: Inspired by Pinterest Reference -->
+      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none">
+        
+        <!-- Ambient Floating Elements (Butterflies, Gold Glitters, Jasmine Petals) -->
+        <div class="opening-ambient-layer pointer-events-none absolute inset-0 z-20 overflow-hidden">
+          <div class="opening-butterfly opening-butterfly-1">🦋</div>
+          <div class="opening-butterfly opening-butterfly-2">🦋</div>
+          <div class="opening-sparkle opening-sparkle-1">✦</div>
+          <div class="opening-sparkle opening-sparkle-2">✦</div>
+          <div class="opening-sparkle opening-sparkle-3">✦</div>
+          <div class="opening-petal opening-petal-1">🌸</div>
+          <div class="opening-petal opening-petal-2">🌸</div>
+        </div>
+
+        <!-- Top Botanical White Rose & Eucalyptus Garland -->
+        <div class="opening-botanical-top absolute -top-4 sm:-top-3 left-0 right-0 z-10 pointer-events-none flex justify-center">
+          <img src="/images/opening/botanical-arch.png" alt="Botanical Garland" class="w-full max-w-[420px] h-auto object-contain opening-garland-sway">
+        </div>
+
+        <!-- Poster Main Content Body -->
+        <div class="relative z-15 pt-12 sm:pt-14 px-4 pb-4 flex flex-col items-center justify-between min-h-[580px] sm:min-h-[620px]">
+          
+          <!-- Header: 3D Intertwined Gold Rings & Titles -->
+          <div class="text-center w-full mt-2 relative">
+            <!-- 3D Intertwined Gold Rings with Float & Sparkle Animation -->
+            <div class="opening-rings-wrapper mx-auto mb-1 relative cursor-pointer" onclick="scrollToTicketContent()" title="ចុចដើម្បីមើលសំបុត្រ (Scroll to Invitation)">
+              <img src="/images/opening/gold-rings-3d.png" alt="Gold Wedding Rings" class="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-auto opening-rings-float">
+              <span class="opening-ring-glint">✦</span>
+            </div>
+
+            <!-- Ceremony Title (Gilded Gold) -->
+            <h2 class="opening-gold-title font-khmer-title text-base sm:text-lg text-[#9B7126] tracking-wide my-0.5">
+              សិរីសួស្តី អាពាហ៍ពិពាហ៍
+            </h2>
+            <div class="flex items-center justify-center gap-2 mt-0.5 mb-1.5">
+              <div class="h-px w-6 sm:w-8 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
+              <span class="text-[9px] sm:text-[10px] font-serif uppercase tracking-[0.22em] text-[#C5A059] font-bold">
+                THE WEDDING DAY
+              </span>
+              <div class="h-px w-6 sm:w-8 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
+            </div>
+
+            <!-- Stylized Calligraphic Couple Names (Emerald Green with Gold Accent) -->
+            <div id="khmer-envelope-couple-names" class="opening-calligraphy-names my-1 sm:my-2">
+              <div class="couple-names-khmer font-khmer-title text-base sm:text-lg md:text-xl text-[#1E4833] tracking-wide filter drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+                <span>ឡេង ចាន់ណារៈ & នាត ស្រីនិច</span>
+              </div>
+              <p class="opening-names-en text-[9px] sm:text-[10px] font-serif uppercase tracking-widest text-[#7A6F68] mt-0.5" id="opening-names-en-text">
+                CHANNARAK & SREYNICH
+              </p>
+            </div>
+
+            <!-- Personalized Guest Pill (shown if guest link opened) -->
+            <div id="khmer-envelope-guest-box" class="my-1 py-1 px-3 bg-white/95 rounded-full border border-[#D4AF37]/60 shadow-xs inline-flex items-center gap-1.5 hidden">
+              <span class="text-[10px] text-[#C5A059] font-bold font-khmer-body" id="khmer-invite-label">សូមគោរពអញ្ជើញ៖</span>
+              <span class="text-xs font-bold text-[#1E4833] font-khmer-title" id="khmer-envelope-guest-name">
+                ភ្ញៀវកិត្តិយស
+              </span>
+            </div>
+          </div>
+
+          <!-- Middle Section: Date & Location (Left) + Standing Couple with Umbrella (Right) -->
+          <div class="w-full relative mt-1 mb-1 flex items-end justify-between min-h-[220px] sm:min-h-[240px]">
+            
+            <!-- Event Date & Ceremony Info (Left Column) -->
+            <div class="opening-info-left text-left z-10 pl-1 max-w-[170px] sm:max-w-[190px] mb-1">
+              <div class="bg-white/85 backdrop-blur-xs p-2 rounded-xl border border-[#E5D5BC]/60 shadow-2xs">
+                <p class="text-[11px] sm:text-xs font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
+                  ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧
+                </p>
+                <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-1 leading-tight" id="opening-venue-snippet">
+                  វេលាម៉ោង ០៧:០០ ព្រឹក<br>
+                  នៅគេហដ្ឋានខាងស្រី<br>
+                  <span class="text-[#8C6A18] font-semibold">ដោយមេត្រីភាព</span>
+                </p>
+              </div>
+
+              <!-- Lower Romantic Kiss Pose (Floating smoothly on the lower-left) -->
+              <div class="w-24 sm:w-28 mt-2 relative -ml-1 opening-kiss-float pointer-events-none">
+                <img src="/images/opening/couple-kiss.png" alt="Romantic Kiss" class="w-full h-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.12)]">
+              </div>
+            </div>
+
+            <!-- Standing Couple with Golden Umbrella & Jasmine Garland (Right Side) -->
+            <div class="opening-couple-right z-10 w-44 sm:w-52 -mr-3 sm:-mr-2 relative opening-couple-float pointer-events-none">
+              <img src="/images/opening/couple-umbrella.png" alt="Khmer Wedding Couple" class="w-full h-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.18)]">
+            </div>
+          </div>
+
+          <!-- Bottom Action Button: Scroll to Ticket Content & Play Music -->
+          <div class="w-full text-center z-20 mt-1 mb-1">
+            <button type="button" onclick="scrollToTicketContent()" class="opening-action-btn relative inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white font-khmer-title text-xs sm:text-sm font-bold shadow-lg transition active:scale-95 cursor-pointer">
+              <span class="opening-btn-pulse-ring"></span>
+              <span class="text-amber-200 text-sm">📜</span>
+              <span id="opening-btn-text">ចូលមើលសំបុត្រមង្គលការ (View Details)</span>
+            </button>
+            <p class="text-[10px] text-[#8C6A18] mt-1 font-khmer-body opacity-85 animate-pulse">
+              👇 អូសចុះក្រោម ឬចុចដើម្បីស្តាប់តន្ត្រីមង្គលការ
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Bottom Botanical Roses Spray -->
+        <div class="opening-botanical-bottom absolute -bottom-8 left-0 right-0 z-5 pointer-events-none flex justify-center opacity-70">
+          <img src="/images/opening/botanical-arch.png" alt="Botanical Footer" class="w-full max-w-[420px] h-auto object-contain transform rotate-180">
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Banteay Srei Lintel Section Divider -->
+    <div class="banteay-srei-divider">
+      <img src="/images/components/banteay-srei-divider.png" alt="ក្បាច់ផ្តែរបន្ទាយស្រី">
+    </div>
 
     <!-- HERO SECTION -->
     <section id="hero-section" class="text-center mb-10 reveal-on-scroll">
@@ -659,7 +662,11 @@
   </main>
 
   <!-- ================= FLOATING LEFT-SIDE VERTICAL NAVIGATION DOCK ================= -->
-  <nav id="bottom-nav-dock" class="dock-hidden fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 z-[100] bg-white/92 backdrop-blur-md border border-[#E5D5BC] shadow-2xl rounded-full py-2.5 px-1.5 sm:px-2 flex flex-col items-center gap-1 sm:gap-1.5 transition-all duration-300 pointer-events-auto">
+  <nav id="bottom-nav-dock" class="fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 z-[100] bg-white/92 backdrop-blur-md border border-[#E5D5BC] shadow-2xl rounded-full py-2.5 px-1.5 sm:px-2 flex flex-col items-center gap-1 sm:gap-1.5 transition-all duration-300 pointer-events-auto">
+    <a href="#opening-cover-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] transition group" title="គម្រប (Cover)">
+      <span class="text-sm">💌</span>
+      <span class="text-[9px] leading-tight">គម្រប</span>
+    </a>
     <a href="#hero-section" class="bottom-nav-item flex flex-col items-center justify-center rounded-full text-[9px] sm:text-[10px] font-semibold text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] transition group" title="ទំព័រដើម">
       <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       <span class="text-[9px] leading-tight">ទំព័រដើម</span>

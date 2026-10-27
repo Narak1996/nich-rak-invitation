@@ -1258,8 +1258,9 @@ body.theme-khmer-traditional #envelope-screen {
    ========================================================================== */
 
 .pinterest-opening-poster {
-  width: 94vw;
+  width: 100%;
   max-width: 410px;
+  margin: 0 auto;
   min-height: 580px;
   background: #FCFBF7;
   background-image: 
@@ -1484,3 +1485,7 @@ body.theme-khmer-traditional #envelope-screen {
   color: #7A6F68 !important;
   margin-top: 0.15rem !important;
 }
+
+
+/* Merged 1-Page Layout: Disable fixed overlay */
+#envelope-screen { display: none !important; }
