@@ -952,6 +952,9 @@ window.sendLoveReaction = function(e) {
   const y = rect ? (rect.top + rect.height / 2) : (window.innerHeight / 2);
   
   window.burstHearts(x, y);
+  if (typeof window.triggerBlossomEffect === 'function') {
+    window.triggerBlossomEffect(x, y);
+  }
 
   // Increment local love counter
   let loveCount = parseInt(localStorage.getItem('wedding_love_count') || '1280', 10);
