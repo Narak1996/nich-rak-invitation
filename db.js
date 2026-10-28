@@ -1,10 +1,15 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, Binary } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
 
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
 const WEDDING_FILE = path.join(DATA_DIR, 'wedding-data.json');
@@ -143,6 +148,77 @@ async function syncWithMongoDB() {
         console.log(`[DB] Loaded ${dbUsers.length} admin accounts from MongoDB.`);
       }
     }
+
+    // 5. UPLOADED PHOTOS & MEDIA (Deploy-Proof Persistence)
+    try {
+      const uploadsCol = mongoDb.collection('uploads');
+      await uploadsCol.createIndex({ filename: 1 }, { unique: true }).catch(() => {});
+
+      // A. Restore photos from MongoDB to disk if missing (e.g. freshly deployed container!)
+      const dbUploads = await uploadsCol.find({}).toArray();
+      let restoredCount = 0;
+      for (const doc of dbUploads) {
+        const localPath = path.join(UPLOADS_DIR, doc.filename);
+        if (!fs.existsSync(localPath) && doc.data) {
+          try {
+            const buf = doc.data.buffer || doc.data;
+            fs.writeFileSync(localPath, buf);
+            restoredCount++;
+          } catch (writeErr) {
+            console.warn(`[DB] Failed to restore ${doc.filename} to disk:`, writeErr.message);
+          }
+        }
+      }
+      if (restoredCount > 0) {
+        console.log(`[DB] Successfully restored ${restoredCount} uploaded photos from MongoDB to local disk!`);
+      }
+
+      // B. Back up any existing local photos into MongoDB if not yet stored
+      if (fs.existsSync(UPLOADS_DIR)) {
+        const localFiles = fs.readdirSync(UPLOADS_DIR);
+        const dbFilenames = new Set(dbUploads.map(d => d.filename));
+        let backedUpCount = 0;
+        const mimeMap = {
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.png': 'image/png',
+          '.webp': 'image/webp',
+          '.gif': 'image/gif',
+          '.mp3': 'audio/mpeg'
+        };
+
+        for (const file of localFiles) {
+          const filePath = path.join(UPLOADS_DIR, file);
+          if (fs.statSync(filePath).isFile() && !dbFilenames.has(file)) {
+            try {
+              const fileBuffer = fs.readFileSync(filePath);
+              const ext = path.extname(file).toLowerCase();
+              await uploadsCol.updateOne(
+                { filename: file },
+                {
+                  $set: {
+                    filename: file,
+                    contentType: mimeMap[ext] || 'image/jpeg',
+                    data: new Binary(fileBuffer),
+                    size: fileBuffer.length,
+                    updatedAt: new Date()
+                  }
+                },
+                { upsert: true }
+              );
+              backedUpCount++;
+            } catch (err) {
+              console.warn(`[DB] Failed to backup ${file} to MongoDB:`, err.message);
+            }
+          }
+        }
+        if (backedUpCount > 0) {
+          console.log(`[DB] Successfully backed up ${backedUpCount} local photos into MongoDB Atlas!`);
+        }
+      }
+    } catch (uploadSyncErr) {
+      console.error('[DB] Error during uploads sync with MongoDB:', uploadSyncErr.message);
+    }
   } catch (err) {
     console.error('[DB] Error during MongoDB synchronization:', err);
   }
@@ -237,6 +313,64 @@ async function saveUsers(newUsers) {
   }
 }
 
+// ---------------- UPLOADED MEDIA API (Deploy-Proof MongoDB Storage) ----------------
+async function saveUploadedFile({ filename, contentType, data, size }) {
+  if (!isConnected || !mongoDb) return false;
+  try {
+    const uploadsCol = mongoDb.collection('uploads');
+    const binaryData = Buffer.isBuffer(data) ? new Binary(data) : data;
+    await uploadsCol.updateOne(
+      { filename },
+      {
+        $set: {
+          filename,
+          contentType: contentType || 'image/jpeg',
+          data: binaryData,
+          size: size || (Buffer.isBuffer(data) ? data.length : 0),
+          updatedAt: new Date()
+        }
+      },
+      { upsert: true }
+    );
+    console.log(`[DB] Successfully stored uploaded file in MongoDB: ${filename}`);
+    return true;
+  } catch (err) {
+    console.error(`[DB] Error saving uploaded file ${filename} to MongoDB:`, err.message);
+    return false;
+  }
+}
+
+async function getUploadedFile(filename) {
+  if (!isConnected || !mongoDb) return null;
+  try {
+    const uploadsCol = mongoDb.collection('uploads');
+    const doc = await uploadsCol.findOne({ filename });
+    if (!doc) return null;
+    const buffer = doc.data && doc.data.buffer ? doc.data.buffer : doc.data;
+    return {
+      filename: doc.filename,
+      contentType: doc.contentType || 'image/jpeg',
+      data: buffer,
+      size: doc.size || (buffer ? buffer.length : 0)
+    };
+  } catch (err) {
+    console.error(`[DB] Error fetching uploaded file ${filename} from MongoDB:`, err.message);
+    return null;
+  }
+}
+
+async function getAllUploadedFilenames() {
+  if (!isConnected || !mongoDb) return [];
+  try {
+    const uploadsCol = mongoDb.collection('uploads');
+    const docs = await uploadsCol.find({}, { projection: { filename: 1, _id: 0 } }).toArray();
+    return docs.map(d => d.filename);
+  } catch (err) {
+    console.error('[DB] Error getting uploaded filenames from MongoDB:', err.message);
+    return [];
+  }
+}
+
 function isDBConnected() {
   return isConnected;
 }
@@ -253,6 +387,10 @@ module.exports = {
   saveWishes,
   getUsers,
   saveUsers,
+  // Deploy-Proof Uploaded Files
+  saveUploadedFile,
+  getUploadedFile,
+  getAllUploadedFilenames,
   // Direct file fallbacks for backward compatibility
   readLocalJSON,
   writeLocalJSON

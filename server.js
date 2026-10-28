@@ -79,6 +79,40 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('e-invitation-secret-token-2026'));
+// Serve uploaded photos with automatic MongoDB database fallback
+// Ensures photos NEVER 404 or go missing when deploying to Render / Vercel
+app.get('/uploads/:filename', async (req, res, next) => {
+  const filename = req.params.filename;
+  const filePath = path.join(UPLOAD_DIR, filename);
+
+  // 1. If photo exists on local disk, serve immediately
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+
+  // 2. If photo is missing from disk (e.g. freshly deployed container!), fetch from MongoDB Atlas
+  try {
+    const fileDoc = await db.getUploadedFile(filename);
+    if (fileDoc && fileDoc.data) {
+      // Re-hydrate local disk cache so next request is instant
+      try {
+        if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+        fs.writeFileSync(filePath, fileDoc.data);
+      } catch (cacheErr) {
+        console.warn('[Uploads] Could not cache to disk:', cacheErr.message);
+      }
+
+      res.setHeader('Content-Type', fileDoc.contentType || 'image/jpeg');
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      return res.send(fileDoc.data);
+    }
+  } catch (err) {
+    console.error(`[Uploads] Error retrieving ${filename} from database:`, err.message);
+  }
+
+  return res.status(404).send('Photo not found');
+});
+
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 // ================= SECURE AUTHENTICATION & USER MANAGEMENT =================
@@ -603,28 +637,41 @@ app.post('/api/wedding/quick-style', (req, res) => {
   res.json({ success: true, theme: current.theme });
 });
 
-// Admin: Upload file (photo, QR, music)
-app.post('/api/upload', requireAdmin, upload.single('file'), (req, res) => {
+// Admin: Upload file (photo, QR, music) with Database Persistence
+app.post('/api/upload', requireAdmin, upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
 
   const ext = path.extname(req.file.originalname) || '.jpg';
   const filename = 'upload-' + Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
+  const mime = req.file.mimetype || 'image/jpeg';
 
+  // 1. Save to local disk cache for immediate zero-latency serving
   try {
     if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
     const destPath = path.join(UPLOAD_DIR, filename);
     fs.writeFileSync(destPath, req.file.buffer);
-    const fileUrl = `/uploads/${filename}`;
-    console.log('[Upload] Saved image to disk:', fileUrl);
-    return res.json({ success: true, url: fileUrl });
+    console.log('[Upload] Saved image to local disk cache:', filename);
   } catch (err) {
-    console.warn('[Upload] Disk write failed, falling back to Base64 data URL:', err.message);
-    const mime = req.file.mimetype || 'image/jpeg';
-    const dataUrl = `data:${mime};base64,${req.file.buffer.toString('base64')}`;
-    return res.json({ success: true, url: dataUrl });
+    console.warn('[Upload] Local disk write failed:', err.message);
   }
+
+  // 2. Persist to MongoDB database (Ensures photo survives redeployment and container restarts)
+  try {
+    await db.saveUploadedFile({
+      filename: filename,
+      contentType: mime,
+      data: req.file.buffer,
+      size: req.file.size || req.file.buffer.length
+    });
+    console.log('[Upload] Saved image to MongoDB Atlas collection:', filename);
+  } catch (dbErr) {
+    console.error('[Upload] Failed to persist image to MongoDB Atlas:', dbErr.message);
+  }
+
+  const fileUrl = `/uploads/${filename}`;
+  return res.json({ success: true, url: fileUrl });
 });
 
 // Admin: Export Full Database Backup (Wedding settings, Guests, Wishes)
