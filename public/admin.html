@@ -38,7 +38,7 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <div id="db-status-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] font-semibold text-gray-600">
+        <div id="db-status-badge" onclick="switchToDatabaseTab()" class="cursor-pointer hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] font-semibold text-gray-600">
           <span id="db-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
           <span id="db-status-text">Database Loading...</span>
         </div>
@@ -117,6 +117,10 @@
       </button>
       <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-users">
         🔐 អ្នកគ្រប់គ្រង (Admin Users)
+      </button>
+      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] flex items-center gap-1.5" data-target="tab-database">
+        <span>🗄️ Database & Cloud</span>
+        <span id="tab-db-indicator" class="w-2 h-2 rounded-full bg-amber-400"></span>
       </button>
     </div>
 
@@ -569,6 +573,234 @@
               <!-- Rendered via JS -->
             </tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 8: DATABASE & CLOUD DIAGNOSTICS ================= -->
+    <section id="tab-database" class="tab-content hidden">
+      <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs mb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <h2 class="font-khmer-title text-lg text-[#4E3227]">ប្រព័ន្ធទិន្នន័យ & Cloud Status (Database Diagnostics)</h2>
+              <span id="db-screen-status-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-gray-100 text-gray-700">Loading...</span>
+            </div>
+            <p class="text-xs text-[#7A6F68]">តាមដានការតភ្ជាប់ MongoDB Atlas Cloud, Host Cluster, Latency និងស្ថិតិ Collections ផ្ទាល់ក្នុងប្រព័ន្ធ</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-db-reconnect" onclick="reconnectDB()" class="px-3.5 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
+              <svg id="icon-reconnect-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>តេស្ត & ភ្ជាប់ឡើងវិញ (Reconnect)</span>
+            </button>
+            <button id="btn-db-sync" onclick="syncDB()" class="px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+              <svg id="icon-sync-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>ទាញទិន្នន័យ (Sync Now)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Connection Banner -->
+        <div id="db-banner-card" class="p-5 rounded-2xl border transition-all mb-6 bg-gray-50 border-gray-200">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center gap-3">
+              <div id="db-banner-icon-bg" class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-gray-200 text-gray-600 text-xl">
+                <span id="db-banner-icon">⏳</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 id="db-banner-title" class="font-khmer-title text-base font-bold text-gray-800">កំពុងពិនិត្យស្ថានភាពប្រព័ន្ធទិន្នន័យ...</h3>
+                  <span id="db-banner-ping" class="hidden text-[10px] font-mono px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-600">-- ms</span>
+                </div>
+                <p id="db-banner-desc" class="text-xs text-gray-500 mt-0.5">កំពុងពិនិត្យការតភ្ជាប់ទៅកាន់ MongoDB Atlas...</p>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500 shrink-0 font-medium">
+              <span>ធ្វើបច្ចុប្បន្នភាពចុងក្រោយ: </span>
+              <span id="db-banner-last-sync" class="font-semibold text-gray-700">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connection Error Troubleshooting Box -->
+        <div id="db-error-box" class="hidden p-5 rounded-2xl border border-red-200 bg-red-50 text-red-900 mb-6 text-xs">
+          <div class="flex items-start gap-3">
+            <span class="text-xl shrink-0">⚠️</span>
+            <div class="flex-1 space-y-2">
+              <div class="font-bold text-sm text-red-800">កំហុសក្នុងការតភ្ជាប់ទៅកាន់ MongoDB Atlas (Connection Error):</div>
+              <div id="db-error-message" class="p-3 bg-red-100/70 border border-red-200 rounded-xl font-mono text-[11px] text-red-950 break-all select-all">
+              </div>
+              <div class="bg-white/80 p-3 rounded-xl border border-red-200/80 space-y-1.5 text-red-900">
+                <div class="font-bold flex items-center gap-1.5 text-[#4E3227]">
+                  <span>💡 មូលហេតុ និងវិធីដោះស្រាយទូទៅ (How to fix):</span>
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-[11px] text-[#7A6F68]">
+                  <li><b>SSL alert 80 / IP Blocked:</b> ចូលទៅ <b>MongoDB Atlas</b> &gt; <b>Network Access</b> &gt; ចុច <b>Add IP Address</b> &gt; ជ្រើសរើស <b>Allow Access from Anywhere (0.0.0.0/0)</b> &gt; ចុច Confirm។</li>
+                  <li><b>Bad Auth / Authentication Failed:</b> Password ក្នុង MONGODB_URI មិនត្រឹមត្រូវ។ ធានាថាបានលុបសញ្ញា <code>&lt;</code> និង <code>&gt;</code> ចេញពី Password។</li>
+                  <li><b>No MONGODB_URI provided:</b> បញ្ចូល Connection String ទៅក្នុង file <code>.env</code> លើកុំព្យូទ័រ ឬក្នុង <code>Environment Variables</code> លើ Render.com។</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Key Diagnostics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC]">
+            <span class="text-[10px] uppercase tracking-wider text-[#7A6F68] font-bold block mb-1">របៀបផ្ទុកទិន្នន័យ (Storage Mode)</span>
+            <div id="diag-mode" class="font-bold text-sm text-[#4E3227] flex items-center gap-1.5">
+              <span id="diag-mode-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span id="diag-mode-text">Local File Storage</span>
+            </div>
+            <span id="diag-mode-sub" class="text-[11px] text-[#7A6F68] block mt-1">Fallback JSON Storage</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC]">
+            <span class="text-[10px] uppercase tracking-wider text-[#7A6F68] font-bold block mb-1">ឈ្មោះ Database (Database Name)</span>
+            <div id="diag-dbname" class="font-bold text-sm text-[#4E3227] font-mono">--</div>
+            <span class="text-[11px] text-[#7A6F68] block mt-1">MongoDB Atlas Target DB</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC]">
+            <span class="text-[10px] uppercase tracking-wider text-[#7A6F68] font-bold block mb-1">Cluster Host / Server</span>
+            <div id="diag-host" class="font-bold text-xs text-[#4E3227] font-mono truncate" title="Cluster Host">--</div>
+            <span class="text-[11px] text-[#7A6F68] block mt-1">Cloud Cluster Address</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC]">
+            <span class="text-[10px] uppercase tracking-wider text-[#7A6F68] font-bold block mb-1">ល្បឿនឆ្លើយតប (Ping / Latency)</span>
+            <div id="diag-ping" class="font-bold text-sm text-[#4E3227] font-mono">-- ms</div>
+            <span id="diag-ping-sub" class="text-[11px] text-[#7A6F68] block mt-1">Direct Ping to Atlas</span>
+          </div>
+        </div>
+
+        <!-- MongoDB Collections Statistics Table -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="font-khmer-title text-sm text-[#4E3227] font-bold">📊 ស្ថិតិ Collections ក្នុង Database (Collections &amp; Documents)</h3>
+              <p class="text-[11px] text-[#7A6F68]">ប្រៀបធៀបទិន្នន័យជាក់ស្តែងក្នុង MongoDB Atlas Cloud Database និងឯកសារបម្រុង Local File Storage</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-[#E5D5BC]">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#FAF7F2] text-[#4E3227] border-b border-[#E5D5BC]">
+                <tr>
+                  <th class="p-3">ឈ្មោះ Collection</th>
+                  <th class="p-3 text-center">ចំនួនក្នុង MongoDB Atlas</th>
+                  <th class="p-3 text-center">ចំនួនក្នុង Local File</th>
+                  <th class="p-3">ស្ថានភាព Sync</th>
+                  <th class="p-3 text-right">សម្គាល់</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 font-medium">
+                <tr class="hover:bg-gray-50/80 transition">
+                  <td class="p-3">
+                    <div class="font-bold text-[#4E3227] flex items-center gap-1.5">
+                      <span>👥</span>
+                      <span class="font-mono">guests</span>
+                      <span class="text-[11px] text-gray-500 font-normal">(បញ្ជីភ្ញៀវ &amp; RSVP)</span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-center font-bold text-sm font-mono text-[#4E3227]" id="stat-col-guests-db">0</td>
+                  <td class="p-3 text-center font-mono text-gray-600" id="stat-col-guests-local">0</td>
+                  <td class="p-3" id="stat-col-guests-status"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">In Sync</span></td>
+                  <td class="p-3 text-right text-[11px] text-gray-500">MongoDB ជាប្រភពទិន្នន័យពិត (Source of Truth)</td>
+                </tr>
+                <tr class="hover:bg-gray-50/80 transition">
+                  <td class="p-3">
+                    <div class="font-bold text-[#4E3227] flex items-center gap-1.5">
+                      <span>💌</span>
+                      <span class="font-mono">wishes</span>
+                      <span class="text-[11px] text-gray-500 font-normal">(សៀវភៅជូនពរ)</span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-center font-bold text-sm font-mono text-[#4E3227]" id="stat-col-wishes-db">0</td>
+                  <td class="p-3 text-center font-mono text-gray-600" id="stat-col-wishes-local">0</td>
+                  <td class="p-3" id="stat-col-wishes-status"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">In Sync</span></td>
+                  <td class="p-3 text-right text-[11px] text-gray-500">សារជូនពរពីភ្ញៀវកិត្តិយស</td>
+                </tr>
+                <tr class="hover:bg-gray-50/80 transition">
+                  <td class="p-3">
+                    <div class="font-bold text-[#4E3227] flex items-center gap-1.5">
+                      <span>⚙️</span>
+                      <span class="font-mono">wedding</span>
+                      <span class="text-[11px] text-gray-500 font-normal">(ព័ត៌មានមង្គលការ &amp; Theme)</span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-center font-bold font-mono text-[#4E3227]" id="stat-col-wedding-db">Active</td>
+                  <td class="p-3 text-center font-mono text-gray-600" id="stat-col-wedding-local">Active</td>
+                  <td class="p-3" id="stat-col-wedding-status"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">In Sync</span></td>
+                  <td class="p-3 text-right text-[11px] text-gray-500">Document <code>main_settings</code></td>
+                </tr>
+                <tr class="hover:bg-gray-50/80 transition">
+                  <td class="p-3">
+                    <div class="font-bold text-[#4E3227] flex items-center gap-1.5">
+                      <span>🔐</span>
+                      <span class="font-mono">users</span>
+                      <span class="text-[11px] text-gray-500 font-normal">(គណនី Admin)</span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-center font-bold text-sm font-mono text-[#4E3227]" id="stat-col-users-db">0</td>
+                  <td class="p-3 text-center font-mono text-gray-600" id="stat-col-users-local">0</td>
+                  <td class="p-3" id="stat-col-users-status"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">In Sync</span></td>
+                  <td class="p-3 text-right text-[11px] text-gray-500">គណនីគ្រប់គ្រងប្រព័ន្ធ</td>
+                </tr>
+                <tr class="hover:bg-gray-50/80 transition">
+                  <td class="p-3">
+                    <div class="font-bold text-[#4E3227] flex items-center gap-1.5">
+                      <span>🖼️</span>
+                      <span class="font-mono">uploads</span>
+                      <span class="text-[11px] text-gray-500 font-normal">(រូបភាព &amp; QR ចងដៃ)</span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-center font-bold text-sm font-mono text-emerald-700" id="stat-col-uploads-db">0</td>
+                  <td class="p-3 text-center font-mono text-gray-600">public/uploads/</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Deploy-Proof</span></td>
+                  <td class="p-3 text-right text-[11px] text-emerald-700 font-semibold">រូបថតត្រូវបានរក្សាទុកក្នុង MongoDB ដើម្បីកុំឱ្យបាត់ពេល Redeploy!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Connection String Inspector Card -->
+        <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC] mb-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+            <span class="font-bold text-xs text-[#4E3227] flex items-center gap-1.5">
+              <span>🔑</span>
+              <span>Connection String URI (Masked for Security):</span>
+            </span>
+            <span class="text-[11px] text-gray-500">ប្រភព: <code class="font-mono text-xs bg-white px-2 py-0.5 rounded border border-[#E5D5BC]" id="diag-uri-source">.env / Render Env</code></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="diag-masked-uri" readonly class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-[#E5D5BC] bg-white text-gray-700 select-all focus:outline-none" value="Loading...">
+            <button onclick="copyMaskedUri()" class="px-3 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition shrink-0">
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- Setup & Fix Instructions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-4 rounded-2xl border border-gray-200 bg-white shadow-2xs">
+            <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs mb-2">1</div>
+            <h4 class="font-bold text-xs text-[#4E3227] mb-1">MongoDB Atlas Network Access</h4>
+            <p class="text-[11px] text-[#7A6F68]">ចូល cloud.mongodb.com &gt; Network Access &gt; Add IP Address <code>0.0.0.0/0</code> (Allow Access from Anywhere) ដើម្បីកុំឱ្យ Atlas ប្លុក Render ឬ Localhost។</p>
+          </div>
+
+          <div class="p-4 rounded-2xl border border-gray-200 bg-white shadow-2xs">
+            <div class="w-7 h-7 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs mb-2">2</div>
+            <h4 class="font-bold text-xs text-[#4E3227] mb-1">Render.com Environment</h4>
+            <p class="text-[11px] text-[#7A6F68]">លើ Render Dashboard &gt; Web Service &gt; Environment &gt; បន្ថែម Key <code>MONGODB_URI</code> ជាមួយ Connection String ដើម្បីដំណើរការលើ Cloud។</p>
+          </div>
+
+          <div class="p-4 rounded-2xl border border-gray-200 bg-white shadow-2xs">
+            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs mb-2">3</div>
+            <h4 class="font-bold text-xs text-[#4E3227] mb-1">Local Development (.env)</h4>
+            <p class="text-[11px] text-[#7A6F68]">ឯកសារ <code>.env</code> ក្នុងគម្រោងត្រូវបានបង្កើតរួចរាល់។ គ្រាន់តែដាក់ MONGODB_URI រួច Run <code>npm start</code> វានឹង Connect ភ្លាមៗ។</p>
+          </div>
         </div>
       </div>
     </section>

@@ -383,8 +383,78 @@ function getDatabaseName() {
   return databaseName;
 }
 
+async function forceReconnect() {
+  if (mongoClient) {
+    try {
+      await mongoClient.close(true);
+    } catch (e) {}
+    mongoClient = null;
+    mongoDb = null;
+    isConnected = false;
+  }
+  return await initDB();
+}
+
+async function getDBDiagnostics() {
+  const uri = process.env.MONGODB_URI || '';
+  let maskedUri = '';
+  let host = '';
+
+  if (uri.trim()) {
+    try {
+      maskedUri = uri.trim().replace(/(mongodb(?:\+srv)?:\/\/[^:]+:)([^@]+)(@.+)/i, '$1••••••••$3');
+      const hostMatch = uri.match(/@([^/?]+)/);
+      if (hostMatch) host = hostMatch[1];
+    } catch (e) {
+      maskedUri = 'Configured';
+    }
+  }
+
+  const result = {
+    connected: isConnected,
+    databaseName: databaseName || (isConnected && mongoDb ? mongoDb.databaseName : null),
+    host: host || 'None',
+    hasEnv: Boolean(uri && uri.trim()),
+    maskedUri: maskedUri || 'Not set',
+    error: lastConnectionError,
+    pingMs: null,
+    storageMode: isConnected ? 'MongoDB Atlas (Cloud Database)' : 'Local File Storage (data/*.json)',
+    lastSyncTime: lastSyncTime ? new Date(lastSyncTime).toISOString() : null,
+    collections: {
+      guests: { count: 0, localCount: cache.guests ? cache.guests.length : 0 },
+      wishes: { count: 0, localCount: cache.wishes ? cache.wishes.length : 0 },
+      wedding: { exists: false, localCount: cache.wedding && Object.keys(cache.wedding).length > 0 ? 1 : 0 },
+      users: { count: 0, localCount: cache.users ? cache.users.length : 0 },
+      uploads: { count: 0, totalSize: 0 }
+    }
+  };
+
+  if (isConnected && mongoDb) {
+    try {
+      const startPing = Date.now();
+      await mongoDb.command({ ping: 1 });
+      result.pingMs = Date.now() - startPing;
+
+      result.collections.guests.count = await mongoDb.collection('guests').countDocuments();
+      result.collections.wishes.count = await mongoDb.collection('wishes').countDocuments();
+      result.collections.users.count = await mongoDb.collection('users').countDocuments();
+      const weddingDoc = await mongoDb.collection('wedding').findOne({ _key: 'main_settings' });
+      result.collections.wedding.exists = Boolean(weddingDoc);
+
+      const uploadsCol = mongoDb.collection('uploads');
+      result.collections.uploads.count = await uploadsCol.countDocuments();
+    } catch (e) {
+      console.warn('[DB Diagnostics] Ping/count error:', e.message);
+    }
+  }
+
+  return result;
+}
+
 module.exports = {
   initDB,
+  forceReconnect,
+  getDBDiagnostics,
   syncWithMongoDB,
   refreshFromMongoDB,
   isDBConnected,

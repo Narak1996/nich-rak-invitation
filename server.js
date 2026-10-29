@@ -1335,14 +1335,45 @@ app.use((req, res) => {
 });
 
 // Admin / System: DB status
-app.get('/api/db-status', requireAdmin, (req, res) => {
+app.get('/api/db-status', requireAdmin, async (req, res) => {
+  const diag = await db.getDBDiagnostics();
   res.json({
-    connected: db.isDBConnected(),
-    databaseName: db.getDatabaseName() || null,
-    type: db.isDBConnected() ? `MongoDB Atlas (${db.getDatabaseName()})` : 'Local File Storage (data/*.json)',
-    hasEnv: Boolean(process.env.MONGODB_URI && process.env.MONGODB_URI.trim()),
-    error: db.getConnectionError() || null
+    connected: diag.connected,
+    databaseName: diag.databaseName,
+    type: diag.storageMode,
+    hasEnv: diag.hasEnv,
+    error: diag.error
   });
+});
+
+// Admin / System: Detailed Database Diagnostics
+app.get('/api/db/diagnostics', requireAdmin, async (req, res) => {
+  const diag = await db.getDBDiagnostics();
+  res.json(diag);
+});
+
+// Admin / System: Force Reconnect to Database
+app.post('/api/db/reconnect', requireAdmin, async (req, res) => {
+  try {
+    const success = await db.forceReconnect();
+    const diag = await db.getDBDiagnostics();
+    res.json({ success, diagnostics: diag });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin / System: Force Sync Cache with MongoDB
+app.post('/api/db/sync', requireAdmin, async (req, res) => {
+  try {
+    if (db.isDBConnected()) {
+      await db.refreshFromMongoDB(true);
+    }
+    const diag = await db.getDBDiagnostics();
+    res.json({ success: true, diagnostics: diag });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Start Server

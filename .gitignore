@@ -5,3 +5,4 @@ npm-debug.log*
 tools/
 tunnel.js
 data/sessions.json
+.idea/

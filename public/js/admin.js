@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadAllData() {
   await Promise.all([
     checkDBStatus(),
+    loadDBDiagnostics(),
     loadStats(),
     loadWeddingData(),
     loadGuests(),
@@ -102,6 +103,223 @@ async function checkDBStatus() {
     console.error('Failed to check DB status:', e);
   }
 }
+
+// Switch to Database tab from anywhere (e.g. Header badge)
+window.switchToDatabaseTab = function() {
+  const dbTabBtn = document.querySelector('[data-target="tab-database"]');
+  if (dbTabBtn) {
+    dbTabBtn.click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof loadDBDiagnostics === 'function') loadDBDiagnostics();
+  }
+};
+
+// Copy masked URI
+window.copyMaskedUri = function() {
+  const input = document.getElementById('diag-masked-uri');
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value).then(() => {
+      showToast('បានចម្លង URI Connection String!');
+    }).catch(() => {
+      document.execCommand('copy');
+      showToast('បានចម្លង URI Connection String!');
+    });
+  }
+};
+
+// Load detailed DB diagnostics
+window.loadDBDiagnostics = async function() {
+  try {
+    const res = await fetch('/api/db/diagnostics');
+    if (!res.ok) return;
+    const d = await res.json();
+
+    // 1. Screen Status Badge & Tab Indicator
+    const badge = document.getElementById('db-screen-status-badge');
+    const tabDot = document.getElementById('tab-db-indicator');
+    if (d.connected) {
+      if (badge) {
+        badge.textContent = '🟢 Connected: MongoDB Atlas';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-800';
+      }
+      if (tabDot) tabDot.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
+    } else if (d.hasEnv) {
+      if (badge) {
+        badge.textContent = '🔴 Connection Error';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-800';
+      }
+      if (tabDot) tabDot.className = 'w-2 h-2 rounded-full bg-red-500';
+    } else {
+      if (badge) {
+        badge.textContent = '🟡 Local File Storage';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800';
+      }
+      if (tabDot) tabDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+    }
+
+    // 2. Banner Card
+    const bannerCard = document.getElementById('db-banner-card');
+    const bannerIconBg = document.getElementById('db-banner-icon-bg');
+    const bannerIcon = document.getElementById('db-banner-icon');
+    const bannerTitle = document.getElementById('db-banner-title');
+    const bannerDesc = document.getElementById('db-banner-desc');
+    const bannerPing = document.getElementById('db-banner-ping');
+    const bannerLastSync = document.getElementById('db-banner-last-sync');
+
+    if (bannerLastSync) {
+      bannerLastSync.textContent = d.lastSyncTime ? new Date(d.lastSyncTime).toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'ឥឡូវនេះ (Just now)';
+    }
+
+    if (d.connected) {
+      if (bannerCard) bannerCard.className = 'p-5 rounded-2xl border transition-all mb-6 bg-green-50/70 border-green-200';
+      if (bannerIconBg) bannerIconBg.className = 'w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-green-500 text-white text-xl shadow-xs';
+      if (bannerIcon) bannerIcon.textContent = '🟢';
+      if (bannerTitle) bannerTitle.textContent = `ភ្ជាប់ជោគជ័យជាមួយ MongoDB Atlas (Database: "${d.databaseName || 'wedding'}")`;
+      if (bannerDesc) bannerDesc.textContent = 'ទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, រូបថត) ត្រូវបាន Sync ផ្ទាល់លើ Cloud ឥតបាត់បង់ពេល Deploy ឡើងវិញឡើយ។';
+      if (bannerPing) {
+        bannerPing.classList.remove('hidden');
+        bannerPing.textContent = (d.pingMs !== null ? `${d.pingMs} ms` : 'Active');
+        bannerPing.className = 'text-[10px] font-mono px-2 py-0.5 rounded-md bg-green-100 border border-green-300 text-green-800 font-bold';
+      }
+    } else if (d.hasEnv) {
+      if (bannerCard) bannerCard.className = 'p-5 rounded-2xl border transition-all mb-6 bg-red-50/70 border-red-200';
+      if (bannerIconBg) bannerIconBg.className = 'w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-red-500 text-white text-xl shadow-xs';
+      if (bannerIcon) bannerIcon.textContent = '🔴';
+      if (bannerTitle) bannerTitle.textContent = 'មិនអាចភ្ជាប់ទៅកាន់ MongoDB Atlas (Connection Failed)';
+      if (bannerDesc) bannerDesc.textContent = 'ប្រព័ន្ធកំពុងដំណើរការជាបណ្ដោះអាសន្នលើ Local File Storage (data/*.json) ដោយសារកំហុសខាងក្រោម៖';
+      if (bannerPing) bannerPing.classList.add('hidden');
+    } else {
+      if (bannerCard) bannerCard.className = 'p-5 rounded-2xl border transition-all mb-6 bg-amber-50/70 border-amber-200';
+      if (bannerIconBg) bannerIconBg.className = 'w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-amber-400 text-amber-900 text-xl shadow-xs';
+      if (bannerIcon) bannerIcon.textContent = '🟡';
+      if (bannerTitle) bannerTitle.textContent = 'ដំណើរការលើ Local File Storage (មិនទាន់ភ្ជាប់ Cloud Database)';
+      if (bannerDesc) bannerDesc.textContent = 'ពុំទាន់មាន MONGODB_URI ក្នុង Environment។ ទិន្នន័យកំពុងរក្សាទុកក្នុង file JSON លើកុំព្យូទ័រមូលដ្ឋាន។';
+      if (bannerPing) bannerPing.classList.add('hidden');
+    }
+
+    // 3. Error Box
+    const errorBox = document.getElementById('db-error-box');
+    const errorMsg = document.getElementById('db-error-message');
+    if (d.error && !d.connected) {
+      if (errorBox) errorBox.classList.remove('hidden');
+      if (errorMsg) errorMsg.textContent = d.error;
+    } else {
+      if (errorBox) errorBox.classList.add('hidden');
+    }
+
+    // 4. Metrics Cards
+    const diagModeText = document.getElementById('diag-mode-text');
+    const diagModeDot = document.getElementById('diag-mode-dot');
+    const diagModeSub = document.getElementById('diag-mode-sub');
+    if (diagModeText) diagModeText.textContent = d.connected ? 'MongoDB Atlas' : 'Local File Storage';
+    if (diagModeDot) diagModeDot.className = `w-2.5 h-2.5 rounded-full ${d.connected ? 'bg-green-500' : 'bg-amber-400'}`;
+    if (diagModeSub) diagModeSub.textContent = d.connected ? 'Cloud Distributed MongoDB' : 'data/*.json Files';
+
+    const diagDbName = document.getElementById('diag-dbname');
+    if (diagDbName) diagDbName.textContent = d.databaseName || (d.hasEnv ? 'Pending' : 'None');
+
+    const diagHost = document.getElementById('diag-host');
+    if (diagHost) {
+      diagHost.textContent = d.host || 'None (Local)';
+      diagHost.title = d.host || 'Local Storage';
+    }
+
+    const diagPing = document.getElementById('diag-ping');
+    const diagPingSub = document.getElementById('diag-ping-sub');
+    if (diagPing) diagPing.textContent = d.pingMs !== null ? `${d.pingMs} ms` : (d.connected ? 'Active' : '--');
+    if (diagPingSub) diagPingSub.textContent = d.connected ? 'Direct Latency' : 'No Connection';
+
+    // 5. Collections Table Numbers
+    const c = d.collections || {};
+    const setCol = (name, dbCount, localCount) => {
+      const elDb = document.getElementById(`stat-col-${name}-db`);
+      const elLocal = document.getElementById(`stat-col-${name}-local`);
+      const elStatus = document.getElementById(`stat-col-${name}-status`);
+      if (elDb) elDb.textContent = dbCount;
+      if (elLocal) elLocal.textContent = localCount;
+      if (elStatus) {
+        if (d.connected) {
+          elStatus.innerHTML = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">🟢 In Sync</span>';
+        } else {
+          elStatus.innerHTML = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">🟡 Local Fallback</span>';
+        }
+      }
+    };
+
+    setCol('guests', c.guests ? c.guests.count : 0, c.guests ? c.guests.localCount : 0);
+    setCol('wishes', c.wishes ? c.wishes.count : 0, c.wishes ? c.wishes.localCount : 0);
+    setCol('users', c.users ? c.users.count : 0, c.users ? c.users.localCount : 0);
+
+    const elWeddingDb = document.getElementById('stat-col-wedding-db');
+    const elWeddingLocal = document.getElementById('stat-col-wedding-local');
+    if (elWeddingDb) elWeddingDb.textContent = (c.wedding && c.wedding.exists) ? 'Active' : 'Unset';
+    if (elWeddingLocal) elWeddingLocal.textContent = (c.wedding && c.wedding.localCount > 0) ? 'Active' : 'Unset';
+
+    const elUploadsDb = document.getElementById('stat-col-uploads-db');
+    if (elUploadsDb) elUploadsDb.textContent = `${c.uploads ? c.uploads.count : 0} files`;
+
+    // 6. Masked URI
+    const inputUri = document.getElementById('diag-masked-uri');
+    if (inputUri) inputUri.value = d.maskedUri || 'Not Configured';
+
+    const uriSource = document.getElementById('diag-uri-source');
+    if (uriSource) uriSource.textContent = d.hasEnv ? 'process.env.MONGODB_URI' : 'Not Found';
+
+  } catch (err) {
+    console.error('Failed to load DB diagnostics:', err);
+  }
+};
+
+// Reconnect to DB button handler
+window.reconnectDB = async function() {
+  const spin = document.getElementById('icon-reconnect-spin');
+  if (spin) spin.classList.add('animate-spin');
+  showToast('កំពុងតេស្ត និងភ្ជាប់ទៅកាន់ MongoDB Atlas ឡើងវិញ...');
+
+  try {
+    const res = await fetch('/api/db/reconnect', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      showToast('🟢 ភ្ជាប់ជោគជ័យជាមួយ MongoDB Atlas!');
+    } else {
+      showToast('🔴 មិនអាចភ្ជាប់បាន៖ ' + (data.diagnostics ? data.diagnostics.error : 'Failed'));
+    }
+    await checkDBStatus();
+    await loadDBDiagnostics();
+    await loadGuests();
+    await loadStats();
+  } catch (err) {
+    showToast('កំហុសពេលភ្ជាប់ DB៖ ' + err.message);
+  } finally {
+    if (spin) spin.classList.remove('animate-spin');
+  }
+};
+
+// Force Sync cache button handler
+window.syncDB = async function() {
+  const spin = document.getElementById('icon-sync-spin');
+  if (spin) spin.classList.add('animate-spin');
+  showToast('កំពុងទាញទិន្នន័យថ្មីពី Database...');
+
+  try {
+    const res = await fetch('/api/db/sync', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      showToast('⚡ បានទាញទិន្នន័យពី DB ជោគជ័យ!');
+    }
+    await checkDBStatus();
+    await loadDBDiagnostics();
+    await loadGuests();
+    await loadStats();
+    await loadWishes();
+  } catch (err) {
+    showToast('កំហុសពេល Sync៖ ' + err.message);
+  } finally {
+    if (spin) spin.classList.remove('animate-spin');
+  }
+};
+
 
 // Load stats
 async function loadStats() {
@@ -1355,7 +1573,8 @@ function initTabs() {
 
       const target = tab.getAttribute('data-target');
       document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-      document.getElementById(target).classList.remove('hidden');
+            document.getElementById(target).classList.remove('hidden');
+      if (target === 'tab-database' && typeof loadDBDiagnostics === 'function') loadDBDiagnostics();
     });
   });
   // Set first tab active styling
