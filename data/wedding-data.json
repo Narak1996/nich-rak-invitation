@@ -1,7 +1,7 @@
 {
   "theme": {
     "id": "khmer-traditional",
-    "name": "ខ្មែរ",
+    "name": "ខ្មែរប្រពៃណី",
     "primaryColor": "#1E4833",
     "accentColor": "#C5A059",
     "secondaryColor": "#2D5A43",
@@ -19,7 +19,7 @@
       "father_en": "Mr. Chan Sokhom",
       "mother_kh": "លោកស្រី ម៉ៅ សុផល",
       "mother_en": "Mrs. Mao Sophal",
-      "photo": "/uploads/groom-real-portrait.jpg",
+      "photo": "https://lh3.googleusercontent.com/d/1z1iQkimZmo81RCOCn4AKkkGbdS5VzT5v",
       "side": "groom"
     },
     "bride": {
@@ -32,7 +32,7 @@
       "photo": "/uploads/bride-real-portrait.jpg",
       "side": "bride"
     },
-    "couple_photo": "/uploads/upload-1790497247828-901277914.jpg",
+    "couple_photo": "https://lh3.googleusercontent.com/d/1xRtVnwF-u0dXCX8e6otVhdCQv-Shl8S6",
     "quote_kh": "«សេចក្ដីស្រឡាញ់ គឺការរួមរស់ ផ្ដល់ក្ដីសុខ និងដើរទៅមុខជាមួយគ្នាជារៀងរហូត»",
     "quote_en": "\"Two lives, two hearts, joined together in friendship, united forever in love.\"",
     "event_date": "2027-01-24T07:00",
@@ -125,26 +125,56 @@
   ],
   "gallery": [
     {
-      "id": 1790408400217,
-      "url": "/uploads/upload-1790408399864-517093674.jpg",
+      "id": 1793266706968,
+      "url": "https://lh3.googleusercontent.com/d/1F3GZ2ZkFXqIGbrUXjggFc6rBfCBdp6ic",
       "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
       "caption_en": "Sweet Memories"
     },
     {
-      "id": 1790408400612,
-      "url": "/uploads/upload-1790408400317-630676211.jpg",
+      "id": 1793266705594,
+      "url": "https://lh3.googleusercontent.com/d/1oEvPZ5Zcj5eM3a2JOORkOS2mtzsIty-x",
       "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
       "caption_en": "Sweet Memories"
     },
     {
-      "id": 1790408401878,
-      "url": "/uploads/upload-1790408400736-579379164.jpg",
+      "id": 1793266707441,
+      "url": "https://lh3.googleusercontent.com/d/1BsOp-fhGm1b79dtYgy4YSaQdGGFe6ibf",
       "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
       "caption_en": "Sweet Memories"
     },
     {
-      "id": 1790408401869,
-      "url": "/uploads/upload-1790408401318-846378199.jpg",
+      "id": 1793266707305,
+      "url": "https://lh3.googleusercontent.com/d/1SUg3RnOPFo7CcAFrdsSqJ2Df-PIx8pLS",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
+    },
+    {
+      "id": 1793266704496,
+      "url": "https://lh3.googleusercontent.com/d/1UkdsWVPr2JY6gPJL6_tVE62upxWUHJaR",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
+    },
+    {
+      "id": 1793266704606,
+      "url": "https://lh3.googleusercontent.com/d/1l0o9riOr0SbxmUpKtK4Z_RjRcSSkxBhL",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
+    },
+    {
+      "id": 1793266709835,
+      "url": "https://lh3.googleusercontent.com/d/1KYD_RdPIO_DxXIyd0_nTHYczZ29ZaXai",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
+    },
+    {
+      "id": 1793266706502,
+      "url": "https://lh3.googleusercontent.com/d/1rPL4LdpCV7XiRAfib3PvdhMQoqEUjbC_",
+      "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
+      "caption_en": "Sweet Memories"
+    },
+    {
+      "id": 1793266713177,
+      "url": "https://lh3.googleusercontent.com/d/12wH5K7lOg-ejZIbDeAmwnB5ukXDWbn51",
       "caption_kh": "អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម",
       "caption_en": "Sweet Memories"
     }

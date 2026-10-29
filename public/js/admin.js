@@ -463,6 +463,38 @@ window.reverseGalleryOrder = async function() {
   await saveGalleryOrder('បានត្រឡប់លំដាប់រូបថតទាំងអស់ជោគជ័យ!');
 };
 
+// Remove duplicate photos from gallery (by URL)
+window.removeDuplicateGalleryPhotos = async function() {
+  if (!weddingData || !weddingData.gallery || weddingData.gallery.length <= 1) {
+    showToast('ពុំមានរូបថតស្ទួនទេ (No photos to deduplicate)');
+    return;
+  }
+  const initialCount = weddingData.gallery.length;
+  const seen = new Set();
+  const unique = [];
+
+  weddingData.gallery.forEach(item => {
+    const key = resolveGoogleDriveUrl(item.url || '').trim();
+    if (key && !seen.has(key)) {
+      seen.add(key);
+      unique.push({
+        ...item,
+        url: key
+      });
+    }
+  });
+
+  const removed = initialCount - unique.length;
+  if (removed === 0) {
+    showToast('ពុំមានរូបថតស្ទួនទេ! គ្រប់រូបសុទ្ធតែខុសៗគ្នា (No duplicates found)');
+    return;
+  }
+
+  weddingData.gallery = unique;
+  renderAdminGallery();
+  await saveGalleryOrder(`បានសម្អាតរូបថតស្ទួនចំនួន ${removed} រូបដោយជោគជ័យ!`);
+};
+
 // Edit gallery caption (Khmer & English)
 window.editGalleryCaption = async function(index) {
   if (!weddingData || !weddingData.gallery || !weddingData.gallery[index]) return;
@@ -504,9 +536,11 @@ function renderAdminGallery() {
     el.setAttribute('draggable', 'true');
     el.setAttribute('data-index', index);
 
+    const displayUrl = resolveGoogleDriveUrl(img.url);
+
     el.innerHTML = `
       <!-- Thumbnail Image -->
-      <img src="${escapeHTML(img.url)}" alt="${escapeHTML(img.caption_kh || 'Gallery')}" class="w-full h-full object-cover pointer-events-none absolute inset-0" loading="lazy">
+      <img src="${escapeHTML(displayUrl)}" alt="${escapeHTML(img.caption_kh || 'Gallery')}" onerror="this.onerror=null; this.src='/images/wedding-og-cover.jpg'; this.classList.add('opacity-60');" class="w-full h-full object-cover pointer-events-none absolute inset-0" loading="lazy">
 
       <!-- Top Bar: Order Badge and Drag Grip -->
       <div class="relative z-10 p-2 flex items-center justify-between pointer-events-none">
@@ -1065,15 +1099,24 @@ function initFormListeners() {
 
   // Add gallery item button
   document.getElementById('btn-add-gallery-item').addEventListener('click', async () => {
-    const url = prompt('Image URL:', 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80');
-    if (!url) return;
-    const caption_kh = prompt('ចំណងជើងរូបថត (Caption KH):', 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម') || '';
+    const rawUrl = prompt('សូមបញ្ចូល Image URL ឬ Google Drive Link:', '');
+    if (!rawUrl || !rawUrl.trim()) return;
+    const url = resolveGoogleDriveUrl(rawUrl.trim());
 
-    const newGallery = [...(weddingData.gallery || []), {
+    // Deduplication check
+    const currentList = weddingData.gallery || [];
+    if (currentList.some(item => resolveGoogleDriveUrl(item.url || '').trim() === url)) {
+      showToast('រូបថតនេះមានក្នុង Gallery រួចហើយ (Photo already exists)', 'error');
+      return;
+    }
+
+    const caption_kh = prompt('ចំណងជើងរូបថត (Caption KH):', 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម') || 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម';
+
+    const newGallery = [...currentList, {
       id: Date.now(),
       url,
       caption_kh,
-      caption_en: caption_kh
+      caption_en: 'Sweet Memories'
     }];
 
     await fetch('/api/wedding', {
@@ -1421,44 +1464,67 @@ window.uploadImage = async function(fileInput, targetInputId, previewImgId) {
   }
 };
 
+let isUploadingGallery = false;
 window.uploadGalleryFiles = async function(fileInput) {
+  if (isUploadingGallery) return;
   if (!fileInput.files || fileInput.files.length === 0) return;
-  showToast('កំពុង Upload រូបថត... (Uploading photos...)');
 
-  for (let file of fileInput.files) {
-    const formData = new FormData();
-    formData.append('file', file);
+  isUploadingGallery = true;
+  fileInput.disabled = true;
+  showToast(`កំពុង Upload ${fileInput.files.length} រូបថត... (Uploading photos...)`);
 
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        weddingData.gallery = weddingData.gallery || [];
-        weddingData.gallery.push({
-          id: Date.now() + Math.round(Math.random() * 1000),
-          url: data.url,
-          caption_kh: 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម',
-          caption_en: 'Sweet Memories'
+  let addedCount = 0;
+  weddingData.gallery = weddingData.gallery || [];
+
+  try {
+    for (let file of fileInput.files) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
         });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          // Avoid duplicate photo
+          const alreadyExists = weddingData.gallery.some(p => (p.url || '').trim() === data.url.trim());
+          if (!alreadyExists) {
+            weddingData.gallery.push({
+              id: Date.now() + Math.round(Math.random() * 1000),
+              url: data.url,
+              caption_kh: 'អនុស្សាវរីយ៍ដ៏ផ្អែមល្ហែម',
+              caption_en: 'Sweet Memories'
+            });
+            addedCount++;
+          }
+        }
+      } catch (e) {
+        console.error('File upload error:', e);
       }
-    } catch (e) {
-      console.error(e);
     }
+
+    if (addedCount > 0) {
+      // Save gallery update
+      await fetch('/api/wedding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...weddingData })
+      });
+      showToast(`✓ បាន Upload ${addedCount} រូបថតចូលកម្រងរូបភាពជោគជ័យ!`);
+      await loadWeddingData();
+    } else {
+      showToast('ពុំមានរូបថតថ្មីត្រូវបានបញ្ចូលទេ (ប្រហែលជារូបថតស្ទួន)', 'info');
+    }
+  } catch (err) {
+    console.error('Upload gallery error:', err);
+    showToast('មានបញ្ហាក្នុងការ Upload រូបថត', 'error');
+  } finally {
+    try { fileInput.value = ''; } catch (e) {}
+    fileInput.disabled = false;
+    isUploadingGallery = false;
   }
-
-  // Save gallery update
-  await fetch('/api/wedding', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...weddingData })
-  });
-
-  try { fileInput.value = ''; } catch (e) {}
-  showToast('បាន Upload រូបថតចូលកម្រងរូបភាពជោគជ័យ!');
-  loadWeddingData();
 };
 
 function updateThemeSelectionUI(themeId) {
@@ -1552,10 +1618,12 @@ window.submitGoogleDrivePhotos = async function() {
 
   let addedCount = 0;
   weddingData.gallery = weddingData.gallery || [];
+  const existingUrls = new Set(weddingData.gallery.map(p => resolveGoogleDriveUrl(p.url || '').trim()));
 
   for (let rawUrl of lines) {
     const resolved = resolveGoogleDriveUrl(rawUrl);
-    if (resolved) {
+    if (resolved && !existingUrls.has(resolved)) {
+      existingUrls.add(resolved);
       weddingData.gallery.push({
         id: Date.now() + Math.round(Math.random() * 10000) + addedCount,
         url: resolved,
@@ -1567,7 +1635,7 @@ window.submitGoogleDrivePhotos = async function() {
   }
 
   if (addedCount === 0) {
-    showToast('ពុំមាន Link ត្រឹមត្រូវទេ');
+    showToast('ពុំមានរូបថតថ្មីទេ (រូបថតទាំងនេះមានក្នុង Gallery រួចហើយ ឬ Link មិនត្រឹមត្រូវ)', 'info');
     return;
   }
 

@@ -593,11 +593,23 @@ app.put('/api/wedding', requireAdmin, (req, res) => {
     req.body.wedding.video_embed = formatYouTubeEmbedUrl(req.body.wedding.video_embed);
   }
 
-  // Sanitize and convert any Google Drive links to high-speed CDN URLs
+  // Sanitize, convert Google Drive links to CDN URLs, and remove duplicate photos
   if (req.body.gallery && Array.isArray(req.body.gallery)) {
+    const seenUrls = new Set();
+    const cleanGallery = [];
     req.body.gallery.forEach(item => {
-      if (item && item.url) item.url = resolveGoogleDriveUrl(item.url);
+      if (item && item.url) {
+        const resolvedUrl = resolveGoogleDriveUrl(String(item.url).trim());
+        if (resolvedUrl && !seenUrls.has(resolvedUrl)) {
+          seenUrls.add(resolvedUrl);
+          cleanGallery.push({
+            ...item,
+            url: resolvedUrl
+          });
+        }
+      }
     });
+    req.body.gallery = cleanGallery;
   }
   if (req.body.couple && req.body.couple.cover_photo) {
     req.body.couple.cover_photo = resolveGoogleDriveUrl(req.body.couple.cover_photo);
@@ -1194,6 +1206,73 @@ function renderInvitationPage(req, res) {
 
     // Insert new tags right after viewport
     html = html.replace(/(<meta\s+name="viewport"[^>]*>)/i, `$1\n${metaTags}`);
+
+    // Dynamic Photo SSR: Inject latest couple & portrait photos directly into HTML to eliminate old image flash
+    const groomPhoto = resolveGoogleDriveUrl((w.groom && w.groom.photo) || '/uploads/groom-real-portrait.jpg');
+    const bridePhoto = resolveGoogleDriveUrl((w.bride && w.bride.photo) || '/uploads/bride-real-portrait.jpg');
+    const couplePhoto = resolveGoogleDriveUrl(w.couple_photo || '/uploads/upload-1790497247828-901277914.jpg');
+
+    html = html.replace(/(<img\s+id="cover-groom-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(groomPhoto)}$2`);
+    html = html.replace(/(<img\s+id="cover-bride-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(bridePhoto)}$2`);
+    html = html.replace(/(<img\s+id="groom-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(groomPhoto)}$2`);
+    html = html.replace(/(<img\s+id="bride-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(bridePhoto)}$2`);
+    html = html.replace(/(<img\s+id="main-couple-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(couplePhoto)}$2`);
+
+    // Dynamic QR SSR
+    if (weddingData.digital_gift) {
+      if (weddingData.digital_gift.groom_account && weddingData.digital_gift.groom_account.qr_image) {
+        const gQr = resolveGoogleDriveUrl(weddingData.digital_gift.groom_account.qr_image);
+        html = html.replace(/(<img\s+id="groom-qr-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(gQr)}$2`);
+      }
+      if (weddingData.digital_gift.bride_account && weddingData.digital_gift.bride_account.qr_image) {
+        const bQr = resolveGoogleDriveUrl(weddingData.digital_gift.bride_account.qr_image);
+        html = html.replace(/(<img\s+id="bride-qr-img"[^>]*?\ssrc=")[^"]*(")/i, `$1${escapeHTML(bQr)}$2`);
+      }
+    }
+
+    // Dynamic Gallery SSR: Pre-render gallery photos directly into initial HTML
+    if (weddingData.gallery && Array.isArray(weddingData.gallery) && weddingData.gallery.length > 0) {
+      const seenGallery = new Set();
+      const galleryItemsHtml = weddingData.gallery
+        .filter(item => {
+          if (!item || !item.url) return false;
+          const u = resolveGoogleDriveUrl(item.url).trim();
+          if (!u || seenGallery.has(u)) return false;
+          seenGallery.add(u);
+          return true;
+        })
+        .map((img, index) => {
+          const directUrl = resolveGoogleDriveUrl(img.url);
+          const tiltClass = index % 2 === 0 ? 'hover:rotate-1' : 'hover:-rotate-1';
+          return `        <div class="relative overflow-hidden rounded-3xl p-1.5 bg-white/70 backdrop-blur-xl shadow-md border border-white/85 ring-1 ring-[#4E7D63]/15 group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] ${tiltClass}" onclick="openLightboxByIndex(${index})">
+          <div class="w-full h-full rounded-2xl overflow-hidden relative">
+            <img src="${escapeHTML(directUrl)}" alt="${escapeHTML(img.caption_en || 'Wedding')}" onerror="this.onerror=null; this.src='/images/wedding-og-cover.jpg'; this.classList.add('opacity-75');" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#1E4833]/90 via-[#1E4833]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+              <span class="text-white text-xs sm:text-sm font-medium font-khmer-body leading-snug drop-shadow-md">
+                ${escapeHTML(img.caption_kh || '')}
+              </span>
+            </div>
+            <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/75 backdrop-blur-md text-[10px] text-[#1E4833] font-bold opacity-0 group-hover:opacity-100 transition font-mono border border-white/80 shadow-xs">
+              🔍 #${index + 1}
+            </div>
+          </div>
+        </div>`;
+        }).join('\n');
+
+      html = html.replace(
+        /(<div id="gallery-container"[^>]*>)([\s\S]*?)(<\/div>)/i,
+        `$1\n${galleryItemsHtml}\n      $3`
+      );
+    }
+
+    // Embed initial data script for zero-latency instant client hydration
+    const safeData = { ...weddingData };
+    delete safeData.admin;
+    const initialScript = `<script>
+    window.__INITIAL_WEDDING_DATA__ = ${JSON.stringify(safeData).replace(/<\/script>/gi, '<\\/script>')};
+    ${foundGuest ? `window.__INITIAL_GUEST__ = ${JSON.stringify(foundGuest).replace(/<\/script>/gi, '<\\/script>')};` : ''}
+  </script>`;
+    html = html.replace(/(<\/head>)/i, `  ${initialScript}\n$1`);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(html);

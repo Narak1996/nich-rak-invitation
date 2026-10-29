@@ -142,6 +142,15 @@ function hidePreloader() {
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
   // Safety timeout so preloader never hangs indefinitely
+  // Instant hydration from SSR if available (eliminates old image flash)
+  if (window.__INITIAL_WEDDING_DATA__) {
+    weddingData = window.__INITIAL_WEDDING_DATA__;
+    if (window.__INITIAL_GUEST__) {
+      currentGuest = window.__INITIAL_GUEST__;
+    }
+    renderAll();
+  }
+
   const preloaderTimer = setTimeout(() => {
     hidePreloader();
   }, 3500);
@@ -564,14 +573,30 @@ function renderGallery() {
 
   if (!weddingData.gallery || !weddingData.gallery.length) return;
 
-  weddingData.gallery.forEach((img, index) => {
+  // Deduplicate gallery photos to prevent duplicate display
+  const seenUrls = new Set();
+  const uniqueGallery = [];
+  weddingData.gallery.forEach(item => {
+    const u = resolveGoogleDriveUrl(item.url || '').trim();
+    if (u && !seenUrls.has(u)) {
+      seenUrls.add(u);
+      uniqueGallery.push({
+        ...item,
+        url: u
+      });
+    }
+  });
+
+  weddingData.gallery = uniqueGallery;
+
+  uniqueGallery.forEach((img, index) => {
     const directUrl = resolveGoogleDriveUrl(img.url);
     const tiltClass = index % 2 === 0 ? 'hover:rotate-1' : 'hover:-rotate-1';
     const el = document.createElement('div');
     el.className = `relative overflow-hidden rounded-3xl p-1.5 bg-white/70 backdrop-blur-xl shadow-md border border-white/85 ring-1 ring-[#4E7D63]/15 group cursor-pointer aspect-4/5 transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] ${tiltClass}`;
     el.innerHTML = `
       <div class="w-full h-full rounded-2xl overflow-hidden relative">
-        <img src="${directUrl}" alt="${img.caption_en || 'Wedding'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
+        <img src="${directUrl}" alt="${img.caption_en || 'Wedding'}" onerror="this.onerror=null; this.src='/images/wedding-og-cover.jpg'; this.classList.add('opacity-75');" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108" loading="lazy">
         <div class="absolute inset-0 bg-gradient-to-t from-[#1E4833]/90 via-[#1E4833]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
           <span class="text-white text-xs sm:text-sm font-medium font-khmer-body leading-snug drop-shadow-md">
             ${isKh ? (img.caption_kh || '') : (img.caption_en || '')}
@@ -683,6 +708,10 @@ function updateLightboxDisplay() {
     img.src = resolveGoogleDriveUrl(item.url);
     img.alt = caption || 'Photo';
     img.onload = () => { img.style.opacity = '1'; };
+    img.onerror = () => {
+      img.style.opacity = '1';
+      img.src = '/images/wedding-og-cover.jpg';
+    };
   }
   if (cap) {
     cap.textContent = caption;
