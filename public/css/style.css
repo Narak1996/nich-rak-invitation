@@ -1733,10 +1733,10 @@ body.theme-khmer-traditional #envelope-screen {
 .cover-couple-diptych {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 12px !important;
+  gap: 10px !important;
   width: 100% !important;
-  max-width: 360px !important;
-  margin: 8px auto 14px !important;
+  max-width: 285px !important;
+  margin: 4px auto 26px !important;
   position: relative !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1746,10 +1746,10 @@ body.theme-khmer-traditional #envelope-screen {
   width: 100% !important;
   max-width: 100% !important;
   position: relative !important;
-  border-radius: 26px !important;
-  padding: 5px !important;
+  border-radius: 20px !important;
+  padding: 4px !important;
   background: rgba(255, 255, 255, 0.96) !important;
-  box-shadow: 0 12px 30px -6px rgba(230, 140, 165, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.9) inset !important;
+  box-shadow: 0 10px 25px -5px rgba(230, 140, 165, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.9) inset !important;
   box-sizing: border-box !important;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
 }
@@ -1772,7 +1772,8 @@ body.theme-khmer-traditional #envelope-screen {
 .cover-portrait-img-wrap {
   width: 100% !important;
   aspect-ratio: 3 / 4 !important;
-  border-radius: 22px !important;
+  max-height: 235px !important;
+  border-radius: 16px !important;
   overflow: hidden !important;
   position: relative !important;
   background: #FAF6ED !important;
@@ -1782,14 +1783,14 @@ body.theme-khmer-traditional #envelope-screen {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  object-position: center 20% !important;
-  transform: scale(1.2) !important;
-  transform-origin: center 22% !important;
+  object-position: center 18% !important;
+  transform: scale(1.06) !important;
+  transform-origin: center 20% !important;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .cover-portrait-card:hover .cover-portrait-img {
-  transform: scale(1.26) !important;
+  transform: scale(1.15) !important;
 }
 
 .cover-couple-connector {

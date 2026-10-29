@@ -97,9 +97,9 @@
       display: grid !important;
       grid-template-columns: 1fr 1fr !important;
       gap: 10px !important;
-      max-width: 325px !important;
+      max-width: 285px !important;
       width: 100% !important;
-      margin: 0 auto 18px !important;
+      margin: 4px auto 26px !important;
       position: relative !important;
       box-sizing: border-box !important;
     }
@@ -112,29 +112,29 @@
 
     .cover-portrait-img-wrap {
       width: 100% !important;
-      aspect-ratio: 3 / 4.2 !important;
-      height: 38vh !important;
-      min-height: 250px !important;
-      max-height: 345px !important;
-      border-radius: 20px !important;
+      aspect-ratio: 3 / 4 !important;
+      height: 27vh !important;
+      min-height: 180px !important;
+      max-height: 235px !important;
+      border-radius: 16px !important;
       overflow: hidden !important;
       position: relative !important;
       background: #FAF6ED !important;
     }
 
-    /* Zoom in image inside portrait cards */
+    /* Zoom in image inside portrait cards - elegant balance */
     .cover-portrait-img {
       width: 100% !important;
       height: 100% !important;
       object-fit: cover !important;
-      object-position: center 20% !important;
-      transform: scale(1.2) !important;
-      transform-origin: center 22% !important;
+      object-position: center 18% !important;
+      transform: scale(1.06) !important;
+      transform-origin: center 20% !important;
       transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
 
     .cover-portrait-card:hover .cover-portrait-img {
-      transform: scale(1.26) !important;
+      transform: scale(1.15) !important;
     }
 
     /* Bottom Navigation Dock - Truly Enlarged, Touch-Friendly, Auto-Hiding */
@@ -420,7 +420,7 @@
           <div class="w-full relative my-1.5 sm:my-2 flex flex-col items-center">
             
             <!-- Dual Portrait Diptych with Interlocking Heart Badge -->
-            <div class="cover-couple-diptych w-full max-w-[360px] mx-auto relative">
+            <div class="cover-couple-diptych w-full max-w-[290px] mx-auto relative">
               
               <!-- Groom Portrait Card (Left) -->
               <div class="cover-portrait-card groom-card group cursor-pointer" onclick="openCoverGroomLightbox()" title="ចុចដើម្បីមើលរូបធំ (Click to Zoom)">
