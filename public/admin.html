@@ -95,6 +95,34 @@
       </div>
     </div>
 
+    <!-- GLOBAL DYNAMIC CONNECTION BANNER (Always Visible on Main Dashboard) -->
+    <div id="global-db-banner" class="mb-6 p-4 rounded-2xl border transition-all bg-gray-50 border-gray-200 shadow-2xs">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div id="global-db-icon-bg" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gray-200 text-base">
+            <span id="global-db-icon">⏳</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="global-db-title" class="font-bold text-xs sm:text-sm text-gray-800">កំពុងពិនិត្យស្ថានភាព Database...</h3>
+              <span id="global-db-ping" class="hidden text-[10px] font-mono px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-600">-- ms</span>
+            </div>
+            <p id="global-db-desc" class="text-[11px] text-gray-500 mt-0.5">កំពុងភ្ជាប់ទៅកាន់ MongoDB Atlas...</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="reconnectDB()" class="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-2xs">
+            <svg id="global-reconnect-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>តេស្តឡើងវិញ</span>
+          </button>
+          <button type="button" onclick="switchToDatabaseTab()" class="px-3 py-1.5 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-2xs">
+            <span>🗄️ មើលលម្អិត (View Details)</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- TABS -->
     <div class="flex items-center gap-2 border-b border-[#E5D5BC] mb-6 overflow-x-auto pb-2">
       <button class="admin-tab active px-4 py-2.5 rounded-xl font-bold text-xs transition" data-target="tab-guests">

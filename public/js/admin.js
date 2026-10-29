@@ -198,6 +198,41 @@ window.loadDBDiagnostics = async function() {
       if (bannerPing) bannerPing.classList.add('hidden');
     }
 
+    // Global Dashboard Banner (Always Visible on Main Dashboard)
+    const gBanner = document.getElementById('global-db-banner');
+    const gIconBg = document.getElementById('global-db-icon-bg');
+    const gIcon = document.getElementById('global-db-icon');
+    const gTitle = document.getElementById('global-db-title');
+    const gDesc = document.getElementById('global-db-desc');
+    const gPing = document.getElementById('global-db-ping');
+
+    if (d.connected) {
+      if (gBanner) gBanner.className = 'mb-6 p-4 rounded-2xl border transition-all bg-green-50/80 border-green-200 shadow-2xs';
+      if (gIconBg) gIconBg.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-green-500 text-white text-base shadow-xs';
+      if (gIcon) gIcon.textContent = '🟢';
+      if (gTitle) gTitle.textContent = `MongoDB Atlas Connected: "${d.databaseName || 'wedding'}"`;
+      if (gDesc) gDesc.textContent = `Cloud Database ដំណើរការរលូន | Host: ${d.host || 'Cluster'} | Collections In Sync`;
+      if (gPing) {
+        gPing.classList.remove('hidden');
+        gPing.textContent = (d.pingMs !== null ? `${d.pingMs} ms` : 'Active');
+        gPing.className = 'text-[10px] font-mono px-2 py-0.5 rounded-md bg-green-100 border border-green-300 text-green-800 font-bold';
+      }
+    } else if (d.hasEnv) {
+      if (gBanner) gBanner.className = 'mb-6 p-4 rounded-2xl border transition-all bg-red-50/90 border-red-200 shadow-2xs';
+      if (gIconBg) gIconBg.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-red-500 text-white text-base shadow-xs';
+      if (gIcon) gIcon.textContent = '🔴';
+      if (gTitle) gTitle.textContent = 'កំហុសតភ្ជាប់ MongoDB (Connection Error)';
+      if (gDesc) gDesc.textContent = d.error ? (d.error.slice(0, 110) + '... [ចុច មើលលម្អិត ដើម្បីពិនិត្យវិធីដោះស្រាយ]') : 'មិនអាចភ្ជាប់ទៅកាន់ MongoDB Atlas បានឡើយ';
+      if (gPing) gPing.classList.add('hidden');
+    } else {
+      if (gBanner) gBanner.className = 'mb-6 p-4 rounded-2xl border transition-all bg-amber-50/90 border-amber-200 shadow-2xs';
+      if (gIconBg) gIconBg.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-amber-400 text-amber-900 text-base shadow-xs';
+      if (gIcon) gIcon.textContent = '🟡';
+      if (gTitle) gTitle.textContent = 'ដំណើរការលើ Local File Storage (data/*.json)';
+      if (gDesc) gDesc.textContent = 'មិនទាន់មាន MONGODB_URI ក្នុង Environment។ ចុច "មើលលម្អិត" ដើម្បីមើលការណែនាំភ្ជាប់ Cloud Database។';
+      if (gPing) gPing.classList.add('hidden');
+    }
+
     // 3. Error Box
     const errorBox = document.getElementById('db-error-box');
     const errorMsg = document.getElementById('db-error-message');
@@ -293,6 +328,7 @@ window.reconnectDB = async function() {
     showToast('កំហុសពេលភ្ជាប់ DB៖ ' + err.message);
   } finally {
     if (spin) spin.classList.remove('animate-spin');
+    if (gSpin) gSpin.classList.remove('animate-spin');
   }
 };
 
