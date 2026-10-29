@@ -1464,9 +1464,9 @@ function initBottomNavScrollSpy() {
     });
   });
 
-  // Reveal dock whenever user touches screen
+  // Reveal dock whenever user touches screen (only when scrolled into invitation content)
   document.addEventListener('touchstart', () => {
-    if (dock) {
+    if (dock && (window.pageYOffset || document.documentElement.scrollTop) >= 80) {
       dock.classList.remove('dock-hidden');
       dock.classList.remove('nav-dock-hidden');
     }
@@ -1475,24 +1475,36 @@ function initBottomNavScrollSpy() {
   let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
   let dockHideTimeout = null;
 
+  // Initially hide dock if page starts at top full-screen cover view
+  if (dock && (window.pageYOffset || document.documentElement.scrollTop) < 80) {
+    dock.classList.add('dock-hidden');
+  }
+
   window.addEventListener('scroll', () => {
     const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-    // Mobile dock auto-hide on scroll down, reveal on scroll up
-    if (dock && window.innerWidth <= 640) {
-      const scrollDiff = currentScrollY - lastScrollY;
-      if (scrollDiff > 12 && currentScrollY > 250) {
+    // Full-screen cover clean view vs mobile scroll auto-hide
+    if (dock) {
+      if (currentScrollY < 80) {
+        // Full-screen cover: keep dock hidden for 100% clean cinematic cover
         dock.classList.add('dock-hidden');
-      } else if (scrollDiff < -6 || currentScrollY <= 150) {
+      } else if (window.innerWidth <= 640) {
+        const scrollDiff = currentScrollY - lastScrollY;
+        if (scrollDiff > 12 && currentScrollY > 250) {
+          dock.classList.add('dock-hidden');
+        } else if (scrollDiff < -6) {
+          dock.classList.remove('dock-hidden');
+        }
+
+        clearTimeout(dockHideTimeout);
+        dockHideTimeout = setTimeout(() => {
+          if ((window.pageYOffset || document.documentElement.scrollTop) >= 80) {
+            dock.classList.remove('dock-hidden');
+          }
+        }, 1400);
+      } else {
         dock.classList.remove('dock-hidden');
       }
-
-      clearTimeout(dockHideTimeout);
-      dockHideTimeout = setTimeout(() => {
-        dock.classList.remove('dock-hidden');
-      }, 1400);
-    } else if (dock) {
-      dock.classList.remove('dock-hidden');
     }
 
     const scrollPos = currentScrollY + 250;

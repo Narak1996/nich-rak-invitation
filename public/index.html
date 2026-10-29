@@ -51,10 +51,47 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Custom Stylesheet (with cache-busting version query) -->
-  <link rel="stylesheet" href="/css/style.css?v=20261027_responsive_v3">
+  <link rel="stylesheet" href="/css/style.css?v=20261029_fullscreen_cover">
 
   <!-- Critical Responsive Styles (Bypasses mobile browser cache) -->
   <style id="critical-responsive-overrides">
+    /* 100% Full-Screen Cinematic Opening Cover (100dvh / 100vh) */
+    #opening-cover-section {
+      min-height: 100dvh !important;
+      min-height: 100vh;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin-bottom: 2rem !important;
+      padding-top: 4px !important;
+      padding-bottom: 6px !important;
+      box-sizing: border-box !important;
+    }
+
+    #welcome-khmer.pinterest-opening-poster {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-height: calc(100dvh - 12px) !important;
+      min-height: calc(100vh - 12px);
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      box-sizing: border-box !important;
+    }
+
+    .cover-main-content-wrap {
+      flex: 1 1 auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      width: 100% !important;
+      height: 100% !important;
+      box-sizing: border-box !important;
+    }
+
     /* Bottom Navigation Dock - Truly Enlarged, Touch-Friendly, Auto-Hiding */
     #bottom-nav-dock {
       position: fixed !important;
@@ -289,17 +326,17 @@
   <main class="relative z-10 w-full max-w-[480px] sm:max-w-[500px] mx-auto px-3.5 sm:px-4 pt-1 sm:pt-2 pb-32">
 
     <!-- ================= 1. MODERN BOTANICAL GRAND OPENING COVER ================= -->
-    <section id="opening-cover-section" class="w-full flex justify-center mb-8 sm:mb-12">
-      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full rounded-3xl shadow-2xl">
+    <section id="opening-cover-section" class="w-full min-h-[100dvh] flex flex-col justify-center items-center mb-8 sm:mb-12">
+      <div id="welcome-khmer" class="theme-welcome-card pinterest-opening-poster relative overflow-hidden select-none w-full min-h-[calc(100dvh-12px)] sm:min-h-[calc(100dvh-20px)] flex flex-col justify-between rounded-3xl shadow-2xl">
 
         <!-- Poster Main Content Body -->
-        <div class="relative z-15 pt-4 sm:pt-5 px-4 pb-6 flex flex-col items-center">
+        <div class="cover-main-content-wrap relative z-15 pt-3 sm:pt-4 px-3.5 sm:px-4 pb-4 sm:pb-5 flex-1 flex flex-col justify-between items-center w-full">
           
           <!-- Header: 3D Gold Rings & Titles -->
           <div class="text-center w-full mt-0 relative">
             <!-- 3D Intertwined Gold Rings with Float Animation -->
             <div class="opening-rings-wrapper mx-auto mb-1 relative cursor-pointer" onclick="scrollToTicketContent()" title="ចុចដើម្បីបើកសំបុត្រ (Open Invitation)">
-              <img src="/images/opening/gold-rings-3d.png" alt="Gold Wedding Rings" class="w-14 h-14 object-contain mx-auto opening-rings-float" style="width: 54px; height: 54px; max-width: 54px; max-height: 54px;">
+              <img src="/images/opening/gold-rings-3d.png" alt="Gold Wedding Rings" class="w-14 h-14 object-contain mx-auto opening-rings-float" style="width: 52px; height: 52px; max-width: 52px; max-height: 52px;">
               <span class="opening-ring-glint">✦</span>
             </div>
 
@@ -335,7 +372,7 @@
           </div>
 
           <!-- Middle Section: Real Groom & Bride Portrait Showcase -->
-          <div class="w-full relative my-2 flex flex-col items-center">
+          <div class="w-full relative my-1.5 sm:my-2 flex flex-col items-center">
             
             <!-- Dual Portrait Diptych with Interlocking Heart Badge -->
             <div class="cover-couple-diptych w-full max-w-[360px] mx-auto relative">
@@ -384,7 +421,7 @@
           </div>
 
           <!-- Subtle Modern Scroll Indicator (Bilingual / Khmer Translated) -->
-          <div class="mt-4 flex flex-col items-center opacity-75 hover:opacity-100 transition cursor-pointer select-none" onclick="scrollToTicketContent()" title="សូមអូសចុះក្រោម • Scroll Down">
+          <div class="mt-auto pt-2 flex flex-col items-center opacity-85 hover:opacity-100 transition cursor-pointer select-none" onclick="scrollToTicketContent()" title="សូមអូសចុះក្រោម • Scroll Down">
             <span class="text-[10px] sm:text-[11px] font-khmer-title tracking-wider text-[#9B7126] font-semibold" id="cover-scroll-indicator-text" data-kh="សូមអូសចុះក្រោម" data-en="Scroll Down">
               សូមអូសចុះក្រោម
             </span>

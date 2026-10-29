@@ -1274,7 +1274,11 @@ body.theme-khmer-traditional #envelope-screen {
   max-width: 100% !important;
   margin: 0 auto;
   box-sizing: border-box !important;
-  min-height: auto;
+  min-height: calc(100dvh - 12px) !important;
+  min-height: calc(100vh - 12px);
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
   background: rgba(255, 255, 255, 0.68) !important;
   backdrop-filter: blur(24px) saturate(170%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(170%) !important;
