@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -30,8 +31,11 @@ const db = require('./db');
 
 // Ensure DB initialization works on both local server and Vercel serverless
 let dbInitPromise = null;
+let lastDbAttempt = 0;
 function ensureDB() {
-  if (!dbInitPromise) {
+  const now = Date.now();
+  if (!dbInitPromise || (!db.isDBConnected() && now - lastDbAttempt > 5000)) {
+    lastDbAttempt = now;
     dbInitPromise = db.initDB();
   }
   return dbInitPromise;
@@ -888,7 +892,10 @@ app.get('/api/qr-code', async (req, res) => {
 });
 
 // Admin: Get all guests
-app.get('/api/guests', requireAdmin, (req, res) => {
+app.get('/api/guests', requireAdmin, async (req, res) => {
+  if (db.isDBConnected()) {
+    await db.refreshFromMongoDB(true);
+  }
   const guests = readJSON(GUESTS_FILE, []);
   res.json(guests);
 });
@@ -1018,11 +1025,22 @@ app.put('/api/guests/:id', requireAdmin, (req, res) => {
   res.json({ success: true, guest: guests[index] });
 });
 
+// Admin: Delete ALL guests
+app.delete('/api/guests/all', requireAdmin, async (req, res) => {
+  try {
+    await db.saveGuests([]);
+    res.json({ success: true, message: 'All guests deleted' });
+  } catch (err) {
+    console.error('Failed to delete all guests:', err);
+    res.status(500).json({ error: 'Failed to delete all guests' });
+  }
+});
+
 // Admin: Delete guest
-app.delete('/api/guests/:id', requireAdmin, (req, res) => {
+app.delete('/api/guests/:id', requireAdmin, async (req, res) => {
   let guests = readJSON(GUESTS_FILE, []);
   guests = guests.filter(g => g.id !== req.params.id);
-  writeJSON(GUESTS_FILE, guests);
+  await db.saveGuests(guests);
   res.json({ success: true, message: 'Guest deleted' });
 });
 
@@ -1320,8 +1338,10 @@ app.use((req, res) => {
 app.get('/api/db-status', requireAdmin, (req, res) => {
   res.json({
     connected: db.isDBConnected(),
-    type: db.isDBConnected() ? 'MongoDB Atlas (Cloud)' : 'Local File Storage (data/*.json)',
-    hasEnv: Boolean(process.env.MONGODB_URI)
+    databaseName: db.getDatabaseName() || null,
+    type: db.isDBConnected() ? `MongoDB Atlas (${db.getDatabaseName()})` : 'Local File Storage (data/*.json)',
+    hasEnv: Boolean(process.env.MONGODB_URI && process.env.MONGODB_URI.trim()),
+    error: db.getConnectionError() || null
   });
 });
 

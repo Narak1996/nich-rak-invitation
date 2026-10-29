@@ -79,14 +79,22 @@ async function checkDBStatus() {
         badge.classList.remove('hidden');
         if (data.connected) {
           dot.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
-          text.textContent = '🟢 MongoDB Atlas Connected';
+          text.textContent = '🟢 MongoDB: ' + (data.databaseName || 'Connected');
           badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-xl text-[11px] font-semibold text-green-700';
-          badge.title = 'ទិន្នន័យត្រូវបានរក្សាទុកលើ Cloud MongoDB ឥតបាត់បង់ពេល Deploy';
+          badge.title = 'ទិន្នន័យត្រូវបានភ្ជាប់ផ្ទាល់ជាមួយ MongoDB Atlas Database: ' + (data.databaseName || '');
+          badge.onclick = null;
+        } else if (data.hasEnv) {
+          dot.className = 'w-2 h-2 rounded-full bg-red-500';
+          text.textContent = '🔴 MongoDB Error';
+          badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-red-50 border border-red-200 rounded-xl text-[11px] font-semibold text-red-700 cursor-pointer';
+          badge.title = 'DB Error: ' + (data.error || 'Connection Failed') + ' (ចុចដើម្បីមើល)';
+          badge.onclick = () => alert('MongoDB Connection Error:\n\n' + (data.error || 'Failed to connect') + '\n\nសូមពិនិត្យ IP Whitelist (0.0.0.0/0) លើ MongoDB Atlas Network Access និង Username/Password ក្នុង MONGODB_URI។');
         } else {
           dot.className = 'w-2 h-2 rounded-full bg-amber-500';
           text.textContent = '🟡 Local File Storage';
-          badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] font-semibold text-amber-800';
-          badge.title = 'កំណត់ MONGODB_URI លើ Render ដើម្បីភ្ជាប់ Cloud Database';
+          badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] font-semibold text-amber-800 cursor-pointer';
+          badge.title = 'មិនទាន់មាន MONGODB_URI! ចុចដើម្បីមើលការណែនាំ';
+          badge.onclick = () => alert('ប្រព័ន្ធកំពុងដំណើរការលើ Local JSON Files ព្រោះពុំទាន់មាន MONGODB_URI។\n\nដើម្បីភ្ជាប់ Cloud Database:\n1. បង្កើត file .env រួចដាក់ MONGODB_URI="mongodb+srv://..."\n2. ឬប្រសិនបើបង្ហោះលើ Render សូមចូលទៅ Environment Variables រួចបន្ថែម MONGODB_URI។');
         }
       }
     }
@@ -1253,6 +1261,23 @@ window.deleteGuest = async function(id) {
   showToast('បានលុបភ្ញៀវជោគជ័យ!');
   loadGuests();
   loadStats();
+};
+
+window.clearAllGuests = async function() {
+  if (!confirm('តើអ្នកពិតជាចង់លុបភ្ញៀវទាំងអស់មែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានឡើយ! (Are you sure you want to delete ALL guests?)')) return;
+  try {
+    const res = await fetch('/api/guests/all', { method: 'DELETE' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('បានលុបភ្ញៀវទាំងអស់ជោគជ័យ!');
+      loadGuests();
+      loadStats();
+    } else {
+      showToast('បរាជ័យក្នុងការលុបភ្ញៀវទាំងអស់');
+    }
+  } catch (err) {
+    showToast('កំហុសប្រព័ន្ធក្នុងការលុបភ្ញៀវ');
+  }
 };
 
 window.deleteWish = async function(id) {

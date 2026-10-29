@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { MongoClient, Binary } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
@@ -49,12 +50,16 @@ const cache = {
 let mongoClient = null;
 let mongoDb = null;
 let isConnected = false;
+let databaseName = null;
+let lastConnectionError = null;
 
 // Initialize Database connection and auto-migration
 async function initDB() {
   const uri = process.env.MONGODB_URI;
   if (!uri || !uri.trim()) {
+    lastConnectionError = 'No MONGODB_URI provided in environment or .env file';
     console.log('[DB] No MONGODB_URI provided. Running in file-based mode (data/*.json).');
+    isConnected = false;
     return false;
   }
 
@@ -67,13 +72,16 @@ async function initDB() {
 
     await mongoClient.connect();
     mongoDb = mongoClient.db();
+    databaseName = mongoDb.databaseName;
     isConnected = true;
-    console.log(`[DB] Successfully connected to MongoDB database: "${mongoDb.databaseName}"`);
+    lastConnectionError = null;
+    console.log(`[DB] Successfully connected to MongoDB database: "${databaseName}"`);
 
     // Auto-migrate or sync existing collections
     await syncWithMongoDB();
     return true;
   } catch (err) {
+    lastConnectionError = err.message;
     console.error('[DB] Failed to connect to MongoDB:', err.message);
     console.log('[DB] Falling back to file-based mode (data/*.json).');
     isConnected = false;
@@ -92,29 +100,16 @@ async function refreshFromMongoDB(force = false) {
   lastSyncTime = now;
 
   try {
-    const metaCol = mongoDb.collection('system_meta');
-    const isInitDone = await metaCol.findOne({ _key: 'initial_migration_completed' });
-
-    // 1. GUESTS
+    // 1. GUESTS - MongoDB Atlas is the single source of truth
     const guestsCol = mongoDb.collection('guests');
-    if (!isInitDone) {
-      const guestCount = await guestsCol.countDocuments();
-      if (guestCount === 0 && cache.guests && cache.guests.length > 0) {
-        console.log(`[DB] First-time migration: inserting ${cache.guests.length} local guests to MongoDB...`);
-        const docs = cache.guests.map(g => ({ ...g }));
-        await guestsCol.insertMany(docs);
-      }
-    } else {
-      // User may have deleted guests in MongoDB: update cache with actual DB state (even if empty [])
-      const dbGuests = await guestsCol.find({}, { projection: { _id: 0 } }).toArray();
-      cache.guests = Array.isArray(dbGuests) ? dbGuests : [];
-      writeLocalJSON(GUESTS_FILE, cache.guests);
-    }
+    const dbGuests = await guestsCol.find({}, { projection: { _id: 0 } }).toArray();
+    cache.guests = Array.isArray(dbGuests) ? dbGuests : [];
+    writeLocalJSON(GUESTS_FILE, cache.guests);
 
     // 2. WEDDING DATA
     const weddingCol = mongoDb.collection('wedding');
     const dbWedding = await weddingCol.findOne({ _key: 'main_settings' }, { projection: { _id: 0 } });
-    if (!isInitDone && !dbWedding && cache.wedding && Object.keys(cache.wedding).length > 0) {
+    if (!dbWedding && cache.wedding && Object.keys(cache.wedding).length > 0) {
       console.log('[DB] First-time migration: inserting wedding settings to MongoDB...');
       await weddingCol.updateOne(
         { _key: 'main_settings' },
@@ -127,44 +122,21 @@ async function refreshFromMongoDB(force = false) {
       writeLocalJSON(WEDDING_FILE, cache.wedding);
     }
 
-    // 3. WISHES
+    // 3. WISHES - MongoDB Atlas is the single source of truth
     const wishesCol = mongoDb.collection('wishes');
-    if (!isInitDone) {
-      const wishesCount = await wishesCol.countDocuments();
-      if (wishesCount === 0 && cache.wishes && cache.wishes.length > 0) {
-        console.log(`[DB] First-time migration: inserting ${cache.wishes.length} wishes to MongoDB...`);
-        await wishesCol.insertMany(cache.wishes.map(w => ({ ...w })));
-      }
-    } else {
-      // User may have deleted wishes in MongoDB: update cache with actual DB state (even if empty [])
-      const dbWishes = await wishesCol.find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).toArray();
-      cache.wishes = Array.isArray(dbWishes) ? dbWishes : [];
-      writeLocalJSON(WISHES_FILE, cache.wishes);
-    }
+    const dbWishes = await wishesCol.find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).toArray();
+    cache.wishes = Array.isArray(dbWishes) ? dbWishes : [];
+    writeLocalJSON(WISHES_FILE, cache.wishes);
 
     // 4. USERS
     const usersCol = mongoDb.collection('users');
-    if (!isInitDone) {
-      const userCount = await usersCol.countDocuments();
-      if (userCount === 0 && cache.users && cache.users.length > 0) {
-        console.log(`[DB] First-time migration: inserting ${cache.users.length} admin accounts to MongoDB...`);
-        await usersCol.insertMany(cache.users.map(u => ({ ...u })));
-      }
-    } else {
-      const dbUsers = await usersCol.find({}, { projection: { _id: 0 } }).toArray();
-      if (dbUsers && dbUsers.length > 0) {
-        cache.users = dbUsers;
-        writeLocalJSON(USERS_FILE, cache.users);
-      }
-    }
-
-    // Mark initial migration completed so future deletes in MongoDB are NEVER overwritten by local files
-    if (!isInitDone) {
-      await metaCol.updateOne(
-        { _key: 'initial_migration_completed' },
-        { $set: { _key: 'initial_migration_completed', completedAt: new Date() } },
-        { upsert: true }
-      );
+    const dbUsers = await usersCol.find({}, { projection: { _id: 0 } }).toArray();
+    if (dbUsers && dbUsers.length > 0) {
+      cache.users = dbUsers;
+      writeLocalJSON(USERS_FILE, cache.users);
+    } else if (cache.users && cache.users.length > 0) {
+      console.log(`[DB] First-time migration: inserting ${cache.users.length} admin accounts to MongoDB...`);
+      await usersCol.insertMany(cache.users.map(u => ({ ...u })));
     }
   } catch (err) {
     console.error('[DB] Error syncing cache with MongoDB:', err.message);
@@ -403,11 +375,21 @@ function isDBConnected() {
   return isConnected;
 }
 
+function getConnectionError() {
+  return lastConnectionError;
+}
+
+function getDatabaseName() {
+  return databaseName;
+}
+
 module.exports = {
   initDB,
   syncWithMongoDB,
   refreshFromMongoDB,
   isDBConnected,
+  getConnectionError,
+  getDatabaseName,
   getGuests,
   saveGuests,
   getWedding,
