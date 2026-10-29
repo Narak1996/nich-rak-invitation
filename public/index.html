@@ -65,19 +65,18 @@
       justify-content: center !important;
       align-items: center !important;
       margin-bottom: 2rem !important;
-      padding-top: 4px !important;
-      padding-bottom: 6px !important;
+      padding: 6px 0 !important;
       box-sizing: border-box !important;
     }
 
     #welcome-khmer.pinterest-opening-poster {
       width: 100% !important;
       max-width: 100% !important;
-      min-height: calc(100dvh - 12px) !important;
-      min-height: calc(100vh - 12px);
+      min-height: calc(100dvh - 16px) !important;
+      min-height: calc(100vh - 16px);
       display: flex !important;
       flex-direction: column !important;
-      justify-content: space-between !important;
+      justify-content: space-evenly !important;
       box-sizing: border-box !important;
     }
 
@@ -85,11 +84,42 @@
       flex: 1 1 auto !important;
       display: flex !important;
       flex-direction: column !important;
-      justify-content: space-between !important;
+      justify-content: space-evenly !important;
       align-items: center !important;
       width: 100% !important;
       height: 100% !important;
       box-sizing: border-box !important;
+      padding: 16px 12px 18px !important;
+    }
+
+    /* Diptych couple cards sized to fill vertical screen without overflow */
+    .cover-couple-diptych {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 10px !important;
+      max-width: 325px !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+      position: relative !important;
+      box-sizing: border-box !important;
+    }
+
+    .cover-portrait-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    .cover-portrait-img-wrap {
+      width: 100% !important;
+      aspect-ratio: 3 / 4.2 !important;
+      height: 37vh !important;
+      min-height: 240px !important;
+      max-height: 335px !important;
+      border-radius: 20px !important;
+      overflow: hidden !important;
+      position: relative !important;
+      background: #FAF6ED !important;
     }
 
     /* Bottom Navigation Dock - Truly Enlarged, Touch-Friendly, Auto-Hiding */
@@ -407,12 +437,12 @@
             </div>
 
             <!-- Event Date & Ceremony Snippet Card Below Portraits -->
-            <div class="w-full mx-auto mt-1 px-1 text-center">
-              <div class="bg-white/94 backdrop-blur-xs py-2 px-3.5 rounded-2xl border border-[#4E7D63]/25 shadow-xs">
+            <div class="w-full max-w-[325px] mx-auto mt-2 px-1 text-center">
+              <div class="bg-white/94 backdrop-blur-xs py-2 px-3 rounded-2xl border border-[#4E7D63]/25 shadow-xs">
                 <p class="text-xs sm:text-sm font-khmer-title font-bold text-[#1E4833] leading-snug" id="opening-date-solar">
                   ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧
                 </p>
-                <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-0.5 leading-tight" id="opening-venue-snippet">
+                <p class="text-[10px] sm:text-[11px] text-[#5D4E46] font-khmer-body mt-0.5 leading-snug" id="opening-venue-snippet">
                   វេលាម៉ោង ០៧:០០ ព្រឹក • នៅគេហដ្ឋានខាងស្រី & ព្រីមៀរ សែនសុខ
                 </p>
               </div>
@@ -421,16 +451,18 @@
           </div>
 
           <!-- Subtle Modern Scroll Indicator (Bilingual / Khmer Translated) -->
-          <div class="mt-auto pt-2 flex flex-col items-center opacity-85 hover:opacity-100 transition cursor-pointer select-none" onclick="scrollToTicketContent()" title="សូមអូសចុះក្រោម • Scroll Down">
-            <span class="text-[10px] sm:text-[11px] font-khmer-title tracking-wider text-[#9B7126] font-semibold" id="cover-scroll-indicator-text" data-kh="សូមអូសចុះក្រោម" data-en="Scroll Down">
-              សូមអូសចុះក្រោម
-            </span>
-            <span class="text-[8px] uppercase tracking-[0.25em] text-[#C5A059] font-serif font-bold mt-0.5">
-              SCROLL DOWN
-            </span>
-            <svg class="w-4 h-4 text-[#C5A059] mt-0.5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+          <div class="pt-2 pb-1 flex flex-col items-center select-none cursor-pointer group" onclick="scrollToTicketContent()" title="សូមអូសចុះក្រោម • Scroll Down">
+            <div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/85 backdrop-blur-md border border-[#C5A059]/50 text-[#9B7126] shadow-2xs transition group-hover:scale-105 active:scale-95">
+              <span class="text-[10px] sm:text-[11px] font-khmer-title tracking-wider font-semibold" id="cover-scroll-indicator-text" data-kh="សូមអូសចុះក្រោម" data-en="Scroll Down">
+                សូមអូសចុះក្រោម
+              </span>
+              <span class="text-[8px] uppercase tracking-[0.2em] text-[#C5A059] font-serif font-bold">
+                SCROLL
+              </span>
+              <svg class="w-3.5 h-3.5 text-[#C5A059] animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
 
         </div>
