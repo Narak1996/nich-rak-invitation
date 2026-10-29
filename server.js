@@ -40,12 +40,19 @@ function ensureDB() {
 // Auto-initialize DB on cold start
 ensureDB().catch(e => console.warn('[DB] Cold-start connection:', e.message));
 
-// Middleware to ensure DB connection is ready before servicing API requests
+// Middleware to ensure DB connection is ready and cache is synced with MongoDB on all requests
 app.use(async (req, res, next) => {
-  if (req.path.startsWith('/api/')) {
+  // Skip static assets
+  const isStatic = req.path.startsWith('/css/') || req.path.startsWith('/js/') || req.path.startsWith('/images/') || req.path.startsWith('/audio/') || req.path.startsWith('/uploads/');
+  if (!isStatic) {
     try {
       await ensureDB();
-    } catch (e) {}
+      if (db.isDBConnected()) {
+        await db.refreshFromMongoDB();
+      }
+    } catch (e) {
+      console.warn('[DB] Connection/sync warning:', e.message);
+    }
   }
   next();
 });

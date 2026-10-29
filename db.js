@@ -81,32 +81,41 @@ async function initDB() {
   }
 }
 
-// Sync MongoDB with Local Data
-async function syncWithMongoDB() {
+let lastSyncTime = 0;
+const SYNC_INTERVAL_MS = 2500; // 2.5 seconds cache TTL for near-instant DB sync
+
+// Refresh in-memory cache directly from MongoDB (Detects manual DB deletes/edits)
+async function refreshFromMongoDB(force = false) {
   if (!isConnected || !mongoDb) return;
+  const now = Date.now();
+  if (!force && (now - lastSyncTime < SYNC_INTERVAL_MS)) return;
+  lastSyncTime = now;
 
   try {
+    const metaCol = mongoDb.collection('system_meta');
+    const isInitDone = await metaCol.findOne({ _key: 'initial_migration_completed' });
+
     // 1. GUESTS
     const guestsCol = mongoDb.collection('guests');
-    const guestCount = await guestsCol.countDocuments();
-    if (guestCount === 0 && cache.guests && cache.guests.length > 0) {
-      console.log(`[DB] Migrating ${cache.guests.length} local guests to MongoDB...`);
-      const docs = cache.guests.map(g => ({ ...g }));
-      await guestsCol.insertMany(docs);
-    } else {
-      const dbGuests = await guestsCol.find({}, { projection: { _id: 0 } }).toArray();
-      if (dbGuests && dbGuests.length > 0) {
-        cache.guests = dbGuests;
-        writeLocalJSON(GUESTS_FILE, cache.guests);
-        console.log(`[DB] Loaded ${dbGuests.length} guests from MongoDB into memory.`);
+    if (!isInitDone) {
+      const guestCount = await guestsCol.countDocuments();
+      if (guestCount === 0 && cache.guests && cache.guests.length > 0) {
+        console.log(`[DB] First-time migration: inserting ${cache.guests.length} local guests to MongoDB...`);
+        const docs = cache.guests.map(g => ({ ...g }));
+        await guestsCol.insertMany(docs);
       }
+    } else {
+      // User may have deleted guests in MongoDB: update cache with actual DB state (even if empty [])
+      const dbGuests = await guestsCol.find({}, { projection: { _id: 0 } }).toArray();
+      cache.guests = Array.isArray(dbGuests) ? dbGuests : [];
+      writeLocalJSON(GUESTS_FILE, cache.guests);
     }
 
     // 2. WEDDING DATA
     const weddingCol = mongoDb.collection('wedding');
     const dbWedding = await weddingCol.findOne({ _key: 'main_settings' }, { projection: { _id: 0 } });
-    if (!dbWedding && cache.wedding && Object.keys(cache.wedding).length > 0) {
-      console.log('[DB] Migrating wedding settings to MongoDB...');
+    if (!isInitDone && !dbWedding && cache.wedding && Object.keys(cache.wedding).length > 0) {
+      console.log('[DB] First-time migration: inserting wedding settings to MongoDB...');
       await weddingCol.updateOne(
         { _key: 'main_settings' },
         { $set: { _key: 'main_settings', ...cache.wedding } },
@@ -116,39 +125,58 @@ async function syncWithMongoDB() {
       const { _key, ...cleanWedding } = dbWedding;
       cache.wedding = cleanWedding;
       writeLocalJSON(WEDDING_FILE, cache.wedding);
-      console.log('[DB] Loaded wedding settings from MongoDB.');
     }
 
     // 3. WISHES
     const wishesCol = mongoDb.collection('wishes');
-    const wishesCount = await wishesCol.countDocuments();
-    if (wishesCount === 0 && cache.wishes && cache.wishes.length > 0) {
-      console.log(`[DB] Migrating ${cache.wishes.length} wishes to MongoDB...`);
-      await wishesCol.insertMany(cache.wishes.map(w => ({ ...w })));
-    } else {
-      const dbWishes = await wishesCol.find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).toArray();
-      if (dbWishes && dbWishes.length > 0) {
-        cache.wishes = dbWishes;
-        writeLocalJSON(WISHES_FILE, cache.wishes);
-        console.log(`[DB] Loaded ${dbWishes.length} wishes from MongoDB.`);
+    if (!isInitDone) {
+      const wishesCount = await wishesCol.countDocuments();
+      if (wishesCount === 0 && cache.wishes && cache.wishes.length > 0) {
+        console.log(`[DB] First-time migration: inserting ${cache.wishes.length} wishes to MongoDB...`);
+        await wishesCol.insertMany(cache.wishes.map(w => ({ ...w })));
       }
+    } else {
+      // User may have deleted wishes in MongoDB: update cache with actual DB state (even if empty [])
+      const dbWishes = await wishesCol.find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).toArray();
+      cache.wishes = Array.isArray(dbWishes) ? dbWishes : [];
+      writeLocalJSON(WISHES_FILE, cache.wishes);
     }
 
     // 4. USERS
     const usersCol = mongoDb.collection('users');
-    const userCount = await usersCol.countDocuments();
-    if (userCount === 0 && cache.users && cache.users.length > 0) {
-      console.log(`[DB] Migrating ${cache.users.length} admin accounts to MongoDB...`);
-      await usersCol.insertMany(cache.users.map(u => ({ ...u })));
+    if (!isInitDone) {
+      const userCount = await usersCol.countDocuments();
+      if (userCount === 0 && cache.users && cache.users.length > 0) {
+        console.log(`[DB] First-time migration: inserting ${cache.users.length} admin accounts to MongoDB...`);
+        await usersCol.insertMany(cache.users.map(u => ({ ...u })));
+      }
     } else {
       const dbUsers = await usersCol.find({}, { projection: { _id: 0 } }).toArray();
       if (dbUsers && dbUsers.length > 0) {
         cache.users = dbUsers;
         writeLocalJSON(USERS_FILE, cache.users);
-        console.log(`[DB] Loaded ${dbUsers.length} admin accounts from MongoDB.`);
       }
     }
 
+    // Mark initial migration completed so future deletes in MongoDB are NEVER overwritten by local files
+    if (!isInitDone) {
+      await metaCol.updateOne(
+        { _key: 'initial_migration_completed' },
+        { $set: { _key: 'initial_migration_completed', completedAt: new Date() } },
+        { upsert: true }
+      );
+    }
+  } catch (err) {
+    console.error('[DB] Error syncing cache with MongoDB:', err.message);
+  }
+}
+
+// Sync MongoDB with Local Data on startup
+async function syncWithMongoDB() {
+  if (!isConnected || !mongoDb) return;
+  await refreshFromMongoDB(true);
+
+  try {
     // 5. UPLOADED PHOTOS & MEDIA (Deploy-Proof Persistence)
     try {
       const uploadsCol = mongoDb.collection('uploads');
@@ -378,6 +406,7 @@ function isDBConnected() {
 module.exports = {
   initDB,
   syncWithMongoDB,
+  refreshFromMongoDB,
   isDBConnected,
   getGuests,
   saveGuests,
