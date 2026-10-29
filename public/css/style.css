@@ -1782,12 +1782,14 @@ body.theme-khmer-traditional #envelope-screen {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  object-position: center 15% !important;
+  object-position: center 20% !important;
+  transform: scale(1.2) !important;
+  transform-origin: center 22% !important;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .cover-portrait-card:hover .cover-portrait-img {
-  transform: scale(1.07) !important;
+  transform: scale(1.26) !important;
 }
 
 .cover-couple-connector {
