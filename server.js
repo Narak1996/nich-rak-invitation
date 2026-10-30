@@ -1335,14 +1335,6 @@ app.get('/to/:guest', renderInvitationPage);
 app.get('/invite/:guest', renderInvitationPage);
 app.get('/invitation/:slug', renderInvitationPage);
 
-// Fallback for all other GET requests (SPA support)
-app.use((req, res) => {
-  if (req.method === 'GET' && !req.path.startsWith('/api/')) {
-    return renderInvitationPage(req, res);
-  }
-  res.status(404).json({ error: 'Not found' });
-});
-
 // Admin / System: DB status
 app.get('/api/db-status', requireAdmin, async (req, res) => {
   const diag = await db.getDBDiagnostics();
@@ -1447,6 +1439,14 @@ app.post('/api/telegram/backup-now', requireAdmin, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// Fallback for all other GET requests (SPA support)
+app.use((req, res) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api/')) {
+    return renderInvitationPage(req, res);
+  }
+  res.status(404).json({ error: 'Not found' });
 });
 
 // Start Server
