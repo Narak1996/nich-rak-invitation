@@ -2106,10 +2106,15 @@ window.saveTelegramSettings = async function(e) {
   const elWish = document.getElementById('tg-notify-wish');
   const elHours = document.getElementById('tg-backup-hours');
 
+  const botToken = elToken ? elToken.value.trim().replace(/^bot:?/i, '').replace(/[\s"']/g, '') : '';
+  const chatId = elChatId ? elChatId.value.trim().replace(/[\s"']/g, '') : '';
+  if (elToken) elToken.value = botToken;
+  if (elChatId) elChatId.value = chatId;
+
   const payload = {
     enabled: elEnabled ? elEnabled.checked : true,
-    botToken: elToken ? elToken.value.trim() : '',
-    chatId: elChatId ? elChatId.value.trim() : '',
+    botToken,
+    chatId,
     notifyOnRSVP: elRsvp ? elRsvp.checked : true,
     notifyOnWish: elWish ? elWish.checked : true,
     autoBackupHours: elHours ? parseInt(elHours.value, 10) : 12
@@ -2138,8 +2143,11 @@ window.saveTelegramSettings = async function(e) {
 window.testTelegramBot = async function() {
   const elToken = document.getElementById('tg-bot-token');
   const elChatId = document.getElementById('tg-chat-id');
-  const botToken = elToken ? elToken.value.trim() : '';
-  const chatId = elChatId ? elChatId.value.trim() : '';
+  const botToken = elToken ? elToken.value.trim().replace(/^bot:?/i, '').replace(/[\s"']/g, '') : '';
+  const chatId = elChatId ? elChatId.value.trim().replace(/[\s"']/g, '') : '';
+
+  if (elToken) elToken.value = botToken;
+  if (elChatId) elChatId.value = chatId;
 
   if (!botToken || !chatId) {
     alert('សូមបញ្ចូល Bot Token និង Chat ID ជាមុនសិន!');
@@ -2155,11 +2163,14 @@ window.testTelegramBot = async function() {
     });
     const data = await res.json();
     if (res.ok && data.success) {
+      if (data.chatId && elChatId) {
+        elChatId.value = data.chatId;
+      }
       showToast('🔔 សារតេស្តត្រូវបានផ្ញើចូល Telegram ជោគជ័យ!');
       alert('✅ ជោគជ័យ! សារសាកល្បងត្រូវបានផ្ញើចូល Telegram Chat របស់អ្នករួចរាល់។ សូមចូលទៅពិនិត្យមើលក្នុង Telegram!');
     } else {
       showToast('បរាជ័យក្នុងការផ្ញើសារតេស្ត');
-      alert('❌ មិនអាចផ្ញើសារបានឡើយ៖\n\n' + (data.error || 'Error') + '\n\nសូមពិនិត្យមើល៖\n1. តើអ្នកបានចុច "Start" លើ Bot របស់អ្នកក្នុង Telegram ហើយឬនៅ?\n2. តើ Chat ID ត្រឹមត្រូវដែរឬទេ?');
+      alert('❌ មិនអាចផ្ញើសារបានឡើយ៖\n\n' + (data.error || 'Error') + '\n\nសូមពិនិត្យមើល៖\n1. តើអ្នកបានចម្លង Token ត្រឹមត្រូវពី @BotFather ដែរឬទេ?\n2. តើ Bot ត្រូវបានទាញចូលក្នុង Group ឬនៅ?');
     }
   } catch (err) {
     showToast('កំហុសពេល Test៖ ' + err.message);

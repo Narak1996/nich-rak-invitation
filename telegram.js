@@ -11,6 +11,24 @@ const GUESTS_FILE = path.join(DATA_DIR, 'guests.json');
 const WISHES_FILE = path.join(DATA_DIR, 'wishes.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
+// Sanitization helpers for Token & Chat ID
+function cleanToken(raw) {
+  if (!raw) return '';
+  let token = String(raw).trim();
+  token = token.replace(/^["'\s]+|["'\s]+$/g, '');
+  token = token.replace(/^bot:?/i, '');
+  token = token.replace(/[\u200B-\u200D\uFEFF]/g, '');
+  return token.trim();
+}
+
+function cleanChatId(raw) {
+  if (!raw) return '';
+  let id = String(raw).trim();
+  id = id.replace(/^["'\s]+|["'\s]+$/g, '');
+  id = id.replace(/[\u200B-\u200D\uFEFF]/g, '');
+  return id.trim();
+}
+
 // Read JSON helper
 function readJSON(file, fallback = {}) {
   try {
@@ -28,8 +46,8 @@ function getConfig() {
   const weddingData = readJSON(WEDDING_FILE, {});
   const saved = weddingData.telegram || {};
 
-  const botToken = (saved.botToken || process.env.TELEGRAM_BOT_TOKEN || '').trim();
-  const chatId = (saved.chatId || process.env.TELEGRAM_CHAT_ID || '').trim();
+  const botToken = cleanToken(saved.botToken || process.env.TELEGRAM_BOT_TOKEN || '');
+  const chatId = cleanChatId(saved.chatId || process.env.TELEGRAM_CHAT_ID || '');
   const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : Boolean(botToken && chatId);
   const notifyOnRSVP = saved.notifyOnRSVP !== undefined ? Boolean(saved.notifyOnRSVP) : true;
   const notifyOnWish = saved.notifyOnWish !== undefined ? Boolean(saved.notifyOnWish) : true;
@@ -57,18 +75,17 @@ function saveConfig(updates) {
 
   try {
     fs.writeFileSync(WEDDING_FILE, JSON.stringify(weddingData, null, 2), 'utf8');
-    return weddingData.telegram;
   } catch (err) {
-    console.error('[Telegram] Failed to save config:', err.message);
-    throw err;
+    console.warn('[Telegram] Could not write config file (e.g. read-only serverless environment):', err.message);
   }
+  return weddingData.telegram;
 }
 
 // Send simple HTML message to Telegram
 async function sendMessage(text, customToken = null, customChatId = null) {
   const config = getConfig();
-  const token = customToken || config.botToken;
-  const chatId = customChatId || config.chatId;
+  let token = cleanToken(customToken || config.botToken);
+  let chatId = cleanChatId(customChatId || config.chatId);
 
   if (!token || !chatId) {
     return { success: false, error: 'Telegram Bot Token or Chat ID is missing' };
@@ -87,9 +104,24 @@ async function sendMessage(text, customToken = null, customChatId = null) {
 
     const data = await res.json();
     if (!data.ok) {
+      // Auto-handle group migration to supergroup
+      if (data.parameters && data.parameters.migrate_to_chat_id) {
+        const migratedChatId = String(data.parameters.migrate_to_chat_id);
+        console.log(`[Telegram] Group migrated to ${migratedChatId}. Automatically retrying...`);
+        try { saveConfig({ chatId: migratedChatId }); } catch (e) {}
+        return await sendMessage(text, token, migratedChatId);
+      }
+
+      if (data.description === 'Not Found') {
+        return {
+          success: false,
+          error: 'Bot Token មិនត្រឹមត្រូវ (404 Not Found)។ សូមប្រាកដថាបាន Copy តែលេខកូដ Token ពី @BotFather ដោយគ្មានដកឃ្លា ឬពាក្យថា "bot token" នៅខាងមុខឡើយ។'
+        };
+      }
+
       return { success: false, error: data.description || 'Failed to send message' };
     }
-    return { success: true, result: data.result };
+    return { success: true, result: data.result, chatId };
   } catch (err) {
     console.error('[Telegram] Send message error:', err.message);
     return { success: false, error: err.message };
@@ -180,6 +212,26 @@ async function sendBackup(reason = 'Manual Backup') {
 
     const data = await res.json();
     if (!data.ok) {
+      if (data.parameters && data.parameters.migrate_to_chat_id) {
+        const migratedChatId = String(data.parameters.migrate_to_chat_id);
+        console.log(`[Telegram] Group migrated to ${migratedChatId} during upload. Retrying...`);
+        try { saveConfig({ chatId: migratedChatId }); } catch (e) {}
+        formData.set('chat_id', migratedChatId);
+        const retryRes = await fetch(`https://api.telegram.org/bot${config.botToken}/sendDocument`, {
+          method: 'POST',
+          body: formData
+        });
+        const retryData = await retryRes.json();
+        if (retryData.ok) {
+          saveConfig({ lastBackupAt: now.toISOString() });
+          return {
+            success: true,
+            fileName,
+            messageId: retryData.result.message_id,
+            timestamp: now.toISOString()
+          };
+        }
+      }
       console.error('[Telegram] Backup upload failed:', data.description);
       return { success: false, error: data.description || 'Failed to send backup document' };
     }

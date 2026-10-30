@@ -1427,7 +1427,7 @@ app.post('/api/telegram/test', requireAdmin, async (req, res) => {
     const { botToken, chatId } = req.body;
     const result = await telegram.testConnection(botToken, chatId);
     if (result.success) {
-      res.json({ success: true, message: 'Test message delivered to Telegram!' });
+      res.json({ success: true, message: 'Test message delivered to Telegram!', chatId: result.chatId });
     } else {
       res.status(400).json({ success: false, error: result.error });
     }
