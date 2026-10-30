@@ -111,12 +111,12 @@
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button type="button" onclick="reconnectDB()" class="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-2xs">
-            <svg id="global-reconnect-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <span>តេស្តឡើងវិញ</span>
+          <button type="button" onclick="sendTelegramBackupNow()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>🚀 Backup ទៅ Telegram</span>
           </button>
-          <button type="button" onclick="switchToDatabaseTab()" class="px-3 py-1.5 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-2xs">
-            <span>🗄️ មើលលម្អិត (View Details)</span>
+          <button type="button" onclick="switchToDatabaseTab()" class="px-3 py-1.5 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
+            <span>💾 ការកំណត់ Backup &amp; DB</span>
             <span>&rarr;</span>
           </button>
         </div>
@@ -147,7 +147,7 @@
         🔐 អ្នកគ្រប់គ្រង (Admin Users)
       </button>
       <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] flex items-center gap-1.5" data-target="tab-database">
-        <span>🗄️ Database & Cloud</span>
+        <span>💾 Data & Telegram Backup</span>
         <span id="tab-db-indicator" class="w-2 h-2 rounded-full bg-amber-400"></span>
       </button>
     </div>
@@ -628,7 +628,107 @@
           </div>
         </div>
 
-        <!-- Dynamic Connection Banner -->
+
+        <!-- ================= TELEGRAM AUTO-BACKUP & NOTIFICATIONS CARD ================= -->
+        <div class="mb-6 p-6 rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50/70 via-white to-sky-50/30 shadow-xs">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-sky-100">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-2xl shadow-xs shrink-0">
+                ✈️
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">ប្រព័ន្ធ Auto-Backup ទៅកាន់ Telegram &amp; សារជូនដំណឹង Live</h3>
+                  <span id="tg-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">Checking...</span>
+                </div>
+                <p class="text-xs text-[#7A6F68] mt-0.5">បញ្ជូនឯកសារ JSON Backup ដោយស្វ័យប្រវត្តិចូល Telegram និងទទួលសារជូនដំណឹងរាល់ពេលមានភ្ញៀវ RSVP ថ្មី</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" onclick="sendTelegramBackupNow()" id="btn-tg-backup-now" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <svg id="icon-tg-backup-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                <span>🚀 បញ្ជូន Backup ឥឡូវនេះ</span>
+              </button>
+              <button type="button" onclick="testTelegramBot()" id="btn-tg-test" class="px-3.5 py-2 bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                <span>🔔 តេស្ត Bot</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Telegram Form Inputs -->
+          <form id="form-telegram-settings" onsubmit="saveTelegramSettings(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-bold text-[#4E3227] mb-1">
+                  <span>🤖 Telegram Bot Token</span>
+                  <a href="https://t.me/BotFather" target="_blank" class="text-[11px] text-sky-600 hover:underline font-normal ml-1">(យកពី @BotFather &rarr;)</a>
+                </label>
+                <input type="text" id="tg-bot-token" placeholder="ឧទាហរណ៍: 1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ" class="w-full px-3.5 py-2.5 rounded-xl border border-sky-200 bg-white font-mono text-xs focus:outline-none focus:border-sky-400">
+                <span class="text-[10px] text-gray-500 mt-0.5 block">បង្កើត Bot ក្នុង Telegram រួច Paste HTTP API Token នៅទីនេះ</span>
+              </div>
+
+              <div>
+                <label class="block font-bold text-[#4E3227] mb-1">
+                  <span>💬 Telegram Chat ID (ផ្ទាល់ខ្លួន ឬ Group)</span>
+                  <a href="https://t.me/userinfobot" target="_blank" class="text-[11px] text-sky-600 hover:underline font-normal ml-1">(យកពី @userinfobot &rarr;)</a>
+                </label>
+                <input type="text" id="tg-chat-id" placeholder="ឧទាហរណ៍: 123456789 ឬ -100xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-sky-200 bg-white font-mono text-xs focus:outline-none focus:border-sky-400">
+                <span class="text-[10px] text-gray-500 mt-0.5 block">Chat ID ដែលត្រូវឱ្យ Bot ផ្ញើឯកសារ Backup និងសារជូនដំណឹងទៅ</span>
+              </div>
+            </div>
+
+            <!-- Toggles & Options -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-2xl bg-white/80 border border-sky-100">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="tg-enabled" class="rounded text-sky-600 focus:ring-sky-500">
+                <span class="font-bold text-[#4E3227] text-xs">បើកដំណើរការ Auto-Backup</span>
+              </label>
+
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="tg-notify-rsvp" checked class="rounded text-sky-600 focus:ring-sky-500">
+                <span class="text-xs text-gray-700">ជូនដំណឹងពេលមាន RSVP ថ្មី</span>
+              </label>
+
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="tg-notify-wish" checked class="rounded text-sky-600 focus:ring-sky-500">
+                <span class="text-xs text-gray-700">ជូនដំណឹងពេលមានពាក្យជូនពរ</span>
+              </label>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-600 font-medium">ចន្លោះពេល Auto Backup:</span>
+                <select id="tg-backup-hours" class="px-2.5 py-1.5 rounded-xl border border-sky-200 bg-white text-xs text-[#4E3227] font-semibold">
+                  <option value="6">រៀងរាល់ ៦ ម៉ោងម្តង (Every 6h)</option>
+                  <option value="12" selected>រៀងរាល់ ១២ ម៉ោងម្តង (Every 12h)</option>
+                  <option value="24">រៀងរាល់ ២៤ ម៉ោងម្តង (Daily)</option>
+                </select>
+                <span class="text-[11px] text-gray-500 ml-2" id="tg-last-backup-hint"></span>
+              </div>
+              <button type="submit" class="px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
+                <span>💾 រក្សាទុកការកំណត់ Telegram</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Quick 3-Step Setup Guide -->
+          <div class="mt-4 pt-4 border-t border-sky-100 grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px]">
+            <div class="p-2.5 rounded-xl bg-white border border-sky-100">
+              <span class="font-bold text-sky-800 block mb-0.5">ជំហានទី ១: យក Bot Token</span>
+              <span class="text-gray-600">ចូល Telegram &gt; ស្វែងរក <a href="https://t.me/BotFather" target="_blank" class="text-sky-600 underline font-bold">@BotFather</a> &gt; វាយ <code>/newbot</code> &gt; ដាក់ឈ្មោះ Bot &gt; ទទួលបាន Token។</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white border border-sky-100">
+              <span class="font-bold text-sky-800 block mb-0.5">ជំហានទី ២: យក Chat ID</span>
+              <span class="text-gray-600">ចូល Telegram &gt; ស្វែងរក <a href="https://t.me/userinfobot" target="_blank" class="text-sky-600 underline font-bold">@userinfobot</a> &gt; ចុច Start &gt; ទទួលបានលេខ Id (ឧទាហរណ៍ <code>987654321</code>)។</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white border border-sky-100">
+              <span class="font-bold text-sky-800 block mb-0.5">ជំហានទី ៣: ចាប់ផ្តើម Bot</span>
+              <span class="text-gray-600">ស្វែងរក Bot របស់អ្នក &gt; ចុច <b>Start</b> &gt; បិទភ្ជាប់ Token &amp; Chat ID ក្នុងទម្រង់ខាងលើ &gt; ចុច <b>តេស្ត Bot</b> ជាការស្រេច!</span>
+            </div>
+          </div>
+        </div>
+
+                <!-- Dynamic Connection Banner -->
         <div id="db-banner-card" class="p-5 rounded-2xl border transition-all mb-6 bg-gray-50 border-gray-200">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-start sm:items-center gap-3">

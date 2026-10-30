@@ -59,6 +59,7 @@ async function loadAllData() {
   await Promise.all([
     checkDBStatus(),
     loadDBDiagnostics(),
+    loadTelegramSettings(),
     loadStats(),
     loadWeddingData(),
     loadGuests(),
@@ -2043,3 +2044,147 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
+// ================= TELEGRAM AUTO-BACKUP & NOTIFICATIONS CLIENT =================
+window.loadTelegramSettings = async function() {
+  try {
+    const res = await fetch('/api/telegram/config');
+    if (!res.ok) return;
+    const cfg = await res.json();
+
+    const elToken = document.getElementById('tg-bot-token');
+    const elChatId = document.getElementById('tg-chat-id');
+    const elEnabled = document.getElementById('tg-enabled');
+    const elRsvp = document.getElementById('tg-notify-rsvp');
+    const elWish = document.getElementById('tg-notify-wish');
+    const elHours = document.getElementById('tg-backup-hours');
+    const elPill = document.getElementById('tg-status-pill');
+    const elHint = document.getElementById('tg-last-backup-hint');
+
+    if (elToken && !elToken.matches(':focus')) {
+      elToken.value = cfg.maskedToken || cfg.botToken || '';
+      elToken.dataset.hasRealToken = cfg.hasToken ? 'true' : 'false';
+    }
+    if (elChatId && !elChatId.matches(':focus')) {
+      elChatId.value = cfg.chatId || '';
+    }
+    if (elEnabled) elEnabled.checked = Boolean(cfg.enabled);
+    if (elRsvp) elRsvp.checked = Boolean(cfg.notifyOnRSVP);
+    if (elWish) elWish.checked = Boolean(cfg.notifyOnWish);
+    if (elHours) elHours.value = String(cfg.autoBackupHours || 12);
+
+    if (elPill) {
+      if (cfg.enabled && cfg.hasToken && cfg.chatId) {
+        elPill.textContent = '🟢 សកម្ម (Auto-Backup On)';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800';
+      } else if (cfg.hasToken || cfg.chatId) {
+        elPill.textContent = '🟡 បានបិទ (Disabled)';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800';
+      } else {
+        elPill.textContent = '⚪ មិនទាន់កំណត់ (Not Configured)';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700';
+      }
+    }
+
+    if (elHint && cfg.lastBackupAt) {
+      const dt = new Date(cfg.lastBackupAt);
+      elHint.textContent = `Backup ចុងក្រោយ: ${dt.toLocaleDateString('km-KH')} ${dt.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+  } catch (err) {
+    console.error('Failed to load telegram settings:', err);
+  }
+};
+
+window.saveTelegramSettings = async function(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const elToken = document.getElementById('tg-bot-token');
+  const elChatId = document.getElementById('tg-chat-id');
+  const elEnabled = document.getElementById('tg-enabled');
+  const elRsvp = document.getElementById('tg-notify-rsvp');
+  const elWish = document.getElementById('tg-notify-wish');
+  const elHours = document.getElementById('tg-backup-hours');
+
+  const payload = {
+    enabled: elEnabled ? elEnabled.checked : true,
+    botToken: elToken ? elToken.value.trim() : '',
+    chatId: elChatId ? elChatId.value.trim() : '',
+    notifyOnRSVP: elRsvp ? elRsvp.checked : true,
+    notifyOnWish: elWish ? elWish.checked : true,
+    autoBackupHours: elHours ? parseInt(elHours.value, 10) : 12
+  };
+
+  showToast('កំពុងរក្សាទុកការកំណត់ Telegram...');
+
+  try {
+    const res = await fetch('/api/telegram/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('💾 បានរក្សាទុកការកំណត់ Telegram ជោគជ័យ!');
+      await loadTelegramSettings();
+    } else {
+      showToast('បរាជ័យ៖ ' + (data.error || 'Unknown error'));
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Save៖ ' + err.message);
+  }
+};
+
+window.testTelegramBot = async function() {
+  const elToken = document.getElementById('tg-bot-token');
+  const elChatId = document.getElementById('tg-chat-id');
+  const botToken = elToken ? elToken.value.trim() : '';
+  const chatId = elChatId ? elChatId.value.trim() : '';
+
+  if (!botToken || !chatId) {
+    alert('សូមបញ្ចូល Bot Token និង Chat ID ជាមុនសិន!');
+    return;
+  }
+
+  showToast('កំពុងផ្ញើសារសាកល្បងទៅ Telegram...');
+  try {
+    const res = await fetch('/api/telegram/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ botToken, chatId })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('🔔 សារតេស្តត្រូវបានផ្ញើចូល Telegram ជោគជ័យ!');
+      alert('✅ ជោគជ័យ! សារសាកល្បងត្រូវបានផ្ញើចូល Telegram Chat របស់អ្នករួចរាល់។ សូមចូលទៅពិនិត្យមើលក្នុង Telegram!');
+    } else {
+      showToast('បរាជ័យក្នុងការផ្ញើសារតេស្ត');
+      alert('❌ មិនអាចផ្ញើសារបានឡើយ៖\n\n' + (data.error || 'Error') + '\n\nសូមពិនិត្យមើល៖\n1. តើអ្នកបានចុច "Start" លើ Bot របស់អ្នកក្នុង Telegram ហើយឬនៅ?\n2. តើ Chat ID ត្រឹមត្រូវដែរឬទេ?');
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Test៖ ' + err.message);
+  }
+};
+
+window.sendTelegramBackupNow = async function() {
+  const spin = document.getElementById('icon-tg-backup-spin');
+  if (spin) spin.classList.add('animate-spin');
+  showToast('📦 កំពុងបង្កើត Backup និងបញ្ជូនទៅកាន់ Telegram...');
+
+  try {
+    const res = await fetch('/api/telegram/backup-now', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('🚀 ឯកសារ Backup បានបញ្ជូនទៅ Telegram ជោគជ័យ!');
+      alert('🎉 ជោគជ័យ! ឯកសារ Backup "' + data.fileName + '" ត្រូវបាន Upload ចូល Telegram Chat របស់អ្នករួចរាល់ហើយ!');
+      await loadTelegramSettings();
+    } else {
+      showToast('បរាជ័យ៖ ' + (data.error || 'Error'));
+      alert('❌ មិនអាចបញ្ជូន Backup បានឡើយ៖\n\n' + (data.error || 'Error') + '\n\nសូមធានាថាបានកំណត់ Bot Token និង Chat ID ត្រឹមត្រូវក្នុងផ្ទាំង Telegram Backup។');
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Backup៖ ' + err.message);
+  } finally {
+    if (spin) spin.classList.remove('animate-spin');
+  }
+};

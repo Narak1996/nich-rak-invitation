@@ -28,6 +28,8 @@ if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 // Cloud Database (MongoDB Atlas) Adapter with File Fallback
 const db = require('./db');
+const telegram = require('./telegram');
+telegram.startAutoBackupScheduler();
 
 // Ensure DB initialization works on both local server and Vercel serverless
 let dbInitPromise = null;
@@ -832,6 +834,9 @@ app.post('/api/rsvp', (req, res) => {
     writeJSON(WISHES_FILE, allWishes);
   }
 
+  // Trigger Telegram notification & backup
+  telegram.notifyRSVP(found).catch(e => console.warn('[Telegram RSVP error]:', e.message));
+
   res.json({ success: true, message: 'RSVP submitted successfully', guest: found });
 });
 
@@ -860,6 +865,10 @@ app.post('/api/wishes', (req, res) => {
 
   wishes.unshift(newWish);
   writeJSON(WISHES_FILE, wishes);
+
+  // Trigger Telegram wish alert
+  telegram.notifyWish(newWish).catch(e => console.warn('[Telegram Wish error]:', e.message));
+
   res.json({ success: true, wish: newWish });
 });
 
@@ -1373,6 +1382,70 @@ app.post('/api/db/sync', requireAdmin, async (req, res) => {
     res.json({ success: true, diagnostics: diag });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ================= TELEGRAM AUTO-BACKUP & NOTIFICATIONS API =================
+app.get('/api/telegram/config', requireAdmin, (req, res) => {
+  const config = telegram.getConfig();
+  let maskedToken = '';
+  if (config.botToken) {
+    const parts = config.botToken.split(':');
+    if (parts.length === 2) {
+      maskedToken = `${parts[0]}:••••••••••••••••`;
+    } else {
+      maskedToken = '••••••••••••••••';
+    }
+  }
+  res.json({
+    ...config,
+    maskedToken,
+    hasToken: Boolean(config.botToken)
+  });
+});
+
+app.post('/api/telegram/config', requireAdmin, (req, res) => {
+  try {
+    const { enabled, botToken, chatId, notifyOnRSVP, notifyOnWish, autoBackupHours } = req.body;
+    const updates = {};
+    if (enabled !== undefined) updates.enabled = Boolean(enabled);
+    if (botToken !== undefined && !botToken.includes('••••')) updates.botToken = String(botToken).trim();
+    if (chatId !== undefined) updates.chatId = String(chatId).trim();
+    if (notifyOnRSVP !== undefined) updates.notifyOnRSVP = Boolean(notifyOnRSVP);
+    if (notifyOnWish !== undefined) updates.notifyOnWish = Boolean(notifyOnWish);
+    if (autoBackupHours !== undefined) updates.autoBackupHours = parseInt(autoBackupHours, 10) || 12;
+
+    const saved = telegram.saveConfig(updates);
+    res.json({ success: true, config: saved });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/telegram/test', requireAdmin, async (req, res) => {
+  try {
+    const { botToken, chatId } = req.body;
+    const result = await telegram.testConnection(botToken, chatId);
+    if (result.success) {
+      res.json({ success: true, message: 'Test message delivered to Telegram!' });
+    } else {
+      res.status(400).json({ success: false, error: result.error });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/telegram/backup-now', requireAdmin, async (req, res) => {
+  try {
+    const result = await telegram.sendBackup('Manual Admin Backup');
+    if (result.success) {
+      res.json({ success: true, message: 'Backup file successfully sent to Telegram!', ...result });
+    } else {
+      res.status(400).json({ success: false, error: result.error });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
