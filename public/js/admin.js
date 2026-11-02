@@ -2146,14 +2146,6 @@ window.testTelegramBot = async function() {
   const botToken = elToken ? elToken.value.trim().replace(/^bot:?/i, '').replace(/[\s"']/g, '') : '';
   const chatId = elChatId ? elChatId.value.trim().replace(/[\s"']/g, '') : '';
 
-  if (elToken) elToken.value = botToken;
-  if (elChatId) elChatId.value = chatId;
-
-  if (!botToken || !chatId) {
-    alert('សូមបញ្ចូល Bot Token និង Chat ID ជាមុនសិន!');
-    return;
-  }
-
   showToast('កំពុងផ្ញើសារសាកល្បងទៅ Telegram...');
   try {
     const res = await fetch('/api/telegram/test', {

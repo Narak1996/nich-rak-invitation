@@ -11,6 +11,10 @@ const GUESTS_FILE = path.join(DATA_DIR, 'guests.json');
 const WISHES_FILE = path.join(DATA_DIR, 'wishes.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
+// Default Credentials (baked into application for zero-configuration access)
+const DEFAULT_BOT_TOKEN = '9292129320:AAEpGzhycWqkiVykIU5xpJKZcUQUWu7R3Ow';
+const DEFAULT_CHAT_ID = '-1004375071898';
+
 // Sanitization helpers for Token & Chat ID
 function cleanToken(raw) {
   if (!raw) return '';
@@ -46,9 +50,9 @@ function getConfig() {
   const weddingData = readJSON(WEDDING_FILE, {});
   const saved = weddingData.telegram || {};
 
-  const botToken = cleanToken(saved.botToken || process.env.TELEGRAM_BOT_TOKEN || '');
-  const chatId = cleanChatId(saved.chatId || process.env.TELEGRAM_CHAT_ID || '');
-  const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : Boolean(botToken && chatId);
+  const botToken = cleanToken(saved.botToken || process.env.TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN);
+  const chatId = cleanChatId(saved.chatId || process.env.TELEGRAM_CHAT_ID || DEFAULT_CHAT_ID);
+  const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : true;
   const notifyOnRSVP = saved.notifyOnRSVP !== undefined ? Boolean(saved.notifyOnRSVP) : true;
   const notifyOnWish = saved.notifyOnWish !== undefined ? Boolean(saved.notifyOnWish) : true;
   const autoBackupHours = parseInt(saved.autoBackupHours || 12, 10);
@@ -84,47 +88,61 @@ function saveConfig(updates) {
 // Send simple HTML message to Telegram
 async function sendMessage(text, customToken = null, customChatId = null) {
   const config = getConfig();
-  let token = cleanToken(customToken || config.botToken);
-  let chatId = cleanChatId(customChatId || config.chatId);
+  let token = cleanToken(customToken);
+  let chatId = cleanChatId(customChatId);
+
+  // If passed token is masked or empty, fall back to configured token
+  if (!token || token.includes('••') || token.includes('*')) {
+    token = config.botToken;
+  }
+  if (!chatId) {
+    chatId = config.chatId;
+  }
 
   if (!token || !chatId) {
     return { success: false, error: 'Telegram Bot Token or Chat ID is missing' };
   }
 
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text,
-        parse_mode: 'HTML'
-      })
-    });
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text,
+          parse_mode: 'HTML'
+        })
+      });
 
-    const data = await res.json();
-    if (!data.ok) {
-      // Auto-handle group migration to supergroup
-      if (data.parameters && data.parameters.migrate_to_chat_id) {
-        const migratedChatId = String(data.parameters.migrate_to_chat_id);
-        console.log(`[Telegram] Group migrated to ${migratedChatId}. Automatically retrying...`);
-        try { saveConfig({ chatId: migratedChatId }); } catch (e) {}
-        return await sendMessage(text, token, migratedChatId);
+      const data = await res.json();
+      if (!data.ok) {
+        // Auto-handle group migration to supergroup
+        if (data.parameters && data.parameters.migrate_to_chat_id) {
+          const migratedChatId = String(data.parameters.migrate_to_chat_id);
+          console.log(`[Telegram] Group migrated to ${migratedChatId}. Automatically retrying...`);
+          try { saveConfig({ chatId: migratedChatId }); } catch (e) {}
+          return await sendMessage(text, token, migratedChatId);
+        }
+
+        if (data.description === 'Not Found') {
+          return {
+            success: false,
+            error: 'Bot Token មិនត្រឹមត្រូវ (404 Not Found)។ សូមប្រាកដថាបាន Copy តែលេខកូដ Token ពី @BotFather ដោយគ្មានដកឃ្លា ឬពាក្យថា "bot token" នៅខាងមុខឡើយ។'
+          };
+        }
+
+        return { success: false, error: data.description || 'Failed to send message' };
       }
-
-      if (data.description === 'Not Found') {
-        return {
-          success: false,
-          error: 'Bot Token មិនត្រឹមត្រូវ (404 Not Found)។ សូមប្រាកដថាបាន Copy តែលេខកូដ Token ពី @BotFather ដោយគ្មានដកឃ្លា ឬពាក្យថា "bot token" នៅខាងមុខឡើយ។'
-        };
+      return { success: true, result: data.result, chatId };
+    } catch (err) {
+      if (attempt === 1) {
+        await new Promise(r => setTimeout(r, 600));
+        continue;
       }
-
-      return { success: false, error: data.description || 'Failed to send message' };
+      console.error('[Telegram] Send message error:', err.message);
+      return { success: false, error: err.message };
     }
-    return { success: true, result: data.result, chatId };
-  } catch (err) {
-    console.error('[Telegram] Send message error:', err.message);
-    return { success: false, error: err.message };
   }
 }
 
@@ -280,8 +298,12 @@ async function notifyRSVP(guest) {
 
   await sendMessage(lines.join('\n'));
 
-  // Trigger a debounced backup 3 minutes after an RSVP
-  scheduleDebouncedBackup('New RSVP Received');
+  // Immediately send updated JSON backup document to Telegram
+  try {
+    await sendBackup(`RSVP Update (${guest.name || 'Guest'})`);
+  } catch (err) {
+    console.warn('[Telegram] Auto-backup after RSVP failed:', err.message);
+  }
 }
 
 // Real-time Notification when Guest sends a Wish in Guestbook
@@ -301,10 +323,29 @@ async function notifyWish(wish) {
   ];
 
   await sendMessage(lines.join('\n'));
+
+  // Immediately send updated JSON backup document to Telegram
+  try {
+    await sendBackup(`New Wish (${wish.guestName || 'Guest'})`);
+  } catch (err) {
+    console.warn('[Telegram] Auto-backup after wish failed:', err.message);
+  }
 }
 
 // Test Telegram Bot Connection
 async function testConnection(botToken, chatId) {
+  const config = getConfig();
+  let token = cleanToken(botToken);
+  let chat = cleanChatId(chatId);
+
+  // Fallback to configured or default credentials if masked or empty
+  if (!token || token.includes('••') || token.includes('*')) {
+    token = config.botToken;
+  }
+  if (!chat) {
+    chat = config.chatId;
+  }
+
   const text = [
     `🔔 <b>E-INVITATION TELEGRAM BOT TEST</b>`,
     `━━━━━━━━━━━━━━━━━━━━`,
@@ -314,7 +355,7 @@ async function testConnection(botToken, chatId) {
     `⏰ <code>${new Date().toLocaleString('km-KH')}</code>`
   ].join('\n');
 
-  return await sendMessage(text, botToken, chatId);
+  return await sendMessage(text, token, chat);
 }
 
 // Debounced auto-backup helper
@@ -322,6 +363,11 @@ let debouncedTimer = null;
 function scheduleDebouncedBackup(reason) {
   const config = getConfig();
   if (!config.enabled) return;
+
+  if (process.env.VERCEL) {
+    sendBackup(reason).catch(e => console.warn('[Telegram] Vercel backup failed:', e.message));
+    return;
+  }
 
   if (debouncedTimer) clearTimeout(debouncedTimer);
   debouncedTimer = setTimeout(async () => {
@@ -331,7 +377,7 @@ function scheduleDebouncedBackup(reason) {
     } catch (e) {
       console.warn('[Telegram] Debounced backup failed:', e.message);
     }
-  }, 3 * 60 * 1000); // 3 minutes debounce
+  }, 10 * 1000); // 10 seconds debounce
 }
 
 // Background Cron-style Interval Checker

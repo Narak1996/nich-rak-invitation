@@ -835,7 +835,11 @@ app.post('/api/rsvp', (req, res) => {
   }
 
   // Trigger Telegram notification & backup
-  telegram.notifyRSVP(found).catch(e => console.warn('[Telegram RSVP error]:', e.message));
+  try {
+    await telegram.notifyRSVP(found);
+  } catch (e) {
+    console.warn('[Telegram RSVP error]:', e.message);
+  }
 
   res.json({ success: true, message: 'RSVP submitted successfully', guest: found });
 });
@@ -847,7 +851,7 @@ app.get('/api/wishes', (req, res) => {
 });
 
 // Public: Add wish
-app.post('/api/wishes', (req, res) => {
+app.post('/api/wishes', async (req, res) => {
   const { guestName, relationship, message } = req.body;
   if (!guestName || !message) {
     return res.status(400).json({ error: 'Guest name and message are required' });
@@ -866,8 +870,12 @@ app.post('/api/wishes', (req, res) => {
   wishes.unshift(newWish);
   writeJSON(WISHES_FILE, wishes);
 
-  // Trigger Telegram wish alert
-  telegram.notifyWish(newWish).catch(e => console.warn('[Telegram Wish error]:', e.message));
+  // Trigger Telegram wish alert & backup
+  try {
+    await telegram.notifyWish(newWish);
+  } catch (e) {
+    console.warn('[Telegram Wish error]:', e.message);
+  }
 
   res.json({ success: true, wish: newWish });
 });
