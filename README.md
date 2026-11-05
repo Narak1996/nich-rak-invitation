@@ -1,7 +1,5 @@
 # 💍 Digital Wedding E-Invitation Platform (ប្រព័ន្ធសំបុត្រអាពាហ៍ពិពាហ៍ឌីជីថល)
 
-A luxurious, interactive digital wedding invitation and guest RSVP management system inspired by [E-Theap (អុី ធៀប)](https://e-theap.com). Designed with the signature **Bronze & Gold (#4E3227)** luxury aesthetic, authentic Cambodian wedding traditions, bilingual support (Khmer & English), and engineered to be **exceptionally easy to host anywhere**.
-
 ---
 
 ## ✨ Features (លក្ខណៈពិសេស)
@@ -141,4 +139,4 @@ To change the default admin credentials, update the `admin` object inside [weddi
 
 ---
 
-© 2026 Digital Wedding E-Invitation Platform. Inspired by [E-Theap (អុី ធៀប)](https://e-theap.com).
+© 2026 Digital Wedding E-Invitation Platform.
