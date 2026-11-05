@@ -597,6 +597,7 @@ app.get('/api/wedding', (req, res) => {
   // Do not expose admin credentials
   const safeData = { ...data };
   delete safeData.admin;
+  safeData.googleSheets = sheets.getConfig();
   res.json(safeData);
 });
 
