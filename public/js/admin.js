@@ -2072,7 +2072,9 @@ window.loadTelegramSettings = async function() {
     if (elEnabled) elEnabled.checked = Boolean(cfg.enabled);
     if (elRsvp) elRsvp.checked = Boolean(cfg.notifyOnRSVP);
     if (elWish) elWish.checked = Boolean(cfg.notifyOnWish);
-    if (elHours) elHours.value = String(cfg.autoBackupHours || 12);
+    if (elHours) elHours.value = String(cfg.autoBackupHours || 24);
+    const elScheduledTime = document.getElementById('tg-scheduled-time');
+    if (elScheduledTime && cfg.scheduledTime) elScheduledTime.value = cfg.scheduledTime;
 
     if (elPill) {
       if (cfg.enabled && cfg.hasToken && cfg.chatId) {
@@ -2105,6 +2107,7 @@ window.saveTelegramSettings = async function(e) {
   const elRsvp = document.getElementById('tg-notify-rsvp');
   const elWish = document.getElementById('tg-notify-wish');
   const elHours = document.getElementById('tg-backup-hours');
+  const elScheduledTime = document.getElementById('tg-scheduled-time');
 
   const botToken = elToken ? elToken.value.trim().replace(/^bot:?/i, '').replace(/[\s"']/g, '') : '';
   const chatId = elChatId ? elChatId.value.trim().replace(/[\s"']/g, '') : '';
@@ -2117,7 +2120,8 @@ window.saveTelegramSettings = async function(e) {
     chatId,
     notifyOnRSVP: elRsvp ? elRsvp.checked : true,
     notifyOnWish: elWish ? elWish.checked : true,
-    autoBackupHours: elHours ? parseInt(elHours.value, 10) : 12
+    autoBackupHours: elHours ? parseInt(elHours.value, 10) : 24,
+    scheduledTime: elScheduledTime ? elScheduledTime.value : '21:00'
   };
 
   showToast('កំពុងរក្សាទុកការកំណត់ Telegram...');

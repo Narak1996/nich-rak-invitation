@@ -696,13 +696,17 @@
             </div>
 
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-              <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-600 font-medium">ចន្លោះពេល Auto Backup:</span>
-                <select id="tg-backup-hours" class="px-2.5 py-1.5 rounded-xl border border-sky-200 bg-white text-xs text-[#4E3227] font-semibold">
-                  <option value="6">រៀងរាល់ ៦ ម៉ោងម្តង (Every 6h)</option>
-                  <option value="12" selected>រៀងរាល់ ១២ ម៉ោងម្តង (Every 12h)</option>
-                  <option value="24">រៀងរាល់ ២៤ ម៉ោងម្តង (Daily)</option>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs text-gray-700 font-semibold flex items-center gap-1">⏰ ម៉ោងកំណត់ Auto Backup:</span>
+                <select id="tg-scheduled-time" class="px-3 py-1.5 rounded-xl border border-sky-300 bg-white text-xs text-[#4E3227] font-bold shadow-2xs">
+                  <option value="21:00" selected>ម៉ោង ៩:០០ យប់ (9:00 PM Cambodia Time) ★</option>
+                  <option value="22:00">ម៉ោង ១០:០០ យប់ (10:00 PM)</option>
+                  <option value="20:00">ម៉ោង ៨:០០ យប់ (8:00 PM)</option>
+                  <option value="18:00">ម៉ោង ៦:០០ ល្ងាច (6:00 PM)</option>
+                  <option value="12:00">ម៉ោង ១២:០០ ថ្ងៃត្រង់ (12:00 PM)</option>
+                  <option value="08:00">ម៉ោង ៨:០០ ព្រឹក (8:00 AM)</option>
                 </select>
+                <input type="hidden" id="tg-backup-hours" value="24">
                 <span class="text-[11px] text-gray-500 ml-2" id="tg-last-backup-hint"></span>
               </div>
               <button type="submit" class="px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">

@@ -1414,6 +1414,7 @@ app.post('/api/telegram/config', requireAdmin, (req, res) => {
     if (notifyOnRSVP !== undefined) updates.notifyOnRSVP = Boolean(notifyOnRSVP);
     if (notifyOnWish !== undefined) updates.notifyOnWish = Boolean(notifyOnWish);
     if (autoBackupHours !== undefined) updates.autoBackupHours = parseInt(autoBackupHours, 10) || 12;
+    if (req.body.scheduledTime) updates.scheduledTime = String(req.body.scheduledTime).trim();
 
     const saved = telegram.saveConfig(updates);
     res.json({ success: true, config: saved });
@@ -1445,6 +1446,26 @@ app.post('/api/telegram/backup-now', requireAdmin, async (req, res) => {
       res.status(400).json({ success: false, error: result.error });
     }
   } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Automated Cron Endpoint for Scheduled 9:00 PM Daily Backup (14:00 UTC)
+app.get('/api/telegram/cron-backup', async (req, res) => {
+  try {
+    console.log('[Telegram Cron] Running scheduled daily backup at 9:00 PM Cambodia Time...');
+    const result = await telegram.sendBackup('Daily Scheduled Backup (9:00 PM Cambodia Time)');
+    if (result.success) {
+      res.json({
+        success: true,
+        message: 'Daily 9:00 PM backup delivered successfully to Telegram!',
+        ...result
+      });
+    } else {
+      res.status(400).json({ success: false, error: result.error });
+    }
+  } catch (err) {
+    console.error('[Telegram Cron] Backup error:', err.message);
     res.status(500).json({ success: false, error: err.message });
   }
 });

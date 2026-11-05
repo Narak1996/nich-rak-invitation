@@ -243,6 +243,8 @@
     "notifyOnRSVP": true,
     "notifyOnWish": true,
     "autoBackupHours": 12,
-    "lastBackupAt": "2026-11-02T08:27:37.213Z"
+    "scheduledTime": "21:00",
+    "lastDailyBackupDate": null,
+    "lastBackupAt": "2026-11-05T01:39:09.469Z"
   }
 }

@@ -56,6 +56,8 @@ function getConfig() {
   const notifyOnRSVP = saved.notifyOnRSVP !== undefined ? Boolean(saved.notifyOnRSVP) : true;
   const notifyOnWish = saved.notifyOnWish !== undefined ? Boolean(saved.notifyOnWish) : true;
   const autoBackupHours = parseInt(saved.autoBackupHours || 12, 10);
+  const scheduledTime = saved.scheduledTime || '21:00'; // Default 9:00 PM Cambodia Time
+  const lastDailyBackupDate = saved.lastDailyBackupDate || null;
   const lastBackupAt = saved.lastBackupAt || null;
 
   return {
@@ -65,6 +67,8 @@ function getConfig() {
     notifyOnRSVP,
     notifyOnWish,
     autoBackupHours,
+    scheduledTime,
+    lastDailyBackupDate,
     lastBackupAt
   };
 }
@@ -380,29 +384,66 @@ function scheduleDebouncedBackup(reason) {
   }, 10 * 1000); // 10 seconds debounce
 }
 
+// Helper to get Cambodia local time (Asia/Phnom_Penh, UTC+7)
+function getCambodiaTime() {
+  const d = new Date();
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Phnom_Penh',
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const parts = formatter.formatToParts(d);
+  const hour = parts.find(p => p.type === 'hour').value;
+  const minute = parts.find(p => p.type === 'minute').value;
+  const day = parts.find(p => p.type === 'day').value;
+  const month = parts.find(p => p.type === 'month').value;
+  const year = parts.find(p => p.type === 'year').value;
+  return {
+    timeStr: `${hour}:${minute}`,
+    dateStr: `${year}-${month}-${day}`,
+    hour: parseInt(hour, 10),
+    minute: parseInt(minute, 10)
+  };
+}
+
 // Background Cron-style Interval Checker
 let intervalTimer = null;
 function startAutoBackupScheduler() {
   if (intervalTimer) clearInterval(intervalTimer);
 
-  // Check every 30 minutes
+  // Check every 30 seconds for scheduled 9:00 PM (21:00) Cambodia Time
   intervalTimer = setInterval(async () => {
     const config = getConfig();
     if (!config.enabled || !config.botToken || !config.chatId) return;
 
-    const hours = Math.max(1, config.autoBackupHours || 12);
-    const intervalMs = hours * 60 * 60 * 1000;
+    const { timeStr, dateStr } = getCambodiaTime();
+    const targetTime = config.scheduledTime || '21:00'; // Default 9:00 PM
 
+    // 1. Daily scheduled backup check (e.g. at 21:00 Cambodia Time)
+    if (timeStr === targetTime && config.lastDailyBackupDate !== dateStr) {
+      console.log(`[Telegram] ⏰ Triggering scheduled daily backup at ${targetTime} (Cambodia Time) for ${dateStr}...`);
+      saveConfig({ lastDailyBackupDate: dateStr });
+      await sendBackup(`Daily Scheduled Backup (${targetTime} / 9:00 PM Cambodia Time)`);
+      return;
+    }
+
+    // 2. Fallback interval check (if elapsed exceeds autoBackupHours)
+    const hours = Math.max(1, config.autoBackupHours || 24);
+    const intervalMs = hours * 60 * 60 * 1000;
     const lastTime = config.lastBackupAt ? new Date(config.lastBackupAt).getTime() : 0;
     const now = Date.now();
 
     if (now - lastTime >= intervalMs) {
-      console.log(`[Telegram] Triggering scheduled auto-backup (every ${hours}h)...`);
-      await sendBackup(`Auto Scheduled Backup (${hours}h interval)`);
+      console.log(`[Telegram] Triggering interval auto-backup (every ${hours}h)...`);
+      await sendBackup(`Auto Backup Interval (${hours}h)`);
     }
-  }, 30 * 60 * 1000);
+  }, 30 * 1000);
 
-  console.log('[Telegram] Auto-backup scheduler initialized.');
+  console.log('[Telegram] Auto-backup scheduler initialized (Daily 9:00 PM / 21:00 Cambodia Time).');
 }
 
 module.exports = {
