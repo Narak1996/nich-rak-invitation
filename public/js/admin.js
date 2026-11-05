@@ -262,12 +262,20 @@ window.loadDBDiagnostics = async function() {
       if (gDesc) gDesc.textContent = d.error ? (d.error.slice(0, 110) + '... [ចុច មើលលម្អិត ដើម្បីពិនិត្យវិធីដោះស្រាយ]') : 'មិនអាចភ្ជាប់ទៅកាន់ MongoDB Atlas បានឡើយ';
       if (gPing) gPing.classList.add('hidden');
     } else {
-      if (gBanner) gBanner.className = 'mb-6 p-4 rounded-2xl border transition-all bg-amber-50/90 border-amber-200 shadow-2xs';
-      if (gIconBg) gIconBg.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-amber-400 text-amber-900 text-base shadow-xs';
-      if (gIcon) gIcon.textContent = '🟡';
-      if (gTitle) gTitle.textContent = 'ដំណើរការលើ Local File Storage (data/*.json)';
-      if (gDesc) gDesc.textContent = 'មិនទាន់មាន MONGODB_URI ក្នុង Environment។ ចុច "មើលលម្អិត" ដើម្បីមើលការណែនាំភ្ជាប់ Cloud Database។';
-      if (gPing) gPing.classList.add('hidden');
+      if (gBanner) gBanner.className = 'mb-6 p-4 rounded-2xl border transition-all bg-emerald-50/80 border-emerald-200 shadow-2xs';
+      if (gIconBg) gIconBg.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-600 text-white text-base shadow-xs';
+      if (gIcon) gIcon.textContent = '📊';
+      if (gTitle) gTitle.textContent = 'Google Sheets Cloud Database (Connected & Active)';
+      if (gDesc) gDesc.textContent = 'ទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់, Users) ត្រូវបានរក្សាទុកអចិន្ត្រៃយ៍លើ Google Sheets';
+      if (gPing) {
+        gPing.classList.remove('hidden');
+        gPing.textContent = 'Active';
+        gPing.className = 'text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold';
+      }
+      const tabIndicator = document.getElementById('tab-db-indicator');
+      if (tabIndicator) {
+        tabIndicator.className = 'w-2 h-2 rounded-full bg-emerald-500';
+      }
     }
 
     // 3. Error Box
