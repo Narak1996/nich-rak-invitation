@@ -30,6 +30,7 @@ if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 const db = require('./db');
 const telegram = require('./telegram');
 telegram.startAutoBackupScheduler();
+const sheets = require('./sheets');
 
 // Ensure DB initialization works on both local server and Vercel serverless
 let dbInitPromise = null;
@@ -856,6 +857,15 @@ app.post('/api/rsvp', async (req, res) => {
     console.warn('[Telegram RSVP error]:', e.message);
   }
 
+  // Sync RSVP update to Google Sheets if configured
+  if (sheets.isConfigured()) {
+    try {
+      await sheets.updateGuest(found);
+    } catch (e) {
+      console.warn('[Sheets RSVP error]:', e.message);
+    }
+  }
+
   res.json({ success: true, message: 'RSVP submitted successfully', guest: found });
 });
 
@@ -925,6 +935,16 @@ app.get('/api/qr-code', async (req, res) => {
 
 // Admin: Get all guests
 app.get('/api/guests', requireAdmin, async (req, res) => {
+  if (sheets.isConfigured()) {
+    try {
+      const live = await sheets.fetchGuestsFromSheet();
+      if (live && Array.isArray(live)) {
+        return res.json(live);
+      }
+    } catch (e) {
+      console.warn('[Sheets] Live fetch guests error:', e.message);
+    }
+  }
   if (db.isDBConnected()) {
     await db.refreshFromMongoDB(true);
   }
@@ -944,7 +964,7 @@ function slugifyString(text) {
 }
 
 // Admin: Add guest
-app.post('/api/guests', requireAdmin, (req, res) => {
+app.post('/api/guests', requireAdmin, async (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);
   const { name, name_en, slug: customSlug, side, category, phone, pax_allowed } = req.body;
 
@@ -983,11 +1003,21 @@ app.post('/api/guests', requireAdmin, (req, res) => {
 
   guests.push(newGuest);
   writeJSON(GUESTS_FILE, guests);
+
+  // Sync to Google Sheet if configured
+  if (sheets.isConfigured()) {
+    try {
+      await sheets.addGuest(newGuest);
+    } catch (e) {
+      console.warn('[Sheets] Add guest error:', e.message);
+    }
+  }
+
   res.json({ success: true, guest: newGuest });
 });
 
 // Admin: Bulk import guests
-app.post('/api/guests/bulk', requireAdmin, (req, res) => {
+app.post('/api/guests/bulk', requireAdmin, async (req, res) => {
   const { names, side, category, pax_allowed } = req.body;
   if (!names) return res.status(400).json({ error: 'Names list is required' });
 
@@ -1026,11 +1056,21 @@ app.post('/api/guests/bulk', requireAdmin, (req, res) => {
 
   guests.push(...created);
   writeJSON(GUESTS_FILE, guests);
+
+  // Sync to Google Sheet if configured
+  if (sheets.isConfigured()) {
+    try {
+      await sheets.syncAllGuestsToSheet(guests);
+    } catch (e) {
+      console.warn('[Sheets] Bulk sync error:', e.message);
+    }
+  }
+
   res.json({ success: true, count: created.length, guests: created });
 });
 
 // Admin: Update guest
-app.put('/api/guests/:id', requireAdmin, (req, res) => {
+app.put('/api/guests/:id', requireAdmin, async (req, res) => {
   const guests = readJSON(GUESTS_FILE, []);
   const index = guests.findIndex(g => g.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Guest not found' });
@@ -1054,6 +1094,16 @@ app.put('/api/guests/:id', requireAdmin, (req, res) => {
     slug: updatedSlug
   };
   writeJSON(GUESTS_FILE, guests);
+
+  // Sync to Google Sheet if configured
+  if (sheets.isConfigured()) {
+    try {
+      await sheets.updateGuest(guests[index]);
+    } catch (e) {
+      console.warn('[Sheets] Update guest error:', e.message);
+    }
+  }
+
   res.json({ success: true, guest: guests[index] });
 });
 
@@ -1061,6 +1111,9 @@ app.put('/api/guests/:id', requireAdmin, (req, res) => {
 app.delete('/api/guests/all', requireAdmin, async (req, res) => {
   try {
     await db.saveGuests([]);
+    if (sheets.isConfigured()) {
+      await sheets.syncAllGuestsToSheet([]);
+    }
     res.json({ success: true, message: 'All guests deleted' });
   } catch (err) {
     console.error('Failed to delete all guests:', err);
@@ -1073,6 +1126,13 @@ app.delete('/api/guests/:id', requireAdmin, async (req, res) => {
   let guests = readJSON(GUESTS_FILE, []);
   guests = guests.filter(g => g.id !== req.params.id);
   await db.saveGuests(guests);
+  if (sheets.isConfigured()) {
+    try {
+      await sheets.deleteGuest(req.params.id);
+    } catch (e) {
+      console.warn('[Sheets] Delete guest error:', e.message);
+    }
+  }
   res.json({ success: true, message: 'Guest deleted' });
 });
 
@@ -1289,7 +1349,7 @@ function renderNotInvitedPage(req, res, slug) {
 }
 
 // Render Friendly Invitation Page with Dynamic Open Graph Preview & Couple Cover Photo
-function renderInvitationPage(req, res) {
+async function renderInvitationPage(req, res) {
   let guestName = '';
 
   const rawParam = req.params.guest || req.params.slug || req.query.to || req.query.guest;
@@ -1302,19 +1362,35 @@ function renderInvitationPage(req, res) {
   const isGeneralGuest = !rawQuery || cleanSlug === 'guest' || cleanSlug === 'guests';
 
   // Look up guest in guests.json for accurate name display
-  const guests = readJSON(GUESTS_FILE, []);
+  let guests = readJSON(GUESTS_FILE, []);
   let foundGuest = null;
-  if (rawQuery && Array.isArray(guests)) {
+
+  function matchGuest(list) {
+    if (!rawQuery || !Array.isArray(list)) return null;
     const queryLower = cleanSlug;
     const queryNoDash = queryLower.replace(/-/g, ' ');
     const queryWithDash = queryLower.replace(/\s+/g, '-');
-
-    foundGuest = guests.find(g => 
+    return list.find(g => 
       (g.slug && (g.slug.toLowerCase() === queryLower || g.slug.toLowerCase() === queryWithDash || g.slug.toLowerCase() === queryNoDash)) ||
       (g.id && (g.id.toLowerCase() === queryLower || g.id.toLowerCase() === queryNoDash)) ||
       (g.name && (g.name.toLowerCase() === queryLower || g.name.toLowerCase() === queryNoDash)) ||
       (g.name_en && (g.name_en.toLowerCase() === queryLower || g.name_en.toLowerCase() === queryNoDash))
     );
+  }
+
+  foundGuest = matchGuest(guests);
+
+  // If not found in local cache and Google Sheets is enabled, check Google Sheets live!
+  if (!foundGuest && !isGeneralGuest && sheets.isConfigured()) {
+    try {
+      const liveGuests = await sheets.fetchGuestsFromSheet();
+      if (liveGuests && Array.isArray(liveGuests)) {
+        guests = liveGuests;
+        foundGuest = matchGuest(guests);
+      }
+    } catch (e) {
+      console.warn('[Sheets] Live lookup error in renderInvitationPage:', e.message);
+    }
   }
 
   // VALIDATION RULE:
@@ -1640,6 +1716,78 @@ app.get('/api/telegram/cron-backup', async (req, res) => {
     console.error('[Telegram Cron] Backup error:', err.message);
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// ================= GOOGLE SHEETS CLOUD DATABASE API =================
+app.get('/api/sheets/config', requireAdmin, (req, res) => {
+  const config = sheets.getConfig();
+  res.json({
+    ...config,
+    isConfigured: sheets.isConfigured()
+  });
+});
+
+app.post('/api/sheets/config', requireAdmin, (req, res) => {
+  try {
+    const { enabled, sheetUrl, spreadsheetUrl } = req.body;
+    const updates = {};
+    if (enabled !== undefined) updates.enabled = Boolean(enabled);
+    if (sheetUrl !== undefined) updates.sheetUrl = String(sheetUrl).trim();
+    if (spreadsheetUrl !== undefined) updates.spreadsheetUrl = String(spreadsheetUrl).trim();
+
+    const saved = sheets.saveConfig(updates);
+    res.json({ success: true, config: saved, isConfigured: sheets.isConfigured() });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/sheets/test', requireAdmin, async (req, res) => {
+  try {
+    const { sheetUrl } = req.body;
+    const result = await sheets.testConnection(sheetUrl);
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/sheets/pull', requireAdmin, async (req, res) => {
+  try {
+    const guests = await sheets.fetchGuestsFromSheet();
+    if (guests && Array.isArray(guests)) {
+      res.json({ success: true, message: `ទាញទិន្នន័យបានជោគជ័យ! សរុប ${guests.length} នាក់`, count: guests.length, guests });
+    } else {
+      res.status(400).json({ success: false, error: 'មិនអាចទាញទិន្នន័យពី Google Sheets បានឡើយ។ សូមពិនិត្យ Web App URL' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/sheets/push', requireAdmin, async (req, res) => {
+  try {
+    const guests = readJSON(GUESTS_FILE, []);
+    const result = await sheets.syncAllGuestsToSheet(guests);
+    if (result && result.success) {
+      res.json({ success: true, message: `បានបញ្ជូនភ្ញៀវ ${guests.length} នាក់ទៅកាន់ Google Sheets ដោយជោគជ័យ!`, count: guests.length });
+    } else {
+      res.status(400).json({ success: false, error: (result && result.error) || 'បរាជ័យក្នុងការបញ្ជូនទៅ Google Sheet' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/sheets/script-code', requireAdmin, (req, res) => {
+  res.json({
+    success: true,
+    code: sheets.APPS_SCRIPT_TEMPLATE
+  });
 });
 
 // Fallback for all other GET requests (SPA support)

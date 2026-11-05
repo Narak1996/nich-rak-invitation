@@ -60,6 +60,7 @@ async function loadAllData() {
     checkDBStatus(),
     loadDBDiagnostics(),
     loadTelegramSettings(),
+    loadSheetsSettings(),
     loadStats(),
     loadWeddingData(),
     loadGuests(),
@@ -1611,7 +1612,11 @@ function initTabs() {
       const target = tab.getAttribute('data-target');
       document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.getElementById(target).classList.remove('hidden');
-      if (target === 'tab-database' && typeof loadDBDiagnostics === 'function') loadDBDiagnostics();
+      if (target === 'tab-database') {
+        if (typeof loadDBDiagnostics === 'function') loadDBDiagnostics();
+        if (typeof loadTelegramSettings === 'function') loadTelegramSettings();
+        if (typeof loadSheetsSettings === 'function') loadSheetsSettings();
+      }
     });
   });
   // Set first tab active styling
@@ -2189,9 +2194,198 @@ window.sendTelegramBackupNow = async function() {
       showToast('បរាជ័យ៖ ' + (data.error || 'Error'));
       alert('❌ មិនអាចបញ្ជូន Backup បានឡើយ៖\n\n' + (data.error || 'Error') + '\n\nសូមធានាថាបានកំណត់ Bot Token និង Chat ID ត្រឹមត្រូវក្នុងផ្ទាំង Telegram Backup។');
     }
-  } catch (err) {
-    showToast('កំហុសពេល Backup៖ ' + err.message);
   } finally {
     if (spin) spin.classList.remove('animate-spin');
   }
+};
+
+// ================= GOOGLE SHEETS CLOUD DATABASE =================
+window.loadSheetsSettings = async function() {
+  const elUrl = document.getElementById('sheets-webapp-url');
+  const elDoc = document.getElementById('sheets-doc-url');
+  const elEnabled = document.getElementById('sheets-enabled');
+  const elPill = document.getElementById('sheets-status-pill');
+  const elInfo = document.getElementById('sheets-sync-info');
+  const elLink = document.getElementById('sheets-open-link');
+
+  try {
+    const res = await fetch('/api/sheets/config');
+    if (!res.ok) return;
+    const cfg = await res.json();
+
+    if (elUrl) elUrl.value = cfg.sheetUrl || '';
+    if (elDoc) elDoc.value = cfg.spreadsheetUrl || '';
+    if (elEnabled) elEnabled.checked = cfg.enabled !== false;
+
+    if (elLink) {
+      if (cfg.spreadsheetUrl) {
+        elLink.href = cfg.spreadsheetUrl;
+        elLink.classList.remove('hidden');
+      } else {
+        elLink.classList.add('hidden');
+      }
+    }
+
+    if (elPill) {
+      if (cfg.isConfigured) {
+        elPill.textContent = '● Connected';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+      } else {
+        elPill.textContent = '○ Not Configured';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
+      }
+    }
+
+    if (elInfo && cfg.lastSyncAt) {
+      const dt = new Date(cfg.lastSyncAt);
+      elInfo.textContent = `⚡ ធ្វើសមកាលកម្មចុងក្រោយ (Last Synced): ${dt.toLocaleDateString('km-KH')} ${dt.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+  } catch (err) {
+    console.error('Failed to load Google Sheets config:', err);
+  }
+};
+
+window.saveSheetsSettings = async function(e) {
+  if (e) e.preventDefault();
+  const elUrl = document.getElementById('sheets-webapp-url');
+  const elDoc = document.getElementById('sheets-doc-url');
+  const elEnabled = document.getElementById('sheets-enabled');
+
+  const sheetUrl = elUrl ? elUrl.value.trim() : '';
+  const spreadsheetUrl = elDoc ? elDoc.value.trim() : '';
+  const enabled = elEnabled ? elEnabled.checked : true;
+
+  showToast('💾 កំពុងរក្សាទុកការកំណត់ Google Sheets...');
+  try {
+    const res = await fetch('/api/sheets/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheetUrl, spreadsheetUrl, enabled })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('✅ បានរក្សាទុកការកំណត់ Google Sheets ជោគជ័យ!');
+      await loadSheetsSettings();
+    } else {
+      showToast('បរាជ័យ៖ ' + (data.error || 'Failed to save'));
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Save៖ ' + err.message);
+  }
+};
+
+window.testSheetsConnection = async function() {
+  const elUrl = document.getElementById('sheets-webapp-url');
+  const sheetUrl = elUrl ? elUrl.value.trim() : '';
+
+  if (!sheetUrl) {
+    alert('សូមបញ្ចូល Google Apps Script Web App URL ជាមុនសិន!');
+    return;
+  }
+
+  showToast('🔍 កំពុងតេស្តការតភ្ជាប់ទៅ Google Sheet...');
+  try {
+    const res = await fetch('/api/sheets/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheetUrl })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast('🎉 បានភ្ជាប់ជាមួយ Google Sheet ជោគជ័យ!');
+      alert(`✅ ជោគជ័យ! ការតភ្ជាប់ដំណើរការល្អឥតខ្ចោះ។\n\nSheet Title: "${data.sheetTitle}"\nចំនួនភ្ញៀវក្នុង Sheet ឥឡូវនេះ: ${data.totalRows !== null ? data.totalRows : 0} នាក់`);
+      await loadSheetsSettings();
+    } else {
+      showToast('បរាជ័យក្នុងការតភ្ជាប់ Google Sheet');
+      alert(`❌ មិនអាចភ្ជាប់បានឡើយ៖\n\n${data.error || 'Error'}\n\nសូមពិនិត្យមើល៖\n1. តើអ្នកបានចុច Deploy ជា "Web app" ហើយឬនៅ?\n2. តើបានកំណត់ "Who has access" ជា "Anyone" ដែរឬទេ?\n3. តើ Web App URL បញ្ចប់ដោយ "/exec" ដែរឬទេ?`);
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Test៖ ' + err.message);
+  }
+};
+
+window.pullFromSheets = async function() {
+  const spin = document.getElementById('icon-sheets-pull-spin');
+  if (spin) spin.classList.add('animate-spin');
+  showToast('🔄 កំពុងទាញទិន្នន័យពី Google Sheets...');
+
+  try {
+    const res = await fetch('/api/sheets/pull', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast(`✅ ${data.message}`);
+      await loadGuests();
+      await loadStats();
+      await loadSheetsSettings();
+    } else {
+      showToast('បរាជ័យ៖ ' + (data.error || 'Error pulling data'));
+      alert(`❌ មិនអាចទាញទិន្នន័យបានឡើយ៖\n\n${data.error || 'Error'}`);
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Pull៖ ' + err.message);
+  } finally {
+    if (spin) spin.classList.remove('animate-spin');
+  }
+};
+
+window.pushToSheets = async function() {
+  if (!confirm('តើអ្នកពិតជាចង់បញ្ជូនទិន្នន័យភ្ញៀវទាំងអស់ទៅ Google Sheet មែនទេ? (វានឹងធ្វើបច្ចុប្បន្នភាពលើ Sheet)')) return;
+
+  showToast('⬆️ កំពុងបញ្ជូនភ្ញៀវទាំងអស់ទៅ Google Sheets...');
+  try {
+    const res = await fetch('/api/sheets/push', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showToast(`🎉 ${data.message}`);
+      alert(`✅ ${data.message}`);
+      await loadSheetsSettings();
+    } else {
+      showToast('បរាជ័យ៖ ' + (data.error || 'Error'));
+      alert(`❌ មិនអាចបញ្ជូនបានឡើយ៖\n\n${data.error || 'Error'}`);
+    }
+  } catch (err) {
+    showToast('កំហុសពេល Push៖ ' + err.message);
+  }
+};
+
+window.openAppsScriptModal = async function() {
+  const modal = document.getElementById('modal-apps-script');
+  const box = document.getElementById('apps-script-code-box');
+  if (modal) modal.classList.add('active');
+
+  if (box && !box.value) {
+    try {
+      const res = await fetch('/api/sheets/script-code');
+      const data = await res.json();
+      if (data.success && data.code) {
+        box.value = data.code;
+      }
+    } catch (e) {
+      console.warn('Failed to load apps script code:', e);
+    }
+  }
+};
+
+window.closeAppsScriptModal = function() {
+  const modal = document.getElementById('modal-apps-script');
+  if (modal) modal.classList.remove('active');
+};
+
+window.copyAppsScriptCode = function() {
+  const box = document.getElementById('apps-script-code-box');
+  const btn = document.getElementById('btn-copy-script');
+  if (!box || !box.value) return;
+
+  navigator.clipboard.writeText(box.value).then(() => {
+    showToast('📋 បានចម្លងកូដ Google Apps Script រួចរាល់!');
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span>✅ Copied!</span>';
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    }
+  }).catch(() => {
+    box.select();
+    document.execCommand('copy');
+    showToast('📋 បានចម្លងកូដរួចរាល់!');
+  });
 };
