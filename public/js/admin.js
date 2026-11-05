@@ -2387,20 +2387,26 @@ window.pullFromSheets = async function() {
   const sheetUrl = elUrl ? elUrl.value.trim() : '';
   const spin = document.getElementById('icon-sheets-pull-spin');
   if (spin) spin.classList.add('animate-spin');
-  showToast('🔄 កំពុងទាញទិន្នន័យពី Google Sheets...');
+  showToast('🔄 កំពុងទាញទិន្នន័យទាំងអស់ពី Google Sheets...');
 
   try {
     const res = await fetch('/api/sheets/pull', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sheetUrl })
+      body: JSON.stringify({ sheetUrl, target: 'all' })
     });
     const data = await res.json();
     if (res.ok && data.success) {
       showToast(`✅ ${data.message}`);
-      await loadGuests();
-      await loadStats();
-      await loadSheetsSettings();
+      alert(`🎉 ជោគជ័យ!\n\n${data.message}`);
+      await Promise.all([
+        loadGuests(),
+        loadWishes(),
+        loadWeddingData(),
+        loadUsers(),
+        loadStats(),
+        loadSheetsSettings()
+      ]);
     } else {
       showToast('បរាជ័យ៖ ' + (data.error || 'Error pulling data'));
       alert(`❌ មិនអាចទាញទិន្នន័យបានឡើយ៖\n\n${data.error || 'Error'}`);
@@ -2413,16 +2419,16 @@ window.pullFromSheets = async function() {
 };
 
 window.pushToSheets = async function() {
-  if (!confirm('តើអ្នកពិតជាចង់បញ្ជូនទិន្នន័យភ្ញៀវទាំងអស់ទៅ Google Sheet មែនទេ? (វានឹងធ្វើបច្ចុប្បន្នភាពលើ Sheet)')) return;
+  if (!confirm('តើអ្នកពិតជាចង់បញ្ជូនទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់មង្គលការ, Users) ទៅកាន់ Google Sheet មែនទេ? (វានឹងធ្វើបច្ចុប្បន្នភាពលើគ្រប់ Sheets ទាំងអស់)')) return;
 
   const elUrl = document.getElementById('sheets-webapp-url');
   const sheetUrl = elUrl ? elUrl.value.trim() : '';
-  showToast('⬆️ កំពុងបញ្ជូនភ្ញៀវទាំងអស់ទៅ Google Sheets...');
+  showToast('⬆️ កំពុងបញ្ជូនទិន្នន័យទាំងអស់ទៅ Google Sheets...');
   try {
     const res = await fetch('/api/sheets/push', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sheetUrl })
+      body: JSON.stringify({ sheetUrl, target: 'all' })
     });
     const data = await res.json();
     if (res.ok && data.success) {

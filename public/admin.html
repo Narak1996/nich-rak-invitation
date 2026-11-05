@@ -637,20 +637,20 @@
                 📊
               </div>
               <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">Google Sheets Cloud Database (Free &amp; Permanent)</h3>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">Google Sheets Cloud Database (Full Database: Guests, Wishes, Settings, Users)</h3>
                   <span id="sheets-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">Checking...</span>
                 </div>
-                <p class="text-xs text-[#7A6F68] mt-0.5">រក្សាទុក កែប្រែ និងលុបទិន្នន័យភ្ញៀវផ្ទាល់ជាមួយ Google Sheets ដោយមិនបារម្ភពីការបាត់ទិន្នន័យលើ Vercel</p>
+                <p class="text-xs text-[#7A6F68] mt-0.5">រក្សាទុក កែប្រែ និងធ្វើសមកាលកម្មទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់មង្គលការ, Users) ផ្ទាល់លើ Google Sheets (Free &amp; 100% Permanent)</p>
               </div>
             </div>
             <div class="flex flex-wrap items-center gap-2 shrink-0">
               <button type="button" onclick="pullFromSheets()" id="btn-sheets-pull" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer">
                 <svg id="icon-sheets-pull-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                <span>🔄 ទាញពី Sheet (Pull)</span>
+                <span>🔄 ទាញទិន្នន័យទាំងអស់ (Pull All)</span>
               </button>
               <button type="button" onclick="pushToSheets()" id="btn-sheets-push" class="px-3.5 py-2 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-                <span>⬆️ បញ្ជូនទៅ Sheet (Sync All)</span>
+                <span>⬆️ បញ្ជូនទាំងអស់ទៅ Sheet (Sync All)</span>
               </button>
               <button type="button" onclick="openAppsScriptModal()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
                 <span>📋 មើលកូដ Google Apps Script</span>
@@ -1356,14 +1356,17 @@
 
       <!-- Quick 4-Step Guide -->
       <div class="p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-200 text-xs text-[#3E5549] space-y-1.5 leading-relaxed shrink-0 mb-3">
-        <p class="font-bold text-emerald-950">🚀 ៤ ជំហានងាយៗដើម្បីភ្ជាប់៖</p>
-        <p>1. បង្កើត <strong>Google Sheet</strong> ថ្មីមួយលើ Google Drive របស់អ្នក (ដាក់ឈ្មោះ <em>"Wedding Guests"</em>)</p>
+        <p class="font-bold text-emerald-950">🚀 ៤ ជំហានងាយៗដើម្បីភ្ជាប់ Database ពេញលេញ (Guests, Wishes, Settings, Users)៖</p>
+        <p>1. បង្កើត <strong>Google Sheet</strong> ថ្មីមួយលើ Google Drive របស់អ្នក (ដាក់ឈ្មោះ <em>"Rak &amp; Nich Wedding Database"</em>)</p>
         <p>2. ចុចលើ Menu <strong>Extensions (ផ្នែកបន្ថែម)</strong> ➜ ជ្រើសរើស <strong>Apps Script</strong></p>
         <p>3. លុបកូដចាស់ក្នុងនោះចេញ រួច <strong>Paste កូដខាងក្រោមនេះចូល</strong> ➜ ចុច <strong>Save (💾)</strong></p>
         <p>4. ចុចប៊ូតុងខៀវ <strong>Deploy (ដាក់ឱ្យប្រើ)</strong> ➜ <strong>New deployment</strong> ➜ ជ្រើសរើសប្រភេទ <strong>Web app</strong>៖
           <br>&bull; <em>Execute as:</em> <strong>Me</strong>
           <br>&bull; <em>Who has access:</em> <strong>Anyone</strong>
           <br>➜ ចុច <strong>Deploy</strong> រួច <strong>Copy Web App URL</strong> យកមកដាក់ក្នុងផ្ទាំង Admin នេះ!</p>
+        <p class="text-[11px] text-emerald-800 bg-emerald-100/60 p-2 rounded-xl mt-1 border border-emerald-200/80">
+          💡 <strong>ចំណាំ៖</strong> កូដនេះនឹងបង្កើត Sheet ស្វ័យប្រវត្តិចំនួន ៤ ផ្ទាំងគឺ៖ <code>Guests</code> (ភ្ញៀវ), <code>Wishes</code> (ពាក្យជូនពរ), <code>Settings</code> (ការកំណត់កម្មវិធី), និង <code>Users</code> (Admin Users)!
+        </p>
       </div>
 
       <!-- Code Box -->

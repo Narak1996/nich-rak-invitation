@@ -2,6 +2,7 @@ require('dotenv').config();
 const { MongoClient, Binary } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
+const sheets = require('./sheets');
 
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) {
@@ -58,8 +59,22 @@ async function initDB() {
   const uri = process.env.MONGODB_URI;
   if (!uri || !uri.trim()) {
     lastConnectionError = 'No MONGODB_URI provided in environment or .env file';
-    console.log('[DB] No MONGODB_URI provided. Running in file-based mode (data/*.json).');
+    console.log('[DB] No MONGODB_URI provided. Running in file / Google Sheets mode.');
     isConnected = false;
+    if (sheets.isConfigured()) {
+      try {
+        console.log('[DB] Hydrating database from Google Sheets...');
+        const sheetData = await sheets.fetchAllFromSheet();
+        if (sheetData) {
+          if (Array.isArray(sheetData.guests)) cache.guests = sheetData.guests;
+          if (Array.isArray(sheetData.wishes)) cache.wishes = sheetData.wishes;
+          if (sheetData.wedding && typeof sheetData.wedding === 'object') cache.wedding = { ...cache.wedding, ...sheetData.wedding };
+          if (Array.isArray(sheetData.users) && sheetData.users.length > 0) cache.users = sheetData.users;
+        }
+      } catch (e) {
+        console.warn('[DB] Error loading initial data from Google Sheets:', e.message);
+      }
+    }
     return false;
   }
 
@@ -244,6 +259,13 @@ async function saveGuests(newGuests) {
       console.error('[DB] Error saving guests to MongoDB:', err.message);
     }
   }
+
+  // Automatic Google Sheets Cloud Database Sync
+  if (sheets.isConfigured()) {
+    sheets.saveGuestsToSheet(cache.guests).catch(err => {
+      console.warn('[DB] Sheets saveGuests error:', err.message);
+    });
+  }
 }
 
 // ---------------- WEDDING DATA API ----------------
@@ -267,6 +289,13 @@ async function saveWedding(newWedding) {
       console.error('[DB] Error saving wedding settings to MongoDB:', err.message);
     }
   }
+
+  // Automatic Google Sheets Cloud Database Sync
+  if (sheets.isConfigured()) {
+    sheets.saveWeddingToSheet(cache.wedding).catch(err => {
+      console.warn('[DB] Sheets saveWedding error:', err.message);
+    });
+  }
 }
 
 // ---------------- WISHES API ----------------
@@ -289,6 +318,13 @@ async function saveWishes(newWishes) {
       console.error('[DB] Error saving wishes to MongoDB:', err.message);
     }
   }
+
+  // Automatic Google Sheets Cloud Database Sync
+  if (sheets.isConfigured()) {
+    sheets.saveWishesToSheet(cache.wishes).catch(err => {
+      console.warn('[DB] Sheets saveWishes error:', err.message);
+    });
+  }
 }
 
 // ---------------- USERS API ----------------
@@ -310,6 +346,13 @@ async function saveUsers(newUsers) {
     } catch (err) {
       console.error('[DB] Error saving users to MongoDB:', err.message);
     }
+  }
+
+  // Automatic Google Sheets Cloud Database Sync
+  if (sheets.isConfigured()) {
+    sheets.saveUsersToSheet(cache.users).catch(err => {
+      console.warn('[DB] Sheets saveUsers error:', err.message);
+    });
   }
 }
 

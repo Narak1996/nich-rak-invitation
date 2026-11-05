@@ -1770,16 +1770,28 @@ app.post('/api/sheets/test', requireAdmin, async (req, res) => {
 
 app.post('/api/sheets/pull', requireAdmin, async (req, res) => {
   try {
-    const { sheetUrl } = req.body || {};
+    const { sheetUrl, target = 'all' } = req.body || {};
     if (sheetUrl) {
       sheets.saveConfig({ sheetUrl: String(sheetUrl).trim() });
     }
-    const guests = await sheets.fetchGuestsFromSheet();
-    if (guests && Array.isArray(guests)) {
-      res.json({ success: true, message: `ទាញទិន្នន័យបានជោគជ័យ! សរុប ${guests.length} នាក់`, count: guests.length, guests });
+
+    if (target === 'guests') {
+      const guests = await sheets.fetchGuestsFromSheet();
+      if (guests && Array.isArray(guests)) {
+        return res.json({ success: true, message: `ទាញទិន្នន័យភ្ញៀវបានជោគជ័យ! សរុប ${guests.length} នាក់`, count: guests.length, guests });
+      }
     } else {
-      res.status(400).json({ success: false, error: 'មិនអាចទាញទិន្នន័យពី Google Sheets បានឡើយ។ សូមពិនិត្យ Web App URL' });
+      // Pull ALL data (Guests, Wishes, Wedding, Users)
+      const allData = await sheets.fetchAllFromSheet();
+      if (allData && allData.success) {
+        return res.json({
+          success: true,
+          message: `ទាញទិន្នន័យទាំងអស់ពី Google Sheet បានជោគជ័យ! (ភ្ញៀវ: ${allData.guests ? allData.guests.length : 0}, ពាក្យជូនពរ: ${allData.wishes ? allData.wishes.length : 0})`,
+          ...allData
+        });
+      }
     }
+    res.status(400).json({ success: false, error: 'មិនអាចទាញទិន្នន័យពី Google Sheets បានឡើយ។ សូមពិនិត្យ Web App URL' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -1787,16 +1799,31 @@ app.post('/api/sheets/pull', requireAdmin, async (req, res) => {
 
 app.post('/api/sheets/push', requireAdmin, async (req, res) => {
   try {
-    const { sheetUrl } = req.body || {};
+    const { sheetUrl, target = 'all' } = req.body || {};
     if (sheetUrl) {
       sheets.saveConfig({ sheetUrl: String(sheetUrl).trim() });
     }
-    const guests = readJSON(GUESTS_FILE, []);
-    const result = await sheets.syncAllGuestsToSheet(guests);
-    if (result && result.success) {
-      res.json({ success: true, message: `បានបញ្ជូនភ្ញៀវ ${guests.length} នាក់ទៅកាន់ Google Sheets ដោយជោគជ័យ!`, count: guests.length });
+
+    if (target === 'guests') {
+      const guests = readJSON(GUESTS_FILE, []);
+      const result = await sheets.syncAllGuestsToSheet(guests);
+      return res.json({ success: true, message: `បានបញ្ជូនភ្ញៀវ ${guests.length} នាក់ទៅ Google Sheets ដោយជោគជ័យ!`, count: guests.length });
     } else {
-      res.status(400).json({ success: false, error: (result && result.error) || 'បរាជ័យក្នុងការបញ្ជូនទៅ Google Sheet' });
+      // Push ALL data (Guests, Wishes, Wedding, Users)
+      const guests = readJSON(GUESTS_FILE, []);
+      const wishes = readJSON(WISHES_FILE, []);
+      const wedding = readJSON(WEDDING_FILE, {});
+      const users = readJSON(USERS_FILE, []);
+
+      const result = await sheets.syncAllToSheet({ guests, wishes, wedding, users });
+      if (result && result.success) {
+        return res.json({
+          success: true,
+          message: `បានបញ្ជូនទិន្នន័យទាំងអស់ (ភ្ញៀវ ${guests.length} នាក់, ពាក្យជូនពរ ${wishes.length}, ការកំណត់មង្គលការ) ទៅកាន់ Google Sheets ដោយជោគជ័យ!`
+        });
+      } else {
+        return res.status(400).json({ success: false, error: (result && result.error) || 'បរាជ័យក្នុងការបញ្ជូនទៅ Google Sheet' });
+      }
     }
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
