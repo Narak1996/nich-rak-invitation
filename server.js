@@ -1370,12 +1370,27 @@ async function renderInvitationPage(req, res) {
     const queryLower = cleanSlug;
     const queryNoDash = queryLower.replace(/-/g, ' ');
     const queryWithDash = queryLower.replace(/\s+/g, '-');
-    return list.find(g => 
-      (g.slug && (g.slug.toLowerCase() === queryLower || g.slug.toLowerCase() === queryWithDash || g.slug.toLowerCase() === queryNoDash)) ||
-      (g.id && (g.id.toLowerCase() === queryLower || g.id.toLowerCase() === queryNoDash)) ||
-      (g.name && (g.name.toLowerCase() === queryLower || g.name.toLowerCase() === queryNoDash)) ||
-      (g.name_en && (g.name_en.toLowerCase() === queryLower || g.name_en.toLowerCase() === queryNoDash))
-    );
+    const queryAlpha = queryLower.replace(/[^a-z0-9]/g, '');
+
+    return list.find(g => {
+      if (!g) return false;
+      const slugLower = String(g.slug || '').toLowerCase();
+      const idLower = String(g.id || '').toLowerCase();
+      const nameLower = String(g.name || '').toLowerCase();
+      const nameEnLower = String(g.name_en || '').toLowerCase();
+
+      if (slugLower && (slugLower === queryLower || slugLower === queryWithDash || slugLower === queryNoDash)) return true;
+      if (idLower && (idLower === queryLower || idLower === queryNoDash)) return true;
+      if (nameLower && (nameLower === queryLower || nameLower === queryNoDash)) return true;
+      if (nameEnLower && (nameEnLower === queryLower || nameEnLower === queryNoDash)) return true;
+
+      // Resilient alphanumeric match (e.g. yeng-channn vs yengchann vs yeng-chan)
+      if (queryAlpha) {
+        if (slugLower.replace(/[^a-z0-9]/g, '') === queryAlpha) return true;
+        if (nameEnLower.replace(/[^a-z0-9]/g, '') === queryAlpha) return true;
+      }
+      return false;
+    });
   }
 
   foundGuest = matchGuest(guests);
