@@ -88,21 +88,28 @@ function getConfig() {
 }
 
 // Save Google Sheets Config
-function saveConfig(updates) {
+function saveConfig(updates = {}) {
   const current = getConfig();
   const merged = {
     ...current,
     ...updates
   };
 
-  if (updates.sheetUrl) {
-    merged.sheetUrl = String(updates.sheetUrl).trim();
+  if (updates.sheetUrl !== undefined) {
+    const trimmed = String(updates.sheetUrl || '').trim();
+    merged.sheetUrl = trimmed || current.sheetUrl || DEFAULT_SHEET_URL;
+  } else if (!merged.sheetUrl) {
+    merged.sheetUrl = DEFAULT_SHEET_URL;
   }
+
   if (updates.spreadsheetUrl !== undefined) {
-    merged.spreadsheetUrl = String(updates.spreadsheetUrl).trim();
+    merged.spreadsheetUrl = String(updates.spreadsheetUrl || '').trim();
   }
+
   if (updates.enabled !== undefined) {
     merged.enabled = Boolean(updates.enabled);
+  } else {
+    merged.enabled = true;
   }
 
   inMemoryConfig = merged;

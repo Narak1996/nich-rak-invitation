@@ -259,13 +259,6 @@ async function saveGuests(newGuests) {
       console.error('[DB] Error saving guests to MongoDB:', err.message);
     }
   }
-
-  // Automatic Google Sheets Cloud Database Sync
-  if (sheets.isConfigured()) {
-    sheets.saveGuestsToSheet(cache.guests).catch(err => {
-      console.warn('[DB] Sheets saveGuests error:', err.message);
-    });
-  }
 }
 
 // ---------------- WEDDING DATA API ----------------
@@ -289,13 +282,6 @@ async function saveWedding(newWedding) {
       console.error('[DB] Error saving wedding settings to MongoDB:', err.message);
     }
   }
-
-  // Automatic Google Sheets Cloud Database Sync
-  if (sheets.isConfigured()) {
-    sheets.saveWeddingToSheet(cache.wedding).catch(err => {
-      console.warn('[DB] Sheets saveWedding error:', err.message);
-    });
-  }
 }
 
 // ---------------- WISHES API ----------------
@@ -317,13 +303,6 @@ async function saveWishes(newWishes) {
     } catch (err) {
       console.error('[DB] Error saving wishes to MongoDB:', err.message);
     }
-  }
-
-  // Automatic Google Sheets Cloud Database Sync
-  if (sheets.isConfigured()) {
-    sheets.saveWishesToSheet(cache.wishes).catch(err => {
-      console.warn('[DB] Sheets saveWishes error:', err.message);
-    });
   }
 }
 
@@ -347,13 +326,14 @@ async function saveUsers(newUsers) {
       console.error('[DB] Error saving users to MongoDB:', err.message);
     }
   }
+}
 
-  // Automatic Google Sheets Cloud Database Sync
-  if (sheets.isConfigured()) {
-    sheets.saveUsersToSheet(cache.users).catch(err => {
-      console.warn('[DB] Sheets saveUsers error:', err.message);
-    });
-  }
+// Update in-memory cache directly from Sheets or backups
+function setCache({ guests, wishes, wedding, users } = {}) {
+  if (Array.isArray(guests)) cache.guests = guests;
+  if (Array.isArray(wishes)) cache.wishes = wishes;
+  if (wedding && typeof wedding === 'object' && Object.keys(wedding).length > 0) cache.wedding = wedding;
+  if (Array.isArray(users)) cache.users = users;
 }
 
 // ---------------- UPLOADED MEDIA API (Deploy-Proof MongoDB Storage) ----------------
@@ -511,6 +491,7 @@ module.exports = {
   saveWishes,
   getUsers,
   saveUsers,
+  setCache,
   // Deploy-Proof Uploaded Files
   saveUploadedFile,
   getUploadedFile,

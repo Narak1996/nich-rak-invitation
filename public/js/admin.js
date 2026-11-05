@@ -1,3 +1,38 @@
+// Universal Fetch Interceptor to ensure Authorization header is always sent
+const _nativeFetch = window.fetch;
+window.fetch = function(input, init) {
+  const token = localStorage.getItem('admin_token');
+  const url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+
+  if (token && typeof url === 'string' && url.startsWith('/api/')) {
+    init = init || {};
+    init.headers = init.headers || {};
+    if (init.headers instanceof Headers) {
+      if (!init.headers.has('Authorization')) {
+        init.headers.set('Authorization', 'Bearer ' + token);
+      }
+    } else if (Array.isArray(init.headers)) {
+      const hasAuth = init.headers.some(([k]) => k.toLowerCase() === 'authorization');
+      if (!hasAuth) {
+        init.headers.push(['Authorization', 'Bearer ' + token]);
+      }
+    } else if (typeof init.headers === 'object') {
+      if (!init.headers['Authorization'] && !init.headers['authorization']) {
+        init.headers['Authorization'] = 'Bearer ' + token;
+      }
+    }
+  }
+  return _nativeFetch.call(this, input, init);
+};
+
+function getAuthHeaders(extra = {}) {
+  const token = localStorage.getItem('admin_token');
+  const headers = { ...extra };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  return headers;
+}
+window.getAuthHeaders = getAuthHeaders;
+
 // Admin State
 let weddingData = null;
 let guestList = [];
@@ -1234,6 +1269,10 @@ function initFormListeners() {
       closeModals();
       loadGuests();
       loadStats();
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      showToast('បរាជ័យ៖ ' + (errData.error || 'Failed to save guest'));
+      alert('❌ មិនអាចរក្សាទុកភ្ញៀវបានឡើយ៖\n\n' + (errData.error || 'Server error'));
     }
   });
 
@@ -2200,6 +2239,8 @@ window.sendTelegramBackupNow = async function() {
 };
 
 // ================= GOOGLE SHEETS CLOUD DATABASE =================
+const DEFAULT_SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxEoOYzIWcxVhZdlVtNmA4LEX9HKp_D7YGsaGPJuURmNABRpfuGVOEHQ1IUP6cKIkkv/exec';
+
 window.loadSheetsSettings = async function() {
   const elUrl = document.getElementById('sheets-webapp-url');
   const elDoc = document.getElementById('sheets-doc-url');
@@ -2223,30 +2264,22 @@ window.loadSheetsSettings = async function() {
     console.error('Failed to load Google Sheets config:', err);
   }
 
-  // Combine server config with local storage backup
-  const sheetUrl = (cfg.sheetUrl || localSaved.sheetUrl || '').trim();
+  // Combine server config with local storage backup and permanent default
+  const sheetUrl = (cfg.sheetUrl || localSaved.sheetUrl || DEFAULT_SHEETS_WEBAPP_URL).trim();
   const spreadsheetUrl = (cfg.spreadsheetUrl || localSaved.spreadsheetUrl || '').trim();
-  const enabled = cfg.enabled !== undefined ? cfg.enabled : (localSaved.enabled !== undefined ? localSaved.enabled : Boolean(sheetUrl));
+  const enabled = cfg.enabled !== undefined ? cfg.enabled : true;
 
-  // If server had missing sheetUrl but localStorage had it, silently sync it to server!
-  if (!cfg.sheetUrl && sheetUrl) {
-    fetch('/api/sheets/config', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sheetUrl, spreadsheetUrl, enabled })
-    }).catch(() => {});
-  }
+  // Persist to localStorage
+  try {
+    localStorage.setItem('wedding_sheets_config', JSON.stringify({ sheetUrl, spreadsheetUrl, enabled }));
+  } catch (e) {}
 
-  // Update input values ONLY if they are not actively focused or if element is empty
+  // Update input values
   if (elUrl) {
-    if (document.activeElement !== elUrl) {
-      if (sheetUrl || !elUrl.value) elUrl.value = sheetUrl;
-    }
+    elUrl.value = sheetUrl;
   }
-  if (elDoc) {
-    if (document.activeElement !== elDoc) {
-      if (spreadsheetUrl || !elDoc.value) elDoc.value = spreadsheetUrl;
-    }
+  if (elDoc && (spreadsheetUrl || !elDoc.value)) {
+    elDoc.value = spreadsheetUrl;
   }
   if (elEnabled) {
     elEnabled.checked = enabled;
@@ -2263,7 +2296,7 @@ window.loadSheetsSettings = async function() {
   }
 
   if (elPill) {
-    const isConfigured = Boolean(cfg.isConfigured || sheetUrl);
+    const isConfigured = Boolean(sheetUrl && sheetUrl.startsWith('http'));
     if (isConfigured) {
       elPill.textContent = '● Connected';
       elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
@@ -2285,9 +2318,13 @@ window.saveSheetsSettings = async function(e) {
   const elDoc = document.getElementById('sheets-doc-url');
   const elEnabled = document.getElementById('sheets-enabled');
 
-  const sheetUrl = elUrl ? elUrl.value.trim() : '';
+  let sheetUrl = elUrl ? elUrl.value.trim() : '';
+  if (!sheetUrl) {
+    sheetUrl = DEFAULT_SHEETS_WEBAPP_URL;
+    if (elUrl) elUrl.value = sheetUrl;
+  }
   const spreadsheetUrl = elDoc ? elDoc.value.trim() : '';
-  const enabled = elEnabled ? elEnabled.checked : Boolean(sheetUrl);
+  const enabled = elEnabled ? elEnabled.checked : true;
 
   // 1. Immediately write to browser localStorage so it can NEVER be cleared
   try {
@@ -2313,13 +2350,8 @@ window.saveSheetsSettings = async function(e) {
       // Update UI without resetting input fields
       const elPill = document.getElementById('sheets-status-pill');
       if (elPill) {
-        if (data.isConfigured || sheetUrl) {
-          elPill.textContent = '● Connected';
-          elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
-        } else {
-          elPill.textContent = '○ Not Configured';
-          elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
-        }
+        elPill.textContent = '● Connected';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
       }
       const elLink = document.getElementById('sheets-open-link');
       if (elLink) {
@@ -2342,12 +2374,9 @@ window.testSheetsConnection = async function() {
   const elUrl = document.getElementById('sheets-webapp-url');
   const elDoc = document.getElementById('sheets-doc-url');
   const elEnabled = document.getElementById('sheets-enabled');
-  const sheetUrl = elUrl ? elUrl.value.trim() : '';
-
-  if (!sheetUrl) {
-    alert('សូមបញ្ចូល Google Apps Script Web App URL ជាមុនសិន!');
-    return;
-  }
+  let sheetUrl = elUrl ? elUrl.value.trim() : '';
+  if (!sheetUrl) sheetUrl = DEFAULT_SHEETS_WEBAPP_URL;
+  if (elUrl && !elUrl.value) elUrl.value = sheetUrl;
 
   showToast('🔍 កំពុងតេស្តការតភ្ជាប់ទៅ Google Sheet...');
   try {
@@ -2384,7 +2413,9 @@ window.testSheetsConnection = async function() {
 
 window.pullFromSheets = async function() {
   const elUrl = document.getElementById('sheets-webapp-url');
-  const sheetUrl = elUrl ? elUrl.value.trim() : '';
+  let sheetUrl = elUrl ? elUrl.value.trim() : '';
+  if (!sheetUrl) sheetUrl = DEFAULT_SHEETS_WEBAPP_URL;
+  if (elUrl && !elUrl.value) elUrl.value = sheetUrl;
   const spin = document.getElementById('icon-sheets-pull-spin');
   if (spin) spin.classList.add('animate-spin');
   showToast('🔄 កំពុងទាញទិន្នន័យទាំងអស់ពី Google Sheets...');
@@ -2422,7 +2453,10 @@ window.pushToSheets = async function() {
   if (!confirm('តើអ្នកពិតជាចង់បញ្ជូនទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់មង្គលការ, Users) ទៅកាន់ Google Sheet មែនទេ? (វានឹងធ្វើបច្ចុប្បន្នភាពលើគ្រប់ Sheets ទាំងអស់)')) return;
 
   const elUrl = document.getElementById('sheets-webapp-url');
-  const sheetUrl = elUrl ? elUrl.value.trim() : '';
+  let sheetUrl = elUrl ? elUrl.value.trim() : '';
+  if (!sheetUrl) sheetUrl = DEFAULT_SHEETS_WEBAPP_URL;
+  if (elUrl && !elUrl.value) elUrl.value = sheetUrl;
+
   showToast('⬆️ កំពុងបញ្ជូនទិន្នន័យទាំងអស់ទៅ Google Sheets...');
   try {
     const res = await fetch('/api/sheets/push', {

@@ -1003,18 +1003,21 @@ app.post('/api/guests', requireAdmin, async (req, res) => {
   };
 
   guests.push(newGuest);
-  writeJSON(GUESTS_FILE, guests);
+  await db.saveGuests(guests);
+  db.setCache({ guests });
 
   // Sync to Google Sheet if configured
+  let sheetSaved = false;
   if (sheets.isConfigured()) {
     try {
-      await sheets.addGuest(newGuest);
+      const sheetRes = await sheets.addGuest(newGuest);
+      sheetSaved = Boolean(sheetRes);
     } catch (e) {
       console.warn('[Sheets] Add guest error:', e.message);
     }
   }
 
-  res.json({ success: true, guest: newGuest });
+  res.json({ success: true, guest: newGuest, sheetSaved });
 });
 
 // Admin: Bulk import guests
@@ -1056,7 +1059,8 @@ app.post('/api/guests/bulk', requireAdmin, async (req, res) => {
   }
 
   guests.push(...created);
-  writeJSON(GUESTS_FILE, guests);
+  await db.saveGuests(guests);
+  db.setCache({ guests });
 
   // Sync to Google Sheet if configured
   if (sheets.isConfigured()) {
@@ -1092,9 +1096,11 @@ app.put('/api/guests/:id', requireAdmin, async (req, res) => {
   guests[index] = { 
     ...guests[index], 
     ...req.body,
-    slug: updatedSlug
+    slug: updatedSlug,
+    updatedAt: new Date().toISOString()
   };
-  writeJSON(GUESTS_FILE, guests);
+  await db.saveGuests(guests);
+  db.setCache({ guests });
 
   // Sync to Google Sheet if configured
   if (sheets.isConfigured()) {
@@ -1788,18 +1794,26 @@ app.post('/api/sheets/pull', requireAdmin, async (req, res) => {
   try {
     const { sheetUrl, target = 'all' } = req.body || {};
     if (sheetUrl) {
-      sheets.saveConfig({ sheetUrl: String(sheetUrl).trim() });
+      sheets.saveConfig({ sheetUrl: String(sheetUrl).trim(), enabled: true });
     }
 
     if (target === 'guests') {
       const guests = await sheets.fetchGuestsFromSheet();
       if (guests && Array.isArray(guests)) {
+        await db.saveGuests(guests);
+        db.setCache({ guests });
         return res.json({ success: true, message: `ទាញទិន្នន័យភ្ញៀវបានជោគជ័យ! សរុប ${guests.length} នាក់`, count: guests.length, guests });
       }
     } else {
       // Pull ALL data (Guests, Wishes, Wedding, Users)
       const allData = await sheets.fetchAllFromSheet();
       if (allData && allData.success) {
+        if (Array.isArray(allData.guests)) await db.saveGuests(allData.guests);
+        if (Array.isArray(allData.wishes)) await db.saveWishes(allData.wishes);
+        if (allData.wedding && typeof allData.wedding === 'object') await db.saveWedding(allData.wedding);
+        if (Array.isArray(allData.users) && allData.users.length > 0) await db.saveUsers(allData.users);
+        db.setCache(allData);
+
         return res.json({
           success: true,
           message: `ទាញទិន្នន័យទាំងអស់ពី Google Sheet បានជោគជ័យ! (ភ្ញៀវ: ${allData.guests ? allData.guests.length : 0}, ពាក្យជូនពរ: ${allData.wishes ? allData.wishes.length : 0})`,
