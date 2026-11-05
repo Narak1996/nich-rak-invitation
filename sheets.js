@@ -19,6 +19,9 @@ const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const TMP_DIR = fs.existsSync('/tmp') ? '/tmp' : DATA_DIR;
 const TMP_CONFIG_FILE = path.join(TMP_DIR, 'sheets-config.json');
 
+// Default Deployed Google Apps Script Web App URL
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxEoOYzIWcxVhZdlVtNmA4LEX9HKp_D7YGsaGPJuURmNABRpfuGVOEHQ1IUP6cKIkkv/exec';
+
 let inMemoryConfig = null;
 
 // Read JSON Helper
@@ -69,8 +72,8 @@ function getConfig() {
 
   const saved = { ...fileSaved, ...tmpSaved, ...(inMemoryConfig || {}) };
 
-  const sheetUrl = (saved.sheetUrl || process.env.GOOGLE_SHEET_URL || '').trim();
-  const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : Boolean(sheetUrl);
+  const sheetUrl = (saved.sheetUrl || process.env.GOOGLE_SHEET_URL || DEFAULT_SHEET_URL).trim();
+  const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : true;
   const spreadsheetUrl = (saved.spreadsheetUrl || process.env.SPREADSHEET_URL || '').trim();
   const lastSyncAt = saved.lastSyncAt || null;
 

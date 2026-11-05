@@ -248,9 +248,9 @@
     "lastBackupAt": "2026-11-05T01:39:09.469Z"
   },
   "googleSheets": {
-    "enabled": false,
-    "sheetUrl": "",
+    "enabled": true,
+    "sheetUrl": "https://script.google.com/macros/s/AKfycbxEoOYzIWcxVhZdlVtNmA4LEX9HKp_D7YGsaGPJuURmNABRpfuGVOEHQ1IUP6cKIkkv/exec",
     "spreadsheetUrl": "",
-    "lastSyncAt": null
+    "lastSyncAt": "2026-11-05T06:06:26.477Z"
   }
 }

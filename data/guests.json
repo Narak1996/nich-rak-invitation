@@ -1,16 +1,16 @@
 [
   {
-    "id": "g-1793848000000",
-    "slug": "yeng-channn",
-    "name": "យេង ចាន់",
+    "id": "g-1793857383278",
+    "name": "យ៉េង ចាន់",
     "name_en": "Yeng Channn",
+    "slug": "yeng-channn",
     "side": "groom",
-    "category": "VIP",
+    "category": "Colleague",
     "phone": "",
-    "pax_allowed": 1,
+    "pax_allowed": 2,
     "status": "pending",
     "attendees": 0,
     "wishes": "",
-    "updatedAt": null
+    "updatedAt": "2026-11-05T05:43:04.550Z"
   }
 ]
