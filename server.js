@@ -773,7 +773,7 @@ app.get('/api/guest/:slug', (req, res) => {
 });
 
 // Public: Submit RSVP
-app.post('/api/rsvp', (req, res) => {
+app.post('/api/rsvp', async (req, res) => {
   const { guestId, slug, name, phone, status, attendees, side, wishes } = req.body;
   if (!name) {
     return res.status(400).json({ error: 'Name is required' });
