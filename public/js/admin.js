@@ -2208,40 +2208,74 @@ window.loadSheetsSettings = async function() {
   const elInfo = document.getElementById('sheets-sync-info');
   const elLink = document.getElementById('sheets-open-link');
 
+  let localSaved = {};
+  try {
+    localSaved = JSON.parse(localStorage.getItem('wedding_sheets_config') || '{}');
+  } catch (e) {}
+
+  let cfg = {};
   try {
     const res = await fetch('/api/sheets/config');
-    if (!res.ok) return;
-    const cfg = await res.json();
-
-    if (elUrl) elUrl.value = cfg.sheetUrl || '';
-    if (elDoc) elDoc.value = cfg.spreadsheetUrl || '';
-    if (elEnabled) elEnabled.checked = cfg.enabled !== false;
-
-    if (elLink) {
-      if (cfg.spreadsheetUrl) {
-        elLink.href = cfg.spreadsheetUrl;
-        elLink.classList.remove('hidden');
-      } else {
-        elLink.classList.add('hidden');
-      }
-    }
-
-    if (elPill) {
-      if (cfg.isConfigured) {
-        elPill.textContent = '● Connected';
-        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
-      } else {
-        elPill.textContent = '○ Not Configured';
-        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
-      }
-    }
-
-    if (elInfo && cfg.lastSyncAt) {
-      const dt = new Date(cfg.lastSyncAt);
-      elInfo.textContent = `⚡ ធ្វើសមកាលកម្មចុងក្រោយ (Last Synced): ${dt.toLocaleDateString('km-KH')} ${dt.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' })}`;
+    if (res.ok) {
+      cfg = await res.json();
     }
   } catch (err) {
     console.error('Failed to load Google Sheets config:', err);
+  }
+
+  // Combine server config with local storage backup
+  const sheetUrl = (cfg.sheetUrl || localSaved.sheetUrl || '').trim();
+  const spreadsheetUrl = (cfg.spreadsheetUrl || localSaved.spreadsheetUrl || '').trim();
+  const enabled = cfg.enabled !== undefined ? cfg.enabled : (localSaved.enabled !== undefined ? localSaved.enabled : Boolean(sheetUrl));
+
+  // If server had missing sheetUrl but localStorage had it, silently sync it to server!
+  if (!cfg.sheetUrl && sheetUrl) {
+    fetch('/api/sheets/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheetUrl, spreadsheetUrl, enabled })
+    }).catch(() => {});
+  }
+
+  // Update input values ONLY if they are not actively focused or if element is empty
+  if (elUrl) {
+    if (document.activeElement !== elUrl) {
+      if (sheetUrl || !elUrl.value) elUrl.value = sheetUrl;
+    }
+  }
+  if (elDoc) {
+    if (document.activeElement !== elDoc) {
+      if (spreadsheetUrl || !elDoc.value) elDoc.value = spreadsheetUrl;
+    }
+  }
+  if (elEnabled) {
+    elEnabled.checked = enabled;
+  }
+
+  if (elLink) {
+    const docUrl = spreadsheetUrl || (elDoc && elDoc.value.trim());
+    if (docUrl) {
+      elLink.href = docUrl;
+      elLink.classList.remove('hidden');
+    } else {
+      elLink.classList.add('hidden');
+    }
+  }
+
+  if (elPill) {
+    const isConfigured = Boolean(cfg.isConfigured || sheetUrl);
+    if (isConfigured) {
+      elPill.textContent = '● Connected';
+      elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+    } else {
+      elPill.textContent = '○ Not Configured';
+      elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
+    }
+  }
+
+  if (elInfo && (cfg.lastSyncAt || localSaved.lastSyncAt)) {
+    const dt = new Date(cfg.lastSyncAt || localSaved.lastSyncAt);
+    elInfo.textContent = `⚡ ធ្វើសមកាលកម្មចុងក្រោយ (Last Synced): ${dt.toLocaleDateString('km-KH')} ${dt.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' })}`;
   }
 };
 
@@ -2253,7 +2287,17 @@ window.saveSheetsSettings = async function(e) {
 
   const sheetUrl = elUrl ? elUrl.value.trim() : '';
   const spreadsheetUrl = elDoc ? elDoc.value.trim() : '';
-  const enabled = elEnabled ? elEnabled.checked : true;
+  const enabled = elEnabled ? elEnabled.checked : Boolean(sheetUrl);
+
+  // 1. Immediately write to browser localStorage so it can NEVER be cleared
+  try {
+    localStorage.setItem('wedding_sheets_config', JSON.stringify({
+      sheetUrl,
+      spreadsheetUrl,
+      enabled,
+      savedAt: new Date().toISOString()
+    }));
+  } catch (err) {}
 
   showToast('💾 កំពុងរក្សាទុកការកំណត់ Google Sheets...');
   try {
@@ -2265,7 +2309,27 @@ window.saveSheetsSettings = async function(e) {
     const data = await res.json();
     if (res.ok && data.success) {
       showToast('✅ បានរក្សាទុកការកំណត់ Google Sheets ជោគជ័យ!');
-      await loadSheetsSettings();
+
+      // Update UI without resetting input fields
+      const elPill = document.getElementById('sheets-status-pill');
+      if (elPill) {
+        if (data.isConfigured || sheetUrl) {
+          elPill.textContent = '● Connected';
+          elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+        } else {
+          elPill.textContent = '○ Not Configured';
+          elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
+        }
+      }
+      const elLink = document.getElementById('sheets-open-link');
+      if (elLink) {
+        if (spreadsheetUrl) {
+          elLink.href = spreadsheetUrl;
+          elLink.classList.remove('hidden');
+        } else {
+          elLink.classList.add('hidden');
+        }
+      }
     } else {
       showToast('បរាជ័យ៖ ' + (data.error || 'Failed to save'));
     }
@@ -2276,6 +2340,8 @@ window.saveSheetsSettings = async function(e) {
 
 window.testSheetsConnection = async function() {
   const elUrl = document.getElementById('sheets-webapp-url');
+  const elDoc = document.getElementById('sheets-doc-url');
+  const elEnabled = document.getElementById('sheets-enabled');
   const sheetUrl = elUrl ? elUrl.value.trim() : '';
 
   if (!sheetUrl) {
@@ -2292,9 +2358,21 @@ window.testSheetsConnection = async function() {
     });
     const data = await res.json();
     if (res.ok && data.success) {
+      // Auto-persist valid URL
+      const spreadsheetUrl = elDoc ? elDoc.value.trim() : '';
+      const enabled = elEnabled ? elEnabled.checked : true;
+      try {
+        localStorage.setItem('wedding_sheets_config', JSON.stringify({ sheetUrl, spreadsheetUrl, enabled }));
+      } catch (e) {}
+
       showToast('🎉 បានភ្ជាប់ជាមួយ Google Sheet ជោគជ័យ!');
       alert(`✅ ជោគជ័យ! ការតភ្ជាប់ដំណើរការល្អឥតខ្ចោះ។\n\nSheet Title: "${data.sheetTitle}"\nចំនួនភ្ញៀវក្នុង Sheet ឥឡូវនេះ: ${data.totalRows !== null ? data.totalRows : 0} នាក់`);
-      await loadSheetsSettings();
+
+      const elPill = document.getElementById('sheets-status-pill');
+      if (elPill) {
+        elPill.textContent = '● Connected';
+        elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+      }
     } else {
       showToast('បរាជ័យក្នុងការតភ្ជាប់ Google Sheet');
       alert(`❌ មិនអាចភ្ជាប់បានឡើយ៖\n\n${data.error || 'Error'}\n\nសូមពិនិត្យមើល៖\n1. តើអ្នកបានចុច Deploy ជា "Web app" ហើយឬនៅ?\n2. តើបានកំណត់ "Who has access" ជា "Anyone" ដែរឬទេ?\n3. តើ Web App URL បញ្ចប់ដោយ "/exec" ដែរឬទេ?`);
@@ -2305,12 +2383,18 @@ window.testSheetsConnection = async function() {
 };
 
 window.pullFromSheets = async function() {
+  const elUrl = document.getElementById('sheets-webapp-url');
+  const sheetUrl = elUrl ? elUrl.value.trim() : '';
   const spin = document.getElementById('icon-sheets-pull-spin');
   if (spin) spin.classList.add('animate-spin');
   showToast('🔄 កំពុងទាញទិន្នន័យពី Google Sheets...');
 
   try {
-    const res = await fetch('/api/sheets/pull', { method: 'POST' });
+    const res = await fetch('/api/sheets/pull', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheetUrl })
+    });
     const data = await res.json();
     if (res.ok && data.success) {
       showToast(`✅ ${data.message}`);
@@ -2331,9 +2415,15 @@ window.pullFromSheets = async function() {
 window.pushToSheets = async function() {
   if (!confirm('តើអ្នកពិតជាចង់បញ្ជូនទិន្នន័យភ្ញៀវទាំងអស់ទៅ Google Sheet មែនទេ? (វានឹងធ្វើបច្ចុប្បន្នភាពលើ Sheet)')) return;
 
+  const elUrl = document.getElementById('sheets-webapp-url');
+  const sheetUrl = elUrl ? elUrl.value.trim() : '';
   showToast('⬆️ កំពុងបញ្ជូនភ្ញៀវទាំងអស់ទៅ Google Sheets...');
   try {
-    const res = await fetch('/api/sheets/push', { method: 'POST' });
+    const res = await fetch('/api/sheets/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheetUrl })
+    });
     const data = await res.json();
     if (res.ok && data.success) {
       showToast(`🎉 ${data.message}`);

@@ -1736,6 +1736,15 @@ app.post('/api/sheets/config', requireAdmin, (req, res) => {
     if (spreadsheetUrl !== undefined) updates.spreadsheetUrl = String(spreadsheetUrl).trim();
 
     const saved = sheets.saveConfig(updates);
+
+    try {
+      const wData = db.getWedding() || {};
+      wData.googleSheets = saved;
+      db.saveWedding(wData);
+    } catch (e) {
+      // Ignore if DB not connected
+    }
+
     res.json({ success: true, config: saved, isConfigured: sheets.isConfigured() });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -1745,6 +1754,9 @@ app.post('/api/sheets/config', requireAdmin, (req, res) => {
 app.post('/api/sheets/test', requireAdmin, async (req, res) => {
   try {
     const { sheetUrl } = req.body;
+    if (sheetUrl) {
+      sheets.saveConfig({ sheetUrl: String(sheetUrl).trim() });
+    }
     const result = await sheets.testConnection(sheetUrl);
     if (result.success) {
       res.json(result);
@@ -1758,6 +1770,10 @@ app.post('/api/sheets/test', requireAdmin, async (req, res) => {
 
 app.post('/api/sheets/pull', requireAdmin, async (req, res) => {
   try {
+    const { sheetUrl } = req.body || {};
+    if (sheetUrl) {
+      sheets.saveConfig({ sheetUrl: String(sheetUrl).trim() });
+    }
     const guests = await sheets.fetchGuestsFromSheet();
     if (guests && Array.isArray(guests)) {
       res.json({ success: true, message: `ទាញទិន្នន័យបានជោគជ័យ! សរុប ${guests.length} នាក់`, count: guests.length, guests });
@@ -1771,6 +1787,10 @@ app.post('/api/sheets/pull', requireAdmin, async (req, res) => {
 
 app.post('/api/sheets/push', requireAdmin, async (req, res) => {
   try {
+    const { sheetUrl } = req.body || {};
+    if (sheetUrl) {
+      sheets.saveConfig({ sheetUrl: String(sheetUrl).trim() });
+    }
     const guests = readJSON(GUESTS_FILE, []);
     const result = await sheets.syncAllGuestsToSheet(guests);
     if (result && result.success) {

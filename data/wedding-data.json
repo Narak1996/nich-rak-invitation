@@ -246,5 +246,11 @@
     "scheduledTime": "21:00",
     "lastDailyBackupDate": null,
     "lastBackupAt": "2026-11-05T01:39:09.469Z"
+  },
+  "googleSheets": {
+    "enabled": false,
+    "sheetUrl": "",
+    "spreadsheetUrl": "",
+    "lastSyncAt": null
   }
 }

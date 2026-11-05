@@ -9,6 +9,12 @@ const DATA_DIR = path.join(__dirname, 'data');
 const WEDDING_FILE = path.join(DATA_DIR, 'wedding-data.json');
 const GUESTS_FILE = path.join(DATA_DIR, 'guests.json');
 
+// Resilient Serverless Storage: On Vercel, /tmp is writable
+const TMP_DIR = fs.existsSync('/tmp') ? '/tmp' : DATA_DIR;
+const TMP_CONFIG_FILE = path.join(TMP_DIR, 'sheets-config.json');
+
+let inMemoryConfig = null;
+
 // Read JSON Helper
 function readLocalJSON(file, fallback = {}) {
   try {
@@ -32,36 +38,76 @@ function writeLocalJSON(file, data) {
 
 // Get Google Sheets Config
 function getConfig() {
+  if (inMemoryConfig && inMemoryConfig.sheetUrl) {
+    return inMemoryConfig;
+  }
+
+  // 1. Check /tmp writable cache
+  let tmpSaved = {};
+  try {
+    if (fs.existsSync(TMP_CONFIG_FILE)) {
+      tmpSaved = JSON.parse(fs.readFileSync(TMP_CONFIG_FILE, 'utf8')) || {};
+    }
+  } catch (e) {}
+
+  // 2. Check wedding-data.json
   const weddingData = readLocalJSON(WEDDING_FILE, {});
-  const saved = weddingData.googleSheets || {};
+  const fileSaved = weddingData.googleSheets || {};
+
+  const saved = { ...fileSaved, ...tmpSaved, ...(inMemoryConfig || {}) };
 
   const sheetUrl = (saved.sheetUrl || process.env.GOOGLE_SHEET_URL || '').trim();
   const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : Boolean(sheetUrl);
   const spreadsheetUrl = (saved.spreadsheetUrl || process.env.SPREADSHEET_URL || '').trim();
   const lastSyncAt = saved.lastSyncAt || null;
 
-  return {
+  inMemoryConfig = {
     enabled,
     sheetUrl,
     spreadsheetUrl,
     lastSyncAt
   };
+
+  return inMemoryConfig;
 }
 
 // Save Google Sheets Config
 function saveConfig(updates) {
-  const weddingData = readLocalJSON(WEDDING_FILE, {});
-  weddingData.googleSheets = {
-    ...getConfig(),
+  const current = getConfig();
+  const merged = {
+    ...current,
     ...updates
   };
 
+  if (updates.sheetUrl) {
+    merged.sheetUrl = String(updates.sheetUrl).trim();
+  }
+  if (updates.spreadsheetUrl !== undefined) {
+    merged.spreadsheetUrl = String(updates.spreadsheetUrl).trim();
+  }
+  if (updates.enabled !== undefined) {
+    merged.enabled = Boolean(updates.enabled);
+  }
+
+  inMemoryConfig = merged;
+
+  // 1. Write to /tmp cache (Always succeeds on Vercel & AWS Lambda)
   try {
+    fs.writeFileSync(TMP_CONFIG_FILE, JSON.stringify(merged, null, 2), 'utf8');
+  } catch (err) {
+    console.warn('[Sheets] Could not write to /tmp:', err.message);
+  }
+
+  // 2. Write to local file if writable
+  try {
+    const weddingData = readLocalJSON(WEDDING_FILE, {});
+    weddingData.googleSheets = merged;
     fs.writeFileSync(WEDDING_FILE, JSON.stringify(weddingData, null, 2), 'utf8');
   } catch (err) {
-    console.warn('[Sheets] Could not persist wedding-data.json (read-only environment):', err.message);
+    // Read-only serverless environment, silent ignore
   }
-  return weddingData.googleSheets;
+
+  return merged;
 }
 
 function isConfigured() {
