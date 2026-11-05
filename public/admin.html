@@ -22,112 +22,352 @@
     }
   </script>
 </head>
-<body class="bg-gray-50 min-h-screen text-[#2C2420] font-khmer-body">
+<body class="bg-[#FAF7F2] min-h-screen text-[#2C2420] font-khmer-body antialiased">
 
-  <!-- TOP HEADER -->
-  <header class="bg-white border-b border-[#E5D5BC] sticky top-0 z-50 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center font-bold text-[#4E3227]">
-          💍
-        </div>
-        <div>
-          <h1 class="font-khmer-title text-base font-bold text-[#4E3227]">ផ្ទាំងគ្រប់គ្រងពិធីមង្គលការ</h1>
-          <p class="text-[11px] text-[#7A6F68]" id="header-couple-sub">Chan Narak & Ly Sreymech</p>
-        </div>
+  <!-- MOBILE TOP BAR (Screens < lg) -->
+  <header class="lg:hidden bg-white border-b border-[#E5D5BC] sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-xs">
+    <div class="flex items-center gap-2.5">
+      <button id="btn-toggle-mobile-sidebar" type="button" class="p-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] text-[#4E3227] hover:bg-[#E5D5BC]/40 transition cursor-pointer" aria-label="Open Menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="w-8 h-8 rounded-full bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center font-bold text-sm shadow-2xs">
+        💍
       </div>
-
-      <div class="flex items-center gap-3">
-        <div id="db-status-badge" onclick="switchToDatabaseTab()" class="cursor-pointer hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] font-semibold text-gray-600">
-          <span id="db-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
-          <span id="db-status-text">Database Loading...</span>
-        </div>
-        <div id="user-info-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#FAF7F2] border border-[#E5D5BC] rounded-xl text-xs">
-          <span class="w-6 h-6 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-[10px]" id="user-avatar-initial">A</span>
-          <div class="leading-tight text-left">
-            <span id="user-display-name" class="font-bold text-[#4E3227] block truncate max-w-[120px]">Admin</span>
-            <span id="user-role-badge" class="text-[10px] text-[#C5A059] uppercase tracking-wider block font-semibold">Superadmin</span>
-          </div>
-        </div>
-        <button type="button" onclick="exportBackupData()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1E4833] bg-[#FAF7F2] hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/60 transition shadow-2xs cursor-pointer" title="ទាញយកឯកសារ Backup រក្សាទុកក្នុងកុំព្យូទ័រ (Export JSON Backup)">
-          <span>💾</span>
-          <span>Backup</span>
-        </button>
-        <label class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1E4833] bg-[#FAF7F2] hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/60 transition shadow-2xs cursor-pointer" title="បញ្ចូលឯកសារ Backup មកវិញ (Restore JSON Backup)">
-          <span>📥</span>
-          <span>Restore</span>
-          <input type="file" accept=".json" onchange="importBackupData(this)" class="hidden">
-        </label>
-        <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#4E3227] bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-xl border border-[#E5D5BC] transition">
-          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-          <span>មើលសំបុត្រ (View Invitation)</span>
-        </a>
-        <button id="btn-logout" class="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl border border-red-200 transition">
-          ចាកចេញ (Logout)
-        </button>
+      <div class="min-w-0">
+        <h1 class="font-khmer-title text-xs font-bold text-[#4E3227] truncate">ផ្ទាំងគ្រប់គ្រងមង្គលការ</h1>
+        <p class="text-[10px] text-[#7A6F68] truncate" id="mobile-header-couple-sub">Chan Narak &amp; Ly Sreymech</p>
       </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="/" target="_blank" class="p-2 text-xs text-[#4E3227] bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 rounded-xl border border-[#E5D5BC] transition" title="មើលសំបុត្រ (View Invitation)">
+        <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </a>
+      <button onclick="document.getElementById('btn-logout').click()" class="px-2.5 py-1.5 text-[11px] font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl border border-red-200 transition cursor-pointer">
+        Logout
+      </button>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- MOBILE SIDEBAR BACKDROP -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden transition-opacity"></div>
 
-    <!-- STATS OVERVIEW CARDS -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-      <div class="bg-white p-4 rounded-2xl border border-[#E5D5BC] shadow-xs">
-        <span class="text-xs text-[#7A6F68] block">ភ្ញៀវសរុប (Total Guests)</span>
-        <span id="stat-total" class="text-2xl font-bold text-[#4E3227] mt-1 block">0</span>
-      </div>
-      <div class="bg-white p-4 rounded-2xl border border-green-200 shadow-xs">
-        <span class="text-xs text-green-700 block">ចូលរួម (Confirmed)</span>
-        <span id="stat-confirmed" class="text-2xl font-bold text-green-700 mt-1 block">0</span>
-      </div>
-      <div class="bg-white p-4 rounded-2xl border border-red-200 shadow-xs">
-        <span class="text-xs text-red-700 block">មិនអាចចូលរួម (Declined)</span>
-        <span id="stat-declined" class="text-2xl font-bold text-red-700 mt-1 block">0</span>
-      </div>
-      <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-xs">
-        <span class="text-xs text-[#C5A059] block">ចំនួនមនុស្សចូលរួម (Pax Count)</span>
-        <span id="stat-pax" class="text-2xl font-bold text-[#C5A059] mt-1 block">0</span>
-      </div>
-      <div class="bg-white p-4 rounded-2xl border border-purple-200 shadow-xs">
-        <span class="text-xs text-purple-700 block">សារជូនពរ (Wishes)</span>
-        <span id="stat-wishes" class="text-2xl font-bold text-purple-700 mt-1 block">0</span>
-      </div>
-    </div>
+  <!-- MAIN WRAPPER: SIDEBAR + CONTENT -->
+  <div class="flex min-h-screen">
 
-    
+    <!-- LEFT SIDEBAR -->
+    <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-[#E5D5BC] flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static lg:h-screen lg:sticky lg:top-0 transition-transform duration-200 ease-in-out shadow-xl lg:shadow-none shrink-0">
+      
+      <!-- Top Section: Brand + User Info -->
+      <div class="p-4 border-b border-[#E5D5BC] shrink-0 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center font-bold text-lg text-[#4E3227] shadow-2xs">
+              💍
+            </div>
+            <div class="min-w-0">
+              <h1 class="font-khmer-title text-sm font-bold text-[#4E3227] leading-tight truncate">ផ្ទាំងគ្រប់គ្រងពិធីមង្គលការ</h1>
+              <p class="text-[11px] text-[#7A6F68] truncate font-medium" id="header-couple-sub">Chan Narak &amp; Ly Sreymech</p>
+            </div>
+          </div>
+          <button id="btn-close-mobile-sidebar" type="button" class="lg:hidden p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 cursor-pointer" aria-label="Close Menu">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
 
-    <!-- TABS -->
-    <div class="flex items-center gap-2 border-b border-[#E5D5BC] mb-6 overflow-x-auto pb-2">
-      <button class="admin-tab active px-4 py-2.5 rounded-xl font-bold text-xs transition" data-target="tab-guests">
-        👥 ភ្ញៀវ & តំណភ្ជាប់សំបុត្រ (Guests & Links)
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-wedding">
-        ⚙️ ព័ត៌មានមង្គលការ & Theme
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-agenda">
-        📅 កម្មវិធីមង្គលការ (Agenda)
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-gallery">
-        🖼️ កម្រងរូបថត (Gallery)
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-gifts">
-        💳 ចងដៃ KHQR / ABA
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-wishes">
-        💌 ពាក្យជូនពរ (Guestbook)
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227]" data-target="tab-users">
-        🔐 អ្នកគ្រប់គ្រង (Admin Users)
-      </button>
-      <button class="admin-tab px-4 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] flex items-center gap-1.5" data-target="tab-database">
-        <span>💾 Data & Telegram Backup</span>
-        <span id="tab-db-indicator" class="w-2 h-2 rounded-full bg-amber-400"></span>
-      </button>
-    </div>
+        <!-- User Profile Card -->
+        <div id="user-info-badge" class="flex items-center gap-2.5 p-2 bg-[#FAF7F2] border border-[#E5D5BC] rounded-2xl">
+          <span class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs shadow-2xs shrink-0" id="user-avatar-initial">A</span>
+          <div class="leading-tight min-w-0 flex-1">
+            <span id="user-display-name" class="font-bold text-xs text-[#4E3227] block truncate">Admin</span>
+            <span id="user-role-badge" class="text-[10px] text-[#C5A059] uppercase tracking-wider block font-semibold">Superadmin</span>
+          </div>
+          <div id="db-status-badge" onclick="switchToDatabaseTab()" class="cursor-pointer inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-gray-200 rounded-full text-[10px] font-semibold text-gray-600 shadow-2xs" title="ចុចដើម្បីមើល Database Status">
+            <span id="db-status-dot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span id="db-status-text" class="text-[10px]">Cloud</span>
+          </div>
+        </div>
+      </div>
 
-    <!-- ================= TAB 1: GUESTS & LINKS ================= -->
-    <section id="tab-guests" class="tab-content">
+      <!-- Navigation Tabs (Vertical Menu) -->
+      <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#A59288]">ទំព័រគ្រប់គ្រងមង្គលការ</div>
+
+        <button class="admin-tab active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-left cursor-pointer" data-target="tab-dashboard">
+          <span class="text-base">📊</span>
+          <span class="flex-1 truncate">ផ្ទាំងគ្រប់គ្រង (Dashboard)</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-guests">
+          <span class="text-base">👥</span>
+          <span class="flex-1 truncate">ភ្ញៀវ &amp; សំបុត្រ (Guests)</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-wedding">
+          <span class="text-base">⚙️</span>
+          <span class="flex-1 truncate">ព័ត៌មានមង្គលការ &amp; Theme</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-agenda">
+          <span class="text-base">📅</span>
+          <span class="flex-1 truncate">កម្មវិធីមង្គលការ (Agenda)</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-gallery">
+          <span class="text-base">🖼️</span>
+          <span class="flex-1 truncate">កម្រងរូបថត (Gallery)</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-gifts">
+          <span class="text-base">💳</span>
+          <span class="flex-1 truncate">ចងដៃ KHQR / ABA</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-wishes">
+          <span class="text-base">💌</span>
+          <span class="flex-1 truncate">ពាក្យជូនពរ (Guestbook)</span>
+        </button>
+
+        <button class="admin-tab w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-users">
+          <span class="text-base">🔐</span>
+          <span class="flex-1 truncate">អ្នកគ្រប់គ្រង (Admin Users)</span>
+        </button>
+
+        <div class="pt-3 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-[#A59288]">ប្រព័ន្ធទិន្នន័យ &amp; Cloud</div>
+
+        <button class="admin-tab w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-database">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="text-base">💾</span>
+            <span class="truncate">Data &amp; Telegram Backup</span>
+          </div>
+          <span id="tab-db-indicator" class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+        </button>
+      </nav>
+
+      <!-- Bottom Actions -->
+      <div class="p-3 border-t border-[#E5D5BC] bg-[#FAF7F2]/60 space-y-2 shrink-0">
+        <div class="grid grid-cols-2 gap-1.5">
+          <button type="button" onclick="exportBackupData()" class="w-full inline-flex items-center justify-center gap-1 px-2.5 py-2 text-[11px] font-semibold text-[#1E4833] bg-white hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/50 transition shadow-2xs cursor-pointer" title="ទាញយកឯកសារ JSON Backup">
+            <span>💾 Backup</span>
+          </button>
+          <label class="w-full inline-flex items-center justify-center gap-1 px-2.5 py-2 text-[11px] font-semibold text-[#1E4833] bg-white hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/50 transition shadow-2xs cursor-pointer" title="បញ្ចូលឯកសារ JSON Backup មកវិញ">
+            <span>📥 Restore</span>
+            <input type="file" accept=".json" onchange="importBackupData(this)" class="hidden">
+          </label>
+        </div>
+
+        <a href="/" target="_blank" class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-[#4E3227] bg-white hover:bg-[#E5D5BC]/40 rounded-xl border border-[#E5D5BC] transition shadow-2xs">
+          <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <span>មើលសំបុត្រ (View Link)</span>
+        </a>
+
+        <button id="btn-logout" class="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl border border-red-200 bg-white transition cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>ចាកចេញ (Logout)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT VIEWPORT -->
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-full">
+
+      <!-- ================= TAB 0: DASHBOARD ================= -->
+      <section id="tab-dashboard" class="tab-content space-y-6">
+        
+        <!-- Welcome Hero Banner -->
+        <div class="bg-gradient-to-r from-[#4E3227] via-[#654332] to-[#3B261D] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg border border-[#C5A059]/40">
+          <div class="relative z-10 max-w-2xl">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[11px] font-semibold text-[#E5D5BC] border border-white/10 mb-3">
+              <span>💍</span>
+              <span id="dash-banner-sub">សូមស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រងសំបុត្រអាពាហ៍ពិពាហ៍</span>
+            </span>
+            <h2 class="font-khmer-title text-2xl sm:text-3xl font-bold tracking-wide leading-tight mb-2 text-[#FAF7F2]">
+              ផ្ទាំងគ្រប់គ្រងទិន្នន័យមង្គលការ (Dashboard)
+            </h2>
+            <p class="text-xs sm:text-sm text-[#E5D5BC]/90 leading-relaxed font-light mb-6">
+              តាមដានស្ថានភាពភ្ញៀវចូលរួម (RSVP) ស្ថិតិមនុស្សសរុប ពាក្យជូនពរពីភ្ញៀវកិត្តិយស និងគ្រប់គ្រងការតភ្ជាប់ Google Sheets Cloud បានយ៉ាងងាយស្រួលក្នុងកន្លែងតែមួយ។
+            </p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" onclick="document.querySelector('[data-target=\'tab-guests\']').click(); setTimeout(() => document.getElementById('btn-open-add-guest').click(), 100);" class="px-4 py-2 bg-[#C5A059] hover:bg-[#d6b068] text-[#2C2420] text-xs font-bold rounded-xl transition shadow-md flex items-center gap-1.5 cursor-pointer">
+                <span>+ បន្ថែមភ្ញៀវថ្មី (Add Guest)</span>
+              </button>
+              <button type="button" onclick="document.querySelector('[data-target=\'tab-guests\']').click();" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                <span>👥 មើលបញ្ជីភ្ញៀវ</span>
+              </button>
+              <button type="button" onclick="document.querySelector('[data-target=\'tab-wishes\']').click();" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                <span>💌 មើលពាក្យជូនពរ</span>
+              </button>
+              <button type="button" onclick="document.querySelector('[data-target=\'tab-database\']').click();" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                <span>💾 Data &amp; Backup</span>
+              </button>
+            </div>
+          </div>
+          <!-- Decorative Background Elements -->
+          <div class="absolute -right-8 -bottom-10 text-white/5 text-[180px] pointer-events-none select-none font-serif">💍</div>
+          <div class="absolute -top-12 -right-12 w-64 h-64 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none"></div>
+        </div>
+
+        <!-- STATS OVERVIEW CARDS (Moved here from persistent top) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-[#E5D5BC] shadow-xs hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-[#7A6F68]">ភ្ញៀវសរុប (Total Guests)</span>
+              <span class="w-8 h-8 rounded-xl bg-[#FAF7F2] border border-[#E5D5BC] flex items-center justify-center text-sm shadow-2xs">👥</span>
+            </div>
+            <span id="stat-total" class="text-3xl font-bold text-[#4E3227] mt-3 block">0</span>
+            <span class="text-[11px] text-[#A59288] mt-1 block">បញ្ជីភ្ញៀវទាំងអស់</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-emerald-700">ចូលរួម (Confirmed)</span>
+              <span class="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-sm text-emerald-600 shadow-2xs">✓</span>
+            </div>
+            <span id="stat-confirmed" class="text-3xl font-bold text-emerald-700 mt-3 block">0</span>
+            <span id="stat-confirmed-rate" class="text-[11px] text-emerald-600 font-semibold mt-1 block">0% បានឆ្លើយតប</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-rose-200 shadow-xs hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-rose-700">មិនអាចចូលរួម (Declined)</span>
+              <span class="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-sm text-rose-600 shadow-2xs">✕</span>
+            </div>
+            <span id="stat-declined" class="text-3xl font-bold text-rose-700 mt-3 block">0</span>
+            <span id="stat-declined-sub" class="text-[11px] text-rose-500 mt-1 block">បានបដិសេធ</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-xs hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-[#C5A059]">មនុស្សចូលរួម (Pax Count)</span>
+              <span class="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-sm text-[#C5A059] shadow-2xs">🍽️</span>
+            </div>
+            <span id="stat-pax" class="text-3xl font-bold text-[#C5A059] mt-3 block">0</span>
+            <span class="text-[11px] text-[#9A7D3A] mt-1 block">ចំនួនកៅអីសរុប (Pax)</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-xs hover:shadow-md transition col-span-2 sm:col-span-1">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-purple-700">សារជូនពរ (Wishes)</span>
+              <span class="w-8 h-8 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-sm text-purple-600 shadow-2xs">💌</span>
+            </div>
+            <span id="stat-wishes" class="text-3xl font-bold text-purple-700 mt-3 block">0</span>
+            <span class="text-[11px] text-purple-500 mt-1 block">ពាក្យជូនពរពីភ្ញៀវ</span>
+          </div>
+        </div>
+
+        <!-- RSVP Rate & Attendance Progress -->
+        <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">វឌ្ឍនភាពការឆ្លើយតប (RSVP Progress)</h3>
+              <p class="text-xs text-[#7A6F68]">សមាមាត្រភ្ញៀវដែលបានឆ្លើយតបចូលរួម មិនបានចូលរួម និងរង់ចាំឆ្លើយតប</p>
+            </div>
+            <span id="dash-rsvp-percent-text" class="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full w-fit">
+              0% បានឆ្លើយតបចូលរួម
+            </span>
+          </div>
+
+          <!-- Multi-colored progress bar -->
+          <div class="w-full h-3.5 bg-gray-100 rounded-full overflow-hidden flex shadow-inner mb-4">
+            <div id="dash-bar-confirmed" style="width: 0%;" class="bg-emerald-500 h-full transition-all duration-500" title="Confirmed"></div>
+            <div id="dash-bar-pending" style="width: 0%;" class="bg-amber-400 h-full transition-all duration-500" title="Pending"></div>
+            <div id="dash-bar-declined" style="width: 0%;" class="bg-rose-400 h-full transition-all duration-500" title="Declined"></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center pt-2 border-t border-gray-100">
+            <div class="p-2">
+              <span class="text-[11px] text-gray-500 block">ចូលរួម (Confirmed)</span>
+              <span id="dash-breakdown-confirmed" class="font-bold text-sm text-emerald-600">0 នាក់</span>
+            </div>
+            <div class="p-2 border-x border-gray-100">
+              <span class="text-[11px] text-gray-500 block">រង់ចាំឆ្លើយតប (Pending)</span>
+              <span id="dash-breakdown-pending" class="font-bold text-sm text-amber-600">0 នាក់</span>
+            </div>
+            <div class="p-2">
+              <span class="text-[11px] text-gray-500 block">មិនអាចចូលរួម (Declined)</span>
+              <span id="dash-breakdown-declined" class="font-bold text-sm text-rose-600">0 នាក់</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Feeds: Recent RSVP Activity & Recent Guestbook Wishes -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Recent RSVP Feed -->
+          <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 border-b border-[#E5D5BC] mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">📋</span>
+                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">ភ្ញៀវឆ្លើយតបថ្មីៗ (Recent RSVPs)</h3>
+                </div>
+                <button type="button" onclick="document.querySelector('[data-target=\'tab-guests\']').click();" class="text-xs text-[#C5A059] hover:underline font-bold cursor-pointer">
+                  មើលទាំងអស់ →
+                </button>
+              </div>
+
+              <div id="dash-recent-guests" class="space-y-2.5">
+                <p class="text-xs text-[#7A6F68] text-center py-6">កំពុងទាញយកទិន្នន័យ...</p>
+              </div>
+            </div>
+
+            <div class="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-xs text-gray-500">ត្រូវការបង្កើតសំបុត្រថ្មី?</span>
+              <button type="button" onclick="document.querySelector('[data-target=\'tab-guests\']').click(); setTimeout(() => document.getElementById('btn-open-add-guest').click(), 100);" class="text-xs text-[#4E3227] font-bold hover:underline cursor-pointer">
+                + បន្ថែមភ្ញៀវ
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Wishes Feed -->
+          <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 border-b border-[#E5D5BC] mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">💌</span>
+                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">ពាក្យជូនពរចុងក្រោយ (Recent Wishes)</h3>
+                </div>
+                <button type="button" onclick="document.querySelector('[data-target=\'tab-wishes\']').click();" class="text-xs text-[#C5A059] hover:underline font-bold cursor-pointer">
+                  មើលទាំងអស់ →
+                </button>
+              </div>
+
+              <div id="dash-recent-wishes" class="space-y-2.5">
+                <p class="text-xs text-[#7A6F68] text-center py-6">កំពុងទាញយកទិន្នន័យ...</p>
+              </div>
+            </div>
+
+            <div class="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-xs text-gray-500">ចង់គ្រប់គ្រងសារជូនពរ?</span>
+              <button type="button" onclick="document.querySelector('[data-target=\'tab-wishes\']').click();" class="text-xs text-[#4E3227] font-bold hover:underline cursor-pointer">
+                ចូលទៅកាន់ Guestbook →
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Cloud & Backup Status Widget -->
+        <div class="bg-white p-5 rounded-3xl border border-[#E5D5BC] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center text-xl shrink-0 shadow-2xs">
+              ⚡
+            </div>
+            <div>
+              <h4 class="font-khmer-title text-sm font-bold text-[#4E3227]">ប្រព័ន្ធរក្សាទុក Cloud &amp; Telegram Auto-Backup</h4>
+              <p class="text-xs text-[#7A6F68]">ទិន្នន័យភ្ញៀវ និងពាក្យជូនពរទាំងអស់ ត្រូវបានការពារ និងធ្វើសមកាលកម្មជាមួយ Google Sheets &amp; Telegram</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="document.querySelector('[data-target=\'tab-database\']').click();" class="px-4 py-2 bg-[#FAF7F2] hover:bg-[#FAF6ED] text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <span>⚙️ គ្រប់គ្រង Data &amp; Backup</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 1: GUESTS & LINKS ================= -->
+      <section id="tab-guests" class="tab-content hidden">
       <div class="bg-white p-6 rounded-3xl border border-[#E5D5BC] shadow-xs mb-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
@@ -761,6 +1001,7 @@
         </div>
     </section>
   </main>
+  </div>
 
   <!-- ================= ADD GUEST MODAL ================= -->
   <div id="modal-add-guest" class="lightbox-modal">

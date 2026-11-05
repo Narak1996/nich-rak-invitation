@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Failed to load user profile:', err);
   }
 
+  initSidebarEvents();
   initTabs();
   initModals();
   await loadAllData();
@@ -102,6 +103,7 @@ async function loadAllData() {
     loadWishes(),
     loadUsers()
   ]);
+  renderDashboard();
 }
 
 // Check Database Connection Status (MongoDB Atlas vs Local Files)
@@ -412,7 +414,8 @@ async function loadStats() {
     document.getElementById('stat-confirmed').textContent = stats.confirmed;
     document.getElementById('stat-declined').textContent = stats.declined;
     document.getElementById('stat-pax').textContent = stats.totalPaxAttending;
-    document.getElementById('stat-wishes').textContent = stats.wishesCount;
+document.getElementById('stat-wishes').textContent = stats.wishesCount;
+    renderDashboardStats(stats);
   } catch (err) {
     console.error('Failed to load stats:', err);
   }
@@ -449,7 +452,13 @@ async function loadWeddingData() {
     const w = weddingData.wedding;
 
     // Header couple
-    document.getElementById('header-couple-sub').textContent = `${w.groom.name_en} & ${w.bride.name_en}`;
+    const coupleText = `${w.groom.name_en} & ${w.bride.name_en}`;
+    const headerCouple = document.getElementById('header-couple-sub');
+    if (headerCouple) headerCouple.textContent = coupleText;
+    const mobCouple = document.getElementById('mobile-header-couple-sub');
+    if (mobCouple) mobCouple.textContent = coupleText;
+    const dashBanner = document.getElementById('dash-banner-sub');
+    if (dashBanner) dashBanner.textContent = `ពិធីមង្គលការ ${w.groom.name_kh || ''} & ${w.bride.name_kh || ''} (${coupleText})`;
 
     // Theme preset
     const currentThemeId = (weddingData.theme && weddingData.theme.id) || 'khmer-traditional';
@@ -535,6 +544,7 @@ async function loadGuests() {
     if (!res.ok) return;
     guestList = await res.json();
     renderGuestsTable();
+    renderDashboardRecentGuests();
   } catch (err) {
     console.error('Failed to load guests:', err);
   }
@@ -942,6 +952,7 @@ async function loadWishes() {
   try {
     const res = await fetch('/api/wishes');
     wishesList = await res.json();
+    renderDashboardRecentWishes();
     const container = document.getElementById('admin-wishes-list');
     container.innerHTML = '';
 
@@ -1644,7 +1655,158 @@ window.deleteUser = async function(userId, username) {
   }
 };
 
-// Tabs
+// Mobile Sidebar & Navigation Controls
+function closeMobileSidebar() {
+  const sidebar = document.getElementById('admin-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.add('-translate-x-full');
+  if (backdrop) backdrop.classList.add('hidden');
+}
+
+function openMobileSidebar() {
+  const sidebar = document.getElementById('admin-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.remove('-translate-x-full');
+  if (backdrop) backdrop.classList.remove('hidden');
+}
+
+function initSidebarEvents() {
+  const btnToggle = document.getElementById('btn-toggle-mobile-sidebar');
+  const btnClose = document.getElementById('btn-close-mobile-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+
+  if (btnToggle) btnToggle.addEventListener('click', openMobileSidebar);
+  if (btnClose) btnClose.addEventListener('click', closeMobileSidebar);
+  if (backdrop) backdrop.addEventListener('click', closeMobileSidebar);
+}
+
+// Dashboard rendering functions
+function renderDashboardStats(stats) {
+  if (!stats) return;
+  const total = stats.totalGuests || 0;
+  const confirmed = stats.confirmed || 0;
+  const declined = stats.declined || 0;
+  const pending = Math.max(0, total - confirmed - declined);
+  const pax = stats.totalPaxAttending || 0;
+  const wishes = stats.wishesCount || 0;
+
+  const rate = total > 0 ? Math.round((confirmed / total) * 100) : 0;
+  const declinedRate = total > 0 ? Math.round((declined / total) * 100) : 0;
+  const pendingRate = total > 0 ? Math.max(0, 100 - rate - declinedRate) : 0;
+
+  const elRate = document.getElementById('stat-confirmed-rate');
+  if (elRate) elRate.textContent = `${rate}% បានឆ្លើយតប`;
+
+  const elBarConf = document.getElementById('dash-bar-confirmed');
+  const elBarPend = document.getElementById('dash-bar-pending');
+  const elBarDecl = document.getElementById('dash-bar-declined');
+  if (elBarConf) elBarConf.style.width = `${rate}%`;
+  if (elBarPend) elBarPend.style.width = `${pendingRate}%`;
+  if (elBarDecl) elBarDecl.style.width = `${declinedRate}%`;
+
+  const elTxt = document.getElementById('dash-rsvp-percent-text');
+  if (elTxt) elTxt.textContent = `${rate}% បានឆ្លើយតបចូលរួម`;
+
+  const bConf = document.getElementById('dash-breakdown-confirmed');
+  const bPend = document.getElementById('dash-breakdown-pending');
+  const bDecl = document.getElementById('dash-breakdown-declined');
+  if (bConf) bConf.textContent = `${confirmed} នាក់ (${pax} Pax)`;
+  if (bPend) bPend.textContent = `${pending} នាក់`;
+  if (bDecl) bDecl.textContent = `${declined} នាក់`;
+}
+
+function renderDashboardRecentGuests() {
+  const container = document.getElementById('dash-recent-guests');
+  if (!container) return;
+
+  if (!guestList || guestList.length === 0) {
+    container.innerHTML = '<p class="text-xs text-[#7A6F68] text-center py-6">មិនទាន់មានភ្ញៀវក្នុងប្រព័ន្ធនៅឡើយទេ</p>';
+    return;
+  }
+
+  const recent = [...guestList].slice(0, 5);
+  container.innerHTML = recent.map(g => {
+    const shortKey = (g.slug && !g.slug.startsWith('guest-')) ? g.slug : (g.id || encodeURIComponent(g.name));
+    const guestUrl = `${window.location.origin}/to/${shortKey}`;
+    
+    let statusPill = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">⏳ រង់ចាំ</span>';
+    if (g.status === 'confirmed') {
+      statusPill = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">✓ ចូលរួម (${g.attendees || g.pax_allowed || 1} Pax)</span>`;
+    } else if (g.status === 'declined') {
+      statusPill = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">✕ មិនចូលរួម</span>';
+    }
+
+    return `
+      <div class="p-2.5 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC]/60 flex items-center justify-between gap-3 hover:bg-white transition shadow-2xs">
+        <div class="min-w-0 flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-[#4E3227]/10 text-[#4E3227] font-bold text-xs flex items-center justify-center shrink-0">
+            ${(g.name || 'G').charAt(0)}
+          </div>
+          <div class="min-w-0">
+            <span class="font-bold text-xs text-[#4E3227] block truncate">${escapeHTML(g.name)}</span>
+            <div class="flex items-center gap-1.5 text-[10px] text-[#7A6F68]">
+              <span>${g.side === 'groom' ? 'ខាងប្រុស' : 'ខាងស្រី'}</span>
+              <span>•</span>
+              <span class="truncate">${escapeHTML(g.category || 'General')}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          ${statusPill}
+          <button onclick="copyToClipboard('${guestUrl}')" class="p-1 rounded-lg text-gray-400 hover:text-[#4E3227] hover:bg-gray-100 cursor-pointer" title="ចម្លងតំណភ្ជាប់">
+            📋
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDashboardRecentWishes() {
+  const container = document.getElementById('dash-recent-wishes');
+  if (!container) return;
+
+  if (!wishesList || wishesList.length === 0) {
+    container.innerHTML = '<p class="text-xs text-[#7A6F68] text-center py-6">មិនទាន់មានពាក្យជូនពរនៅឡើយទេ</p>';
+    return;
+  }
+
+  const recent = [...wishesList].slice(0, 4);
+  container.innerHTML = recent.map(w => {
+    return `
+      <div class="p-3 rounded-2xl bg-[#FAF7F2] border border-[#E5D5BC]/60 hover:bg-white transition shadow-2xs space-y-1">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="font-bold text-xs text-[#4E3227] truncate">${escapeHTML(w.guestName || 'ភ្ញៀវ')}</span>
+            ${w.relationship ? `<span class="text-[9px] text-[#C5A059] px-1.5 py-0.5 bg-white rounded-md border border-[#E5D5BC] shrink-0">${escapeHTML(w.relationship)}</span>` : ''}
+          </div>
+          <span class="text-[10px] text-gray-400 shrink-0">${w.createdAt ? new Date(w.createdAt).toLocaleDateString() : ''}</span>
+        </div>
+        <p class="text-xs text-[#2C2420] line-clamp-2 leading-relaxed">"${escapeHTML(w.message)}"</p>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDashboard() {
+  const total = Number(document.getElementById('stat-total')?.textContent) || 0;
+  const confirmed = Number(document.getElementById('stat-confirmed')?.textContent) || 0;
+  const declined = Number(document.getElementById('stat-declined')?.textContent) || 0;
+  const pax = Number(document.getElementById('stat-pax')?.textContent) || 0;
+  const wishes = Number(document.getElementById('stat-wishes')?.textContent) || 0;
+
+  renderDashboardStats({
+    totalGuests: total,
+    confirmed: confirmed,
+    declined: declined,
+    totalPaxAttending: pax,
+    wishesCount: wishes
+  });
+  renderDashboardRecentGuests();
+  renderDashboardRecentWishes();
+}
+
+// Navigation Tabs
 function initTabs() {
   const tabs = document.querySelectorAll('.admin-tab');
   tabs.forEach(tab => {
@@ -1658,14 +1820,23 @@ function initTabs() {
 
       const target = tab.getAttribute('data-target');
       document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.getElementById(target).classList.remove('hidden');
+      const targetEl = document.getElementById(target);
+      if (targetEl) targetEl.classList.remove('hidden');
+
       if (target === 'tab-database') {
         if (typeof loadDBDiagnostics === 'function') loadDBDiagnostics();
         if (typeof loadTelegramSettings === 'function') loadTelegramSettings();
         if (typeof loadSheetsSettings === 'function') loadSheetsSettings();
       }
+      if (target === 'tab-dashboard') {
+        renderDashboard();
+      }
+
+      // Close mobile sidebar if open
+      closeMobileSidebar();
     });
   });
+
   // Set first tab active styling
   const first = document.querySelector('.admin-tab.active');
   if (first) {
