@@ -754,9 +754,24 @@ app.post('/api/backup/import', requireAdmin, (req, res) => {
 
 // Public: Get guest by slug or name (handles /to/:slug, /api/guest/:slug, spaces and hyphens)
 app.get('/api/guest/:slug', (req, res) => {
-  const guests = readJSON(GUESTS_FILE, []);
   const raw = decodeURIComponent(req.params.slug).trim();
   const slug = raw.toLowerCase();
+
+  // Handle general guest request (/to/guest)
+  if (slug === 'guest' || slug === 'guests') {
+    return res.json({
+      id: null,
+      slug: 'guest',
+      isGeneralGuest: true,
+      name: '',
+      name_en: '',
+      side: 'groom',
+      pax_allowed: 2,
+      status: 'confirmed'
+    });
+  }
+
+  const guests = readJSON(GUESTS_FILE, []);
   const slugNoDash = slug.replace(/-/g, ' ');
 
   const guest = guests.find(g => 
@@ -767,7 +782,7 @@ app.get('/api/guest/:slug', (req, res) => {
   );
 
   if (!guest) {
-    return res.status(404).json({ error: 'Guest not found' });
+    return res.status(404).json({ error: 'Guest not found', notInvited: true });
   }
   res.json(guest);
 });
@@ -1129,6 +1144,150 @@ function escapeHTML(str) {
     .replace(/'/g, '&#39;');
 }
 
+// Render Dedicated "Not Invited / Invalid Link" Page
+function renderNotInvitedPage(req, res, slug) {
+  const weddingData = readJSON(WEDDING_FILE, {});
+  const w = weddingData.wedding || {};
+  const groomKh = (w.groom && w.groom.name_kh) || 'ឡេង ចាន់ណារៈ';
+  const groomEn = (w.groom && w.groom.name_en) || 'Leng Channarak';
+  const brideKh = (w.bride && w.bride.name_kh) || 'នាត ស្រីនិច';
+  const brideEn = (w.bride && w.bride.name_en) || 'Neat SreyNich';
+  const dateSolarKh = w.date_solar_kh || 'ថ្ងៃសៅរ៍ ទី២៤ ខែមករា ឆ្នាំ២០២៧';
+  const venueKh = w.venue_name_kh || 'មជ្ឈមណ្ឌលសន្និបាត និងពិព័រណ៍ ព្រីមៀរ សែនសុខ (អគារ A)';
+
+  const proto = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'rak-nich.onrender.com';
+  const baseUrl = `${proto}://${host}`;
+  const ogCoverImage = `${baseUrl}/images/wedding-og-cover.jpg`;
+
+  const html = `<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>សូមអភ័យទោស! មិនមានក្នុងបញ្ជីអញ្ជើញឡើយ | ${escapeHTML(groomKh)} & ${escapeHTML(brideKh)}</title>
+  <meta name="description" content="សូមអភ័យទោស តំណភ្ជាប់សំបុត្រអញ្ជើញ /to/${escapeHTML(slug)} មិនមានក្នុងបញ្ជីភ្ញៀវឡើយ">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="⚠️ សំបុត្រអញ្ជើញមិនមានក្នុងបញ្ជី | ${escapeHTML(groomKh)} & ${escapeHTML(brideKh)}">
+  <meta property="og:description" content="តំណភ្ជាប់សំបុត្រអញ្ជើញ /to/${escapeHTML(slug)} មិនមានក្នុងបញ្ជីភ្ញៀវឡើយ។ សូមពិនិត្យមើលតំណភ្ជាប់ ឬបើកសំបុត្រអញ្ជើញទូទៅ។">
+  <meta property="og:image" content="${escapeHTML(ogCoverImage)}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Great+Vibes&family=Kantumruy+Pro:wght@300;400;500;600;700&family=Moul&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Kantumruy Pro', sans-serif;
+      background: radial-gradient(circle at 50% 15%, #FAF8F5 0%, #F4EFEA 45%, #E8DFD4 100%);
+      min-height: 100vh;
+    }
+    .font-khmer-title { font-family: 'Moul', cursive; }
+    .font-serif-title { font-family: 'Cinzel', serif; }
+    .gold-card-border {
+      border: 1.5px solid rgba(197, 160, 89, 0.45);
+    }
+    .emerald-gold-btn {
+      background: linear-gradient(135deg, #1E4833 0%, #2A5C41 50%, #1E4833 100%);
+    }
+    .emerald-gold-btn:hover {
+      background: linear-gradient(135deg, #24573D 0%, #347051 50%, #24573D 100%);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center p-4 sm:p-6 text-[#2C2420]">
+  <!-- Decorative Ambient Glows -->
+  <div class="fixed inset-0 pointer-events-none opacity-40 overflow-hidden">
+    <div class="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-[#1E4833]/10 blur-3xl"></div>
+    <div class="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-[#C5A059]/15 blur-3xl"></div>
+  </div>
+
+  <main class="relative z-10 w-full max-w-md bg-white/92 backdrop-blur-xl rounded-3xl p-6 sm:p-8 gold-card-border shadow-2xl text-center">
+    
+    <!-- Top Wedding Tag -->
+    <div class="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E4833]/8 border border-[#1E4833]/15 text-[11px] font-bold text-[#1E4833]">
+      <span>💍 អាពាហ៍ពិពាហ៍ • WEDDING INVITATION</span>
+    </div>
+
+    <!-- Couple Names -->
+    <h2 class="font-khmer-title text-base sm:text-lg text-[#1E4833] tracking-wide mb-0.5">
+      ${escapeHTML(groomKh)} &amp; ${escapeHTML(brideKh)}
+    </h2>
+    <p class="font-serif-title text-[10px] tracking-widest text-[#8C7A6B] uppercase mb-5">
+      ${escapeHTML(groomEn)} &amp; ${escapeHTML(brideEn)}
+    </p>
+
+    <!-- Central Lock/Warning Icon -->
+    <div class="w-18 h-18 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 border-2 border-[#C5A059]/40 flex items-center justify-center shadow-inner relative">
+      <div class="absolute inset-0 rounded-full animate-ping opacity-15 bg-amber-400"></div>
+      <svg class="w-9 h-9 sm:w-10 sm:h-10 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
+    </div>
+
+    <!-- Notice Badge -->
+    <div class="inline-block px-3 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-bold mb-2">
+      ⚠️ មិនមានក្នុងបញ្ជីអញ្ជើញ (Not on Guest List)
+    </div>
+    
+    <h1 class="font-bold text-base sm:text-lg text-[#1E4833] mb-2 leading-snug">
+      សូមអភ័យទោស!<br>លោកអ្នកមិនមានឈ្មោះក្នុងបញ្ជីអញ្ជើញឡើយ
+    </h1>
+
+    <div class="my-2.5 inline-block px-3.5 py-1 bg-amber-50 rounded-xl border border-amber-200/80 text-amber-900 font-mono text-xs">
+      តំណភ្ជាប់: <code>/to/${escapeHTML(slug)}</code>
+    </div>
+
+    <!-- Polite Cambodian & English Description -->
+    <p class="text-xs sm:text-[13px] text-[#6E5D53] leading-relaxed mb-6 font-medium">
+      សូមអធ្យាស្រ័យ តំណភ្ជាប់សំបុត្រអញ្ជើញនេះមិនមានក្នុងប្រព័ន្ធ ឬអាចត្រូវបានវាយខុសអក្ខរាវិរុទ្ធឈ្មោះ។<br>
+      ប្រសិនបើលោកអ្នកជាភ្ញៀវកិត្តិយសទូទៅ សូមចុចប៊ូតុងខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញទូទៅ ឬទំនាក់ទំនងមកកាន់ម្ចាស់ដើមការ។
+    </p>
+
+    <!-- Actions -->
+    <div class="space-y-2.5">
+      <!-- General Invitation Button -->
+      <a href="/to/guest" class="w-full py-3.5 px-5 rounded-2xl emerald-gold-btn text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-xl hover:scale-[1.01] transition flex items-center justify-center gap-2 cursor-pointer">
+        <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <span>💌 បើកសំបុត្រអញ្ជើញទូទៅ (General Invitation)</span>
+      </a>
+
+      <!-- Contact Hosts Toggle Button -->
+      <button type="button" onclick="document.getElementById('contact-drawer').classList.toggle('hidden')" class="w-full py-2.5 px-4 rounded-2xl border border-[#C5A059]/60 bg-white hover:bg-amber-50/50 text-[#1E4833] font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span>📞 ព័ត៌មានទំនាក់ទំនងម្ចាស់ដើមការ (Contact Host)</span>
+      </button>
+
+      <!-- Contact Drawer (Hidden by default) -->
+      <div id="contact-drawer" class="hidden mt-3 p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 text-left text-xs space-y-2">
+        <div class="flex items-center justify-between pb-1.5 border-b border-amber-200/60">
+          <span class="font-bold text-[#1E4833]">🤵 ខាងកូនកំលោះ (ចាន់ណារៈ):</span>
+          <a href="tel:001888999" class="font-mono text-sky-700 font-bold hover:underline">001 888 999</a>
+        </div>
+        <div class="flex items-center justify-between pb-1.5 border-b border-amber-200/60">
+          <span class="font-bold text-[#1E4833]">👰 ខាងកូនក្រមុំ (ស្រីនិច):</span>
+          <a href="tel:012345678" class="font-mono text-sky-700 font-bold hover:underline">012 345 678</a>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-[#1E4833]">💬 Telegram:</span>
+          <a href="https://t.me/raknich_bot" target="_blank" class="text-sky-700 font-bold hover:underline">@raknich_bot</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wedding Date & Venue Footer -->
+    <div class="mt-6 pt-4 border-t border-[#1E4833]/10 text-[11px] text-[#7A6F68]">
+      <p class="font-semibold text-[#1E4833]">${escapeHTML(dateSolarKh)}</p>
+      <p class="mt-0.5">${escapeHTML(venueKh)}</p>
+    </div>
+
+  </main>
+</body>
+</html>`;
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.status(403).send(html);
+}
+
 // Render Friendly Invitation Page with Dynamic Open Graph Preview & Couple Cover Photo
 function renderInvitationPage(req, res) {
   let guestName = '';
@@ -1139,11 +1298,14 @@ function renderInvitationPage(req, res) {
     rawQuery = decodeURIComponent(rawParam).replace(/\+/g, ' ').trim();
   }
 
+  const cleanSlug = rawQuery.toLowerCase();
+  const isGeneralGuest = !rawQuery || cleanSlug === 'guest' || cleanSlug === 'guests';
+
   // Look up guest in guests.json for accurate name display
   const guests = readJSON(GUESTS_FILE, []);
   let foundGuest = null;
   if (rawQuery && Array.isArray(guests)) {
-    const queryLower = rawQuery.toLowerCase();
+    const queryLower = cleanSlug;
     const queryNoDash = queryLower.replace(/-/g, ' ');
     const queryWithDash = queryLower.replace(/\s+/g, '-');
 
@@ -1155,10 +1317,16 @@ function renderInvitationPage(req, res) {
     );
   }
 
+  // VALIDATION RULE:
+  // If slug_name does not exist in guest list && slug_name != 'guest' -> inform them that they are not invited!
+  if (rawQuery && !isGeneralGuest && !foundGuest) {
+    return renderNotInvitedPage(req, res, rawQuery);
+  }
+
   if (foundGuest) {
     guestName = foundGuest.name || foundGuest.name_en;
-  } else if (rawQuery) {
-    guestName = rawQuery.replace(/-/g, ' ');
+  } else if (isGeneralGuest) {
+    guestName = '';
   }
 
   // Load wedding info
@@ -1310,9 +1478,13 @@ function renderInvitationPage(req, res) {
     // Embed initial data script for zero-latency instant client hydration
     const safeData = { ...weddingData };
     delete safeData.admin;
+    const initialGuestObj = foundGuest 
+      ? foundGuest 
+      : (isGeneralGuest ? { isGeneralGuest: true, slug: 'guest', name: '', pax_allowed: 2 } : null);
+
     const initialScript = `<script>
     window.__INITIAL_WEDDING_DATA__ = ${JSON.stringify(safeData).replace(/<\/script>/gi, '<\\/script>')};
-    ${foundGuest ? `window.__INITIAL_GUEST__ = ${JSON.stringify(foundGuest).replace(/<\/script>/gi, '<\\/script>')};` : ''}
+    ${initialGuestObj ? `window.__INITIAL_GUEST__ = ${JSON.stringify(initialGuestObj).replace(/<\/script>/gi, '<\\/script>')};` : ''}
   </script>`;
     html = html.replace(/(<\/head>)/i, `  ${initialScript}\n$1`);
 

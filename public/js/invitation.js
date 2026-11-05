@@ -217,6 +217,20 @@ async function checkGuestParameter() {
   if (guestSlug) {
     const rawClean = decodeURIComponent(guestSlug).replace(/\+/g, ' ').trim();
     const cleanWithSpaces = rawClean.replace(/-/g, ' ');
+    const isGeneral = rawClean.toLowerCase() === 'guest' || rawClean.toLowerCase() === 'guests';
+
+    if (isGeneral) {
+      currentGuest = {
+        id: null,
+        slug: 'guest',
+        isGeneralGuest: true,
+        name: '',
+        name_en: '',
+        side: 'groom',
+        pax_allowed: 2
+      };
+      return;
+    }
 
     try {
       let res = await fetch(`/api/guest/${encodeURIComponent(rawClean)}`);
@@ -227,18 +241,22 @@ async function checkGuestParameter() {
       if (res.ok) {
         currentGuest = await res.json();
       } else {
-        // Fallback: use decoded name
-        currentGuest = {
-          name: cleanWithSpaces,
-          name_en: cleanWithSpaces,
-          side: 'groom',
-          pax_allowed: 2
-        };
+        // Guest does not exist and is not 'guest' -> reload to SSR not-invited page
+        window.location.href = `/to/${encodeURIComponent(rawClean)}`;
+        return;
       }
     } catch (e) {
+      console.warn('[Guest lookup error]:', e);
+    }
+  } else {
+    // If no slug provided, default to general guest
+    if (!currentGuest) {
       currentGuest = {
-        name: cleanWithSpaces,
-        name_en: cleanWithSpaces,
+        id: null,
+        slug: 'guest',
+        isGeneralGuest: true,
+        name: '',
+        name_en: '',
         side: 'groom',
         pax_allowed: 2
       };
@@ -424,23 +442,39 @@ function renderAll() {
 
   // RSVP Form & Frontend Guest Prepopulation
   if (currentGuest) {
-    const guestDisplayName = isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name);
+    const isGeneral = Boolean(currentGuest.isGeneralGuest || !currentGuest.name);
+    const guestDisplayName = isGeneral ? '' : (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name));
     
-    // 1. RSVP Guest Name (Readonly for invited guest)
+    // 1. RSVP Guest Name (Readonly for invited guest, editable for general guest)
     const rsvpNameEl = document.getElementById('rsvp-name');
     if (rsvpNameEl) {
-      rsvpNameEl.value = guestDisplayName || '';
-      rsvpNameEl.readOnly = true;
-      rsvpNameEl.classList.add('cursor-default', 'bg-amber-50/40', 'font-semibold', 'text-[#4E3227]');
+      if (isGeneral) {
+        rsvpNameEl.value = currentGuest.name || '';
+        rsvpNameEl.readOnly = false;
+        rsvpNameEl.classList.remove('cursor-default', 'bg-amber-50/40', 'bg-[#FAF8F5]');
+        rsvpNameEl.classList.add('bg-white', 'cursor-text');
+        rsvpNameEl.placeholder = isKh ? 'សូមបញ្ចូលឈ្មោះរបស់លោកអ្នក *' : 'Enter your name *';
+      } else {
+        rsvpNameEl.value = guestDisplayName || '';
+        rsvpNameEl.readOnly = true;
+        rsvpNameEl.classList.add('cursor-default', 'bg-amber-50/40', 'font-semibold', 'text-[#4E3227]');
+        rsvpNameEl.classList.remove('bg-white', 'cursor-text');
+      }
     }
 
-    // 2. RSVP Phone
+    // 2. RSVP Side Selector (Groom / Bride)
+    const rsvpSideEl = document.getElementById('rsvp-side');
+    if (rsvpSideEl && currentGuest.side) {
+      rsvpSideEl.value = currentGuest.side;
+    }
+
+    // 3. RSVP Phone
     const rsvpPhoneEl = document.getElementById('rsvp-phone');
     if (rsvpPhoneEl && currentGuest.phone) {
       rsvpPhoneEl.value = currentGuest.phone;
     }
 
-    // 3. RSVP Attendance Status
+    // 4. RSVP Attendance Status
     const rsvpStatusEl = document.getElementById('rsvp-status');
     if (rsvpStatusEl) {
       if (currentGuest.status && currentGuest.status !== 'pending') {
@@ -451,10 +485,10 @@ function renderAll() {
       }
     }
 
-    // 4. RSVP Attendees count and dropdown options
+    // 5. RSVP Attendees count and dropdown options
     const rsvpAttendeesEl = document.getElementById('rsvp-attendees');
     if (rsvpAttendeesEl) {
-      const allowed = parseInt(currentGuest.pax_allowed, 10) || 1;
+      const allowed = parseInt(currentGuest.pax_allowed, 10) || 2;
       const targetVal = (currentGuest.attendees && currentGuest.attendees > 0) ? currentGuest.attendees : allowed;
       
       const maxOpt = Math.max(4, allowed);
@@ -473,34 +507,49 @@ function renderAll() {
       rsvpAttendeesEl.appendChild(optZero);
     }
 
-    // 5. RSVP Pax Hint
+    // 6. RSVP Pax Hint
     const rsvpPaxHintEl = document.getElementById('rsvp-pax-hint');
-    if (rsvpPaxHintEl && currentGuest.pax_allowed) {
-      rsvpPaxHintEl.textContent = isKh 
-        ? `(ចំនួនភ្ញៀវអញ្ជើញចូលរួម: ${toKhmerNumber(currentGuest.pax_allowed)} នាក់)`
-        : `(Reserved for: ${currentGuest.pax_allowed} pax)`;
+    if (rsvpPaxHintEl) {
+      if (!isGeneral && currentGuest.pax_allowed) {
+        rsvpPaxHintEl.textContent = isKh 
+          ? `(ចំនួនភ្ញៀវអញ្ជើញចូលរួម: ${toKhmerNumber(currentGuest.pax_allowed)} នាក់)`
+          : `(Reserved for: ${currentGuest.pax_allowed} pax)`;
+      } else {
+        rsvpPaxHintEl.textContent = '';
+      }
     }
 
-    // 6. RSVP Wishes
+    // 7. RSVP Wishes
     const rsvpWishesEl = document.getElementById('rsvp-wishes');
     if (rsvpWishesEl && currentGuest.wishes) {
       rsvpWishesEl.value = currentGuest.wishes;
     }
 
-    // 7. Wishes Guestbook Form Auto-fill (Readonly)
+    // 8. Wishes Guestbook Form Auto-fill (Readonly for specific guest, editable for general)
     const wishSenderName = document.getElementById('wish-sender-name');
     if (wishSenderName) {
-      wishSenderName.value = guestDisplayName || '';
-      wishSenderName.readOnly = true;
-      wishSenderName.classList.add('cursor-default', 'bg-amber-50/40', 'font-semibold', 'text-[#4E3227]');
+      if (isGeneral) {
+        wishSenderName.value = '';
+        wishSenderName.readOnly = false;
+        wishSenderName.classList.remove('cursor-default', 'bg-amber-50/40');
+        wishSenderName.placeholder = isKh ? 'ឈ្មោះរបស់អ្នក...' : 'Your name...';
+      } else {
+        wishSenderName.value = guestDisplayName || '';
+        wishSenderName.readOnly = true;
+        wishSenderName.classList.add('cursor-default', 'bg-amber-50/40', 'font-semibold', 'text-[#4E3227]');
+      }
     }
 
-    // 8. Main Invitation Presentation Greeting Banner
+    // 9. Main Invitation Presentation Greeting Banner
     const mainGuestBanner = document.getElementById('main-guest-invitation-banner');
     const mainGuestName = document.getElementById('main-guest-invitation-name');
     if (mainGuestBanner && mainGuestName) {
-      mainGuestName.textContent = guestDisplayName || '';
-      mainGuestBanner.classList.remove('hidden');
+      if (!isGeneral && guestDisplayName) {
+        mainGuestName.textContent = guestDisplayName;
+        mainGuestBanner.classList.remove('hidden');
+      } else {
+        mainGuestBanner.classList.add('hidden');
+      }
     }
   } else {
     // If no guest slug in URL, allow typing manually
@@ -1203,19 +1252,29 @@ function addToCalendar() {
 // Handle RSVP Submit
 async function handleRSVPSubmit(e) {
   e.preventDefault();
-  const name = document.getElementById('rsvp-name').value.trim();
+  const isKh = currentLang === 'kh';
+  const nameEl = document.getElementById('rsvp-name');
+  const name = nameEl ? nameEl.value.trim() : '';
+
+  if (!name) {
+    showToast(isKh ? 'សូមបញ្ចូលឈ្មោះរបស់លោកអ្នកជាមុនសិន!' : 'Please enter your guest name!');
+    if (nameEl) nameEl.focus();
+    return;
+  }
+
   const phone = document.getElementById('rsvp-phone').value.trim();
   const status = document.getElementById('rsvp-status').value;
   const attendees = document.getElementById('rsvp-attendees').value;
-  const side = (currentGuest && currentGuest.side) ? currentGuest.side : 'groom';
+  const sideEl = document.getElementById('rsvp-side');
+  const side = sideEl ? sideEl.value : ((currentGuest && currentGuest.side) ? currentGuest.side : 'groom');
   const wishes = document.getElementById('rsvp-wishes').value.trim();
 
-  const isKh = currentLang === 'kh';
+  const isGeneral = !currentGuest || currentGuest.isGeneralGuest;
 
   try {
     const payload = {
-      guestId: currentGuest ? currentGuest.id : null,
-      slug: currentGuest ? currentGuest.slug : null,
+      guestId: isGeneral ? null : currentGuest.id,
+      slug: isGeneral ? null : currentGuest.slug,
       name,
       phone,
       status,
@@ -1725,9 +1784,10 @@ window.closeQrModal = function() {
 
 
 function renderThemeWelcome(themeId, w, isKh) {
-  const guestDisplayName = currentGuest 
-    ? (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name)) 
-    : (isKh ? 'ភ្ញៀវកិត្តិយស' : 'Honorable Guest');
+  const isGeneral = !currentGuest || currentGuest.isGeneralGuest || !currentGuest.name;
+  const guestDisplayName = isGeneral 
+    ? (isKh ? 'ភ្ញៀវកិត្តិយស' : 'Honored Guest')
+    : (isKh ? (currentGuest.name || currentGuest.name_en) : (currentGuest.name_en || currentGuest.name));
 
   const wKhmer = document.getElementById('welcome-khmer');
   if (wKhmer) {
