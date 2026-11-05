@@ -136,7 +136,3 @@ E-Invitation/
 
 ## 🔒 Security Note
 To change the default admin credentials, update the `admin` object inside [wedding-data.json](file:///d:/Narak/E-Invitation/data/wedding-data.json) or manage it via the admin panel.
-
----
-
-© 2026 Digital Wedding E-Invitation Platform.
