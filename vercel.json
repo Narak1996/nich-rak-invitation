@@ -17,11 +17,5 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/telegram/cron-backup",
-      "schedule": "0 14 * * *"
-    }
   ]
 }

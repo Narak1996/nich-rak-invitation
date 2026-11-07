@@ -29,7 +29,6 @@ if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 // Cloud Database (MongoDB Atlas) Adapter with File Fallback
 const db = require('./db');
 const telegram = require('./telegram');
-telegram.startAutoBackupScheduler();
 const sheets = require('./sheets');
 
 // Ensure DB initialization works on both local server and Vercel serverless
@@ -127,7 +126,18 @@ app.get('/uploads/:filename', async (req, res, next) => {
   return res.status(404).send('Photo not found');
 });
 
-app.use(express.static(path.join(__dirname, 'public'), { index: false }));
+app.use(express.static(path.join(__dirname, 'public'), {
+  index: false,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html') || filePath.endsWith('.js')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
+
+app.get('/admin.html', (req, res) => res.redirect(301, '/admin'));
 
 // ================= SECURE AUTHENTICATION & USER MANAGEMENT =================
 // Password security with PBKDF2 & SHA-512
@@ -851,7 +861,7 @@ app.post('/api/rsvp', async (req, res) => {
     writeJSON(WISHES_FILE, allWishes);
   }
 
-  // Trigger Telegram notification & backup
+  // Trigger Telegram live notification
   try {
     await telegram.notifyRSVP(found);
   } catch (e) {
@@ -896,7 +906,7 @@ app.post('/api/wishes', async (req, res) => {
   wishes.unshift(newWish);
   writeJSON(WISHES_FILE, wishes);
 
-  // Trigger Telegram wish alert & backup
+  // Trigger Telegram wish live notification
   try {
     await telegram.notifyWish(newWish);
   } catch (e) {
@@ -936,7 +946,8 @@ app.get('/api/qr-code', async (req, res) => {
 
 // Admin: Get all guests
 app.get('/api/guests', requireAdmin, async (req, res) => {
-  if (sheets.isConfigured()) {
+  // Only live fetch from Sheets if explicitly requested via ?sync=true
+  if (req.query && req.query.sync === 'true' && sheets.isConfigured()) {
     try {
       const live = await sheets.fetchGuestsFromSheet();
       if (live && Array.isArray(live)) {
@@ -951,6 +962,14 @@ app.get('/api/guests', requireAdmin, async (req, res) => {
   }
   const guests = readJSON(GUESTS_FILE, []);
   res.json(guests);
+});
+
+// Admin: Get single guest
+app.get('/api/guests/:id', requireAdmin, (req, res) => {
+  const guests = readJSON(GUESTS_FILE, []);
+  const guest = guests.find(g => g.id === req.params.id || g.slug === req.params.id);
+  if (!guest) return res.status(404).json({ error: 'Guest not found' });
+  res.json(guest);
 });
 
 // Helper to generate clean URL slug with spaces converted to hyphens (-)
@@ -1006,18 +1025,14 @@ app.post('/api/guests', requireAdmin, async (req, res) => {
   await db.saveGuests(guests);
   db.setCache({ guests });
 
-  // Sync to Google Sheet if configured
-  let sheetSaved = false;
+  // Sync to Google Sheet in background (non-blocking)
   if (sheets.isConfigured()) {
-    try {
-      const sheetRes = await sheets.addGuest(newGuest);
-      sheetSaved = Boolean(sheetRes);
-    } catch (e) {
-      console.warn('[Sheets] Add guest error:', e.message);
-    }
+    sheets.addGuest(newGuest).catch(e => {
+      console.warn('[Sheets] Background add guest error:', e.message);
+    });
   }
 
-  res.json({ success: true, guest: newGuest, sheetSaved });
+  res.json({ success: true, guest: newGuest });
 });
 
 // Admin: Bulk import guests
@@ -1102,13 +1117,11 @@ app.put('/api/guests/:id', requireAdmin, async (req, res) => {
   await db.saveGuests(guests);
   db.setCache({ guests });
 
-  // Sync to Google Sheet if configured
+  // Sync to Google Sheet in background (non-blocking)
   if (sheets.isConfigured()) {
-    try {
-      await sheets.updateGuest(guests[index]);
-    } catch (e) {
-      console.warn('[Sheets] Update guest error:', e.message);
-    }
+    sheets.updateGuest(guests[index]).catch(e => {
+      console.warn('[Sheets] Background update guest error:', e.message);
+    });
   }
 
   res.json({ success: true, guest: guests[index] });
@@ -1134,11 +1147,9 @@ app.delete('/api/guests/:id', requireAdmin, async (req, res) => {
   guests = guests.filter(g => g.id !== req.params.id);
   await db.saveGuests(guests);
   if (sheets.isConfigured()) {
-    try {
-      await sheets.deleteGuest(req.params.id);
-    } catch (e) {
-      console.warn('[Sheets] Delete guest error:', e.message);
-    }
+    sheets.deleteGuest(req.params.id).catch(e => {
+      console.warn('[Sheets] Background delete guest error:', e.message);
+    });
   }
   res.json({ success: true, message: 'Guest deleted' });
 });
@@ -1600,6 +1611,9 @@ app.get('/admin', (req, res) => {
   if (!getSession(token)) {
     return res.redirect('/login');
   }
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
@@ -1655,7 +1669,7 @@ app.post('/api/db/sync', requireAdmin, async (req, res) => {
   }
 });
 
-// ================= TELEGRAM AUTO-BACKUP & NOTIFICATIONS API =================
+// ================= TELEGRAM NOTIFICATIONS API =================
 app.get('/api/telegram/config', requireAdmin, (req, res) => {
   const config = telegram.getConfig();
   let maskedToken = '';
@@ -1676,15 +1690,13 @@ app.get('/api/telegram/config', requireAdmin, (req, res) => {
 
 app.post('/api/telegram/config', requireAdmin, (req, res) => {
   try {
-    const { enabled, botToken, chatId, notifyOnRSVP, notifyOnWish, autoBackupHours } = req.body;
+    const { enabled, botToken, chatId, notifyOnRSVP, notifyOnWish } = req.body;
     const updates = {};
     if (enabled !== undefined) updates.enabled = Boolean(enabled);
     if (botToken !== undefined && !botToken.includes('••••')) updates.botToken = String(botToken).trim();
     if (chatId !== undefined) updates.chatId = String(chatId).trim();
     if (notifyOnRSVP !== undefined) updates.notifyOnRSVP = Boolean(notifyOnRSVP);
     if (notifyOnWish !== undefined) updates.notifyOnWish = Boolean(notifyOnWish);
-    if (autoBackupHours !== undefined) updates.autoBackupHours = parseInt(autoBackupHours, 10) || 12;
-    if (req.body.scheduledTime) updates.scheduledTime = String(req.body.scheduledTime).trim();
 
     const saved = telegram.saveConfig(updates);
     res.json({ success: true, config: saved });
@@ -1707,37 +1719,12 @@ app.post('/api/telegram/test', requireAdmin, async (req, res) => {
   }
 });
 
-app.post('/api/telegram/backup-now', requireAdmin, async (req, res) => {
-  try {
-    const result = await telegram.sendBackup('Manual Admin Backup');
-    if (result.success) {
-      res.json({ success: true, message: 'Backup file successfully sent to Telegram!', ...result });
-    } else {
-      res.status(400).json({ success: false, error: result.error });
-    }
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-// Automated Cron Endpoint for Scheduled 9:00 PM Daily Backup (14:00 UTC)
-app.get('/api/telegram/cron-backup', async (req, res) => {
-  try {
-    console.log('[Telegram Cron] Running scheduled daily backup at 9:00 PM Cambodia Time...');
-    const result = await telegram.sendBackup('Daily Scheduled Backup (9:00 PM Cambodia Time)');
-    if (result.success) {
-      res.json({
-        success: true,
-        message: 'Daily 9:00 PM backup delivered successfully to Telegram!',
-        ...result
-      });
-    } else {
-      res.status(400).json({ success: false, error: result.error });
-    }
-  } catch (err) {
-    console.error('[Telegram Cron] Backup error:', err.message);
-    res.status(500).json({ success: false, error: err.message });
-  }
+// Automated Cron Endpoint for Scheduled Backup (Disabled)
+app.get('/api/telegram/cron-backup', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Automated Telegram backup is disabled. Live notifications for RSVP and Wishes remain active.'
+  });
 });
 
 // ================= GOOGLE SHEETS CLOUD DATABASE API =================

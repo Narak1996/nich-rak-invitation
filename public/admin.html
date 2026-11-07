@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Admin Dashboard | E-Invitation Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/style.css">
@@ -20,6 +23,38 @@
         document.cookie = `admin_token=${savedToken}; path=/; max-age=604800; SameSite=Lax`;
       }
     }
+  </script>
+  <script>
+    // Global immediate button loading helper (zero latency)
+    function setButtonLoading(btn, isLoading, loadingText = 'កំពុងរក្សាទុក... (Saving...)') {
+      if (!btn) return;
+      if (isLoading) {
+        if (!btn._origHtml) {
+          btn._origHtml = btn.innerHTML;
+        }
+        btn.disabled = true;
+        btn.setAttribute('disabled', 'disabled');
+        btn.classList.add('opacity-70', 'cursor-not-allowed', 'pointer-events-none');
+        btn.innerHTML = `
+          <span class="inline-flex items-center justify-center gap-2">
+            <svg class="animate-spin h-4 w-4 text-current shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>${loadingText}</span>
+          </span>
+        `;
+      } else {
+        btn.disabled = false;
+        btn.removeAttribute('disabled');
+        btn.classList.remove('opacity-70', 'cursor-not-allowed', 'pointer-events-none', 'bg-emerald-600');
+        if (btn._origHtml) {
+          btn.innerHTML = btn._origHtml;
+          btn._origHtml = null;
+        }
+      }
+    }
+    window.setButtonLoading = setButtonLoading;
   </script>
 </head>
 <body class="bg-[#FAF7F2] min-h-screen text-[#2C2420] font-khmer-body antialiased">
@@ -137,7 +172,7 @@
         <button class="admin-tab w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-[#7A6F68] hover:text-[#4E3227] hover:bg-[#FAF7F2] text-left cursor-pointer" data-target="tab-database">
           <div class="flex items-center gap-3 min-w-0">
             <span class="text-base">💾</span>
-            <span class="truncate">Data &amp; Telegram Backup</span>
+            <span class="truncate">Google Sheets &amp; Telegram</span>
           </div>
           <span id="tab-db-indicator" class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
         </button>
@@ -145,15 +180,6 @@
 
       <!-- Bottom Actions -->
       <div class="p-3 border-t border-[#E5D5BC] bg-[#FAF7F2]/60 space-y-2 shrink-0">
-        <div class="grid grid-cols-2 gap-1.5">
-          <button type="button" onclick="exportBackupData()" class="w-full inline-flex items-center justify-center gap-1 px-2.5 py-2 text-[11px] font-semibold text-[#1E4833] bg-white hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/50 transition shadow-2xs cursor-pointer" title="ទាញយកឯកសារ JSON Backup">
-            <span>💾 Backup</span>
-          </button>
-          <label class="w-full inline-flex items-center justify-center gap-1 px-2.5 py-2 text-[11px] font-semibold text-[#1E4833] bg-white hover:bg-[#FAF6ED] rounded-xl border border-[#C5A059]/50 transition shadow-2xs cursor-pointer" title="បញ្ចូលឯកសារ JSON Backup មកវិញ">
-            <span>📥 Restore</span>
-            <input type="file" accept=".json" onchange="importBackupData(this)" class="hidden">
-          </label>
-        </div>
 
         <a href="/" target="_blank" class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-[#4E3227] bg-white hover:bg-[#E5D5BC]/40 rounded-xl border border-[#E5D5BC] transition shadow-2xs">
           <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -197,7 +223,7 @@
                 <span>💌 មើលពាក្យជូនពរ</span>
               </button>
               <button type="button" onclick="document.querySelector('[data-target=\'tab-database\']').click();" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-                <span>💾 Data &amp; Backup</span>
+                <span>💾 Data &amp; Cloud</span>
               </button>
             </div>
           </div>
@@ -306,7 +332,13 @@
               </div>
 
               <div id="dash-recent-guests" class="space-y-2.5">
-                <p class="text-xs text-[#7A6F68] text-center py-6">កំពុងទាញយកទិន្នន័យ...</p>
+                <div class="p-6 text-center text-[#7A6F68] flex items-center justify-center gap-2">
+                  <svg class="animate-spin h-4 w-4 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span class="text-xs font-medium">កំពុងផ្ទុក... (Loading...)</span>
+                </div>
               </div>
             </div>
 
@@ -332,7 +364,13 @@
               </div>
 
               <div id="dash-recent-wishes" class="space-y-2.5">
-                <p class="text-xs text-[#7A6F68] text-center py-6">កំពុងទាញយកទិន្នន័យ...</p>
+                <div class="p-6 text-center text-[#7A6F68] flex items-center justify-center gap-2">
+                  <svg class="animate-spin h-4 w-4 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span class="text-xs font-medium">កំពុងផ្ទុក... (Loading...)</span>
+                </div>
               </div>
             </div>
 
@@ -346,20 +384,20 @@
 
         </div>
 
-        <!-- Quick Cloud & Backup Status Widget -->
+        <!-- Quick Cloud & Database Status Widget -->
         <div class="bg-white p-5 rounded-3xl border border-[#E5D5BC] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-2xl bg-[#FAF7F2] border border-[#C5A059] flex items-center justify-center text-xl shrink-0 shadow-2xs">
               ⚡
             </div>
             <div>
-              <h4 class="font-khmer-title text-sm font-bold text-[#4E3227]">ប្រព័ន្ធរក្សាទុក Cloud &amp; Telegram Auto-Backup</h4>
-              <p class="text-xs text-[#7A6F68]">ទិន្នន័យភ្ញៀវ និងពាក្យជូនពរទាំងអស់ ត្រូវបានការពារ និងធ្វើសមកាលកម្មជាមួយ Google Sheets &amp; Telegram</p>
+              <h4 class="font-khmer-title text-sm font-bold text-[#4E3227]">ប្រព័ន្ធរក្សាទុក Cloud &amp; Telegram Notifications</h4>
+              <p class="text-xs text-[#7A6F68]">ទិន្នន័យភ្ញៀវ និងពាក្យជូនពរទាំងអស់ ត្រូវបានការពារ និងធ្វើសមកាលកម្មជាមួយ Google Sheets &amp; ផ្ញើដំណឹងតាម Telegram</p>
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <button type="button" onclick="document.querySelector('[data-target=\'tab-database\']').click();" class="px-4 py-2 bg-[#FAF7F2] hover:bg-[#FAF6ED] text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
-              <span>⚙️ គ្រប់គ្រង Data &amp; Backup</span>
+              <span>⚙️ គ្រប់គ្រង Data &amp; Cloud</span>
             </button>
           </div>
         </div>
@@ -380,6 +418,10 @@
             </button>
             <button id="btn-open-bulk-import" class="px-4 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5">
               <span>📋 បញ្ចូលជាក្រុម (Bulk Import)</span>
+            </button>
+            <button id="btn-refresh-guests" type="button" onclick="loadGuests()" class="px-3 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="ផ្ទុកទិន្នន័យភ្ញៀវឡើងវិញ (Refresh)">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>ផ្ទុកឡើងវិញ</span>
             </button>
             <a href="/api/guests/export" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -423,7 +465,17 @@
               </tr>
             </thead>
             <tbody id="guests-table-body" class="divide-y divide-[#E5D5BC]/60">
-              <!-- Dynamically populated -->
+              <tr>
+                <td colspan="7" class="p-8 text-center text-[#7A6F68]">
+                  <div class="inline-flex items-center justify-center gap-2.5">
+                    <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">កំពុងផ្ទុកទិន្នន័យភ្ញៀវ... (Loading guests...)</span>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -646,7 +698,13 @@
         </div>
 
         <div id="admin-agenda-list" class="space-y-4">
-          <!-- Dynamically populated -->
+          <div class="p-8 text-center text-[#7A6F68] flex items-center justify-center gap-2.5">
+            <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs font-medium">កំពុងផ្ទុកកម្មវិធីមង្គលការ... (Loading agenda...)</span>
+          </div>
         </div>
       </div>
     </section>
@@ -694,7 +752,13 @@
         </div>
 
         <div id="admin-gallery-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <!-- Dynamically populated -->
+          <div class="col-span-full p-8 text-center text-[#7A6F68] flex items-center justify-center gap-2.5">
+            <svg class="animate-spin h-5 w-5 text-[#1E4833]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs font-medium">កំពុងផ្ទុកកម្រងរូបថត... (Loading gallery...)</span>
+          </div>
         </div>
       </div>
     </section>
@@ -782,7 +846,13 @@
         <p class="text-xs text-[#7A6F68] mb-6">មើល និងលុបសារជូនពរដែលមិនសមរម្យ</p>
 
         <div id="admin-wishes-list" class="space-y-3">
-          <!-- Dynamically populated -->
+          <div class="p-8 text-center text-[#7A6F68] flex items-center justify-center gap-2.5">
+            <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs font-medium">កំពុងផ្ទុកពាក្យជូនពរ... (Loading wishes...)</span>
+          </div>
         </div>
       </div>
     </section>
@@ -795,9 +865,15 @@
             <h2 class="font-khmer-title text-lg text-[#4E3227]">គ្រប់គ្រងអ្នកប្រើប្រាស់ & សុវត្ថិភាព (User Management)</h2>
             <p class="text-xs text-[#7A6F68]">គ្រប់គ្រងគណនី Admin, ប្តូរពាក្យសម្ងាត់ និងកំណត់សិទ្ធិ (Role-Based Access)</p>
           </div>
-          <button id="btn-open-add-user" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
-            <span>➕ បន្ថែមអ្នកគ្រប់គ្រង (Add Admin)</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="loadUsers()" class="px-3 py-2 bg-[#FAF7F2] hover:bg-[#E5D5BC]/50 text-[#4E3227] border border-[#E5D5BC] text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="ផ្ទុកបញ្ជីឡើងវិញ (Refresh)">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>ផ្ទុកឡើងវិញ</span>
+            </button>
+            <button id="btn-open-add-user" class="px-4 py-2 bg-[#4E3227] hover:bg-[#6E4939] text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs">
+              <span>➕ បន្ថែមអ្នកគ្រប់គ្រង (Add Admin)</span>
+            </button>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -812,14 +888,24 @@
               </tr>
             </thead>
             <tbody id="users-table-body" class="divide-y divide-gray-100">
-              <!-- Rendered via JS -->
+              <tr>
+                <td colspan="5" class="p-8 text-center text-[#7A6F68]">
+                  <div class="inline-flex items-center justify-center gap-2.5">
+                    <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">កំពុងផ្ទុកបញ្ជីអ្នកប្រើប្រាស់... (Loading users...)</span>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ================= TAB 8: DATA & TELEGRAM BACKUP ================= -->
+    <!-- ================= TAB 8: DATA & TELEGRAM ================= -->
     <section id="tab-database" class="tab-content hidden space-y-6">
       <!-- ================= 1. GOOGLE SHEETS CLOUD DATABASE ================= -->
         <div class="mb-6 p-6 rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/30 shadow-xs">
@@ -897,7 +983,7 @@
         </div>
 
 
-        <!-- ================= TELEGRAM AUTO-BACKUP & NOTIFICATIONS CARD ================= -->
+        <!-- ================= TELEGRAM LIVE NOTIFICATIONS CARD ================= -->
         <div class="mb-6 p-6 rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50/70 via-white to-sky-50/30 shadow-xs">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-sky-100">
             <div class="flex items-center gap-3">
@@ -906,18 +992,14 @@
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">ប្រព័ន្ធ Auto-Backup ទៅកាន់ Telegram &amp; សារជូនដំណឹង Live</h3>
+                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">ប្រព័ន្ធសារជូនដំណឹង Live ទៅកាន់ Telegram</h3>
                   <span id="tg-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">Checking...</span>
                 </div>
-                <p class="text-xs text-[#7A6F68] mt-0.5">បញ្ជូនឯកសារ JSON Backup ដោយស្វ័យប្រវត្តិចូល Telegram និងទទួលសារជូនដំណឹងរាល់ពេលមានភ្ញៀវ RSVP ថ្មី</p>
+                <p class="text-xs text-[#7A6F68] mt-0.5">ទទួលសារជូនដំណឹង Live ភ្លាមៗចូល Telegram រាល់ពេលមានភ្ញៀវឆ្លើយតប RSVP ឬផ្ញើសារជូនពរថ្មី</p>
               </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <button type="button" onclick="sendTelegramBackupNow()" id="btn-tg-backup-now" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer">
-                <svg id="icon-tg-backup-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                <span>🚀 បញ្ជូន Backup ឥឡូវនេះ</span>
-              </button>
-              <button type="button" onclick="testTelegramBot()" id="btn-tg-test" class="px-3.5 py-2 bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+              <button type="button" onclick="testTelegramBot()" id="btn-tg-test" class="px-3.5 py-2 bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
                 <span>🔔 តេស្ត Bot</span>
               </button>
             </div>
@@ -941,7 +1023,7 @@
                   <a href="https://t.me/userinfobot" target="_blank" class="text-[11px] text-sky-600 hover:underline font-normal ml-1">(យកពី @userinfobot &rarr;)</a>
                 </label>
                 <input type="text" id="tg-chat-id" placeholder="ឧទាហរណ៍: 123456789 ឬ -100xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-sky-200 bg-white font-mono text-xs focus:outline-none focus:border-sky-400">
-                <span class="text-[10px] text-gray-500 mt-0.5 block">Chat ID ដែលត្រូវឱ្យ Bot ផ្ញើឯកសារ Backup និងសារជូនដំណឹងទៅ</span>
+                <span class="text-[10px] text-gray-500 mt-0.5 block">Chat ID ដែលត្រូវឱ្យ Bot ផ្ញើសារជូនដំណឹងទៅ</span>
               </div>
             </div>
 
@@ -949,7 +1031,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-2xl bg-white/80 border border-sky-100">
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" id="tg-enabled" class="rounded text-sky-600 focus:ring-sky-500">
-                <span class="font-bold text-[#4E3227] text-xs">បើកដំណើរការ Auto-Backup</span>
+                <span class="font-bold text-[#4E3227] text-xs">បើកដំណើរការ Telegram Bot</span>
               </label>
 
               <label class="flex items-center gap-2 cursor-pointer">
@@ -963,20 +1045,7 @@
               </label>
             </div>
 
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-xs text-gray-700 font-semibold flex items-center gap-1">⏰ ម៉ោងកំណត់ Auto Backup:</span>
-                <select id="tg-scheduled-time" class="px-3 py-1.5 rounded-xl border border-sky-300 bg-white text-xs text-[#4E3227] font-bold shadow-2xs">
-                  <option value="21:00" selected>ម៉ោង ៩:០០ យប់ (9:00 PM Cambodia Time) ★</option>
-                  <option value="22:00">ម៉ោង ១០:០០ យប់ (10:00 PM)</option>
-                  <option value="20:00">ម៉ោង ៨:០០ យប់ (8:00 PM)</option>
-                  <option value="18:00">ម៉ោង ៦:០០ ល្ងាច (6:00 PM)</option>
-                  <option value="12:00">ម៉ោង ១២:០០ ថ្ងៃត្រង់ (12:00 PM)</option>
-                  <option value="08:00">ម៉ោង ៨:០០ ព្រឹក (8:00 AM)</option>
-                </select>
-                <input type="hidden" id="tg-backup-hours" value="24">
-                <span class="text-[11px] text-gray-500 ml-2" id="tg-last-backup-hint"></span>
-              </div>
+            <div class="flex justify-end pt-1">
               <button type="submit" class="px-5 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
                 <span>💾 រក្សាទុកការកំណត់ Telegram</span>
               </button>
@@ -1010,7 +1079,7 @@
       <h3 class="font-khmer-title text-base text-[#4E3227] mb-1" id="modal-guest-title">បន្ថែមភ្ញៀវកិត្តិយស</h3>
       <p class="text-xs text-[#7A6F68] mb-4">បញ្ចូលព័ត៌មានភ្ញៀវដើម្បីបង្កើតតំណភ្ជាប់ផ្ទាល់ខ្លួន</p>
 
-      <form id="form-save-guest" class="space-y-3 text-xs">
+      <form id="form-save-guest" onsubmit="setButtonLoading(document.getElementById('btn-modal-save-guest'), true);" class="space-y-3 text-xs">
         <input type="hidden" id="modal-guest-id">
         <div>
           <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះភ្ញៀវ (ខ្មែរ) *</label>
@@ -1058,8 +1127,8 @@
           </div>
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
-          រក្សាទុក (Save Guest)
+        <button type="submit" id="btn-modal-save-guest" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3 flex items-center justify-center cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none">
+          <span>💾 រក្សាទុក (Save Guest)</span>
         </button>
       </form>
     </div>
@@ -1072,7 +1141,7 @@
       <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">បញ្ចូលបញ្ជីភ្ញៀវជាក្រុម (Bulk Import)</h3>
       <p class="text-xs text-[#7A6F68] mb-4">Paste ឬវាយឈ្មោះភ្ញៀវបំបែកដោយចុះបន្ទាត់ ឬសញ្ញាក្បៀស (,)</p>
 
-      <form id="form-bulk-import" class="space-y-3 text-xs">
+      <form id="form-bulk-import" onsubmit="setButtonLoading(document.getElementById('btn-modal-save-bulk'), true, 'កំពុងបញ្ចូលភ្ញៀវ... (Importing...)');" class="space-y-3 text-xs">
         <div>
           <label class="block font-bold text-[#4E3227] mb-1">បញ្ជីឈ្មោះភ្ញៀវ *</label>
           <textarea id="bulk-names" rows="6" required placeholder="លោក សុខ ដារ៉ា&#10;កញ្ញា ចាន់ ពិសី&#10;លោក ថុល វិរៈ" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none font-mono"></textarea>
@@ -1100,8 +1169,8 @@
           </div>
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
-          បញ្ចូលបញ្ជីឈ្មោះ (Import All)
+        <button type="submit" id="btn-modal-save-bulk" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3 flex items-center justify-center cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none">
+          <span>📥 បញ្ចូលបញ្ជីឈ្មោះ (Import All)</span>
         </button>
       </form>
     </div>
@@ -1114,7 +1183,7 @@
       <h3 class="font-khmer-title text-base text-[#4E3227] mb-1" id="modal-agenda-title">បន្ថែមកម្មវិធីមង្គលការ (Add Agenda)</h3>
       <p class="text-xs text-[#7A6F68] mb-4">កំណត់ពេលវេលា ឈ្មោះពិធី និងការពិពណ៌នា</p>
 
-      <form id="form-save-agenda" class="space-y-3 text-xs">
+      <form id="form-save-agenda" onsubmit="setButtonLoading(document.getElementById('btn-modal-save-agenda'), true);" class="space-y-3 text-xs">
         <input type="hidden" id="modal-agenda-id">
         <input type="hidden" id="modal-agenda-index" value="-1">
 
@@ -1174,8 +1243,8 @@
           <button type="button" class="modal-close flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-[#4E3227] font-bold rounded-xl transition">
             បោះបង់ (Cancel)
           </button>
-          <button type="submit" class="flex-1 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition shadow-xs">
-            រក្សាទុក (Save Program)
+          <button type="submit" id="btn-modal-save-agenda" class="flex-1 py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none">
+            <span>💾 រក្សាទុក (Save Program)</span>
           </button>
         </div>
       </form>
@@ -1213,7 +1282,7 @@
       <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">បន្ថែមអ្នកគ្រប់គ្រងថ្មី</h3>
       <p class="text-xs text-[#7A6F68] mb-4">បង្កើតគណនីសម្រាប់ចូលគ្រប់គ្រងគេហទំព័រមង្គលការ</p>
 
-      <form id="form-add-user" class="space-y-3 text-xs">
+      <form id="form-add-user" onsubmit="setButtonLoading(document.getElementById('btn-modal-save-user'), true, 'កំពុងបង្កើត... (Creating...)');" class="space-y-3 text-xs">
         <div>
           <label class="block font-bold text-[#4E3227] mb-1">ឈ្មោះគណនី (Username) *</label>
           <input type="text" id="modal-user-username" required placeholder="ឧ. nich_admin" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
@@ -1235,8 +1304,8 @@
           </select>
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
-          បង្កើតគណនី (Create User)
+        <button type="submit" id="btn-modal-save-user" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3 flex items-center justify-center cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none">
+          <span>➕ បង្កើតគណនី (Create User)</span>
         </button>
       </form>
     </div>
@@ -1249,7 +1318,7 @@
       <h3 class="font-khmer-title text-base text-[#4E3227] mb-1">ប្តូរពាក្យសម្ងាត់គណនី</h3>
       <p class="text-xs text-[#7A6F68] mb-4" id="modal-pwd-user-desc">ប្តូរពាក្យសម្ងាត់សម្រាប់គណនី</p>
 
-      <form id="form-change-password" class="space-y-3 text-xs">
+      <form id="form-change-password" onsubmit="setButtonLoading(document.getElementById('btn-modal-save-pwd'), true, 'កំពុងប្តូរពាក្យសម្ងាត់... (Saving...)');" class="space-y-3 text-xs">
         <input type="hidden" id="modal-pwd-user-id">
         <div id="pwd-field-current" class="hidden">
           <label class="block font-bold text-[#4E3227] mb-1">ពាក្យសម្ងាត់បច្ចុប្បន្ន (Current Password) *</label>
@@ -1264,8 +1333,8 @@
           <input type="password" id="modal-pwd-confirm" required minlength="6" placeholder="បញ្ចូលពាក្យសម្ងាត់ថ្មីម្តងទៀត" class="w-full px-3 py-2 rounded-xl border border-[#E5D5BC] bg-[#FAF7F2] focus:bg-white focus:outline-none">
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3">
-          រក្សាទុកពាក្យសម្ងាត់ថ្មី (Save New Password)
+        <button type="submit" id="btn-modal-save-pwd" class="w-full py-2.5 bg-[#4E3227] hover:bg-[#6E4939] text-white font-bold rounded-xl transition mt-3 flex items-center justify-center cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none">
+          <span>🔐 រក្សាទុកពាក្យសម្ងាត់ថ្មី (Save New Password)</span>
         </button>
       </form>
     </div>
@@ -1320,7 +1389,7 @@
           <button type="button" onclick="closeGoogleDriveModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-[#7A6F68] hover:bg-gray-100 transition cursor-pointer">
             បោះបង់ (Cancel)
           </button>
-          <button type="button" onclick="submitGoogleDrivePhotos()" class="px-5 py-2.5 bg-[#1E4833] hover:bg-[#163626] text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+          <button type="button" id="btn-modal-save-gdrive" onclick="submitGoogleDrivePhotos(this)" class="px-5 py-2.5 bg-[#1E4833] hover:bg-[#163626] text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none">
             <span>✓ បញ្ចូលទៅក្នុង Gallery</span>
           </button>
         </div>
@@ -1381,6 +1450,6 @@
   <div id="toast-notice" class="toast-notice"></div>
 
   <!-- Admin JS Script -->
-  <script src="/js/admin.js"></script>
+  <script src="/js/admin.js?v=1794070292172"></script>
 </body>
 </html>

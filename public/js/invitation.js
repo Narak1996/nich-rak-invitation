@@ -1262,6 +1262,20 @@ async function handleRSVPSubmit(e) {
     return;
   }
 
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>${isKh ? 'កំពុងផ្ញើការឆ្លើយតប... (Submitting...)' : 'Submitting RSVP...'}</span>
+    `;
+  }
+
   const phone = document.getElementById('rsvp-phone').value.trim();
   const status = document.getElementById('rsvp-status').value;
   const attendees = document.getElementById('rsvp-attendees').value;
@@ -1305,6 +1319,12 @@ async function handleRSVPSubmit(e) {
     }
   } catch (err) {
     showToast('Failed to submit RSVP');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      submitBtn.innerHTML = origBtnHtml;
+    }
   }
 }
 
@@ -1329,6 +1349,20 @@ async function handleWishSubmit(e) {
     return;
   }
 
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>${isKh ? 'កំពុងផ្ញើ... (Sending...)' : 'Sending Wish...'}</span>
+    `;
+  }
+
   try {
     const res = await fetch('/api/wishes', {
       method: 'POST',
@@ -1348,15 +1382,34 @@ async function handleWishSubmit(e) {
     }
   } catch (err) {
     showToast('Failed to send wish');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      submitBtn.innerHTML = origBtnHtml;
+    }
   }
 }
 
 // Load and Render Wishes as Cute Pastel Sticky Notes
 async function loadWishes() {
   const container = document.getElementById('wishes-list');
+  if (container) {
+    const isKh = currentLang === 'kh';
+    container.innerHTML = `
+      <div class="py-8 text-center text-[#4E7D63] flex items-center justify-center gap-2">
+        <svg class="animate-spin h-5 w-5 text-[#4E7D63]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-xs font-khmer-body font-medium" data-kh="កំពុងផ្ទុកពាក្យជូនពរ..." data-en="Loading wishes...">${isKh ? 'កំពុងផ្ទុកពាក្យជូនពរ...' : 'Loading wishes...'}</span>
+      </div>
+    `;
+  }
   try {
     const res = await fetch('/api/wishes');
     const wishes = await res.json();
+    if (!container) return;
     container.innerHTML = '';
 
     if (wishes.length === 0) {

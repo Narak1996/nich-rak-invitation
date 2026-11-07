@@ -55,21 +55,13 @@ function getConfig() {
   const enabled = saved.enabled !== undefined ? Boolean(saved.enabled) : true;
   const notifyOnRSVP = saved.notifyOnRSVP !== undefined ? Boolean(saved.notifyOnRSVP) : true;
   const notifyOnWish = saved.notifyOnWish !== undefined ? Boolean(saved.notifyOnWish) : true;
-  const autoBackupHours = parseInt(saved.autoBackupHours || 12, 10);
-  const scheduledTime = saved.scheduledTime || '21:00'; // Default 9:00 PM Cambodia Time
-  const lastDailyBackupDate = saved.lastDailyBackupDate || null;
-  const lastBackupAt = saved.lastBackupAt || null;
 
   return {
     enabled,
     botToken,
     chatId,
     notifyOnRSVP,
-    notifyOnWish,
-    autoBackupHours,
-    scheduledTime,
-    lastDailyBackupDate,
-    lastBackupAt
+    notifyOnWish
   };
 }
 
@@ -150,128 +142,10 @@ async function sendMessage(text, customToken = null, customChatId = null) {
   }
 }
 
-// Send backup document file to Telegram
+// Send backup document file to Telegram (Disabled per request)
 async function sendBackup(reason = 'Manual Backup') {
-  const config = getConfig();
-  if (!config.botToken || !config.chatId) {
-    return { success: false, error: 'Telegram Bot Token or Chat ID is not configured' };
-  }
-
-  try {
-    const wedding = readJSON(WEDDING_FILE, {});
-    const guests = readJSON(GUESTS_FILE, []);
-    const wishes = readJSON(WISHES_FILE, []);
-    const users = readJSON(USERS_FILE, []);
-
-    const safeWedding = { ...wedding };
-    delete safeWedding.admin;
-
-    const totalGuests = Array.isArray(guests) ? guests.length : 0;
-    const confirmed = Array.isArray(guests) ? guests.filter(g => g.status === 'confirmed').length : 0;
-    const declined = Array.isArray(guests) ? guests.filter(g => g.status === 'declined').length : 0;
-    const pending = Array.isArray(guests) ? guests.filter(g => g.status === 'pending').length : 0;
-    const totalPax = Array.isArray(guests)
-      ? guests.reduce((sum, g) => sum + (g.status === 'confirmed' ? (parseInt(g.attendees, 10) || 1) : 0), 0)
-      : 0;
-
-    const now = new Date();
-    const dateStr = now.toISOString().slice(0, 10);
-    const timeStr = now.toTimeString().slice(0, 8);
-
-    const bundle = {
-      backupSource: 'E-Invitation Wedding System',
-      storageType: 'File-Based Atomic Storage (data/*.json)',
-      exportedAt: now.toISOString(),
-      reason,
-      summary: {
-        totalGuests,
-        confirmed,
-        declined,
-        pending,
-        totalPaxAttending: totalPax,
-        totalWishes: wishes.length
-      },
-      wedding: safeWedding,
-      guests,
-      wishes,
-      usersCount: users.length
-    };
-
-    const fileName = `wedding-backup-${dateStr}-${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}.json`;
-    const jsonString = JSON.stringify(bundle, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-
-    const groomName = (wedding.wedding && wedding.wedding.groom && wedding.wedding.groom.name_kh) || 'កូនកំលោះ';
-    const brideName = (wedding.wedding && wedding.wedding.bride && wedding.wedding.bride.name_kh) || 'កូនក្រមុំ';
-
-    const caption = [
-      `💍 <b>E-INVITATION SYSTEM BACKUP</b>`,
-      `👰🤵 <b>${groomName} & ${brideName}</b>`,
-      `📅 កាលបរិច្ឆេទ: <code>${dateStr} ${timeStr}</code>`,
-      `📌 មូលហេតុ: <b>${reason}</b>`,
-      ``,
-      `📊 <b>ស្ថិតិទិន្នន័យបច្ចុប្បន្ន (Current Data):</b>`,
-      `• ភ្ញៀវសរុប: <b>${totalGuests} នាក់</b>`,
-      `• បានបញ្ជាក់ចូលរួម: <b>${confirmed} នាក់</b> (${totalPax} Pax)`,
-      `• មិនអាចចូលរួម: <b>${declined} នាក់</b>`,
-      `• រង់ចាំឆ្លើយតប: <b>${pending} នាក់</b>`,
-      `• សារជូនពរ: <b>${wishes.length} សារ</b>`,
-      ``,
-      `📁 <i>ឯកសារ JSON Backup ត្រូវបានភ្ជាប់ជាមួយសារនេះ។ អ្នកអាចទាញយកទៅ Restore វិញបានគ្រប់ពេល។</i>`
-    ].join('\n');
-
-    const formData = new FormData();
-    formData.append('chat_id', config.chatId);
-    formData.append('caption', caption);
-    formData.append('parse_mode', 'HTML');
-    formData.append('document', blob, fileName);
-
-    console.log(`[Telegram] Uploading backup document ${fileName} to chat ${config.chatId}...`);
-    const res = await fetch(`https://api.telegram.org/bot${config.botToken}/sendDocument`, {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await res.json();
-    if (!data.ok) {
-      if (data.parameters && data.parameters.migrate_to_chat_id) {
-        const migratedChatId = String(data.parameters.migrate_to_chat_id);
-        console.log(`[Telegram] Group migrated to ${migratedChatId} during upload. Retrying...`);
-        try { saveConfig({ chatId: migratedChatId }); } catch (e) {}
-        formData.set('chat_id', migratedChatId);
-        const retryRes = await fetch(`https://api.telegram.org/bot${config.botToken}/sendDocument`, {
-          method: 'POST',
-          body: formData
-        });
-        const retryData = await retryRes.json();
-        if (retryData.ok) {
-          saveConfig({ lastBackupAt: now.toISOString() });
-          return {
-            success: true,
-            fileName,
-            messageId: retryData.result.message_id,
-            timestamp: now.toISOString()
-          };
-        }
-      }
-      console.error('[Telegram] Backup upload failed:', data.description);
-      return { success: false, error: data.description || 'Failed to send backup document' };
-    }
-
-    // Save last backup timestamp
-    saveConfig({ lastBackupAt: now.toISOString() });
-    console.log(`[Telegram] Backup successfully delivered to Telegram! Message ID: ${data.result.message_id}`);
-
-    return {
-      success: true,
-      fileName,
-      messageId: data.result.message_id,
-      timestamp: now.toISOString()
-    };
-  } catch (err) {
-    console.error('[Telegram] Backup error:', err.message);
-    return { success: false, error: err.message };
-  }
+  console.log(`[Telegram] Backup to Telegram is completely disabled (${reason}). Skipping upload.`);
+  return { success: false, disabled: true, message: 'Telegram backup is disabled.' };
 }
 
 // Real-time Notification when Guest submits RSVP
@@ -301,13 +175,6 @@ async function notifyRSVP(guest) {
   lines.push(`⏰ <code>${new Date().toLocaleString('km-KH')}</code>`);
 
   await sendMessage(lines.join('\n'));
-
-  // Immediately send updated JSON backup document to Telegram
-  try {
-    await sendBackup(`RSVP Update (${guest.name || 'Guest'})`);
-  } catch (err) {
-    console.warn('[Telegram] Auto-backup after RSVP failed:', err.message);
-  }
 }
 
 // Real-time Notification when Guest sends a Wish in Guestbook
@@ -327,13 +194,6 @@ async function notifyWish(wish) {
   ];
 
   await sendMessage(lines.join('\n'));
-
-  // Immediately send updated JSON backup document to Telegram
-  try {
-    await sendBackup(`New Wish (${wish.guestName || 'Guest'})`);
-  } catch (err) {
-    console.warn('[Telegram] Auto-backup after wish failed:', err.message);
-  }
 }
 
 // Test Telegram Bot Connection
@@ -355,95 +215,25 @@ async function testConnection(botToken, chatId) {
     `━━━━━━━━━━━━━━━━━━━━`,
     `✅ ការតភ្ជាប់បានជោគជ័យ! (Connection Successful)`,
     `🤖 Bot របស់អ្នកត្រូវបានភ្ជាប់ជាមួយប្រព័ន្ធសំបុត្រអាពាហ៍ពិពាហ៍ឌីជីថលរួចរាល់។`,
-    `📦 ប្រព័ន្ធនឹងផ្ញើឯកសារ Backup ដោយស្វ័យប្រវត្តិមកកាន់ Chat នេះ!`,
+    `🔔 ប្រព័ន្ធនឹងផ្ញើសារជូនដំណឹង Live រាល់ពេលមានភ្ញៀវ RSVP ឬផ្ញើសារជូនពរថ្មី!`,
     `⏰ <code>${new Date().toLocaleString('km-KH')}</code>`
   ].join('\n');
 
   return await sendMessage(text, token, chat);
 }
 
-// Debounced auto-backup helper
+// Debounced auto-backup helper (Disabled)
 let debouncedTimer = null;
-function scheduleDebouncedBackup(reason) {
-  const config = getConfig();
-  if (!config.enabled) return;
-
-  if (process.env.VERCEL) {
-    sendBackup(reason).catch(e => console.warn('[Telegram] Vercel backup failed:', e.message));
-    return;
-  }
-
+function scheduleDebouncedBackup() {
   if (debouncedTimer) clearTimeout(debouncedTimer);
-  debouncedTimer = setTimeout(async () => {
-    try {
-      console.log(`[Telegram] Running debounced backup: ${reason}...`);
-      await sendBackup(reason);
-    } catch (e) {
-      console.warn('[Telegram] Debounced backup failed:', e.message);
-    }
-  }, 10 * 1000); // 10 seconds debounce
+  debouncedTimer = null;
 }
 
-// Helper to get Cambodia local time (Asia/Phnom_Penh, UTC+7)
-function getCambodiaTime() {
-  const d = new Date();
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Phnom_Penh',
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-  const parts = formatter.formatToParts(d);
-  const hour = parts.find(p => p.type === 'hour').value;
-  const minute = parts.find(p => p.type === 'minute').value;
-  const day = parts.find(p => p.type === 'day').value;
-  const month = parts.find(p => p.type === 'month').value;
-  const year = parts.find(p => p.type === 'year').value;
-  return {
-    timeStr: `${hour}:${minute}`,
-    dateStr: `${year}-${month}-${day}`,
-    hour: parseInt(hour, 10),
-    minute: parseInt(minute, 10)
-  };
-}
-
-// Background Cron-style Interval Checker
+// Background Cron-style Interval Checker (Disabled)
 let intervalTimer = null;
 function startAutoBackupScheduler() {
   if (intervalTimer) clearInterval(intervalTimer);
-
-  // Check every 30 seconds for scheduled 9:00 PM (21:00) Cambodia Time
-  intervalTimer = setInterval(async () => {
-    const config = getConfig();
-    if (!config.enabled || !config.botToken || !config.chatId) return;
-
-    const { timeStr, dateStr } = getCambodiaTime();
-    const targetTime = config.scheduledTime || '21:00'; // Default 9:00 PM
-
-    // 1. Daily scheduled backup check (e.g. at 21:00 Cambodia Time)
-    if (timeStr === targetTime && config.lastDailyBackupDate !== dateStr) {
-      console.log(`[Telegram] ⏰ Triggering scheduled daily backup at ${targetTime} (Cambodia Time) for ${dateStr}...`);
-      saveConfig({ lastDailyBackupDate: dateStr });
-      await sendBackup(`Daily Scheduled Backup (${targetTime} / 9:00 PM Cambodia Time)`);
-      return;
-    }
-
-    // 2. Fallback interval check (if elapsed exceeds autoBackupHours)
-    const hours = Math.max(1, config.autoBackupHours || 24);
-    const intervalMs = hours * 60 * 60 * 1000;
-    const lastTime = config.lastBackupAt ? new Date(config.lastBackupAt).getTime() : 0;
-    const now = Date.now();
-
-    if (now - lastTime >= intervalMs) {
-      console.log(`[Telegram] Triggering interval auto-backup (every ${hours}h)...`);
-      await sendBackup(`Auto Backup Interval (${hours}h)`);
-    }
-  }, 30 * 1000);
-
-  console.log('[Telegram] Auto-backup scheduler initialized (Daily 9:00 PM / 21:00 Cambodia Time).');
+  intervalTimer = null;
 }
 
 module.exports = {

@@ -69,7 +69,16 @@
 
       errBox.classList.add('hidden');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>កំពុងផ្ទៀងផ្ទាត់... (Signing in...)</span>`;
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+      submitBtn.innerHTML = `
+        <span class="inline-flex items-center justify-center gap-2">
+          <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>កំពុងផ្ទៀងផ្ទាត់... (Signing in...)</span>
+        </span>
+      `;
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -88,12 +97,14 @@
           }
         } else {
           submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
           submitBtn.innerHTML = origText;
           errBox.textContent = data.error || 'ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវឡើយ';
           errBox.classList.remove('hidden');
         }
       } catch (err) {
         submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
         submitBtn.innerHTML = origText;
         errBox.textContent = 'បញ្ហាបណ្តាញក្នុងការតភ្ជាប់ (Network connection error)';
         errBox.classList.remove('hidden');

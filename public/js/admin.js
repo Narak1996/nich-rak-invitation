@@ -53,6 +53,37 @@ function slugify(text) {
     .replace(/^-+|-+$/g, '');
 }
 
+// Reusable helper to show loading spinner on buttons and disable them during async action
+function setButtonLoading(btn, isLoading, loadingText = 'កំពុងរក្សាទុក... (Saving...)') {
+  if (!btn) return;
+  if (isLoading) {
+    if (!btn._origHtml) {
+      btn._origHtml = btn.innerHTML;
+    }
+    btn.disabled = true;
+    btn.setAttribute('disabled', 'disabled');
+    btn.classList.add('opacity-70', 'cursor-not-allowed', 'pointer-events-none');
+    btn.innerHTML = `
+      <span class="inline-flex items-center justify-center gap-2">
+        <svg class="animate-spin h-4 w-4 text-current shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>${loadingText}</span>
+      </span>
+    `;
+  } else {
+    btn.disabled = false;
+    btn.removeAttribute('disabled');
+    btn.classList.remove('opacity-70', 'cursor-not-allowed', 'pointer-events-none', 'bg-emerald-600');
+    if (btn._origHtml) {
+      btn.innerHTML = btn._origHtml;
+      btn._origHtml = null;
+    }
+  }
+}
+window.setButtonLoading = setButtonLoading;
+
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('admin_token');
   const authHeaders = token ? { 'Authorization': 'Bearer ' + token } : {};
@@ -86,8 +117,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSidebarEvents();
   initTabs();
   initModals();
-  await loadAllData();
   initFormListeners();
+  await loadAllData();
 });
 
 // Load all initial data
@@ -375,7 +406,6 @@ window.reconnectDB = async function() {
     showToast('កំហុសពេលភ្ជាប់ DB៖ ' + err.message);
   } finally {
     if (spin) spin.classList.remove('animate-spin');
-    if (gSpin) gSpin.classList.remove('animate-spin');
   }
 };
 
@@ -539,114 +569,216 @@ async function loadWeddingData() {
 
 // Load guests
 async function loadGuests() {
+  const tbody = document.getElementById('guests-table-body');
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="p-8 text-center text-[#7A6F68]">
+          <div class="inline-flex items-center justify-center gap-2.5">
+            <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs font-medium">កំពុងផ្ទុកទិន្នន័យភ្ញៀវ... (Loading guests...)</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+  const dashGuests = document.getElementById('dash-recent-guests');
+  if (dashGuests && (!guestList || guestList.length === 0)) {
+    dashGuests.innerHTML = `
+      <div class="p-6 text-center text-[#7A6F68] flex items-center justify-center gap-2">
+        <svg class="animate-spin h-4 w-4 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-xs font-medium">កំពុងផ្ទុក... (Loading...)</span>
+      </div>
+    `;
+  }
   try {
-    const res = await fetch('/api/guests');
-    if (!res.ok) return;
-    guestList = await res.json();
+    const token = localStorage.getItem('admin_token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch('/api/guests', { headers });
+    if (!res.ok) {
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-6 text-center text-rose-500 text-xs">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <span>បរាជ័យក្នុងការទាញយកទិន្នន័យភ្ញៀវ (Failed to load guests)</span>
+                <button type="button" onclick="loadGuests()" class="px-3 py-1 bg-white border border-rose-200 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-50 transition cursor-pointer">
+                  🔄 ព្យាយាមម្តងទៀត (Retry)
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      return;
+    }
+    const data = await res.json();
+    guestList = Array.isArray(data) ? data : [];
     renderGuestsTable();
     renderDashboardRecentGuests();
   } catch (err) {
     console.error('Failed to load guests:', err);
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="p-6 text-center text-rose-500 text-xs">
+            <div class="flex flex-col items-center justify-center gap-2">
+              <span>បរាជ័យក្នុងការទាញយកទិន្នន័យភ្ញៀវ (Failed to load guests)</span>
+              <button type="button" onclick="loadGuests()" class="px-3 py-1 bg-white border border-rose-200 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-50 transition cursor-pointer">
+                🔄 ព្យាយាមម្តងទៀត (Retry)
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
   }
 }
+window.loadGuests = loadGuests;
 
 // Render guests table
 function renderGuestsTable() {
   const tbody = document.getElementById('guests-table-body');
-  tbody.innerHTML = '';
+  if (!tbody) return;
 
-  const search = document.getElementById('guest-search').value.toLowerCase().trim();
-  const filterStatus = document.getElementById('guest-filter-status').value;
-  const filterSide = document.getElementById('guest-filter-side').value;
+  try {
+    if (!Array.isArray(guestList)) {
+      guestList = [];
+    }
 
-  const filtered = guestList.filter(g => {
-    if (search && !((g.name && g.name.toLowerCase().includes(search)) || (g.name_en && g.name_en.toLowerCase().includes(search)))) return false;
-    if (filterStatus && g.status !== filterStatus) return false;
-    if (filterSide && g.side !== filterSide) return false;
-    return true;
-  });
+    const searchEl = document.getElementById('guest-search');
+    const search = searchEl ? searchEl.value.toLowerCase().trim() : '';
+    const filterStatusEl = document.getElementById('guest-filter-status');
+    const filterStatus = filterStatusEl ? filterStatusEl.value : '';
+    const filterSideEl = document.getElementById('guest-filter-side');
+    const filterSide = filterSideEl ? filterSideEl.value : '';
 
-  if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-[#7A6F68]">មិនមានទិន្នន័យភ្ញៀវត្រូវតាមការស្វែងរកឡើយ</td></tr>`;
-    return;
-  }
+    const filtered = guestList.filter(g => {
+      if (!g) return false;
+      if (search && !((g.name && g.name.toLowerCase().includes(search)) || (g.name_en && g.name_en.toLowerCase().includes(search)))) return false;
+      if (filterStatus && g.status !== filterStatus) return false;
+      if (filterSide && g.side !== filterSide) return false;
+      return true;
+    });
 
-  filtered.forEach(g => {
-    // Generate personalized friendly short invitation URL
-    const shortKey = (g.slug && !g.slug.startsWith('guest-')) ? g.slug : (g.id || encodeURIComponent(g.name));
-    const guestUrl = `${window.location.origin}/to/${shortKey}`;
-    const statusBadges = {
-      'confirmed': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-800">✓ ចូលរួម (Confirmed)</span>',
-      'declined': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-800">✕ មិនចូលរួម (Declined)</span>',
-      'pending': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">⏳ រង់ចាំ (Pending)</span>'
-    };
+    tbody.innerHTML = '';
 
-    // Pre-composed invitation text in Khmer
-    // Telegram share API already attaches ?url=, so we do NOT duplicate the URL inside &text=
-    const tgText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ ឡេង ចាន់ណារៈ & នាត ស្រីនិច។\n\n💌 សូមចុចតំណភ្ជាប់ខាងលើដើម្បីបើកសំបុត្រអញ្ជើញ`);
-    const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(guestUrl)}&text=${tgText}`;
-    
-    // WhatsApp does not have a separate url parameter, so include link at bottom
-    const waText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${g.name} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ ឡេង ចាន់ណារៈ & នាត ស្រីនិច។\n\n💌 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញ៖\n${guestUrl}`);
-    const waUrl = `https://api.whatsapp.com/send?text=${waText}`;
+    if (filtered.length === 0) {
+      if (guestList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-8 text-center text-[#7A6F68]">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <span class="text-sm font-medium">មិនទាន់មានទិន្នន័យភ្ញៀវនៅឡើយទេ</span>
+                <span class="text-xs text-[#7A6F68]/80">សូមចុចប៊ូតុង "+ បន្ថែមភ្ញៀវ" ឬ "📋 បញ្ចូលជាក្រុម" ដើម្បីបន្ថែម</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-[#7A6F68]">មិនមានទិន្នន័យភ្ញៀវត្រូវតាមការស្វែងរកឡើយ</td></tr>';
+      }
+      return;
+    }
 
-    const tr = document.createElement('tr');
-    tr.className = 'hover:bg-gray-50/80 transition';
-    tr.innerHTML = `
-      <td class="p-3">
-        <span class="font-bold text-[#4E3227] text-xs block">${escapeHTML(g.name)}</span>
-        <span class="text-[11px] text-[#7A6F68] block">${escapeHTML(g.name_en || '')}</span>
-        <a href="${guestUrl}" target="_blank" class="text-[10px] text-[#C5A059] hover:underline font-mono inline-flex items-center gap-1 mt-0.5" title="ចុចដើម្បីបើកតំណភ្ជាប់">
-          <span>🔗 /to/${escapeHTML(shortKey)}</span>
-        </a>
-      </td>
-      <td class="p-3">
-        <span class="px-2 py-0.5 rounded-md text-[11px] ${g.side === 'groom' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'} font-medium">
-          ${g.side === 'groom' ? 'ខាងប្រុស' : 'ខាងស្រី'}
-        </span>
-      </td>
-      <td class="p-3">
-        <span class="text-xs text-[#7A6F68]">${escapeHTML(g.category || 'General')}</span>
-      </td>
-      <td class="p-3">
-        <span class="text-xs font-bold text-[#4E3227]">${g.attendees || 0} / ${g.pax_allowed || 1}</span>
-      </td>
-      <td class="p-3">
-        ${statusBadges[g.status] || statusBadges['pending']}
-      </td>
-      <td class="p-3 text-center">
-        <div class="flex items-center justify-center gap-1.5">
-          <!-- Copy link -->
-          <button onclick="copyToClipboard('${guestUrl}')" class="p-1.5 rounded-lg bg-gray-100 hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC]" title="Copy Invitation Link">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          </button>
-          <!-- Telegram -->
-          <a href="${tgUrl}" target="_blank" class="p-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 border border-sky-200" title="Share via Telegram">
-            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+    filtered.forEach(g => {
+      // Generate personalized friendly short invitation URL
+      const shortKey = (g.slug && !g.slug.startsWith('guest-')) ? g.slug : (g.id || encodeURIComponent(g.name || 'guest'));
+      const guestUrl = `${window.location.origin}/to/${shortKey}`;
+      const statusBadges = {
+        'confirmed': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-green-100 text-green-800">✓ ចូលរួម (Confirmed)</span>',
+        'declined': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-800">✕ មិនចូលរួម (Declined)</span>',
+        'pending': '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">⏳ រង់ចាំ (Pending)</span>'
+      };
+
+      const guestNameText = g.name || 'ភ្ញៀវកិត្តិយស';
+      const tgText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${guestNameText} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ ឡេង ចាន់ណារៈ & នាត ស្រីនិច។\n\n💌 សូមចុចតំណភ្ជាប់ខាងលើដើម្បីបើកសំបុត្រអញ្ជើញ`);
+      const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(guestUrl)}&text=${tgText}`;
+      const waText = encodeURIComponent(`សូមគោរពអញ្ជើញ ${guestNameText} ចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយស ក្នុងពិធីមង្គលការរបស់យើងខ្ញុំ ឡេង ចាន់ណារៈ & នាត ស្រីនិច។\n\n💌 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកសំបុត្រអញ្ជើញ៖\n${guestUrl}`);
+      const waUrl = `https://api.whatsapp.com/send?text=${waText}`;
+
+      const safeGuestName = escapeHTML(guestNameText).replace(/'/g, "\\'");
+      const safeGuestUrl = guestUrl.replace(/'/g, "\\'");
+      const safeId = String(g.id || '').replace(/'/g, "\\'");
+
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-gray-50/80 transition';
+      tr.innerHTML = `
+        <td class="p-3">
+          <span class="font-bold text-[#4E3227] text-xs block">${escapeHTML(guestNameText)}</span>
+          <span class="text-[11px] text-[#7A6F68] block">${escapeHTML(g.name_en || '')}</span>
+          <a href="${guestUrl}" target="_blank" class="text-[10px] text-[#C5A059] hover:underline font-mono inline-flex items-center gap-1 mt-0.5" title="ចុចដើម្បីបើកតំណភ្ជាប់">
+            <span>🔗 /to/${escapeHTML(shortKey)}</span>
           </a>
-          <!-- WhatsApp -->
-          <a href="${waUrl}" target="_blank" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200" title="Share via WhatsApp">
-            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-          </a>
-          <!-- Print QR -->
-          <button onclick="openGuestQR('${guestUrl}', '${escapeHTML(g.name)}')" class="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200" title="Print QR Code">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-          </button>
-        </div>
-      </td>
-      <td class="p-3 text-right">
-        <div class="flex items-center justify-end gap-1">
-          <button onclick="editGuest('${g.id}')" class="p-1 text-gray-400 hover:text-[#4E3227]" title="Edit">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-          </button>
-          <button onclick="deleteGuest('${g.id}')" class="p-1 text-gray-400 hover:text-red-600" title="Delete">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-          </button>
-        </div>
-      </td>
+        </td>
+        <td class="p-3">
+          <span class="px-2 py-0.5 rounded-md text-[11px] ${g.side === 'groom' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'} font-medium">
+            ${g.side === 'groom' ? 'ខាងប្រុស' : 'ខាងស្រី'}
+          </span>
+        </td>
+        <td class="p-3">
+          <span class="text-xs text-[#7A6F68]">${escapeHTML(g.category || 'General')}</span>
+        </td>
+        <td class="p-3">
+          <span class="text-xs font-bold text-[#4E3227]">${g.attendees || 0} / ${g.pax_allowed || 1}</span>
+        </td>
+        <td class="p-3">
+          ${statusBadges[g.status] || statusBadges['pending']}
+        </td>
+        <td class="p-3 text-center">
+          <div class="flex items-center justify-center gap-1.5">
+            <!-- Copy link -->
+            <button onclick="copyToClipboard('${safeGuestUrl}')" class="p-1.5 rounded-lg bg-gray-100 hover:bg-[#FAF7F2] text-[#4E3227] border border-[#E5D5BC] cursor-pointer" title="Copy Invitation Link">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </button>
+            <!-- Telegram -->
+            <a href="${tgUrl}" target="_blank" class="p-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 border border-sky-200 cursor-pointer" title="Share via Telegram">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+            </a>
+            <!-- WhatsApp -->
+            <a href="${waUrl}" target="_blank" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 cursor-pointer" title="Share via WhatsApp">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+            </a>
+            <!-- Print QR -->
+            <button onclick="openGuestQR('${safeGuestUrl}', '${safeGuestName}')" class="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 cursor-pointer" title="Print QR Code">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+            </button>
+          </div>
+        </td>
+        <td class="p-3 text-right">
+          <div class="flex items-center justify-end gap-1">
+            <button onclick="editGuest('${safeId}')" class="p-1 text-gray-400 hover:text-[#4E3227] cursor-pointer" title="Edit">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </button>
+            <button onclick="deleteGuest('${safeId}')" class="p-1 text-gray-400 hover:text-red-600 cursor-pointer" title="Delete">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('Error rendering guests table:', err);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="p-6 text-center text-rose-500 text-xs">
+          <div class="flex flex-col items-center justify-center gap-2">
+            <span>មានបញ្ហាក្នុងការបង្ហាញទិន្នន័យភ្ញៀវ</span>
+            <button type="button" onclick="loadGuests()" class="px-3 py-1 bg-white border border-rose-200 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-50 transition cursor-pointer">
+              🔄 ព្យាយាមផ្ទុកឡើងវិញ
+            </button>
+          </div>
+        </td>
+      </tr>
     `;
-    tbody.appendChild(tr);
-  });
+  }
 }
 
 // Open Add Agenda Modal
@@ -949,11 +1081,41 @@ function renderAdminGallery() {
 
 // Load wishes in admin
 async function loadWishes() {
+  const container = document.getElementById('admin-wishes-list');
+  if (container) {
+    container.innerHTML = `
+      <div class="p-8 text-center text-[#7A6F68] flex items-center justify-center gap-2.5">
+        <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-xs font-medium">កំពុងផ្ទុកពាក្យជូនពរ... (Loading wishes...)</span>
+      </div>
+    `;
+  }
+  const dashWishes = document.getElementById('dash-recent-wishes');
+  if (dashWishes && (!wishesList || wishesList.length === 0)) {
+    dashWishes.innerHTML = `
+      <div class="p-6 text-center text-[#7A6F68] flex items-center justify-center gap-2">
+        <svg class="animate-spin h-4 w-4 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-xs font-medium">កំពុងផ្ទុក... (Loading...)</span>
+      </div>
+    `;
+  }
   try {
     const res = await fetch('/api/wishes');
+    if (!res.ok) {
+      if (container) {
+        container.innerHTML = '<p class="p-6 text-center text-xs text-rose-500">បរាជ័យក្នុងការទាញយកពាក្យជូនពរ (Failed to load wishes)</p>';
+      }
+      return;
+    }
     wishesList = await res.json();
     renderDashboardRecentWishes();
-    const container = document.getElementById('admin-wishes-list');
+    if (!container) return;
     container.innerHTML = '';
 
     if (wishesList.length === 0) {
@@ -972,7 +1134,7 @@ async function loadWishes() {
           </div>
           <p class="text-xs text-[#2C2420]">${escapeHTML(w.message)}</p>
         </div>
-        <button onclick="deleteWish('${w.id}')" class="text-gray-400 hover:text-red-600 p-1" title="Delete">
+        <button onclick="deleteWish('${w.id}')" class="text-gray-400 hover:text-red-600 p-1 cursor-pointer" title="Delete">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
         </button>
       `;
@@ -980,6 +1142,9 @@ async function loadWishes() {
     });
   } catch (err) {
     console.error('Failed to load wishes:', err);
+    if (container) {
+      container.innerHTML = '<p class="p-6 text-center text-xs text-rose-500">បរាជ័យក្នុងការទាញយកពាក្យជូនពរ</p>';
+    }
   }
 }
 
@@ -995,104 +1160,156 @@ function renderCurrentUserInfo() {
 }
 
 async function loadUsers() {
+  const tbody = document.getElementById('users-table-body');
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="p-8 text-center text-[#7A6F68]">
+          <div class="inline-flex items-center justify-center gap-2.5">
+            <svg class="animate-spin h-5 w-5 text-[#C5A059]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs font-medium">កំពុងផ្ទុកបញ្ជីអ្នកប្រើប្រាស់... (Loading users...)</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
   try {
-    const res = await fetch('/api/users');
+    const token = localStorage.getItem('admin_token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch('/api/users', { headers });
     if (!res.ok) {
       if (res.status === 403) {
         renderUsers([], false);
+      } else if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="p-6 text-center text-rose-500 text-xs">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <span>បរាជ័យក្នុងការទាញយកអ្នកប្រើប្រាស់</span>
+                <button type="button" onclick="loadUsers()" class="px-3 py-1 bg-white border border-rose-200 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-50 transition cursor-pointer">
+                  🔄 ព្យាយាមម្តងទៀត
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
       }
       return;
     }
-    usersList = await res.json();
+    const data = await res.json();
+    usersList = Array.isArray(data) ? data : [];
     renderUsers(usersList, true);
   } catch (err) {
     console.error('Failed to load users:', err);
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="p-6 text-center text-rose-500 text-xs">
+            <div class="flex flex-col items-center justify-center gap-2">
+              <span>បរាជ័យក្នុងការទាញយកអ្នកប្រើប្រាស់</span>
+              <button type="button" onclick="loadUsers()" class="px-3 py-1 bg-white border border-rose-200 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-50 transition cursor-pointer">
+                🔄 ព្យាយាមម្តងទៀត
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
   }
 }
+window.loadUsers = loadUsers;
 
 function renderUsers(users, isSuperAdmin) {
   const tbody = document.getElementById('users-table-body');
   if (!tbody) return;
   tbody.innerHTML = '';
 
-  if (!isSuperAdmin) {
-    if (currentUser) {
+  try {
+    if (!isSuperAdmin) {
+      if (currentUser) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-3">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs">${escapeHTML((currentUser.displayName || 'A').charAt(0).toUpperCase())}</span>
+              <div>
+                <span class="font-bold text-[#4E3227] block">${escapeHTML(currentUser.displayName || currentUser.username)}</span>
+                <span class="text-[11px] text-[#7A6F68]">@${escapeHTML(currentUser.username)}</span>
+              </div>
+            </div>
+          </td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800 uppercase">${escapeHTML(currentUser.role)}</span>
+          </td>
+          <td class="p-3 text-[#7A6F68]">-</td>
+          <td class="p-3 text-[#7A6F68]">បច្ចុប្បន្ន (Active Now)</td>
+          <td class="p-3 text-right">
+            <button onclick="openChangePasswordModal('${currentUser.id}', true)" class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition cursor-pointer">
+              🔑 ប្តូរពាក្យសម្ងាត់
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+      return;
+    }
+
+    if (!Array.isArray(users) || users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-400">មិនមានទិន្នន័យអ្នកប្រើប្រាស់</td></tr>';
+      return;
+    }
+
+    users.forEach(u => {
+      const isMe = currentUser && currentUser.id === u.id;
+      const roleBadge = u.role === 'superadmin' 
+        ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800">👑 Super Admin</span>'
+        : '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800">✏️ Editor</span>';
+
+      const createdStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('km-KH', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+      const lastLoginStr = u.lastLogin ? new Date(u.lastLogin).toLocaleString('km-KH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'មិនទាន់ចូល (Never)';
+
       const tr = document.createElement('tr');
+      tr.className = 'hover:bg-gray-50/80 transition';
       tr.innerHTML = `
         <td class="p-3">
           <div class="flex items-center gap-2">
-            <span class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs">${escapeHTML((currentUser.displayName || 'A').charAt(0).toUpperCase())}</span>
+            <div class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              ${escapeHTML((u.displayName || u.username || 'A').charAt(0).toUpperCase())}
+            </div>
             <div>
-              <span class="font-bold text-[#4E3227] block">${escapeHTML(currentUser.displayName || currentUser.username)}</span>
-              <span class="text-[11px] text-[#7A6F68]">@${escapeHTML(currentUser.username)}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-[#4E3227]">${escapeHTML(u.displayName || u.username)}</span>
+                ${isMe ? '<span class="px-1.5 py-0.2 rounded text-[10px] bg-green-100 text-green-700 font-bold">You</span>' : ''}
+              </div>
+              <span class="text-[11px] text-[#7A6F68]">@${escapeHTML(u.username)}</span>
             </div>
           </div>
         </td>
-        <td class="p-3">
-          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800 uppercase">${escapeHTML(currentUser.role)}</span>
-        </td>
-        <td class="p-3 text-[#7A6F68]">-</td>
-        <td class="p-3 text-[#7A6F68]">បច្ចុប្បន្ន (Active Now)</td>
+        <td class="p-3">${roleBadge}</td>
+        <td class="p-3 text-[#7A6F68]">${createdStr}</td>
+        <td class="p-3 text-[#7A6F68]">${lastLoginStr}</td>
         <td class="p-3 text-right">
-          <button onclick="openChangePasswordModal('${currentUser.id}', true)" class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition">
-            🔑 ប្តូរពាក្យសម្ងាត់
-          </button>
+          <div class="flex items-center justify-end gap-1.5">
+            <button onclick="openChangePasswordModal('${u.id}', ${isMe})" class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition cursor-pointer" title="ប្តូរពាក្យសម្ងាត់">
+              🔑 ប្តូរពាក្យសម្ងាត់
+            </button>
+            ${!isMe ? `
+              <button onclick="deleteUser('${u.id}', '${escapeHTML(u.username)}')" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition cursor-pointer" title="លុបគណនី">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            ` : ''}
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
-    }
-    return;
+    });
+  } catch (err) {
+    console.error('Error rendering users:', err);
+    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-rose-500">មានបញ្ហាក្នុងការបង្ហាញអ្នកប្រើប្រាស់</td></tr>';
   }
-
-  if (!users || users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-400">មិនមានទិន្នន័យអ្នកប្រើប្រាស់</td></tr>';
-    return;
-  }
-
-  users.forEach(u => {
-    const isMe = currentUser && currentUser.id === u.id;
-    const roleBadge = u.role === 'superadmin' 
-      ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800">👑 Super Admin</span>'
-      : '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800">✏️ Editor</span>';
-
-    const createdStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('km-KH', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
-    const lastLoginStr = u.lastLogin ? new Date(u.lastLogin).toLocaleString('km-KH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'មិនទាន់ចូល (Never)';
-
-    const tr = document.createElement('tr');
-    tr.className = 'hover:bg-gray-50/80 transition';
-    tr.innerHTML = `
-      <td class="p-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-[#4E3227] text-white flex items-center justify-center font-bold text-xs shadow-xs">
-            ${escapeHTML((u.displayName || u.username || 'A').charAt(0).toUpperCase())}
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span class="font-bold text-[#4E3227]">${escapeHTML(u.displayName || u.username)}</span>
-              ${isMe ? '<span class="px-1.5 py-0.2 rounded text-[10px] bg-green-100 text-green-700 font-bold">You</span>' : ''}
-            </div>
-            <span class="text-[11px] text-[#7A6F68]">@${escapeHTML(u.username)}</span>
-          </div>
-        </div>
-      </td>
-      <td class="p-3">${roleBadge}</td>
-      <td class="p-3 text-[#7A6F68]">${createdStr}</td>
-      <td class="p-3 text-[#7A6F68]">${lastLoginStr}</td>
-      <td class="p-3 text-right">
-        <div class="flex items-center justify-end gap-1.5">
-          <button onclick="openChangePasswordModal('${u.id}', ${isMe})" class="px-2.5 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition" title="ប្តូរពាក្យសម្ងាត់">
-            🔑 ប្តូរពាក្យសម្ងាត់
-          </button>
-          ${!isMe ? `
-            <button onclick="deleteUser('${u.id}', '${escapeHTML(u.username)}')" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition" title="លុបគណនី">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          ` : ''}
-        </div>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
 }
 
 // Form listeners
@@ -1132,131 +1349,116 @@ function initFormListeners() {
   document.getElementById('wedding-settings-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('button[type="submit"]');
-    const origText = submitBtn ? submitBtn.innerHTML : '';
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `
-        <span class="inline-flex items-center gap-2">
-          <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          កំពុងរក្សាទុក... (Saving...)
-        </span>
-      `;
-    }
-
-    const selThemeId = document.getElementById('selected-theme-id').value || 'khmer-traditional';
-    const themeObj = THEME_PRESETS[selThemeId] || THEME_PRESETS['khmer-traditional'];
-    const updated = {
-      ...weddingData,
-      theme: {
-        ...themeObj
-      },
-      wedding: {
-        ...weddingData.wedding,
-        groom: {
-          ...weddingData.wedding.groom,
-          name_kh: document.getElementById('groom-name-kh').value.trim(),
-          name_en: document.getElementById('groom-name-en').value.trim(),
-          father_kh: document.getElementById('groom-father-kh').value.trim(),
-          mother_kh: document.getElementById('groom-mother-kh').value.trim(),
-          photo: document.getElementById('groom-photo').value.trim()
-        },
-        bride: {
-          ...weddingData.wedding.bride,
-          name_kh: document.getElementById('bride-name-kh').value.trim(),
-          name_en: document.getElementById('bride-name-en').value.trim(),
-          father_kh: document.getElementById('bride-father-kh').value.trim(),
-          mother_kh: document.getElementById('bride-mother-kh').value.trim(),
-          photo: document.getElementById('bride-photo').value.trim()
-        },
-        couple_photo: document.getElementById('couple-photo-url').value.trim(),
-        quote_kh: document.getElementById('quote-kh').value.trim(),
-        quote_en: document.getElementById('quote-en').value.trim(),
-        event_date: document.getElementById('event-datetime').value,
-        date_solar_kh: document.getElementById('date-solar-kh').value.trim(),
-        date_lunar_kh: document.getElementById('date-lunar-kh').value.trim(),
-        venue_name_kh: document.getElementById('venue-name-kh').value.trim(),
-        venue_address_kh: document.getElementById('venue-address-kh').value.trim(),
-        map_url: document.getElementById('map-url').value.trim(),
-        map_embed: document.getElementById('map-embed-url').value.trim(),
-        music_url: document.getElementById('music-url').value.trim(),
-        video_embed: formatYouTubeEmbedUrl(document.getElementById('video-url').value.trim())
-      }
-    };
+    setButtonLoading(submitBtn, true, 'កំពុងរក្សាទុក... (Saving...)');
 
     try {
+      const selThemeId = document.getElementById('selected-theme-id').value || 'khmer-traditional';
+      const themeObj = THEME_PRESETS[selThemeId] || THEME_PRESETS['khmer-traditional'];
+      const updated = {
+        ...weddingData,
+        theme: {
+          ...themeObj
+        },
+        wedding: {
+          ...weddingData.wedding,
+          groom: {
+            ...weddingData.wedding.groom,
+            name_kh: document.getElementById('groom-name-kh').value.trim(),
+            name_en: document.getElementById('groom-name-en').value.trim(),
+            father_kh: document.getElementById('groom-father-kh').value.trim(),
+            mother_kh: document.getElementById('groom-mother-kh').value.trim(),
+            photo: document.getElementById('groom-photo').value.trim()
+          },
+          bride: {
+            ...weddingData.wedding.bride,
+            name_kh: document.getElementById('bride-name-kh').value.trim(),
+            name_en: document.getElementById('bride-name-en').value.trim(),
+            father_kh: document.getElementById('bride-father-kh').value.trim(),
+            mother_kh: document.getElementById('bride-mother-kh').value.trim(),
+            photo: document.getElementById('bride-photo').value.trim()
+          },
+          couple_photo: document.getElementById('couple-photo-url').value.trim(),
+          quote_kh: document.getElementById('quote-kh').value.trim(),
+          quote_en: document.getElementById('quote-en').value.trim(),
+          event_date: document.getElementById('event-datetime').value,
+          date_solar_kh: document.getElementById('date-solar-kh').value.trim(),
+          date_lunar_kh: document.getElementById('date-lunar-kh').value.trim(),
+          venue_name_kh: document.getElementById('venue-name-kh').value.trim(),
+          venue_address_kh: document.getElementById('venue-address-kh').value.trim(),
+          map_url: document.getElementById('map-url').value.trim(),
+          map_embed: document.getElementById('map-embed-url').value.trim(),
+          music_url: document.getElementById('music-url').value.trim(),
+          video_embed: formatYouTubeEmbedUrl(document.getElementById('video-url').value.trim())
+        }
+      };
+
       const res = await fetch('/api/wedding', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
       });
       if (res.ok) {
-        if (submitBtn) {
-          submitBtn.innerHTML = `<span>✓ បានរក្សាទុកជោគជ័យ! (Saved Successfully)</span>`;
-          submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
-          submitBtn.classList.add('bg-emerald-600', 'text-white');
-          setTimeout(() => {
-            submitBtn.innerHTML = origText;
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('bg-emerald-600');
-            submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
-          }, 3000);
-        }
         showToast('✓ បានរក្សាទុកព័ត៌មានមង្គលការដោយជោគជ័យ!');
         await loadWeddingData();
       } else {
         const err = await res.json().catch(() => ({}));
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = origText;
-        }
         showToast(`⚠️ បរាជ័យក្នុងការរក្សាទុក៖ ${err.error || res.statusText || 'Error saving'}`);
       }
     } catch (err) {
       console.error('Save error:', err);
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = origText;
-      }
       showToast(`⚠️ បញ្ហាបណ្តាញក្នុងការរក្សាទុក (Network Error): ${err.message}`);
+    } finally {
+      setButtonLoading(submitBtn, false);
     }
   });
 
   // Digital Gift settings save
   document.getElementById('digital-gift-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const dg = {
-      ...weddingData.digital_gift,
-      groom_account: {
-        bank_name: document.getElementById('dg-groom-bank').value.trim(),
-        account_name: document.getElementById('dg-groom-name').value.trim(),
-        account_number: document.getElementById('dg-groom-acc').value.trim(),
-        qr_image: document.getElementById('dg-groom-qr').value.trim()
-      },
-      bride_account: {
-        bank_name: document.getElementById('dg-bride-bank').value.trim(),
-        account_name: document.getElementById('dg-bride-name').value.trim(),
-        account_number: document.getElementById('dg-bride-acc').value.trim(),
-        qr_image: document.getElementById('dg-bride-qr').value.trim()
-      }
-    };
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    setButtonLoading(submitBtn, true, 'កំពុងរក្សាទុក... (Saving...)');
 
-    const res = await fetch('/api/wedding', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...weddingData, digital_gift: dg })
-    });
-    if (res.ok) {
-      showToast('បានរក្សាទុកព័ត៌មានចងដៃ KHQR ជោគជ័យ!');
-      loadWeddingData();
+    try {
+      const dg = {
+        ...weddingData.digital_gift,
+        groom_account: {
+          bank_name: document.getElementById('dg-groom-bank').value.trim(),
+          account_name: document.getElementById('dg-groom-name').value.trim(),
+          account_number: document.getElementById('dg-groom-acc').value.trim(),
+          qr_image: document.getElementById('dg-groom-qr').value.trim()
+        },
+        bride_account: {
+          bank_name: document.getElementById('dg-bride-bank').value.trim(),
+          account_name: document.getElementById('dg-bride-name').value.trim(),
+          account_number: document.getElementById('dg-bride-acc').value.trim(),
+          qr_image: document.getElementById('dg-bride-qr').value.trim()
+        }
+      };
+
+      const res = await fetch('/api/wedding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...weddingData, digital_gift: dg })
+      });
+      if (res.ok) {
+        showToast('បានរក្សាទុកព័ត៌មានចងដៃ KHQR ជោគជ័យ!');
+        await loadWeddingData();
+      } else {
+        showToast('បរាជ័យក្នុងការរក្សាទុក');
+      }
+    } catch (err) {
+      console.error('Save digital gift error:', err);
+      showToast('មានបញ្ហាក្នុងការរក្សាទុក');
+    } finally {
+      setButtonLoading(submitBtn, false);
     }
   });
 
   // Save guest modal
   document.getElementById('form-save-guest').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const submitBtn = document.getElementById('btn-modal-save-guest') || (e.target && e.target.querySelector('button[type="submit"]'));
+    setButtonLoading(submitBtn, true, 'កំពុងរក្សាទុក... (Saving...)');
     const id = document.getElementById('modal-guest-id').value;
     const payload = {
       name: document.getElementById('modal-guest-name').value.trim(),
@@ -1268,30 +1470,79 @@ function initFormListeners() {
       pax_allowed: document.getElementById('modal-guest-pax').value
     };
 
-    let res;
-    if (id) {
-      res = await fetch(`/api/guests/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } else {
-      res = await fetch('/api/guests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    }
+    try {
+      const token = localStorage.getItem('admin_token');
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      };
 
-    if (res.ok) {
-      showToast('បានរក្សាទុកភ្ញៀវជោគជ័យ!');
-      closeModals();
-      loadGuests();
-      loadStats();
-    } else {
-      const errData = await res.json().catch(() => ({}));
-      showToast('បរាជ័យ៖ ' + (errData.error || 'Failed to save guest'));
-      alert('❌ មិនអាចរក្សាទុកភ្ញៀវបានឡើយ៖\n\n' + (errData.error || 'Server error'));
+      const minLoadingWait = new Promise(r => setTimeout(r, 450));
+      let resPromise;
+      if (id) {
+        resPromise = fetch(`/api/guests/${id}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify(payload)
+        });
+      } else {
+        resPromise = fetch('/api/guests', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload)
+        });
+      }
+      const [res] = await Promise.all([resPromise, minLoadingWait]);
+
+      if (res.ok) {
+        const savedData = await res.json().catch(() => ({}));
+        if (submitBtn) {
+          submitBtn.innerHTML = `
+            <span class="inline-flex items-center justify-center gap-2">
+              <span>✓ បានរក្សាទុកជោគជ័យ!</span>
+            </span>
+          `;
+          submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+          submitBtn.classList.add('bg-emerald-600', 'text-white');
+        }
+        showToast('បានរក្សាទុកភ្ញៀវជោគជ័យ!');
+        
+        // Immediately update in-memory guestList and re-render table
+        if (savedData && savedData.guest) {
+          if (!Array.isArray(guestList)) guestList = [];
+          if (id) {
+            const idx = guestList.findIndex(x => String(x.id) === String(id));
+            if (idx !== -1) {
+              guestList[idx] = savedData.guest;
+            } else {
+              guestList.push(savedData.guest);
+            }
+          } else {
+            guestList.unshift(savedData.guest);
+          }
+          renderGuestsTable();
+        }
+
+        loadGuests().catch(console.warn);
+        loadStats().catch(console.warn);
+        setTimeout(() => {
+          closeModals();
+          setButtonLoading(submitBtn, false);
+          if (submitBtn) {
+            submitBtn.classList.remove('bg-emerald-600');
+            submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+          }
+        }, 400);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        showToast('បរាជ័យ៖ ' + (errData.error || 'Failed to save guest'));
+        alert('❌ មិនអាចរក្សាទុកភ្ញៀវបានឡើយ៖\n\n' + (errData.error || 'Server error'));
+        setButtonLoading(submitBtn, false);
+      }
+    } catch (err) {
+      console.error('Save guest error:', err);
+      showToast('បរាជ័យក្នុងការតភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេ');
+      setButtonLoading(submitBtn, false);
     }
   });
 
@@ -1319,23 +1570,49 @@ function initFormListeners() {
   // Bulk import guests
   document.getElementById('form-bulk-import').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const submitBtn = document.getElementById('btn-modal-save-bulk') || (e.target && e.target.querySelector('button[type="submit"]'));
+    setButtonLoading(submitBtn, true, 'កំពុងបញ្ចូលភ្ញៀវ... (Importing...)');
     const names = document.getElementById('bulk-names').value;
     const side = document.getElementById('bulk-side').value;
     const category = document.getElementById('bulk-category').value;
     const pax_allowed = document.getElementById('bulk-pax').value;
 
-    const res = await fetch('/api/guests/bulk', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ names, side, category, pax_allowed })
-    });
+    try {
+      const minWait = new Promise(r => setTimeout(r, 450));
+      const resPromise = fetch('/api/guests/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ names, side, category, pax_allowed })
+      });
+      const [res] = await Promise.all([resPromise, minWait]);
 
-    if (res.ok) {
-      const d = await res.json();
-      showToast(`បានបញ្ចូលភ្ញៀវចំនួន ${d.count} នាក់ជោគជ័យ!`);
-      closeModals();
-      loadGuests();
-      loadStats();
+      if (res.ok) {
+        const d = await res.json();
+        if (submitBtn) {
+          submitBtn.innerHTML = `<span>✓ បានបញ្ចូល ${d.count} នាក់ជោគជ័យ!</span>`;
+          submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+          submitBtn.classList.add('bg-emerald-600', 'text-white');
+        }
+        showToast(`បានបញ្ចូលភ្ញៀវចំនួន ${d.count} នាក់ជោគជ័យ!`);
+        loadGuests().catch(console.warn);
+        loadStats().catch(console.warn);
+        setTimeout(() => {
+          closeModals();
+          setButtonLoading(submitBtn, false);
+          if (submitBtn) {
+            submitBtn.classList.remove('bg-emerald-600');
+            submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+          }
+        }, 400);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        showToast('បរាជ័យ៖ ' + (errData.error || 'Failed to import guests'));
+        setButtonLoading(submitBtn, false);
+      }
+    } catch (err) {
+      console.error('Error importing bulk guests:', err);
+      showToast('មានបញ្ហាបណ្តាញក្នុងការបញ្ចូលភ្ញៀវ');
+      setButtonLoading(submitBtn, false);
     }
   });
 
@@ -1372,6 +1649,8 @@ function initFormListeners() {
   if (formSaveAgenda) {
     formSaveAgenda.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = document.getElementById('btn-modal-save-agenda') || formSaveAgenda.querySelector('button[type="submit"]');
+      setButtonLoading(submitBtn, true, 'កំពុងរក្សាទុក... (Saving...)');
       const idx = parseInt(document.getElementById('modal-agenda-index').value, 10);
       const existingId = document.getElementById('modal-agenda-id').value;
 
@@ -1399,22 +1678,41 @@ function initFormListeners() {
       renderAdminAgenda();
 
       try {
-        const res = await fetch('/api/wedding', {
+        const minWait = new Promise(r => setTimeout(r, 450));
+        const resPromise = fetch('/api/wedding', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...weddingData, agenda: newAgenda })
         });
 
         if (res.ok) {
-          closeModals();
+          if (submitBtn) {
+            submitBtn.innerHTML = `
+              <span class="inline-flex items-center justify-center gap-2">
+                <span>✓ បានរក្សាទុកជោគជ័យ!</span>
+              </span>
+            `;
+            submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+            submitBtn.classList.add('bg-emerald-600', 'text-white');
+          }
           showToast(idx >= 0 ? 'បានកែប្រែកម្មវិធីជោគជ័យ!' : 'បានបន្ថែមកម្មវិធីជោគជ័យ!');
-          loadWeddingData();
+          await loadWeddingData();
+          setTimeout(() => {
+            closeModals();
+            setButtonLoading(submitBtn, false);
+            if (submitBtn) {
+              submitBtn.classList.remove('bg-emerald-600');
+              submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+            }
+          }, 400);
         } else {
           showToast('បរាជ័យក្នុងការរក្សាទុក');
+          setButtonLoading(submitBtn, false);
         }
       } catch (err) {
         console.error('Error saving agenda:', err);
         showToast('មានបញ្ហាក្នុងការរក្សាទុក');
+        setButtonLoading(submitBtn, false);
       }
     });
   }
@@ -1455,6 +1753,8 @@ function initFormListeners() {
   if (formAddUser) {
     formAddUser.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = document.getElementById('btn-modal-save-user') || formAddUser.querySelector('button[type="submit"]');
+      setButtonLoading(submitBtn, true, 'កំពុងបង្កើត... (Creating...)');
       const username = document.getElementById('modal-user-username').value.trim();
       const displayName = document.getElementById('modal-user-displayname').value.trim();
       const password = document.getElementById('modal-user-password').value;
@@ -1468,14 +1768,28 @@ function initFormListeners() {
         });
         const data = await res.json();
         if (res.ok) {
+          if (submitBtn) {
+            submitBtn.innerHTML = `<span>✓ បានបង្កើតជោគជ័យ!</span>`;
+            submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+            submitBtn.classList.add('bg-emerald-600', 'text-white');
+          }
           showToast('បានបង្កើតគណនី Admin ថ្មីជោគជ័យ!');
-          closeModals();
-          loadUsers();
+          await loadUsers();
+          setTimeout(() => {
+            closeModals();
+            setButtonLoading(submitBtn, false);
+            if (submitBtn) {
+              submitBtn.classList.remove('bg-emerald-600');
+              submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+            }
+          }, 400);
         } else {
           showToast(`⚠️ ${data.error || 'បរាជ័យក្នុងការបង្កើតគណនី'}`);
+          setButtonLoading(submitBtn, false);
         }
       } catch (err) {
         showToast('⚠️ បញ្ហាបណ្តាញក្នុងការតភ្ជាប់');
+        setButtonLoading(submitBtn, false);
       }
     });
   }
@@ -1485,6 +1799,7 @@ function initFormListeners() {
   if (formChangePwd) {
     formChangePwd.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = document.getElementById('btn-modal-save-pwd') || formChangePwd.querySelector('button[type="submit"]');
       const userId = document.getElementById('modal-pwd-user-id').value;
       const currentPassword = document.getElementById('modal-pwd-current') ? document.getElementById('modal-pwd-current').value : '';
       const newPassword = document.getElementById('modal-pwd-new').value;
@@ -1495,6 +1810,7 @@ function initFormListeners() {
         return;
       }
 
+      setButtonLoading(submitBtn, true, 'កំពុងប្តូរពាក្យសម្ងាត់... (Saving...)');
       try {
         const res = await fetch(`/api/users/${userId}/password`, {
           method: 'PUT',
@@ -1503,13 +1819,27 @@ function initFormListeners() {
         });
         const data = await res.json();
         if (res.ok) {
+          if (submitBtn) {
+            submitBtn.innerHTML = `<span>✓ បានប្តូរពាក្យសម្ងាត់!</span>`;
+            submitBtn.classList.remove('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+            submitBtn.classList.add('bg-emerald-600', 'text-white');
+          }
           showToast('✓ បានប្តូរពាក្យសម្ងាត់ដោយជោគជ័យ!');
-          closeModals();
+          setTimeout(() => {
+            closeModals();
+            setButtonLoading(submitBtn, false);
+            if (submitBtn) {
+              submitBtn.classList.remove('bg-emerald-600');
+              submitBtn.classList.add('bg-[#4E3227]', 'hover:bg-[#6E4939]');
+            }
+          }, 400);
         } else {
           showToast(`⚠️ ${data.error || 'បរាជ័យក្នុងការប្តូរពាក្យសម្ងាត់'}`);
+          setButtonLoading(submitBtn, false);
         }
       } catch (err) {
         showToast('⚠️ បញ្ហាបណ្តាញក្នុងការតភ្ជាប់');
+        setButtonLoading(submitBtn, false);
       }
     });
   }
@@ -1551,22 +1881,71 @@ window.deleteGalleryItem = async function(idx) {
   loadWeddingData();
 };
 
-window.editGuest = function(id) {
-  const g = guestList.find(x => x.id === id);
-  if (!g) return;
-  document.getElementById('modal-guest-id').value = g.id;
-  document.getElementById('modal-guest-name').value = g.name;
-  document.getElementById('modal-guest-name-en').value = g.name_en || '';
-  if (document.getElementById('modal-guest-slug')) {
-    document.getElementById('modal-guest-slug').value = g.slug || '';
+window.editGuest = async function(id) {
+  if (!id) return;
+
+  // Find guest in memory or fetch live from backend
+  let g = Array.isArray(guestList) ? guestList.find(x => String(x.id || '').trim() === String(id).trim()) : null;
+
+  if (!g) {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+      const res = await fetch(`/api/guests/${id}`, { headers });
+      if (res.ok) {
+        g = await res.json();
+      } else {
+        const allRes = await fetch('/api/guests', { headers });
+        if (allRes.ok) {
+          guestList = await allRes.json();
+          g = Array.isArray(guestList) ? guestList.find(x => String(x.id || '').trim() === String(id).trim()) : null;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to fetch guest for edit:', e);
+    }
   }
+
+  if (!g) {
+    showToast('⚠️ រកមិនឃើញទិន្នន័យភ្ញៀវនេះឡើយ (Guest not found)');
+    return;
+  }
+
+  const modal = document.getElementById('modal-add-guest');
+  if (!modal) return;
+
+  const saveBtn = document.getElementById('btn-modal-save-guest');
+  if (saveBtn) setButtonLoading(saveBtn, false);
+
+  const idEl = document.getElementById('modal-guest-id');
+  if (idEl) idEl.value = g.id || '';
+
+  const nameEl = document.getElementById('modal-guest-name');
+  if (nameEl) nameEl.value = g.name || '';
+
+  const nameEnEl = document.getElementById('modal-guest-name-en');
+  if (nameEnEl) nameEnEl.value = g.name_en || '';
+
+  const slugEl = document.getElementById('modal-guest-slug');
+  if (slugEl) slugEl.value = g.slug || '';
   isSlugManuallyEdited = Boolean(g.slug);
-  document.getElementById('modal-guest-side').value = g.side || 'groom';
-  document.getElementById('modal-guest-category').value = g.category || 'General';
-  document.getElementById('modal-guest-phone').value = g.phone || '';
-  document.getElementById('modal-guest-pax').value = g.pax_allowed || 2;
-  document.getElementById('modal-guest-title').textContent = 'កែសម្រួលព័ត៌មានភ្ញៀវ';
-  document.getElementById('modal-add-guest').classList.add('active');
+
+  const sideEl = document.getElementById('modal-guest-side');
+  if (sideEl) sideEl.value = g.side || 'groom';
+
+  const catEl = document.getElementById('modal-guest-category');
+  if (catEl) catEl.value = g.category || 'General';
+
+  const phoneEl = document.getElementById('modal-guest-phone');
+  if (phoneEl) phoneEl.value = g.phone || '';
+
+  const paxEl = document.getElementById('modal-guest-pax');
+  if (paxEl) paxEl.value = g.pax_allowed || 2;
+
+  const titleEl = document.getElementById('modal-guest-title');
+  if (titleEl) titleEl.textContent = 'កែសម្រួលព័ត៌មានភ្ញៀវ (Edit Guest)';
+
+  modal.classList.add('active');
 };
 
 window.deleteGuest = async function(id) {
@@ -1579,18 +1958,22 @@ window.deleteGuest = async function(id) {
 
 window.clearAllGuests = async function() {
   if (!confirm('តើអ្នកពិតជាចង់លុបភ្ញៀវទាំងអស់មែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានឡើយ! (Are you sure you want to delete ALL guests?)')) return;
+  const btn = document.getElementById('btn-clear-all-guests');
+  setButtonLoading(btn, true, 'កំពុងលុប... (Deleting...)');
   try {
     const res = await fetch('/api/guests/all', { method: 'DELETE' });
     const data = await res.json();
     if (res.ok && data.success) {
       showToast('បានលុបភ្ញៀវទាំងអស់ជោគជ័យ!');
-      loadGuests();
-      loadStats();
+      await loadGuests();
+      await loadStats();
     } else {
       showToast('បរាជ័យក្នុងការលុបភ្ញៀវទាំងអស់');
     }
   } catch (err) {
     showToast('កំហុសប្រព័ន្ធក្នុងការលុបភ្ញៀវ');
+  } finally {
+    setButtonLoading(btn, false);
   }
 };
 
@@ -1831,6 +2214,19 @@ function initTabs() {
       if (target === 'tab-dashboard') {
         renderDashboard();
       }
+      if (target === 'tab-guests') {
+        if (guestList && guestList.length > 0) {
+          renderGuestsTable();
+        } else {
+          loadGuests();
+        }
+      }
+      if (target === 'tab-users') {
+        loadUsers();
+      }
+      if (target === 'tab-wishes') {
+        loadWishes();
+      }
 
       // Close mobile sidebar if open
       closeMobileSidebar();
@@ -1852,6 +2248,8 @@ function initModals() {
     document.getElementById('modal-guest-id').value = '';
     isSlugManuallyEdited = false;
     document.getElementById('modal-guest-title').textContent = 'បន្ថែមភ្ញៀវកិត្តិយស';
+    const saveBtn = document.getElementById('btn-modal-save-guest');
+    if (saveBtn) setButtonLoading(saveBtn, false);
     document.getElementById('modal-add-guest').classList.add('active');
   });
 
@@ -1888,7 +2286,12 @@ function initModals() {
 }
 
 function closeModals() {
-  document.querySelectorAll('.lightbox-modal').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.lightbox-modal').forEach(m => {
+    m.classList.remove('active');
+    // Ensure modal submit buttons are not stuck in loading if closed
+    const submitBtn = m.querySelector('button[type="submit"], #btn-modal-save-gdrive');
+    if (submitBtn) setButtonLoading(submitBtn, false);
+  });
 }
 
 function showToast(msg) {
@@ -1924,6 +2327,10 @@ window.uploadImage = async function(fileInput, targetInputId, previewImgId) {
   const file = fileInput.files[0];
   const formData = new FormData();
   formData.append('file', file);
+
+  const parentLabel = fileInput.closest('label');
+  if (parentLabel) parentLabel.classList.add('opacity-50', 'pointer-events-none');
+  fileInput.disabled = true;
 
   showToast('កំពុង Upload... (Uploading...)');
 
@@ -1965,6 +2372,9 @@ window.uploadImage = async function(fileInput, targetInputId, previewImgId) {
   } catch (err) {
     console.error('Upload error:', err);
     showToast('Failed to upload image');
+  } finally {
+    if (parentLabel) parentLabel.classList.remove('opacity-50', 'pointer-events-none');
+    fileInput.disabled = false;
   }
 };
 
@@ -2052,6 +2462,10 @@ window.uploadAudio = async function(fileInput, targetInputId) {
   const formData = new FormData();
   formData.append('file', file);
 
+  const parentLabel = fileInput.closest('label');
+  if (parentLabel) parentLabel.classList.add('opacity-50', 'pointer-events-none');
+  fileInput.disabled = true;
+
   showToast('កំពុង Upload បទចម្រៀង MP3... (Uploading audio...)');
 
   try {
@@ -2068,6 +2482,9 @@ window.uploadAudio = async function(fileInput, targetInputId) {
     }
   } catch (e) {
     showToast('Failed to upload audio');
+  } finally {
+    if (parentLabel) parentLabel.classList.remove('opacity-50', 'pointer-events-none');
+    fileInput.disabled = false;
   }
 };
 
@@ -2110,7 +2527,8 @@ window.closeGoogleDriveModal = function() {
 };
 
 // Submit Google Drive photos
-window.submitGoogleDrivePhotos = async function() {
+window.submitGoogleDrivePhotos = async function(e) {
+  const btn = (e && e.nodeType === 1 ? e : null) || (e && e.currentTarget) || document.getElementById('btn-modal-save-gdrive') || document.querySelector('#modal-google-drive button[onclick*="submitGoogleDrivePhotos"]');
   const input = document.getElementById('gdrive-input-links');
   if (!input || !input.value.trim()) {
     showToast('សូមបញ្ចូល Google Drive Link យ៉ាងហោចណាស់មួយ');
@@ -2143,6 +2561,7 @@ window.submitGoogleDrivePhotos = async function() {
     return;
   }
 
+  setButtonLoading(btn, true, 'កំពុងរក្សាទុក... (Saving...)');
   showToast(`កំពុងរក្សាទុក ${addedCount} រូបភាពពី Google Drive...`);
 
   try {
@@ -2153,20 +2572,35 @@ window.submitGoogleDrivePhotos = async function() {
     });
     if (res.ok) {
       input.value = '';
-      closeGoogleDriveModal();
+      if (btn) {
+        btn.innerHTML = `<span>✓ បានបញ្ចូលជោគជ័យ!</span>`;
+        btn.classList.add('bg-emerald-600', 'text-white');
+      }
       showToast(`✓ បានបញ្ចូល ${addedCount} រូបភាពពី Google Drive ជោគជ័យ!`);
-      loadWeddingData();
+      await loadWeddingData();
+      setTimeout(() => {
+        closeGoogleDriveModal();
+        setButtonLoading(btn, false);
+        if (btn) {
+          btn.classList.remove('bg-emerald-600');
+          btn.classList.add('bg-[#1E4833]', 'hover:bg-[#163626]');
+        }
+      }, 400);
     } else {
       showToast('បរាជ័យក្នុងការរក្សាទុក');
+      setButtonLoading(btn, false);
     }
   } catch (err) {
     console.error('Save Google Drive photos error:', err);
     showToast('មានបញ្ហាក្នុងការរក្សាទុក');
+    setButtonLoading(btn, false);
   }
 };
 
 // Export Full System Backup (Wedding, Guests, Wishes)
-window.exportBackupData = async function() {
+window.exportBackupData = async function(btn) {
+  const elBtn = btn || document.querySelector('button[onclick*="exportBackupData"]');
+  setButtonLoading(elBtn, true, 'កំពុងទាញយក... (Exporting...)');
   showToast('កំពុងបង្កើតឯកសារ Backup ពេញលេញ...');
   try {
     const res = await fetch('/api/backup/export');
@@ -2184,7 +2618,10 @@ window.exportBackupData = async function() {
       showToast('✓ បានទាញយកទិន្នន័យ Backup ពេញលេញជោគជ័យ!');
       return;
     }
-  } catch (e) {}
+  } catch (e) {
+  } finally {
+    setButtonLoading(elBtn, false);
+  }
 
   // Fallback to client-side weddingData export
   const jsonStr = JSON.stringify(weddingData, null, 2);
@@ -2269,7 +2706,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ================= TELEGRAM AUTO-BACKUP & NOTIFICATIONS CLIENT =================
+// ================= TELEGRAM NOTIFICATIONS CLIENT =================
 window.loadTelegramSettings = async function() {
   try {
     const res = await fetch('/api/telegram/config');
@@ -2281,9 +2718,7 @@ window.loadTelegramSettings = async function() {
     const elEnabled = document.getElementById('tg-enabled');
     const elRsvp = document.getElementById('tg-notify-rsvp');
     const elWish = document.getElementById('tg-notify-wish');
-    const elHours = document.getElementById('tg-backup-hours');
     const elPill = document.getElementById('tg-status-pill');
-    const elHint = document.getElementById('tg-last-backup-hint');
 
     if (elToken && !elToken.matches(':focus')) {
       elToken.value = cfg.maskedToken || cfg.botToken || '';
@@ -2295,13 +2730,10 @@ window.loadTelegramSettings = async function() {
     if (elEnabled) elEnabled.checked = Boolean(cfg.enabled);
     if (elRsvp) elRsvp.checked = Boolean(cfg.notifyOnRSVP);
     if (elWish) elWish.checked = Boolean(cfg.notifyOnWish);
-    if (elHours) elHours.value = String(cfg.autoBackupHours || 24);
-    const elScheduledTime = document.getElementById('tg-scheduled-time');
-    if (elScheduledTime && cfg.scheduledTime) elScheduledTime.value = cfg.scheduledTime;
 
     if (elPill) {
       if (cfg.enabled && cfg.hasToken && cfg.chatId) {
-        elPill.textContent = '🟢 សកម្ម (Auto-Backup On)';
+        elPill.textContent = '🟢 សកម្ម (Notifications On)';
         elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800';
       } else if (cfg.hasToken || cfg.chatId) {
         elPill.textContent = '🟡 បានបិទ (Disabled)';
@@ -2311,11 +2743,6 @@ window.loadTelegramSettings = async function() {
         elPill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700';
       }
     }
-
-    if (elHint && cfg.lastBackupAt) {
-      const dt = new Date(cfg.lastBackupAt);
-      elHint.textContent = `Backup ចុងក្រោយ: ${dt.toLocaleDateString('km-KH')} ${dt.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' })}`;
-    }
   } catch (err) {
     console.error('Failed to load telegram settings:', err);
   }
@@ -2323,14 +2750,14 @@ window.loadTelegramSettings = async function() {
 
 window.saveTelegramSettings = async function(e) {
   if (e && e.preventDefault) e.preventDefault();
+  const submitBtn = (e && e.target && e.target.querySelector('button[type="submit"]')) || document.querySelector('#form-telegram-settings button[type="submit"]');
+  setButtonLoading(submitBtn, true, 'កំពុងរក្សាទុក... (Saving...)');
 
   const elToken = document.getElementById('tg-bot-token');
   const elChatId = document.getElementById('tg-chat-id');
   const elEnabled = document.getElementById('tg-enabled');
   const elRsvp = document.getElementById('tg-notify-rsvp');
   const elWish = document.getElementById('tg-notify-wish');
-  const elHours = document.getElementById('tg-backup-hours');
-  const elScheduledTime = document.getElementById('tg-scheduled-time');
 
   const botToken = elToken ? elToken.value.trim().replace(/^bot:?/i, '').replace(/[\s"']/g, '') : '';
   const chatId = elChatId ? elChatId.value.trim().replace(/[\s"']/g, '') : '';
@@ -2342,9 +2769,7 @@ window.saveTelegramSettings = async function(e) {
     botToken,
     chatId,
     notifyOnRSVP: elRsvp ? elRsvp.checked : true,
-    notifyOnWish: elWish ? elWish.checked : true,
-    autoBackupHours: elHours ? parseInt(elHours.value, 10) : 24,
-    scheduledTime: elScheduledTime ? elScheduledTime.value : '21:00'
+    notifyOnWish: elWish ? elWish.checked : true
   };
 
   showToast('កំពុងរក្សាទុកការកំណត់ Telegram...');
@@ -2364,10 +2789,14 @@ window.saveTelegramSettings = async function(e) {
     }
   } catch (err) {
     showToast('កំហុសពេល Save៖ ' + err.message);
+  } finally {
+    setButtonLoading(submitBtn, false);
   }
 };
 
 window.testTelegramBot = async function() {
+  const btn = document.getElementById('btn-tg-test');
+  setButtonLoading(btn, true, 'កំពុងតេស្ត... (Testing...)');
   const elToken = document.getElementById('tg-bot-token');
   const elChatId = document.getElementById('tg-chat-id');
   const botToken = elToken ? elToken.value.trim().replace(/^bot:?/i, '').replace(/[\s"']/g, '') : '';
@@ -2393,27 +2822,8 @@ window.testTelegramBot = async function() {
     }
   } catch (err) {
     showToast('កំហុសពេល Test៖ ' + err.message);
-  }
-};
-
-window.sendTelegramBackupNow = async function() {
-  const spin = document.getElementById('icon-tg-backup-spin');
-  if (spin) spin.classList.add('animate-spin');
-  showToast('📦 កំពុងបង្កើត Backup និងបញ្ជូនទៅកាន់ Telegram...');
-
-  try {
-    const res = await fetch('/api/telegram/backup-now', { method: 'POST' });
-    const data = await res.json();
-    if (res.ok && data.success) {
-      showToast('🚀 ឯកសារ Backup បានបញ្ជូនទៅ Telegram ជោគជ័យ!');
-      alert('🎉 ជោគជ័យ! ឯកសារ Backup "' + data.fileName + '" ត្រូវបាន Upload ចូល Telegram Chat របស់អ្នករួចរាល់ហើយ!');
-      await loadTelegramSettings();
-    } else {
-      showToast('បរាជ័យ៖ ' + (data.error || 'Error'));
-      alert('❌ មិនអាចបញ្ជូន Backup បានឡើយ៖\n\n' + (data.error || 'Error') + '\n\nសូមធានាថាបានកំណត់ Bot Token និង Chat ID ត្រឹមត្រូវក្នុងផ្ទាំង Telegram Backup។');
-    }
   } finally {
-    if (spin) spin.classList.remove('animate-spin');
+    setButtonLoading(btn, false);
   }
 };
 
@@ -2493,6 +2903,8 @@ window.loadSheetsSettings = async function() {
 
 window.saveSheetsSettings = async function(e) {
   if (e) e.preventDefault();
+  const submitBtn = document.getElementById('btn-sheets-save') || (e && e.target && e.target.querySelector('button[type="submit"]'));
+  setButtonLoading(submitBtn, true, 'កំពុងរក្សាទុក... (Saving...)');
   const elUrl = document.getElementById('sheets-webapp-url');
   const elDoc = document.getElementById('sheets-doc-url');
   const elEnabled = document.getElementById('sheets-enabled');
@@ -2546,10 +2958,14 @@ window.saveSheetsSettings = async function(e) {
     }
   } catch (err) {
     showToast('កំហុសពេល Save៖ ' + err.message);
+  } finally {
+    setButtonLoading(submitBtn, false);
   }
 };
 
 window.testSheetsConnection = async function() {
+  const btn = document.getElementById('btn-sheets-test');
+  setButtonLoading(btn, true, 'កំពុងតេស្ត... (Testing...)');
   const elUrl = document.getElementById('sheets-webapp-url');
   const elDoc = document.getElementById('sheets-doc-url');
   const elEnabled = document.getElementById('sheets-enabled');
@@ -2587,16 +3003,20 @@ window.testSheetsConnection = async function() {
     }
   } catch (err) {
     showToast('កំហុសពេល Test៖ ' + err.message);
+  } finally {
+    setButtonLoading(btn, false);
   }
 };
 
 window.pullFromSheets = async function() {
+  const btn = document.getElementById('btn-sheets-pull');
+  const spin = document.getElementById('icon-sheets-pull-spin');
+  if (spin) spin.classList.add('animate-spin');
+  setButtonLoading(btn, true, 'កំពុងទាញយក... (Pulling...)');
   const elUrl = document.getElementById('sheets-webapp-url');
   let sheetUrl = elUrl ? elUrl.value.trim() : '';
   if (!sheetUrl) sheetUrl = DEFAULT_SHEETS_WEBAPP_URL;
   if (elUrl && !elUrl.value) elUrl.value = sheetUrl;
-  const spin = document.getElementById('icon-sheets-pull-spin');
-  if (spin) spin.classList.add('animate-spin');
   showToast('🔄 កំពុងទាញទិន្នន័យទាំងអស់ពី Google Sheets...');
 
   try {
@@ -2625,12 +3045,15 @@ window.pullFromSheets = async function() {
     showToast('កំហុសពេល Pull៖ ' + err.message);
   } finally {
     if (spin) spin.classList.remove('animate-spin');
+    setButtonLoading(btn, false);
   }
 };
 
 window.pushToSheets = async function() {
   if (!confirm('តើអ្នកពិតជាចង់បញ្ជូនទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់មង្គលការ, Users) ទៅកាន់ Google Sheet មែនទេ? (វានឹងធ្វើបច្ចុប្បន្នភាពលើគ្រប់ Sheets ទាំងអស់)')) return;
 
+  const btn = document.getElementById('btn-sheets-push');
+  setButtonLoading(btn, true, 'កំពុងបញ្ជូន... (Syncing...)');
   const elUrl = document.getElementById('sheets-webapp-url');
   let sheetUrl = elUrl ? elUrl.value.trim() : '';
   if (!sheetUrl) sheetUrl = DEFAULT_SHEETS_WEBAPP_URL;
@@ -2654,6 +3077,8 @@ window.pushToSheets = async function() {
     }
   } catch (err) {
     showToast('កំហុសពេល Push៖ ' + err.message);
+  } finally {
+    setButtonLoading(btn, false);
   }
 };
 
