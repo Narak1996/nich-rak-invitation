@@ -909,29 +909,33 @@
     <section id="tab-database" class="tab-content hidden space-y-6">
       <!-- ================= 1. GOOGLE SHEETS CLOUD DATABASE ================= -->
         <div class="mb-6 p-6 rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/30 shadow-xs">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-emerald-100">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-xs shrink-0">
+          <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-4 pb-4 border-b border-emerald-100">
+            <div class="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+              <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-xs shrink-0">
                 📊
               </div>
-              <div>
+              <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
-                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">Google Sheets Cloud Database (Full Database: Guests, Wishes, Settings, Users)</h3>
-                  <span id="sheets-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">Checking...</span>
+                  <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">Google Sheets Cloud Database</h3>
+                  <span id="sheets-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700 shrink-0">Checking...</span>
                 </div>
-                <p class="text-xs text-[#7A6F68] mt-0.5">រក្សាទុក កែប្រែ និងធ្វើសមកាលកម្មទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់មង្គលការ, Users) ផ្ទាល់លើ Google Sheets (Free &amp; 100% Permanent)</p>
+                <p class="text-xs text-[#7A6F68] mt-0.5 leading-relaxed">
+                  រក្សាទុក កែប្រែ និងធ្វើសមកាលកម្មទិន្នន័យទាំងអស់ (ភ្ញៀវ, ពាក្យជូនពរ, ការកំណត់មង្គលការ, Users) ផ្ទាល់លើ Google Sheets (Free &amp; 100% Permanent)
+                </p>
               </div>
             </div>
+
+            <!-- Action Buttons -->
             <div class="flex flex-wrap items-center gap-2 shrink-0">
-              <button type="button" onclick="pullFromSheets()" id="btn-sheets-pull" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+              <button type="button" onclick="pullFromSheets()" id="btn-sheets-pull" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap">
                 <svg id="icon-sheets-pull-spin" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 <span>🔄 ទាញទិន្នន័យទាំងអស់ (Pull All)</span>
               </button>
-              <button type="button" onclick="pushToSheets()" id="btn-sheets-push" class="px-3.5 py-2 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+              <button type="button" onclick="pushToSheets()" id="btn-sheets-push" class="px-3.5 py-2 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap">
                 <span>⬆️ បញ្ជូនទាំងអស់ទៅ Sheet (Sync All)</span>
               </button>
-              <button type="button" onclick="openAppsScriptModal()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-                <span>📋 មើលកូដ Google Apps Script</span>
+              <button type="button" onclick="openAppsScriptModal()" class="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap">
+                <span>📋 មើលកូដ Apps Script</span>
               </button>
             </div>
           </div>
@@ -985,21 +989,21 @@
 
         <!-- ================= TELEGRAM LIVE NOTIFICATIONS CARD ================= -->
         <div class="mb-6 p-6 rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50/70 via-white to-sky-50/30 shadow-xs">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-sky-100">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-2xl shadow-xs shrink-0">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-sky-100">
+            <div class="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+              <div class="w-11 h-11 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl shadow-xs shrink-0">
                 ✈️
               </div>
-              <div>
-                <div class="flex items-center gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
                   <h3 class="font-khmer-title text-base font-bold text-[#4E3227]">ប្រព័ន្ធសារជូនដំណឹង Live ទៅកាន់ Telegram</h3>
-                  <span id="tg-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">Checking...</span>
+                  <span id="tg-status-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700 shrink-0">Checking...</span>
                 </div>
                 <p class="text-xs text-[#7A6F68] mt-0.5">ទទួលសារជូនដំណឹង Live ភ្លាមៗចូល Telegram រាល់ពេលមានភ្ញៀវឆ្លើយតប RSVP ឬផ្ញើសារជូនពរថ្មី</p>
               </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <button type="button" onclick="testTelegramBot()" id="btn-tg-test" class="px-3.5 py-2 bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <button type="button" onclick="testTelegramBot()" id="btn-tg-test" class="px-3.5 py-2 bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap">
                 <span>🔔 តេស្ត Bot</span>
               </button>
             </div>
